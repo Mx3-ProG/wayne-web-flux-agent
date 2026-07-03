@@ -4,7 +4,7 @@ Vitrines en ligne générées par l'IA pour tous les commerçants à petit budge
 page pro avec prestations, **réservation en ligne**, agenda + mini-CRM, et
 outils de contenu IA limités par un **système de crédits** (anti-abus).
 
-Inspiré d'un audit d'afflua.app, généralisé multi-métiers, au thème Wayne Web.
+Généralisé multi-métiers, au thème Wayne Web.
 
 ## Stack
 
