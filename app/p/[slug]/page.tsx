@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { Page, Schedule, Service, ServiceFamily } from "@/lib/types";
 import type { FamilyWithServices } from "@/components/vitrine/vitrine-view";
 import { VitrinePublic } from "@/components/vitrine/vitrine-public";
@@ -9,17 +9,24 @@ import { GOOGLE_FONTS_URL } from "@/lib/verticals";
 export const revalidate = 60;
 
 async function loadVitrine(slug: string) {
-  const supabase = createAdminClient();
-  const { data: page } = await supabase
+  const supabase = createPublicClient();
+  const { data: page, error: pageError } = await supabase
     .from("pages")
     .select("*")
     .eq("slug", slug)
     .eq("published", true)
-    .single<Page>();
+    .maybeSingle<Page>();
+  if (pageError) {
+    console.error("Unable to load public page", {
+      slug,
+      code: pageError.code,
+      message: pageError.message,
+    });
+    throw new Error(`Unable to load public page (${pageError.code})`);
+  }
   if (!page) return null;
 
-  const [{ data: familiesData }, { data: servicesData }, { data: schedules }] =
-    await Promise.all([
+  const [familiesResult, servicesResult, schedulesResult] = await Promise.all([
       supabase
         .from("service_families")
         .select("*")
@@ -33,11 +40,27 @@ async function loadVitrine(slug: string) {
       supabase.from("schedules").select("*").eq("page_id", page.id),
     ]);
 
-  const services = (servicesData ?? []) as Service[];
-  const families: FamilyWithServices[] = ((familiesData ?? []) as ServiceFamily[]).map(
-    (f) => ({ ...f, services: services.filter((s) => s.family_id === f.id) })
-  );
-  const bookingEnabled = ((schedules ?? []) as Schedule[]).some((s) => s.open);
+  const relatedError =
+    familiesResult.error || servicesResult.error || schedulesResult.error;
+  if (relatedError) {
+    console.error("Unable to load public page content", {
+      slug,
+      code: relatedError.code,
+      message: relatedError.message,
+    });
+    throw new Error(`Unable to load public page content (${relatedError.code})`);
+  }
+
+  const services = (servicesResult.data ?? []) as Service[];
+  const families: FamilyWithServices[] = (
+    (familiesResult.data ?? []) as ServiceFamily[]
+  ).map((family) => ({
+    ...family,
+    services: services.filter((service) => service.family_id === family.id),
+  }));
+  const bookingEnabled = (
+    (schedulesResult.data ?? []) as Schedule[]
+  ).some((schedule) => schedule.open);
 
   return { page, families, bookingEnabled };
 }

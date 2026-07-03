@@ -105,6 +105,7 @@ export async function createPage(input: {
     .eq("user_id", user.id);
 
   revalidatePath("/ma-page");
+  revalidatePath(`/p/${page.slug}`);
   return { slug: page.slug };
 }
 
