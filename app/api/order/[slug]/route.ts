@@ -14,6 +14,10 @@ type IncomingItem = {
   quantity: number;
 };
 
+type RpcCartItem =
+  | { product_id: string; quantity: number; offer_id?: never }
+  | { offer_id: string; quantity: number; product_id?: never };
+
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ slug: string }> }
@@ -71,151 +75,45 @@ export async function POST(
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
 
-  // Ne jamais faire confiance aux prix du client : on recharge produits ET
-  // offres actifs de cette page et on recalcule tout côté serveur.
-  // `select("*")` (plutôt que des colonnes nommées) rend la route tolérante si
-  // les migrations stock/offres ne sont pas encore appliquées.
-  type ProductRow = {
-    id: string;
-    name: string;
-    price_cents: number;
-    track_stock?: boolean | null;
-    stock?: number | null;
-  };
-  type OfferRow = { id: string; title: string; price_cents: number };
-
-  const [productsRes, offersRes] = await Promise.all([
-    wantedProducts.size > 0
-      ? supabase
-          .from("products")
-          .select("*")
-          .eq("page_id", page.id)
-          .eq("active", true)
-          .in("id", [...wantedProducts.keys()])
-      : Promise.resolve({ data: [], error: null }),
-    wantedOffers.size > 0
-      ? supabase
-          .from("offers")
-          .select("id, title, price_cents")
-          .eq("page_id", page.id)
-          .eq("active", true)
-          .in("id", [...wantedOffers.keys()])
-      : Promise.resolve({ data: [], error: null }),
-  ]);
-  if (productsRes.error) {
-    console.error("order: products load failed", { slug, error: productsRes.error });
-  }
-  if (offersRes.error) {
-    console.error("order: offers load failed", { slug, error: offersRes.error });
-  }
-  const products = (productsRes.data ?? []) as ProductRow[];
-  const offers = (offersRes.data ?? []) as OfferRow[];
-
-  let total = 0;
-  const items: {
-    product_id: string | null;
-    offer_id: string | null;
-    name: string;
-    unit_price_cents: number;
-    quantity: number;
-    line_total_cents: number;
-  }[] = [];
-
-  // Produits : écarte les épuisés, plafonne au stock suivi (si le suivi existe).
-  for (const p of products) {
-    const tracked = p.track_stock === true;
-    const stock = typeof p.stock === "number" ? p.stock : 0;
-    if (tracked && stock <= 0) continue;
-    const requested = wantedProducts.get(p.id) ?? 1;
-    const quantity = tracked ? Math.min(requested, stock) : requested;
-    if (quantity <= 0) continue;
-    const lineTotal = p.price_cents * quantity;
-    total += lineTotal;
-    items.push({
-      product_id: p.id,
-      offer_id: null,
-      name: p.name,
-      unit_price_cents: p.price_cents,
+  const rpcItems: RpcCartItem[] = [
+    ...[...wantedProducts.entries()].map(([product_id, quantity]) => ({
+      product_id,
       quantity,
-      line_total_cents: lineTotal,
-    });
-  }
-
-  // Offres : autonomes, pas de stock.
-  for (const o of offers) {
-    const quantity = wantedOffers.get(o.id) ?? 1;
-    const lineTotal = o.price_cents * quantity;
-    total += lineTotal;
-    items.push({
-      product_id: null,
-      offer_id: o.id,
-      name: o.title,
-      unit_price_cents: o.price_cents,
+    })),
+    ...[...wantedOffers.entries()].map(([offer_id, quantity]) => ({
+      offer_id,
       quantity,
-      line_total_cents: lineTotal,
-    });
-  }
+    })),
+  ];
 
-  if (items.length === 0) {
-    return NextResponse.json({ error: "invalid_items" }, { status: 400 });
-  }
-
-  const { data: order, error: orderError } = await supabase
-    .from("orders")
-    .insert({
-      page_id: page.id,
-      first_name: firstName,
-      phone,
-      email,
-      note,
-      total_cents: total,
-    })
-    .select("id")
-    .single();
-  if (orderError || !order) {
-    console.error("order: orders insert failed", { slug, error: orderError });
-    return NextResponse.json({ error: "insert_failed" }, { status: 500 });
-  }
-
-  // On n'inclut `offer_id`/`product_id` que s'ils sont renseignés : une commande
-  // 100% produits ne référence pas la colonne offer_id (compat si 00007 pas encore
-  // appliquée en base).
-  const rows = items.map((it) => {
-    const row: Record<string, unknown> = {
-      order_id: order.id,
-      name: it.name,
-      unit_price_cents: it.unit_price_cents,
-      quantity: it.quantity,
-      line_total_cents: it.line_total_cents,
-    };
-    if (it.product_id) row.product_id = it.product_id;
-    if (it.offer_id) row.offer_id = it.offer_id;
-    return row;
+  const { data: rpcData, error: rpcError } = await supabase.rpc("create_guest_order", {
+    p_page_id: page.id,
+    p_first_name: firstName,
+    p_phone: phone,
+    p_email: email,
+    p_note: note,
+    p_items: rpcItems,
   });
-
-  const { error: itemsError } = await supabase.from("order_items").insert(rows);
-  if (itemsError) {
-    console.error("order: order_items insert failed", { slug, error: itemsError });
-    // Rollback best-effort de la commande orpheline.
-    await supabase.from("orders").delete().eq("id", order.id);
+  if (rpcError) {
+    console.error("order: create_guest_order failed", { slug, error: rpcError });
     return NextResponse.json({ error: "insert_failed" }, { status: 500 });
   }
 
-  // CRM : le client est créé/mis à jour comme pour les réservations.
-  await supabase
-    .from("customers")
-    .upsert(
-      { page_id: page.id, phone, first_name: firstName, email },
-      { onConflict: "page_id,phone" }
-    );
+  const order = Array.isArray(rpcData) ? rpcData[0] : rpcData;
+  const orderId = order?.order_id as string | undefined;
+  const total = typeof order?.total_cents === "number" ? order.total_cents : 0;
+  if (!orderId) {
+    console.error("order: invalid create_guest_order response", { slug, rpcData });
+    return NextResponse.json({ error: "insert_failed" }, { status: 500 });
+  }
 
   // Notification propriétaire (hook de rétention : badge dashboard).
-  const count = items.reduce((n, it) => n + it.quantity, 0);
+  const count = rpcItems.reduce((n, it) => n + it.quantity, 0);
   await supabase.from("notifications").insert({
     user_id: page.user_id,
     page_id: page.id,
     type: "order",
-    ref_id: order.id,
+    ref_id: orderId,
     title: "Nouvelle commande",
     body: `${firstName} · ${count} article${count > 1 ? "s" : ""} · ${formatPrice(total)}`,
   });

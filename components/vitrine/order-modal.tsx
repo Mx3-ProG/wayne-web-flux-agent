@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { submitGuestOrder } from "@/lib/guest-order";
 import { formatPrice } from "@/lib/types";
 
 // Ligne de panier générique : produit OU offre. La clé de panier est
@@ -14,7 +15,7 @@ export type CartLine = {
 };
 
 type Props = {
-  slug: string;
+  pageId: string;
   items: CartLine[];
   accentColor: string;
   onSetQty: (kind: CartLine["kind"], id: string, quantity: number) => void;
@@ -23,7 +24,7 @@ type Props = {
 };
 
 // Commande sans paiement : panier → coordonnées → confirmation. Sans compte.
-export function OrderModal({ slug, items, accentColor, onSetQty, onClose, onDone }: Props) {
+export function OrderModal({ pageId, items, accentColor, onSetQty, onClose, onDone }: Props) {
   const [step, setStep] = useState<"cart" | "form" | "done">("cart");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -37,39 +38,24 @@ export function OrderModal({ slug, items, accentColor, onSetQty, onClose, onDone
     // Lecture synchrone : après un await, e.currentTarget peut être null.
     const form = new FormData(e.currentTarget);
     setSubmitting(true);
-    let res: Response;
     try {
-      res = await fetch(`/api/order/${slug}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: items.map((it) => ({ kind: it.kind, id: it.id, quantity: it.quantity })),
-          first_name: form.get("first_name"),
-          phone: form.get("phone"),
-          email: form.get("email"),
-          note: form.get("note"),
-        }),
+      await submitGuestOrder({
+        pageId,
+        firstName: String(form.get("first_name") ?? "").trim(),
+        phone: String(form.get("phone") ?? "").trim(),
+        email: String(form.get("email") ?? "").trim() || undefined,
+        note: String(form.get("note") ?? "").trim() || undefined,
+        items: items.map((it) =>
+          it.kind === "offer"
+            ? { offer_id: it.id, quantity: it.quantity }
+            : { product_id: it.id, quantity: it.quantity }
+        ),
       });
-    } catch {
       setSubmitting(false);
-      setError("Connexion impossible. Vérifie ta connexion et réessaie.");
-      return;
-    }
-    setSubmitting(false);
-    if (res.status === 201) {
       setStep("done");
       return;
-    }
-    // Message adapté selon la raison renvoyée par le serveur.
-    const reason = await res.json().catch(() => ({}));
-    console.error("Order failed", res.status, reason);
-    if (res.status === 429) {
-      setError("Trop de tentatives. Patiente une minute et réessaie.");
-    } else if (reason?.error === "invalid_contact") {
-      setError("Vérifie ton prénom et ton numéro de téléphone.");
-    } else if (res.status === 404) {
-      setError("Cette boutique n'est pas disponible pour le moment.");
-    } else {
+    } catch {
+      setSubmitting(false);
       setError("La commande n'a pas pu être enregistrée. Réessaie dans un instant.");
     }
   }

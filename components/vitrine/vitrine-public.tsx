@@ -89,7 +89,7 @@ export function VitrinePublic({
       )}
       {cartOpen && (
         <OrderModal
-          slug={page.slug}
+          pageId={page.id}
           items={lines}
           accentColor={accent}
           onSetQty={setQty}
