@@ -20,6 +20,20 @@ export const metadata: Metadata = {
   },
   description:
     "Gagne du temps, booste ta visibilité Google et génère plus de prospects avec la solution tout-en-un de Wayne Web pour les professionnels.",
+  openGraph: {
+    title: "Wayne Web Flux — Ton commerce, vu partout",
+    description:
+      "Visibilité, prospects, rendez-vous et outils réunis dans un seul espace pensé pour les professionnels.",
+    siteName: "Wayne Web Flux",
+    locale: "fr_FR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Wayne Web Flux — Ton commerce, vu partout",
+    description:
+      "Visibilité, prospects, rendez-vous et outils réunis dans un seul espace pensé pour les professionnels.",
+  },
 };
 
 export default function RootLayout({
