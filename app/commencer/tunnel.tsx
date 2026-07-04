@@ -1,17 +1,24 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
   BarChart3,
+  BadgeEuro,
+  Boxes,
   BriefcaseBusiness,
+  CalendarClock,
   Check,
   Clock3,
   Globe2,
   MapPin,
+  MoreVertical,
+  PackagePlus,
   Search,
+  Share2,
+  Smartphone,
   Sparkles,
   Store,
   Users,
@@ -37,6 +44,21 @@ const TONES = [
   { id: "Dynamique et audacieux", title: "Dynamique & audacieux", sample: "De l'énergie et du caractère." },
 ];
 
+const WEEKDAYS = [
+  { id: 1, label: "Lun" },
+  { id: 2, label: "Mar" },
+  { id: 3, label: "Mer" },
+  { id: 4, label: "Jeu" },
+  { id: 5, label: "Ven" },
+  { id: 6, label: "Sam" },
+  { id: 0, label: "Dim" },
+];
+
+type InstallPromptEvent = Event & {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+};
+
 function Brand() {
   return (
     <span className={styles.brand}>
@@ -53,10 +75,19 @@ export function Tunnel() {
   const [city, setCity] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [tone, setTone] = useState("");
+  const [categoryName, setCategoryName] = useState("");
+  const [productName, setProductName] = useState("");
+  const [productPrice, setProductPrice] = useState("");
+  const [trackStock, setTrackStock] = useState(true);
+  const [productStock, setProductStock] = useState("1");
+  const [availableDays, setAvailableDays] = useState<number[]>([1, 2, 3, 4, 5]);
+  const [openingTime, setOpeningTime] = useState("09:00");
+  const [closingTime, setClosingTime] = useState("18:00");
+  const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
   const [authState, authAction, pending] = useActionState(signUp, initialState);
 
   const selectedVertical = vertical ? getVertical(vertical) : null;
-  const completion = Math.max(0, Math.min(100, (step / 7) * 100));
+  const completion = Math.max(0, Math.min(100, (step / 11) * 100));
   const previewName = businessName.trim() || "Ton commerce";
   const previewJob = jobTitle.trim() || selectedVertical?.jobTitles[0] || "Ton activité";
   const canContinue = useMemo(() => {
@@ -64,8 +95,45 @@ export function Tunnel() {
     if (step === 2) return goals.length > 0;
     if (step === 3) return Boolean(city.trim() && businessName.trim() && jobTitle.trim());
     if (step === 4) return Boolean(tone);
+    if (step === 5) return Boolean(categoryName.trim());
+    if (step === 6) return Boolean(productName.trim());
+    if (step === 7)
+      return (
+        Number(productPrice) >= 0 &&
+        (!trackStock || Number(productStock) >= 0)
+      );
+    if (step === 8)
+      return (
+        availableDays.length > 0 &&
+        openingTime < closingTime
+      );
     return true;
-  }, [step, vertical, goals, city, businessName, jobTitle, tone]);
+  }, [
+    step,
+    vertical,
+    goals,
+    city,
+    businessName,
+    jobTitle,
+    tone,
+    categoryName,
+    productName,
+    productPrice,
+    trackStock,
+    productStock,
+    availableDays,
+    openingTime,
+    closingTime,
+  ]);
+
+  useEffect(() => {
+    const capturePrompt = (event: Event) => {
+      event.preventDefault();
+      setInstallPrompt(event as InstallPromptEvent);
+    };
+    window.addEventListener("beforeinstallprompt", capturePrompt);
+    return () => window.removeEventListener("beforeinstallprompt", capturePrompt);
+  }, []);
 
   function chooseVertical(slug: string) {
     const next = getVertical(slug);
@@ -82,7 +150,22 @@ export function Tunnel() {
   }
 
   function next() {
-    if (canContinue) setStep((current) => Math.min(7, current + 1));
+    if (canContinue) setStep((current) => Math.min(12, current + 1));
+  }
+
+  function toggleDay(day: number) {
+    setAvailableDays((current) =>
+      current.includes(day)
+        ? current.filter((item) => item !== day)
+        : [...current, day]
+    );
+  }
+
+  async function installApp() {
+    if (!installPrompt) return;
+    await installPrompt.prompt();
+    await installPrompt.userChoice;
+    setInstallPrompt(null);
   }
 
   function back() {
@@ -93,9 +176,9 @@ export function Tunnel() {
     <main className={styles.page}>
       <header className={styles.header}>
         <Link href="/" aria-label="Retour à l'accueil"><Brand /></Link>
-        {step > 0 && step < 7 && (
+        {step > 0 && step < 12 && (
           <div className={styles.progressMeta}>
-            <span>Étape {Math.min(step, 6)} sur 6</span>
+            <span>Étape {Math.min(step, 11)} sur 11</span>
             <div className={styles.progress}><i style={{ width: `${completion}%` }} /></div>
           </div>
         )}
@@ -204,6 +287,84 @@ export function Tunnel() {
         )}
 
         {step === 5 && (
+          <Question kicker="Ton catalogue" title={<>Crée ta première <em>catégorie.</em></>} subtitle="Elle permettra à tes clients de comprendre immédiatement ce que tu proposes.">
+            <div className={styles.singleFieldCard}>
+              <span><Boxes aria-hidden="true" /></span>
+              <label>
+                <span>Nom de la catégorie</span>
+                <input
+                  value={categoryName}
+                  onChange={(event) => setCategoryName(event.target.value)}
+                  maxLength={60}
+                  placeholder="Ex : Soins du visage, Bouquets, Coaching…"
+                />
+              </label>
+            </div>
+          </Question>
+        )}
+
+        {step === 6 && (
+          <Question kicker="Ton premier produit" title={<>Qu&apos;est-ce que tu veux <em>vendre en premier ?</em></>} subtitle={`Ce produit sera rangé dans « ${categoryName || "ta catégorie"} » et visible dans ta vitrine.`}>
+            <div className={styles.singleFieldCard}>
+              <span><PackagePlus aria-hidden="true" /></span>
+              <label>
+                <span>Nom du produit</span>
+                <input
+                  value={productName}
+                  onChange={(event) => setProductName(event.target.value)}
+                  maxLength={100}
+                  placeholder="Ex : Soin éclat 60 min"
+                />
+              </label>
+            </div>
+          </Question>
+        )}
+
+        {step === 7 && (
+          <Question kicker="Prix et disponibilité" title={<>Donne-lui sa <em>valeur.</em></>} subtitle="Fixe le prix de vente et indique si FLUX doit surveiller le stock.">
+            <div className={styles.commerceFields}>
+              <label>
+                <span className={styles.fieldIcon}><BadgeEuro aria-hidden="true" /></span>
+                <span>Prix TTC</span>
+                <div><input type="number" min="0" step="0.01" value={productPrice} onChange={(event) => setProductPrice(event.target.value)} placeholder="49,00" /><b>€</b></div>
+              </label>
+              <div className={styles.stockCard}>
+                <button type="button" className={trackStock ? styles.stockToggleActive : styles.stockToggle} onClick={() => setTrackStock((value) => !value)} aria-pressed={trackStock}>
+                  <span><strong>Suivre le stock</strong><small>FLUX t&apos;alerte quand il est épuisé.</small></span>
+                  <i />
+                </button>
+                {trackStock && (
+                  <label>
+                    <span>Quantité disponible</span>
+                    <input type="number" min="0" step="1" value={productStock} onChange={(event) => setProductStock(event.target.value)} />
+                  </label>
+                )}
+              </div>
+            </div>
+          </Question>
+        )}
+
+        {step === 8 && (
+          <Question kicker="Ton agenda" title={<>Quand es-tu <em>disponible ?</em></>} subtitle="Choisis tes jours et une première plage horaire. Tout restera modifiable.">
+            <div className={styles.scheduleCard}>
+              <CalendarClock aria-hidden="true" />
+              <div className={styles.dayPicker}>
+                {WEEKDAYS.map((day) => (
+                  <button key={day.id} type="button" className={availableDays.includes(day.id) ? styles.dayActive : styles.day} onClick={() => toggleDay(day.id)}>
+                    {day.label}
+                  </button>
+                ))}
+              </div>
+              <div className={styles.timeFields}>
+                <label><span>De</span><input type="time" value={openingTime} onChange={(event) => setOpeningTime(event.target.value)} /></label>
+                <i>→</i>
+                <label><span>À</span><input type="time" value={closingTime} onChange={(event) => setClosingTime(event.target.value)} /></label>
+              </div>
+            </div>
+          </Question>
+        )}
+
+        {step === 9 && (
           <div className={styles.reveal}>
             <p className={styles.kicker}>Ton aperçu est prêt</p>
             <h1>Voilà ce que tes clients<br />vont <em>comprendre.</em></h1>
@@ -230,7 +391,36 @@ export function Tunnel() {
           </div>
         )}
 
-        {step === 6 && (
+        {step === 10 && (
+          <div className={styles.installScreen}>
+            <span className={styles.introIcon}><Smartphone aria-hidden="true" /></span>
+            <p className={styles.kicker}>Toujours à portée de main</p>
+            <h1>Installe FLUX comme<br />une vraie <em>app.</em></h1>
+            <p>Retrouve ton dashboard en un geste depuis ton écran d’accueil.</p>
+            <div className={styles.installGuides}>
+              <article>
+                <strong>Sur iPhone</strong>
+                <span><Share2 aria-hidden="true" /> Dans Safari, touche « Partager »</span>
+                <span>Choisis « Sur l’écran d’accueil »</span>
+              </article>
+              <article>
+                <strong>Sur Android</strong>
+                <span><MoreVertical aria-hidden="true" /> Ouvre le menu Chrome</span>
+                <span>Choisis « Installer l’application »</span>
+              </article>
+            </div>
+            {installPrompt && (
+              <button className={styles.installNow} type="button" onClick={installApp}>
+                Installer maintenant
+              </button>
+            )}
+            <button className={styles.primary} type="button" onClick={next}>
+              Continuer <ArrowRight aria-hidden="true" />
+            </button>
+          </div>
+        )}
+
+        {step === 11 && (
           <div className={styles.valueScreen}>
             <span className={styles.introIcon}><Globe2 aria-hidden="true" /></span>
             <p className={styles.kicker}>Tout est prêt</p>
@@ -246,7 +436,7 @@ export function Tunnel() {
           </div>
         )}
 
-        {step === 7 && (
+        {step === 12 && (
           <div className={styles.claim}>
             <p className={styles.kicker}>Dernière étape</p>
             <h1>Garde tout ce qu&apos;on<br />vient de <em>préparer.</em></h1>
@@ -258,6 +448,14 @@ export function Tunnel() {
               <input type="hidden" name="city" value={city} />
               <input type="hidden" name="tone" value={tone} />
               <input type="hidden" name="goal" value={goals.join(",")} />
+              <input type="hidden" name="categoryName" value={categoryName} />
+              <input type="hidden" name="productName" value={productName} />
+              <input type="hidden" name="productPrice" value={productPrice} />
+              <input type="hidden" name="trackStock" value={String(trackStock)} />
+              <input type="hidden" name="productStock" value={productStock} />
+              <input type="hidden" name="availableDays" value={JSON.stringify(availableDays)} />
+              <input type="hidden" name="openingTime" value={openingTime} />
+              <input type="hidden" name="closingTime" value={closingTime} />
               <label><span>Ton prénom</span><input name="name" required maxLength={40} placeholder="Alex" autoComplete="given-name" /></label>
               <label><span>Ton email professionnel</span><input name="email" type="email" required placeholder="alex@moncommerce.fr" autoComplete="email" /></label>
               <label><span>Choisis un mot de passe</span><input name="password" type="password" required minLength={8} placeholder="8 caractères minimum" autoComplete="new-password" /></label>
@@ -273,7 +471,7 @@ export function Tunnel() {
         )}
       </section>
 
-      {step > 0 && step < 5 && (
+      {step > 0 && step < 9 && (
         <footer className={styles.controls}>
           <button type="button" onClick={back}><ArrowLeft aria-hidden="true" /> Retour</button>
           <button className={styles.primary} type="button" onClick={next} disabled={!canContinue}>
@@ -281,7 +479,7 @@ export function Tunnel() {
           </button>
         </footer>
       )}
-      {step >= 5 && step < 7 && (
+      {step >= 9 && step < 12 && (
         <button className={styles.floatingBack} type="button" onClick={back} aria-label="Revenir à l'étape précédente">
           <ArrowLeft aria-hidden="true" />
         </button>

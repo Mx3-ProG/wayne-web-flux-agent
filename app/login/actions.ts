@@ -6,6 +6,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createPage } from "@/app/(app)/ma-page/actions";
 import { saveVoiceProfile } from "@/app/(app)/contexte/actions";
+import { getActivePage } from "@/lib/active-project";
 
 export type AuthState = { error?: string; message?: string };
 
@@ -50,6 +51,16 @@ async function initializeTunnel(
   const city = String(metadata?.city ?? "").trim();
   const tone = String(metadata?.tone ?? "").trim();
   const goal = String(metadata?.goal ?? "").trim();
+  const categoryName = String(metadata?.category_name ?? "").trim();
+  const productName = String(metadata?.product_name ?? "").trim();
+  const productPriceCents = Math.max(0, Number(metadata?.product_price_cents ?? 0));
+  const trackStock = metadata?.track_stock === true;
+  const productStock = Math.max(0, Math.floor(Number(metadata?.product_stock ?? 0)));
+  const availableDays = Array.isArray(metadata?.available_days)
+    ? metadata.available_days.map(Number).filter((day) => day >= 0 && day <= 6)
+    : [];
+  const openingTime = String(metadata?.opening_time ?? "09:00");
+  const closingTime = String(metadata?.closing_time ?? "18:00");
 
   if (vertical && businessName) {
     const supabase = await createClient();
@@ -66,6 +77,56 @@ async function initializeTunnel(
         .limit(1);
       if (!existingPages || existingPages.length === 0) {
         await createPage({ vertical, businessName, jobTitle, city });
+      }
+
+      const page = await getActivePage(supabase, user.id);
+      if (page) {
+        if (categoryName && productName) {
+          const { data: existingProduct } = await supabase
+            .from("products")
+            .select("id")
+            .eq("page_id", page.id)
+            .limit(1)
+            .maybeSingle();
+
+          if (!existingProduct) {
+            const { data: category } = await supabase
+              .from("product_categories")
+              .insert({ page_id: page.id, name: categoryName, position: 0 })
+              .select("id")
+              .single();
+
+            if (category) {
+              await supabase.from("products").insert({
+                page_id: page.id,
+                category_id: category.id,
+                name: productName,
+                description: "",
+                price_cents: productPriceCents,
+                track_stock: trackStock,
+                stock: trackStock ? productStock : 0,
+                position: 0,
+              });
+            }
+          }
+        }
+
+        if (
+          availableDays.length > 0 &&
+          /^\d{2}:\d{2}$/.test(openingTime) &&
+          /^\d{2}:\d{2}$/.test(closingTime)
+        ) {
+          await supabase.from("schedules").upsert(
+            [0, 1, 2, 3, 4, 5, 6].map((weekday) => ({
+              page_id: page.id,
+              weekday,
+              open: availableDays.includes(weekday),
+              ranges: availableDays.includes(weekday)
+                ? [[openingTime, closingTime]]
+                : [],
+            }))
+          );
+        }
       }
     }
   }
@@ -124,6 +185,28 @@ export async function signUp(
   const city = String(formData.get("city") ?? "").trim();
   const tone = String(formData.get("tone") ?? "").trim();
   const goal = String(formData.get("goal") ?? "").trim();
+  const categoryName = String(formData.get("categoryName") ?? "").trim();
+  const productName = String(formData.get("productName") ?? "").trim();
+  const productPriceCents = Math.max(
+    0,
+    Math.round(Number(formData.get("productPrice") ?? 0) * 100)
+  );
+  const trackStock = formData.get("trackStock") === "true";
+  const productStock = Math.max(
+    0,
+    Math.floor(Number(formData.get("productStock") ?? 0))
+  );
+  let availableDays: number[] = [];
+  try {
+    const parsed = JSON.parse(String(formData.get("availableDays") ?? "[]"));
+    if (Array.isArray(parsed)) {
+      availableDays = parsed.map(Number).filter((day) => day >= 0 && day <= 6);
+    }
+  } catch {
+    availableDays = [];
+  }
+  const openingTime = String(formData.get("openingTime") ?? "09:00");
+  const closingTime = String(formData.get("closingTime") ?? "18:00");
   if (!name || !email || !password)
     return { error: "Remplis tous les champs." };
   if (password.length < 8)
@@ -142,6 +225,14 @@ export async function signUp(
         city,
         tone,
         goal,
+        category_name: categoryName,
+        product_name: productName,
+        product_price_cents: productPriceCents,
+        track_stock: trackStock,
+        product_stock: productStock,
+        available_days: availableDays,
+        opening_time: openingTime,
+        closing_time: closingTime,
       },
       emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/login`,
     },
