@@ -12,7 +12,7 @@ const PROTECTED_PREFIXES = [
   "/compte",
 ];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
@@ -42,7 +42,7 @@ export async function middleware(request: NextRequest) {
 
   const path = request.nextUrl.pathname;
   const isProtected = PROTECTED_PREFIXES.some(
-    (p) => path === p || path.startsWith(p + "/")
+    (prefix) => path === prefix || path.startsWith(prefix + "/")
   );
 
   if (isProtected && !user) {
@@ -52,7 +52,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (path === "/login" && user) {
+  if ((path === "/login" || path === "/commencer") && user) {
     const url = request.nextUrl.clone();
     url.pathname = "/espace";
     url.search = "";

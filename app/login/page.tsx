@@ -2,150 +2,76 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
+import { ArrowLeft, ArrowRight, Check, LockKeyhole, Mail, Sparkles, User } from "lucide-react";
 import { signIn, signUp, type AuthState } from "./actions";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import styles from "./login.module.css";
 
 const initialState: AuthState = {};
 
 export default function LoginPage() {
-  const [loginState, loginAction, loginPending] = useActionState(
-    signIn,
-    initialState
-  );
-  const [signupState, signupAction, signupPending] = useActionState(
-    signUp,
-    initialState
-  );
+  const [loginState, loginAction, loginPending] = useActionState(signIn, initialState);
+  const [signupState, signupAction, signupPending] = useActionState(signUp, initialState);
 
   return (
-    <main className="flex-1 flex items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md space-y-6">
-        <Link href="/" className="block text-center text-2xl font-bold">
-          Wayne<span className="text-primary">Web</span> Flux
-        </Link>
+    <main className={styles.page}>
+      <Link className={styles.back} href="/"><ArrowLeft aria-hidden="true" /> Accueil</Link>
+      <div className={styles.brand}>WAYNE<span>WEB</span><small>FLUX</small></div>
 
-        <Tabs defaultValue="login">
-          <TabsList className="w-full">
-            <TabsTrigger value="login" className="flex-1">
-              Connexion
-            </TabsTrigger>
-            <TabsTrigger value="signup" className="flex-1">
-              Créer mon compte
-            </TabsTrigger>
-          </TabsList>
+      <section className={styles.layout}>
+        <div className={styles.pitch}>
+          <p className={styles.kicker}>Ton espace de croissance</p>
+          <h1>Reprends là où ton<br />commerce s&apos;est <em>arrêté.</em></h1>
+          <p>
+            Ta vitrine, tes contenus, tes prospects et ton agenda sont réunis.
+            Une connexion, tout ton business sous les yeux.
+          </p>
+          <div className={styles.proofs}>
+            <span><Check aria-hidden="true" /> Tes données restent les tiennes</span>
+            <span><Check aria-hidden="true" /> Aucun engagement</span>
+            <span><Check aria-hidden="true" /> Support Wayne Web</span>
+          </div>
+        </div>
 
-          <TabsContent value="login">
-            <Card>
-              <CardHeader>
-                <CardTitle>Te revoilà</CardTitle>
-                <CardDescription>
-                  Connecte-toi pour retrouver ta vitrine et ton agenda.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form action={loginAction} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="login-email">Email</Label>
-                    <Input
-                      id="login-email"
-                      name="email"
-                      type="email"
-                      placeholder="ton@email.fr"
-                      required
-                      autoComplete="email"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="login-password">Mot de passe</Label>
-                    <Input
-                      id="login-password"
-                      name="password"
-                      type="password"
-                      placeholder="••••••••"
-                      required
-                      autoComplete="current-password"
-                    />
-                  </div>
-                  {loginState.error && (
-                    <p className="text-sm text-destructive">{loginState.error}</p>
-                  )}
-                  <Button type="submit" className="w-full" disabled={loginPending}>
-                    {loginPending ? "Connexion…" : "Entrer"}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </TabsContent>
+        <div className={styles.auth}>
+          <div className={styles.authHeading}>
+            <span><Sparkles aria-hidden="true" /></span>
+            <div><h2>Bon retour.</h2><p>Connecte-toi à ton espace Flux.</p></div>
+          </div>
+          <form action={loginAction}>
+            <label>
+              <span>Email</span>
+              <div><Mail aria-hidden="true" /><input name="email" type="email" placeholder="ton@email.fr" required autoComplete="email" /></div>
+            </label>
+            <label>
+              <span>Mot de passe</span>
+              <div><LockKeyhole aria-hidden="true" /><input name="password" type="password" placeholder="••••••••" required autoComplete="current-password" /></div>
+            </label>
+            {loginState.error && <p className={styles.error}>{loginState.error}</p>}
+            <button className={styles.primary} type="submit" disabled={loginPending}>
+              {loginPending ? "Connexion…" : "Entrer dans mon espace"}
+              {!loginPending && <ArrowRight aria-hidden="true" />}
+            </button>
+          </form>
 
-          <TabsContent value="signup">
-            <Card>
-              <CardHeader>
-                <CardTitle>2 minutes, et ta vitrine existe</CardTitle>
-                <CardDescription>
-                  Gratuit. Sans carte bleue. 100 crédits offerts pour créer tes
-                  premiers contenus.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <form action={signupAction} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-name">Ton prénom</Label>
-                    <Input
-                      id="signup-name"
-                      name="name"
-                      placeholder="Alex"
-                      required
-                      autoComplete="given-name"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      name="email"
-                      type="email"
-                      placeholder="ton@email.fr"
-                      required
-                      autoComplete="email"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Mot de passe</Label>
-                    <Input
-                      id="signup-password"
-                      name="password"
-                      type="password"
-                      placeholder="8 caractères minimum"
-                      required
-                      minLength={8}
-                      autoComplete="new-password"
-                    />
-                  </div>
-                  {signupState.error && (
-                    <p className="text-sm text-destructive">{signupState.error}</p>
-                  )}
-                  {signupState.message && (
-                    <p className="text-sm text-emerald-400">{signupState.message}</p>
-                  )}
-                  <Button type="submit" className="w-full" disabled={signupPending}>
-                    {signupPending ? "Création…" : "Créer ma vitrine gratuitement"}
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+          <div className={styles.divider}><span>ou</span></div>
+
+          <details className={styles.create}>
+            <summary>Créer un compte directement</summary>
+            <p>Pour profiter de la configuration personnalisée, nous recommandons le tunnel.</p>
+            <Link className={styles.tunnelLink} href="/commencer">Configurer mon espace en 2 minutes <ArrowRight aria-hidden="true" /></Link>
+            <form action={signupAction}>
+              <label><span>Prénom</span><div><User aria-hidden="true" /><input name="name" placeholder="Alex" required autoComplete="given-name" /></div></label>
+              <label><span>Email</span><div><Mail aria-hidden="true" /><input name="email" type="email" placeholder="ton@email.fr" required autoComplete="email" /></div></label>
+              <label><span>Mot de passe</span><div><LockKeyhole aria-hidden="true" /><input name="password" type="password" placeholder="8 caractères minimum" required minLength={8} autoComplete="new-password" /></div></label>
+              {signupState.error && <p className={styles.error}>{signupState.error}</p>}
+              {signupState.message && <p className={styles.success}>{signupState.message}</p>}
+              <button className={styles.secondary} type="submit" disabled={signupPending}>
+                {signupPending ? "Création…" : "Créer mon compte sans configuration"}
+              </button>
+            </form>
+          </details>
+        </div>
+      </section>
     </main>
   );
 }

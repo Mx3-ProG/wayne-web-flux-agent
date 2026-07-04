@@ -2,10 +2,20 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import type { Page, Service, ServiceFamily } from "@/lib/types";
 import { formatDuration, formatPrice } from "@/lib/types";
 import { getFont } from "@/lib/verticals";
 import { defaultLegal } from "@/lib/legal";
+import {
+  ArrowRight,
+  ChevronDown,
+  Clock3,
+  MapPin,
+  Phone,
+  Sparkles,
+} from "lucide-react";
+import styles from "./vitrine.module.css";
 
 export type FamilyWithServices = ServiceFamily & { services: Service[] };
 
@@ -34,13 +44,19 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
 
   return (
     <div
-      className="min-h-full flex flex-col bg-[#faf7f4]"
-      style={{ fontFamily: font.css, color: colors.text }}
+      className={styles.page}
+      style={
+        {
+          fontFamily: font.css,
+          "--client-accent": colors.primary,
+          "--client-dark": colors.dark,
+        } as React.CSSProperties
+      }
     >
       {/* Bandeau offre */}
       {page.offer && (
         <div
-          className="text-center text-sm font-medium py-2 px-4 text-white"
+          className={styles.offer}
           style={{ backgroundColor: colors.primary }}
         >
           {page.offer}
@@ -48,48 +64,45 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
       )}
 
       {/* Hero */}
-      <header className="relative text-center px-6 pt-14 pb-12">
+      <header className={`${styles.hero} ${page.hero_url ? styles.heroWithImage : ""}`}>
         {page.hero_url && (
           <>
             <Image
               src={page.hero_url}
               alt=""
               fill
-              className="object-cover"
+              className={styles.heroImage}
               sizes="100vw"
               priority
             />
-            <div className="absolute inset-0 bg-black/45" />
+            <div className={styles.heroOverlay} />
           </>
         )}
-        <div className={`relative ${page.hero_url ? "text-white" : ""}`}>
+        <div className={styles.heroInner}>
           {page.logo_url && (
             <Image
               src={page.logo_url}
               alt={page.business_name}
               width={88}
               height={88}
-              className="mx-auto mb-5 rounded-full object-cover ring-4 ring-white/60 shadow-lg"
+              className={styles.logo}
             />
           )}
           {(page.job_title || page.city) && (
-            <p
-              className="uppercase tracking-[0.25em] text-xs mb-3"
-              style={{ color: page.hero_url ? undefined : colors.primary }}
-            >
+            <p className={styles.eyebrow}>
               {[page.job_title, page.city].filter(Boolean).join(" · ")}
             </p>
           )}
-          <h1 className="text-4xl sm:text-5xl font-bold mb-3">
+          <h1>
             {page.business_name || "Mon commerce"}
           </h1>
-          {page.tagline && <p className="text-lg opacity-80">{page.tagline}</p>}
-          <div className="mt-6">
-            <span
-              className="inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm bg-white/80 backdrop-blur"
-              style={{ borderColor: colors.primary, color: colors.text }}
-            >
-              <span className="size-2 rounded-full bg-emerald-500" />
+          {page.tagline && <p className={styles.tagline}>{page.tagline}</p>}
+          <div className={styles.heroActions}>
+            <a className={styles.heroCta} href="#prestations">
+              Voir les prestations <ArrowRight aria-hidden="true" />
+            </a>
+            <span className={styles.online}>
+              <span />
               Réservation en ligne
             </span>
           </div>
@@ -97,61 +110,47 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
       </header>
 
       {/* Prestations */}
-      <section className="flex-1 px-4 sm:px-6 max-w-3xl w-full mx-auto pb-14">
-        <h2 className="text-center text-2xl font-semibold mb-1">
-          Mes prestations
-        </h2>
-        <div
-          className="mx-auto mb-8 h-0.5 w-16"
-          style={{ backgroundColor: colors.primary }}
-        />
+      <section className={styles.services} id="prestations">
+        <div className={styles.sectionHeading}>
+          <p>Ce que je propose</p>
+          <h2>Mes prestations</h2>
+        </div>
         {families.length === 0 && (
-          <p className="text-center opacity-60 text-sm">
+          <p className={styles.empty}>
             Les prestations arrivent bientôt.
           </p>
         )}
-        <div className="space-y-3">
+        <div className={styles.familyList}>
           {families.map((family) => {
             const open = openFamily === family.id;
             return (
-              <div key={family.id} className="rounded-xl bg-white shadow-sm">
+              <div key={family.id} className={styles.family}>
                 <button
                   type="button"
                   onClick={() => setOpenFamily(open ? null : family.id)}
-                  className="w-full flex items-center justify-between px-5 py-4 text-left"
+                  className={styles.familyButton}
                   aria-expanded={open}
                 >
-                  <span
-                    className="uppercase tracking-widest text-sm font-semibold"
-                    style={{ color: colors.primary }}
-                  >
+                  <span>
                     {family.name}
                   </span>
-                  <span
-                    className={`transition-transform ${open ? "rotate-180" : ""}`}
-                    style={{ color: colors.primary }}
-                  >
-                    ⌄
-                  </span>
+                  <ChevronDown className={open ? styles.chevronOpen : ""} aria-hidden="true" />
                 </button>
                 {open && (
-                  <ul className="px-5 pb-4 space-y-3">
+                  <ul className={styles.serviceList}>
                     {family.services.map((service) => (
                       <li
                         key={service.id}
-                        className="flex items-center justify-between gap-4 rounded-lg border border-black/5 bg-[#faf7f4] px-4 py-3"
+                        className={styles.service}
                       >
                         <div>
-                          <p className="font-medium">{service.name}</p>
-                          <p className="text-sm opacity-60">
-                            {formatDuration(service.duration_min)}
+                          <p>{service.name}</p>
+                          <p className={styles.duration}>
+                            <Clock3 aria-hidden="true" /> {formatDuration(service.duration_min)}
                           </p>
                         </div>
-                        <div className="flex items-center gap-3 shrink-0">
-                          <span
-                            className="font-semibold"
-                            style={{ color: colors.primary }}
-                          >
+                        <div className={styles.serviceAction}>
+                          <span>
                             {service.price_cents === 0
                               ? "Offert"
                               : formatPrice(service.price_cents)}
@@ -160,7 +159,7 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
                             <button
                               type="button"
                               onClick={() => onBook(service)}
-                              className="rounded-lg px-3 py-1.5 text-sm font-medium text-white transition-opacity hover:opacity-90"
+                              className={styles.bookButton}
                               style={{ backgroundColor: colors.primary }}
                             >
                               Réserver
@@ -178,22 +177,20 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
 
         {/* Galerie */}
         {page.gallery.length > 0 && (
-          <div className="mt-12">
-            <h2 className="text-center text-2xl font-semibold mb-6">
-              Mon travail
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <div className={styles.contentSection}>
+            <div className={styles.sectionHeading}><p>En images</p><h2>Mon travail</h2></div>
+            <div className={styles.gallery}>
               {page.gallery.map((photo, i) => (
-                <figure key={i} className="relative aspect-square overflow-hidden rounded-xl">
+                <figure key={i}>
                   <Image
                     src={photo.url}
                     alt={photo.title || `Photo ${i + 1}`}
                     fill
-                    className="object-cover"
+                    className={styles.galleryImage}
                     sizes="(max-width: 640px) 50vw, 33vw"
                   />
                   {photo.title && (
-                    <figcaption className="absolute bottom-0 inset-x-0 bg-black/50 text-white text-xs px-2 py-1">
+                    <figcaption>
                       {photo.title}
                     </figcaption>
                   )}
@@ -205,21 +202,19 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
 
         {/* Avis */}
         {page.reviews.length > 0 && (
-          <div className="mt-12">
-            <h2 className="text-center text-2xl font-semibold mb-6">
-              Ce qu'on dit de moi
-            </h2>
-            <div className="grid sm:grid-cols-2 gap-4">
+          <div className={styles.contentSection}>
+            <div className={styles.sectionHeading}><p>Ils me font confiance</p><h2>Ce qu&apos;on dit de moi</h2></div>
+            <div className={styles.reviews}>
               {page.reviews.map((review, i) => (
                 <blockquote
                   key={i}
-                  className="rounded-xl bg-white p-5 shadow-sm text-sm"
+                  className={styles.review}
                 >
-                  <p className="mb-3" style={{ color: colors.primary }}>
+                  <p className={styles.stars}>
                     ★★★★★
                   </p>
-                  <p className="italic opacity-80">« {review.text} »</p>
-                  <footer className="mt-3 font-medium">{review.author}</footer>
+                  <p>« {review.text} »</p>
+                  <footer>{review.author}</footer>
                 </blockquote>
               ))}
             </div>
@@ -228,10 +223,10 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
 
         {/* Horaires */}
         {page.hours_text && (
-          <div className="mt-12 text-center">
-            <h2 className="text-2xl font-semibold mb-4">Mes horaires</h2>
+          <div className={styles.hours}>
+            <div className={styles.sectionHeading}><p>Quand venir</p><h2>Mes horaires</h2></div>
             <pre
-              className="inline-block text-left text-sm whitespace-pre-wrap rounded-xl bg-white px-6 py-4 shadow-sm"
+              className={styles.hoursText}
               style={{ fontFamily: font.css }}
             >
               {page.hours_text}
@@ -241,32 +236,28 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
 
         {/* Adresse */}
         {(page.address || page.city) && (
-          <p className="mt-12 text-center text-sm opacity-70">
-            ⌖ {[page.address, page.city].filter(Boolean).join(" · ")}
+          <p className={styles.address}>
+            <MapPin aria-hidden="true" /> {[page.address, page.city].filter(Boolean).join(" · ")}
           </p>
         )}
       </section>
 
       {/* Footer */}
       <footer
-        className="text-white/90 px-6 py-10 text-center text-sm"
+        className={styles.footer}
         style={{ backgroundColor: colors.dark }}
       >
-        <p
-          className="uppercase tracking-widest text-xs mb-4"
-          style={{ color: colors.primary }}
-        >
-          Contact
-        </p>
+        <p className={styles.footerKicker}>Restons en contact</p>
+        <h2>{page.business_name || "Mon commerce"}</h2>
         {page.phone && (
-          <p className="mb-2">
-            <a href={`tel:${page.phone}`} className="underline-offset-4 hover:underline">
-              {page.phone}
+          <p className={styles.phone}>
+            <a href={`tel:${page.phone}`}>
+              <Phone aria-hidden="true" /> {page.phone}
             </a>
           </p>
         )}
         {socials.length > 0 && (
-          <p className="mb-4 space-x-3">
+          <p className={styles.socials}>
             {socials.map(([network, handle]) => (
               <span key={network} className="capitalize">
                 {network} : {handle}
@@ -274,7 +265,7 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
             ))}
           </p>
         )}
-        <p className="space-x-2 opacity-70">
+        <p className={styles.legalLinks}>
           {(["mentions", "cgv", "confidentialite"] as const).map((key, i) => (
             <span key={key}>
               {i > 0 && " · "}
@@ -293,12 +284,9 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
           ))}
         </p>
         {poweredBy && (
-          <p className="mt-6 text-xs opacity-60">
-            Cette page a été créée gratuitement avec{" "}
-            <a href="/" className="font-semibold underline underline-offset-4">
-              Wayne Web Flux
-            </a>
-            . Créez la vôtre en quelques minutes.
+          <p className={styles.powered}>
+            <Sparkles aria-hidden="true" />
+            Créé avec <Link href="/">Wayne Web Flux</Link>
           </p>
         )}
       </footer>
@@ -306,17 +294,17 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
       {/* Modale légale */}
       {legalOpen && (
         <div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+          className={styles.modalBackdrop}
           onClick={() => setLegalOpen(null)}
           role="dialog"
           aria-modal="true"
         >
           <div
-            className="max-h-[80vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 text-sm"
+            className={styles.modal}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-start mb-4">
-              <h3 className="font-semibold">
+            <div className={styles.modalHeader}>
+              <h3>
                 {legalOpen === "mentions"
                   ? "Mentions légales"
                   : legalOpen === "cgv"
@@ -327,12 +315,12 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
                 type="button"
                 onClick={() => setLegalOpen(null)}
                 aria-label="Fermer"
-                className="text-xl leading-none opacity-60 hover:opacity-100"
+                className={styles.close}
               >
                 ×
               </button>
             </div>
-            <pre className="whitespace-pre-wrap font-[inherit]">
+            <pre>
               {legal[legalOpen as keyof typeof legal]}
             </pre>
           </div>

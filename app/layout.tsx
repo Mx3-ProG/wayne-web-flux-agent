@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Fraunces, Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
@@ -8,13 +8,18 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: {
-    default: "Wayne Web Flux — Ta vitrine en ligne, créée par l'IA",
+    default: "Wayne Web Flux — Visibilité, leads et outils pour ton commerce",
     template: "%s · Wayne Web Flux",
   },
   description:
-    "La page vitrine de ton commerce, générée en 2 minutes : prestations, réservation en ligne, contenus marketing. Gratuit.",
+    "Gagne du temps, booste ta visibilité Google et génère plus de prospects avec la solution tout-en-un de Wayne Web pour les professionnels.",
 };
 
 export default function RootLayout({
@@ -23,7 +28,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="fr" className={`${inter.variable} h-full antialiased`}>
+    <html lang="fr" className={`${inter.variable} ${fraunces.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         {children}
         <Toaster />

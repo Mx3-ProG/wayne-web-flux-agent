@@ -1,0 +1,65 @@
+.page {
+  position: relative;
+  display: grid;
+  min-height: 100svh;
+  padding: 90px max(24px, calc((100% - 1180px) / 2));
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 14% 18%, rgb(239 35 60 / 13%), transparent 31rem),
+    #070708;
+}
+.brand { position: absolute; top: 28px; left: max(24px, calc((100% - 1180px) / 2)); color: #fff; font-size: 17px; font-weight: 850; letter-spacing: -.06em; }
+.brand span { color: #ef233c; }
+.brand small { margin-left: 8px; color: #767278; font-size: 7px; letter-spacing: .2em; }
+.back { position: absolute; top: 26px; right: max(24px, calc((100% - 1180px) / 2)); display: flex; min-height: 40px; align-items: center; gap: 7px; color: #88858a; font-size: 11px; text-decoration: none; }
+.back svg { width: 14px; }
+.layout { display: grid; width: min(1080px, 100%); grid-template-columns: 1.08fr .92fr; align-items: center; gap: 100px; }
+.kicker { color: #ff6378; font-size: 10px; font-weight: 750; letter-spacing: .2em; text-transform: uppercase; }
+.pitch h1 { margin-top: 20px; font-family: var(--font-fraunces), Georgia, serif; font-size: clamp(47px, 6vw, 76px); font-weight: 540; letter-spacing: -.055em; line-height: 1.02; }
+.pitch h1 em { color: #ff6378; font-weight: 470; }
+.pitch > p:nth-of-type(2) { max-width: 580px; margin-top: 25px; color: #a6a2a6; line-height: 1.75; }
+.proofs { display: flex; margin-top: 28px; flex-wrap: wrap; gap: 10px 18px; }
+.proofs span { display: flex; align-items: center; gap: 6px; color: #777379; font-size: 10px; }
+.proofs svg { width: 13px; color: #ff6378; }
+.auth { padding: 34px; border: 1px solid rgb(255 255 255 / 10%); border-radius: 24px; background: rgb(17 17 20 / 88%); box-shadow: 0 35px 100px rgb(0 0 0 / 45%); }
+.authHeading { display: flex; align-items: center; gap: 13px; }
+.authHeading > span { display: grid; width: 43px; height: 43px; place-items: center; border: 1px solid rgb(255 99 120 / 25%); border-radius: 13px; background: rgb(239 35 60 / 8%); color: #ff6378; }
+.authHeading svg { width: 19px; }
+.authHeading h2 { font-size: 25px; }
+.authHeading p { color: #77747a; font-size: 11px; }
+.auth form { display: grid; margin-top: 28px; gap: 15px; }
+.auth label > span { display: block; margin-bottom: 7px; color: #aaa6aa; font-size: 11px; }
+.auth label > div { display: flex; height: 52px; padding: 0 15px; align-items: center; gap: 11px; border: 1px solid rgb(255 255 255 / 10%); border-radius: 13px; background: #0c0c0e; }
+.auth label svg { width: 17px; color: #ff6378; }
+.auth input { width: 100%; border: 0; outline: 0; background: transparent; color: #fff; font: inherit; font-size: 13px; }
+.auth input::placeholder { color: #514e53; }
+.primary, .secondary { display: flex; min-height: 52px; padding: 0 20px; align-items: center; justify-content: center; gap: 10px; border-radius: 999px; cursor: pointer; font: inherit; font-size: 12px; font-weight: 700; }
+.primary { border: 0; background: #ef233c; color: #fff; }
+.primary svg, .tunnelLink svg { width: 15px; }
+.primary:disabled, .secondary:disabled { cursor: wait; opacity: .55; }
+.divider { position: relative; margin: 25px 0; border-top: 1px solid rgb(255 255 255 / 8%); text-align: center; }
+.divider span { position: relative; top: -12px; padding: 0 10px; background: #111114; color: #5f5c61; font-size: 10px; }
+.create summary { cursor: pointer; color: #c9c5c8; font-size: 12px; text-align: center; }
+.create > p { margin-top: 15px; color: #716e73; font-size: 10px; text-align: center; }
+.tunnelLink { display: flex; min-height: 45px; margin-top: 12px; align-items: center; justify-content: center; gap: 8px; border: 1px solid rgb(255 99 120 / 25%); border-radius: 999px; color: #ff6378; font-size: 11px; text-decoration: none; }
+.create form { padding-top: 10px; border-top: 1px solid rgb(255 255 255 / 7%); }
+.secondary { border: 1px solid rgb(255 255 255 / 12%); background: #17171a; color: #dedadd; }
+.error, .success { padding: 9px 11px; border-radius: 9px; font-size: 10px; }
+.error { background: rgb(239 35 60 / 10%); color: #ff8999; }
+.success { background: rgb(65 190 128 / 10%); color: #77dfa8; }
+@media (max-width: 850px) {
+  .page { display: block; padding-top: 115px; overflow: auto; }
+  .layout { grid-template-columns: 1fr; gap: 45px; }
+  .pitch { text-align: center; }
+  .pitch > p:nth-of-type(2) { margin-inline: auto; }
+  .proofs { justify-content: center; }
+  .auth { max-width: 520px; margin: 0 auto; }
+}
+@media (max-width: 520px) {
+  .page { padding-inline: 15px; }
+  .brand { left: 15px; }
+  .back { right: 15px; }
+  .pitch h1 { font-size: 42px; }
+  .auth { padding: 25px 18px; }
+}

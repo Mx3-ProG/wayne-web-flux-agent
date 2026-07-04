@@ -60,6 +60,7 @@ export async function createPage(input: {
       business_name: businessName,
       job_title: input.jobTitle.trim().slice(0, 60),
       city: input.city.trim().slice(0, 60),
+      font: "fraunces",
       colors: vertical.defaultColors,
       legal: defaultLegal(businessName),
     })

@@ -1,167 +1,373 @@
 import Link from "next/link";
-import { TOOLS } from "@/lib/tools-config";
-import { VERTICALS } from "@/lib/verticals";
-import { Button } from "@/components/ui/button";
+import {
+  ArrowRight,
+  BarChart3,
+  CalendarCheck2,
+  Check,
+  Clock3,
+  Globe2,
+  MessageCircleMore,
+  Search,
+  Sparkles,
+  Star,
+  Users,
+} from "lucide-react";
+import styles from "./home.module.css";
 
-const STEPS = [
+const PILLARS = [
   {
-    title: "Réponds à 3 questions",
-    text: "Ton métier, ton nom, ta ville. C'est tout ce qu'il faut pour démarrer.",
+    number: "01",
+    icon: Clock3,
+    title: "Gagne du temps",
+    text: "Posts, réponses clients et contenus prêts à publier. Tu gardes ta voix, tu récupères tes soirées.",
+    tag: "Outils de gains de temps",
   },
   {
-    title: "Ta vitrine existe déjà",
-    text: "Prestations pré-remplies pour ton métier, prix modifiables, couleurs à ton goût. L'IA écrit les textes avec ta voix.",
+    number: "02",
+    icon: Search,
+    title: "Sois trouvé sur Google",
+    text: "Une présence locale claire, des textes optimisés et une fiche Google qui travaille pour ton commerce.",
+    tag: "Boost ton commerce",
   },
   {
-    title: "Tes clients réservent tout seuls",
-    text: "Un lien à partager partout. Jour, heure, coordonnées : le rendez-vous tombe dans ton agenda.",
+    number: "03",
+    icon: Users,
+    title: "Transforme les vues en clients",
+    text: "Une vitrine qui rassure, un parcours simple et des rendez-vous qui arrivent sans courir après les prospects.",
+    tag: "Génère des leads",
   },
   {
-    title: "Tu crées du contenu qui ramène du monde",
-    text: "Posts, réponses clients, fiche Google : des crédits offerts chaque mois pour faire travailler l'IA.",
+    number: "04",
+    icon: Globe2,
+    title: "Pilote tout au même endroit",
+    text: "Page, agenda, messages et visibilité réunis dans un espace pensé pour les professionnels de terrain.",
+    tag: "Solution tout-en-un",
   },
 ];
 
+const TOOLS = [
+  {
+    icon: Sparkles,
+    label: "Contenu",
+    title: "Des publications qui te ressemblent",
+    text: "Une idée devient un post, un reel ou un carrousel prêt à publier.",
+    result: "2 h gagnées",
+  },
+  {
+    icon: MessageCircleMore,
+    label: "Conversion",
+    title: "Chaque message peut devenir une vente",
+    text: "Réponds aux demandes, relance les indécis et demande des avis sans chercher tes mots.",
+    result: "3 réponses prêtes",
+  },
+  {
+    icon: BarChart3,
+    label: "SEO local",
+    title: "Google comprend enfin ton activité",
+    text: "Description, services et contenus locaux structurés pour attirer les bonnes recherches.",
+    result: "Visibilité renforcée",
+  },
+];
+
+function Brand() {
+  return (
+    <span className={styles.brand}>
+      WAYNE<span>WEB</span>
+      <small>FLUX</small>
+    </span>
+  );
+}
+
 export default function LandingPage() {
   return (
-    <div className="flex-1">
-      {/* Header */}
-      <header className="border-b border-border">
-        <div className="mx-auto max-w-6xl px-4 h-16 flex items-center justify-between">
-          <p className="font-bold text-xl">
-            Wayne<span className="text-primary">Web</span> Flux
-          </p>
-          <Button asChild variant="secondary">
-            <Link href="/login">Se connecter</Link>
-          </Button>
+    <div className={styles.page}>
+      <header className={styles.header}>
+        <div className={styles.nav}>
+          <Link href="/" aria-label="Wayne Web Flux, accueil">
+            <Brand />
+          </Link>
+          <nav aria-label="Navigation principale">
+            <a href="#solution">La solution</a>
+            <a href="#outils">Les outils</a>
+            <a href="#histoire">Notre histoire</a>
+          </nav>
+          <div className={styles.navActions}>
+            <Link className={styles.loginLink} href="/login">
+              Connexion
+            </Link>
+            <Link className={styles.navCta} href="/commencer">
+              Tester gratuitement
+            </Link>
+          </div>
         </div>
       </header>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(600px 300px at 50% 0%, var(--red-glow), transparent 70%)",
-          }}
-        />
-        <div className="relative mx-auto max-w-3xl px-4 py-24 text-center">
-          <p className="text-xs uppercase tracking-[0.25em] text-red-bright mb-4">
-            Pour tous les commerçants
-          </p>
-          <h1 className="text-4xl sm:text-6xl font-bold leading-tight mb-6">
-            Ta vitrine en ligne,
-            <br />
-            créée par l&apos;IA en{" "}
-            <span className="text-primary">2 minutes</span>.
-          </h1>
-          <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
-            Une page pro avec tes prestations et tes prix. Tes clients prennent
-            rendez-vous tout seuls. Et l&apos;IA écrit tes contenus marketing —
-            avec ta voix, pas celle d&apos;un robot.
-          </p>
-          <Button asChild size="lg" className="text-base px-8">
-            <Link href="/login">Je crée ma vitrine gratuitement</Link>
-          </Button>
-          <p className="mt-3 text-xs text-muted-foreground">
-            Sans carte bleue · 100 crédits offerts · 0 commission sur tes
-            rendez-vous
-          </p>
-        </div>
-      </section>
-
-      {/* Métiers */}
-      <section className="border-t border-border">
-        <div className="mx-auto max-w-4xl px-4 py-14 text-center">
-          <h2 className="text-2xl font-semibold mb-8">
-            Quel que soit ton métier
-          </h2>
-          <div className="flex flex-wrap justify-center gap-3">
-            {VERTICALS.filter((v) => v.slug !== "autre").map((v) => (
-              <span
-                key={v.slug}
-                className="rounded-full border border-border px-4 py-2 text-sm"
-              >
-                {v.emoji} {v.label}
-              </span>
-            ))}
-            <span className="rounded-full border border-primary/50 bg-primary/10 px-4 py-2 text-sm">
-              ⭐ Et tous les autres
-            </span>
-          </div>
-        </div>
-      </section>
-
-      {/* Comment ça marche */}
-      <section className="border-t border-border">
-        <div className="mx-auto max-w-3xl px-4 py-16">
-          <h2 className="text-3xl font-semibold text-center mb-12">
-            Comment ça marche
-          </h2>
-          <ol className="space-y-8">
-            {STEPS.map((step, i) => (
-              <li key={i} className="flex gap-5">
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
-                  {i + 1}
-                </span>
-                <div>
-                  <h3 className="font-semibold mb-1">{step.title}</h3>
-                  <p className="text-muted-foreground text-sm">{step.text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      {/* Outils IA */}
-      <section className="border-t border-border">
-        <div className="mx-auto max-w-4xl px-4 py-16">
-          <h2 className="text-3xl font-semibold text-center mb-3">
-            L&apos;IA qui bosse pour toi
-          </h2>
-          <p className="text-center text-muted-foreground mb-10 max-w-xl mx-auto">
-            Des crédits offerts chaque mois. Chaque outil affiche son coût avant
-            de lancer — rien n&apos;est prélevé en douce.
-          </p>
-          <div className="grid sm:grid-cols-3 gap-4">
-            {TOOLS.map((tool) => (
-              <div
-                key={tool.slug}
-                className="rounded-2xl border border-border p-5"
-              >
-                <p className="font-semibold mb-2">{tool.name}</p>
-                <p className="text-sm text-muted-foreground mb-3">
-                  {tool.tagline}
-                </p>
-                <p className="text-xs font-medium text-red-bright">
-                  {tool.cost} crédits
-                </p>
+      <main>
+        <section className={styles.hero}>
+          <div className={styles.heroGlow} />
+          <div className={styles.heroGrid}>
+            <div className={styles.heroCopy}>
+              <p className={styles.eyebrow}>
+                <span />
+                La force d&apos;une agence. La simplicité d&apos;un outil.
+              </p>
+              <h1>
+                Ton commerce mérite
+                <br />
+                d&apos;être <em>vu partout.</em>
+              </h1>
+              <p className={styles.heroText}>
+                Wayne Web Flux transforme ton savoir-faire en visibilité, en
+                prospects et en rendez-vous. Tous les outils pour faire grandir
+                ton activité, réunis dans un seul espace.
+              </p>
+              <div className={styles.heroActions}>
+                <Link className={styles.primaryCta} href="/commencer">
+                  Booster mon commerce
+                  <ArrowRight aria-hidden="true" />
+                </Link>
+                <a className={styles.textCta} href="#solution">
+                  Découvrir la solution
+                </a>
               </div>
-            ))}
+              <div className={styles.reassurance}>
+                <span>
+                  <Check aria-hidden="true" /> Sans carte bancaire
+                </span>
+                <span>
+                  <Check aria-hidden="true" /> 100 crédits offerts
+                </span>
+                <span>
+                  <Check aria-hidden="true" /> Pensé en France
+                </span>
+              </div>
+            </div>
+
+            <div className={styles.productStage} aria-label="Aperçu de Wayne Web Flux">
+              <div className={styles.orbitOne} />
+              <div className={styles.orbitTwo} />
+              <div className={styles.floatingCard}>
+                <span className={styles.floatingIcon}>
+                  <Search aria-hidden="true" />
+                </span>
+                <span>
+                  <small>Visibilité Google</small>
+                  <strong>+ 38% ce mois-ci</strong>
+                </span>
+              </div>
+              <div className={styles.appWindow}>
+                <div className={styles.appTopbar}>
+                  <span className={styles.appLogo}>W</span>
+                  <span>Mon espace</span>
+                  <span className={styles.avatar}>MD</span>
+                </div>
+                <div className={styles.appBody}>
+                  <div>
+                    <p className={styles.appGreeting}>Bonjour Mathieu,</p>
+                    <h2>Fais avancer ton commerce.</h2>
+                  </div>
+                  <div className={styles.metricGrid}>
+                    <div className={styles.metricMain}>
+                      <span>Vues de ta page</span>
+                      <strong>1 248</strong>
+                      <small>↗ 24% sur 30 jours</small>
+                      <div className={styles.chart}>
+                        <i />
+                        <i />
+                        <i />
+                        <i />
+                        <i />
+                        <i />
+                        <i />
+                      </div>
+                    </div>
+                    <div className={styles.metricSide}>
+                      <CalendarCheck2 aria-hidden="true" />
+                      <span>Rendez-vous</span>
+                      <strong>18</strong>
+                      <small>Ce mois-ci</small>
+                    </div>
+                  </div>
+                  <div className={styles.appSectionTitle}>
+                    <span>Mes outils</span>
+                    <small>Tout voir</small>
+                  </div>
+                  <div className={styles.appTools}>
+                    <div>
+                      <Sparkles aria-hidden="true" />
+                      <span>Créer un post</span>
+                    </div>
+                    <div>
+                      <MessageCircleMore aria-hidden="true" />
+                      <span>Répondre à un client</span>
+                    </div>
+                    <div>
+                      <Search aria-hidden="true" />
+                      <span>Booster mon SEO</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className={styles.leadCard}>
+                <span className={styles.leadDot} />
+                <span>
+                  <small>Nouveau prospect</small>
+                  <strong>Demande reçue à l&apos;instant</strong>
+                </span>
+              </div>
+            </div>
           </div>
-        </div>
-      </section>
+          <div className={styles.heroFoot}>
+            <span>Développé avec exigence par Wayne Web</span>
+            <div />
+            <span>Pour les indépendants, commerces et agences</span>
+          </div>
+        </section>
 
-      {/* CTA final */}
-      <section className="border-t border-border">
-        <div className="mx-auto max-w-3xl px-4 py-20 text-center">
-          <h2 className="text-3xl font-semibold mb-4">
-            Ta page t&apos;attend. Tes clients aussi.
-          </h2>
-          <p className="text-muted-foreground mb-8">
-            Gratuit, sans engagement, sans commission. Tes clients restent{" "}
-            <strong className="text-foreground">tes</strong> clients.
+        <section className={styles.manifesto} id="solution">
+          <p className={styles.sectionIndex}>01 / LA PROMESSE</p>
+          <div className={styles.manifestoGrid}>
+            <h2>
+              Tu maîtrises ton métier.
+              <br />
+              Nous maîtrisons <em>le digital.</em>
+            </h2>
+            <div>
+              <p>
+                Tu ne devrais pas avoir à devenir expert en référencement,
+                copywriting, réseaux sociaux et automatisation pour développer
+                ton activité.
+              </p>
+              <p>
+                Nous avons construit l&apos;outil que nous aurions voulu donner
+                à chacun de nos clients : simple à utiliser, sérieux sous le
+                capot, concentré sur des résultats concrets.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.pillars}>
+          <div className={styles.sectionHeading}>
+            <div>
+              <p className={styles.sectionIndex}>02 / CE QUE ÇA CHANGE</p>
+              <h2>Moins de tâches.<br />Plus de business.</h2>
+            </div>
+            <p>
+              Quatre leviers, une seule direction : faire venir les bons
+              clients jusqu&apos;à toi.
+            </p>
+          </div>
+          <div className={styles.pillarGrid}>
+            {PILLARS.map((pillar) => {
+              const Icon = pillar.icon;
+              return (
+                <article key={pillar.number} className={styles.pillar}>
+                  <div className={styles.pillarTop}>
+                    <span>{pillar.number}</span>
+                    <Icon aria-hidden="true" />
+                  </div>
+                  <p className={styles.pillarTag}>{pillar.tag}</p>
+                  <h3>{pillar.title}</h3>
+                  <p>{pillar.text}</p>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className={styles.toolsSection} id="outils">
+          <div className={styles.toolsIntro}>
+            <p className={styles.sectionIndex}>03 / DANS TON ESPACE</p>
+            <h2>
+              Des outils qui font.
+              <br />
+              Pas des outils qui <em>compliquent.</em>
+            </h2>
+            <p>
+              Chaque fonction part d&apos;un problème réel rencontré par nos
+              clients. Quelques réponses, un résultat directement exploitable.
+            </p>
+          </div>
+          <div className={styles.toolsList}>
+            {TOOLS.map((tool) => {
+              const Icon = tool.icon;
+              return (
+                <article key={tool.title} className={styles.toolRow}>
+                  <span className={styles.toolIcon}>
+                    <Icon aria-hidden="true" />
+                  </span>
+                  <div>
+                    <p>{tool.label}</p>
+                    <h3>{tool.title}</h3>
+                    <span>{tool.text}</span>
+                  </div>
+                  <strong>{tool.result}</strong>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+
+        <section className={styles.story} id="histoire">
+          <div className={styles.storyCard}>
+            <div className={styles.storyStamp}>
+              <Star aria-hidden="true" />
+              <span>150+</span>
+              <small>projets livrés</small>
+            </div>
+            <div className={styles.storyCopy}>
+              <p className={styles.sectionIndex}>04 / POURQUOI NOUS</p>
+              <h2>
+                D&apos;abord développeurs.
+                <br />
+                Toujours <em>à tes côtés.</em>
+              </h2>
+              <p>
+                Wayne Web est né d&apos;une conviction simple : la technologie
+                doit servir les entrepreneurs, pas les perdre. Après des
+                centaines de sites, d&apos;automatisations et de problématiques
+                business résolues, nous avons réuni notre savoir-faire dans Flux.
+              </p>
+              <div className={styles.storyProofs}>
+                <span><strong>48 h</strong> livraison moyenne</span>
+                <span><strong>5/5</strong> satisfaction clients</span>
+                <span><strong>24/7</strong> outils disponibles</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.finalCta}>
+          <p className={styles.eyebrow}>
+            <span />
+            Ton prochain client te cherche déjà
           </p>
-          <Button asChild size="lg" className="text-base px-8">
-            <Link href="/login">Je commence gratuitement</Link>
-          </Button>
-        </div>
-      </section>
+          <h2>
+            Il est temps qu&apos;il
+            <br />
+            <em>te trouve.</em>
+          </h2>
+          <p>
+            Crée ta vitrine, active tes outils et transforme ta présence en
+            ligne en véritable moteur de croissance.
+          </p>
+          <Link className={styles.primaryCta} href="/commencer">
+            Commencer gratuitement
+            <ArrowRight aria-hidden="true" />
+          </Link>
+          <small>Sans engagement · Sans carte bancaire · 100 crédits offerts</small>
+        </section>
+      </main>
 
-      <footer className="border-t border-border py-8 text-center text-xs text-muted-foreground">
-        Wayne Web Flux · ton commerce, en ligne, au même endroit.
+      <footer className={styles.footer}>
+        <Brand />
+        <p>Le digital qui fait avancer ton commerce.</p>
+        <div>
+          <Link href="/login">Connexion</Link>
+          <a href="https://www.wayne-web.com/faq">FAQ</a>
+          <span>© 2026 Wayne Web</span>
+        </div>
       </footer>
     </div>
   );

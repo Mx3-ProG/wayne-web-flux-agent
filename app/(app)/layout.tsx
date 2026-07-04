@@ -10,6 +10,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  CalendarDays,
+  Coins,
+  FolderOpen,
+  LayoutDashboard,
+  Menu,
+  Store,
+} from "lucide-react";
+import styles from "./app-shell.module.css";
 
 export default async function AppLayout({
   children,
@@ -28,49 +37,49 @@ export default async function AppLayout({
   });
 
   return (
-    <div className="flex-1 flex flex-col">
-      <header className="border-b border-border bg-black/60 backdrop-blur sticky top-0 z-40">
-        <div className="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between gap-4">
-          <Link href="/espace" className="font-bold text-lg shrink-0">
-            Wayne<span className="text-primary">Web</span>
+    <div className={styles.shell}>
+      <header className={styles.header}>
+        <div className={styles.headerInner}>
+          <Link href="/espace" className={styles.brand}>
+            WAYNE<span>WEB</span><small>FLUX</small>
           </Link>
-          <nav className="hidden sm:flex items-center gap-1 text-sm">
+          <nav className={styles.desktopNav}>
             <Link
               href="/espace"
-              className="px-3 py-1.5 rounded-md hover:bg-secondary transition-colors"
+              className={styles.navLink}
             >
-              Mon espace
+              <LayoutDashboard aria-hidden="true" /> Espace
             </Link>
             <Link
               href="/ma-page"
-              className="px-3 py-1.5 rounded-md hover:bg-secondary transition-colors"
+              className={styles.navLink}
             >
-              Ma vitrine
+              <Store aria-hidden="true" /> Vitrine
             </Link>
             <Link
               href="/agenda"
-              className="px-3 py-1.5 rounded-md hover:bg-secondary transition-colors"
+              className={styles.navLink}
             >
-              Mon agenda
+              <CalendarDays aria-hidden="true" /> Agenda
             </Link>
             <Link
               href="/resultats"
-              className="px-3 py-1.5 rounded-md hover:bg-secondary transition-colors"
+              className={styles.navLink}
             >
-              Mes contenus
+              <FolderOpen aria-hidden="true" /> Contenus
             </Link>
           </nav>
-          <div className="flex items-center gap-2">
+          <div className={styles.actions}>
             <Link
               href="/credits"
-              className="rounded-full border border-primary/50 bg-primary/10 px-3 py-1 text-sm font-medium text-red-bright"
+              className={styles.credits}
             >
-              {balance ?? 0} crédits
+              <Coins aria-hidden="true" /> {balance ?? 0}
             </Link>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size="sm">
-                  Menu
+                <Button variant="secondary" size="sm" aria-label="Ouvrir le menu">
+                  <Menu aria-hidden="true" /> Menu
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -108,7 +117,7 @@ export default async function AppLayout({
           </div>
         </div>
       </header>
-      <main className="flex-1 mx-auto w-full max-w-6xl px-4 py-8">
+      <main className={styles.main}>
         {children}
       </main>
     </div>

@@ -27,7 +27,7 @@ create table public.pages (
   phone text not null default '',
   socials jsonb not null default '{}'::jsonb,
   colors jsonb not null default '{}'::jsonb,
-  font text not null default 'inter',
+  font text not null default 'fraunces',
   logo_url text,
   hero_url text,
   gallery jsonb not null default '[]'::jsonb,
