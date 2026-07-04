@@ -10,10 +10,12 @@ import {
   ChevronRight,
   Coins,
   FolderOpen,
+  Layers,
   LayoutDashboard,
   Menu,
   MessageSquareText,
   ShoppingBag,
+  Smartphone,
   Store,
   UserRound,
   X,
@@ -34,6 +36,7 @@ const GROUPS: { label: string; items: DrawerItem[] }[] = [
     label: "L’essentiel",
     items: [
       { href: "/espace", label: "Accueil", icon: LayoutDashboard },
+      { href: "/projets", label: "Mes projets", icon: Layers },
       { href: "/ma-page", label: "Ma vitrine", icon: Store },
       { href: "/commandes", label: "Mes commandes", icon: ShoppingBag, badge: "orders" },
       { href: "/offres", label: "Mes offres", icon: BadgePercent },
@@ -42,10 +45,17 @@ const GROUPS: { label: string; items: DrawerItem[] }[] = [
   {
     label: "Mon commerce",
     items: [
-      { href: "/stock", label: "Mon stock", icon: Boxes, badge: "stock" },
+      { href: "/produits", label: "Mes produits", icon: Boxes, badge: "stock" },
       { href: "/agenda", label: "Mon agenda", icon: CalendarDays },
       { href: "/resultats", label: "Mes contenus", icon: FolderOpen },
-      { href: "/contexte/configurer", label: "Ma voix", icon: MessageSquareText, activeRoot: "/contexte" },
+      { href: "/installer", label: "Installer l’app", icon: Smartphone },
+      { href: "/contexte/configurer", label: "FLUX – IA", icon: MessageSquareText, activeRoot: "/contexte" },
+    ],
+  },
+  {
+    label: "Mon compte",
+    items: [
+      { href: "/compte", label: "Voir mon profil", icon: UserRound },
     ],
   },
 ];
@@ -183,10 +193,6 @@ export function MobileAppMenu({
               <Coins aria-hidden="true" />
               <span><strong>{balance}</strong> crédits</span>
               <ChevronRight aria-hidden="true" />
-            </Link>
-            <Link href="/compte" className={styles.drawerAccountLink} onClick={() => setOpen(false)}>
-              <UserRound aria-hidden="true" />
-              <span>Mon compte</span>
             </Link>
           </div>
         </aside>

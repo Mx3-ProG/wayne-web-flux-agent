@@ -6,9 +6,16 @@ export type Profile = {
   user_id: string;
   name: string | null;
   email: string | null;
+  phone: string | null;
+  company_name: string | null;
+  job_title: string | null;
+  business_email: string | null;
+  siret: string | null;
+  address: string | null;
   onboarding_step: number;
   ical_token: string;
   plan: Plan;
+  active_page_id: string | null;
   created_at: string;
 };
 
@@ -46,6 +53,9 @@ export type Page = {
   hours_text: string;
   legal: Record<string, string>;
   published: boolean;
+  custom_domain: string | null;
+  ical_token: string;
+  journey_completed_steps: number[];
   created_at: string;
   updated_at: string;
 };
@@ -207,6 +217,7 @@ export type CreditEntry = {
 export type Generation = {
   id: string;
   user_id: string;
+  page_id: string | null;
   tool_slug: string;
   inputs: Record<string, string>;
   output: string;
@@ -216,6 +227,7 @@ export type Generation = {
 
 export type VoiceProfile = {
   user_id: string;
+  page_id: string;
   tone: string;
   address_form: string;
   emojis: string;

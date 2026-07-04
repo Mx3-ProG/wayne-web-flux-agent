@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getActivePageId } from "@/lib/active-project";
 import type { VoiceProfile } from "@/lib/types";
 import { VoiceTunnel } from "@/components/voice/voice-tunnel";
 import type { VoiceDraft } from "@/components/voice/voice-options";
@@ -13,11 +14,15 @@ export default async function ConfigurerVoixPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: voice } = await supabase
-    .from("voice_profiles")
-    .select("*")
-    .eq("user_id", user.id)
-    .maybeSingle<VoiceProfile>();
+  // Voix du projet actif.
+  const pageId = await getActivePageId(supabase, user.id);
+  const { data: voice } = pageId
+    ? await supabase
+        .from("voice_profiles")
+        .select("*")
+        .eq("page_id", pageId)
+        .maybeSingle<VoiceProfile>()
+    : { data: null as VoiceProfile | null };
 
   const initialVoice: VoiceDraft | null = voice
     ? {

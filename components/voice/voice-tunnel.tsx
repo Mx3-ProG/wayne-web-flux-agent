@@ -77,7 +77,10 @@ export function VoiceTunnel({ initialVoice }: { initialVoice: VoiceDraft | null 
           <section className={styles.intro}>
             <span className={styles.introIcon}><MessageSquareText aria-hidden="true" /></span>
             <p className={styles.kicker}>Ton intelligence de marque</p>
-            <h1>FLUX, l’intelligence des développeurs au service des <em>business porteurs.</em></h1>
+            <h1>
+              FLUX, l’intelligence des développeurs au service des{" "}
+              <em>Business porteurs.</em>
+            </h1>
             <p>
               Aucun texte à rédiger. Choisis simplement ce qui te ressemble,
               Flux compose ta voix et prépare une communication cohérente.

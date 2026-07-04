@@ -1,14 +1,25 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import type { Generation, Page, VoiceProfile } from "@/lib/types";
+import { getActivePage } from "@/lib/active-project";
+import type { Generation, VoiceProfile } from "@/lib/types";
 import { TOOLS } from "@/lib/tools-config";
 import { voiceCompletion } from "@/lib/voice";
 import { parisNow } from "@/lib/slots";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/copy-button";
 import { RevenueCounter } from "@/components/revenue-counter";
-import { ArrowRight } from "lucide-react";
+import { completeJourneyStep } from "./actions";
+import {
+  ArrowRight,
+  Check,
+  ChevronDown,
+  ExternalLink,
+  Globe2,
+  Pencil,
+  Sparkles,
+  Store,
+} from "lucide-react";
 import styles from "./espace.module.css";
 
 export const metadata = { title: "Mon espace" };
@@ -27,31 +38,38 @@ export default async function EspacePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: profile }, { data: page }, { data: voice }] =
-    await Promise.all([
-      supabase.from("profiles").select("*").eq("user_id", user.id).single(),
-      supabase
-        .from("pages")
-        .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle<Page>(),
-      supabase
+  const [{ data: profile }, page] = await Promise.all([
+    supabase.from("profiles").select("*").eq("user_id", user.id).single(),
+    getActivePage(supabase, user.id),
+  ]);
+  // Voix du projet actif (voix par projet).
+  const { data: voice } = page
+    ? await supabase
         .from("voice_profiles")
         .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle<VoiceProfile>(),
-    ]);
+        .eq("page_id", page.id)
+        .maybeSingle<VoiceProfile>()
+    : { data: null as VoiceProfile | null };
 
   let upcomingCount = 0;
   let generations: Generation[] = [];
   let revenueCents = 0;
+  let productCount = 0;
+  let offerCount = 0;
+  let scheduleCount = 0;
   if (page) {
     const today = parisNow().date;
     const { data: rev } = await supabase.rpc("revenue_total", {
       p_page: page.id,
     });
     revenueCents = Number(rev ?? 0);
-    const [{ count }, { data: gens }] = await Promise.all([
+    const [
+      { count },
+      { data: gens },
+      { count: products },
+      { count: offers },
+      { count: schedules },
+    ] = await Promise.all([
       supabase
         .from("bookings")
         .select("id", { count: "exact", head: true })
@@ -62,10 +80,27 @@ export default async function EspacePage() {
         .from("generations")
         .select("*")
         .eq("user_id", user.id)
+        .eq("page_id", page.id)
         .limit(5),
+      supabase
+        .from("products")
+        .select("id", { count: "exact", head: true })
+        .eq("page_id", page.id),
+      supabase
+        .from("offers")
+        .select("id", { count: "exact", head: true })
+        .eq("page_id", page.id),
+      supabase
+        .from("schedules")
+        .select("weekday", { count: "exact", head: true })
+        .eq("page_id", page.id)
+        .eq("open", true),
     ]);
     upcomingCount = count ?? 0;
     generations = (gens ?? []) as Generation[];
+    productCount = products ?? 0;
+    offerCount = offers ?? 0;
+    scheduleCount = schedules ?? 0;
   }
 
   const { data: balance } = await supabase.rpc("credit_balance", {
@@ -82,36 +117,11 @@ export default async function EspacePage() {
       n: 1,
       title: "Crée ta vitrine",
       done: !!page,
-      content: page ? (
-        <div className="space-y-3">
-          <p className="text-sm text-muted-foreground">
-            C&apos;est le lien que tu donnes à tes clients.
-          </p>
-          <div className="flex flex-wrap items-center gap-2">
-            <code className="rounded-lg bg-secondary px-3 py-2 text-sm truncate max-w-full">
-              {pageUrl}
-            </code>
-            <CopyButton text={pageUrl!} />
-            <Button asChild variant="secondary" size="sm">
-              <Link href="/ma-page">Modifier</Link>
-            </Button>
-            <Button asChild variant="ghost" size="sm">
-              <Link href={`/p/${page.slug}`} target="_blank">
-                Voir ma page ↗
-              </Link>
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <div className="space-y-3">
-          <p className="text-sm text-muted-foreground">
-            3 questions, et ta page existe — prestations déjà remplies pour ton
-            métier.
-          </p>
-          <Button asChild>
-            <Link href="/ma-page">Créer ma vitrine (2 min)</Link>
-          </Button>
-        </div>
+      content: (
+        <Link className={styles.journeyAction} href="/ma-page">
+          <span>{page ? "Ouvrir l’éditeur de vitrine" : "Créer ma vitrine"}</span>
+          <ArrowRight aria-hidden="true" />
+        </Link>
       ),
     },
     {
@@ -144,6 +154,39 @@ export default async function EspacePage() {
     },
     {
       n: 3,
+      title: "Crée ton produit",
+      done: productCount > 0,
+      content: (
+        <Link className={styles.journeyAction} href="/produits/configurer">
+          <span>{productCount > 0 ? "Créer d’autres produits avec Flux" : "Lancer la création produit Flux"}</span>
+          <ArrowRight aria-hidden="true" />
+        </Link>
+      ),
+    },
+    {
+      n: 4,
+      title: "Crée tes offres",
+      done: offerCount > 0,
+      content: (
+        <Link className={styles.journeyAction} href="/offres/configurer">
+          <span>{offerCount > 0 ? "Créer une nouvelle offre avec Flux" : "Lancer la création d’offre Flux"}</span>
+          <ArrowRight aria-hidden="true" />
+        </Link>
+      ),
+    },
+    {
+      n: 5,
+      title: "Crée ton agenda",
+      done: scheduleCount > 0,
+      content: (
+        <Link className={styles.journeyAction} href="/agenda">
+          <span>{scheduleCount > 0 ? "Revoir mes horaires avec Flux" : "Configurer mes horaires"}</span>
+          <ArrowRight aria-hidden="true" />
+        </Link>
+      ),
+    },
+    {
+      n: 6,
       title: "Crée ton premier contenu",
       done: generations.length > 0,
       content: (
@@ -177,9 +220,9 @@ export default async function EspacePage() {
       ),
     },
     {
-      n: 4,
+      n: 7,
       title: "Regarde tes résultats",
-      done: upcomingCount > 0,
+      done: upcomingCount > 0 || (page?.journey_completed_steps ?? []).includes(7),
       content: (
         <div className="grid sm:grid-cols-3 gap-3">
           <div className="rounded-xl border border-border p-4">
@@ -217,9 +260,9 @@ export default async function EspacePage() {
       ),
     },
     {
-      n: 5,
-      title: "Partage ton lien partout",
-      done: false,
+      n: 8,
+      title: "Partage ton business partout",
+      done: (page?.journey_completed_steps ?? []).includes(8),
       content: (
         <div className="space-y-3">
           <p className="text-sm text-muted-foreground">
@@ -245,11 +288,13 @@ export default async function EspacePage() {
     },
   ];
 
-  const nextStep = steps.find((s) => !s.done);
+  const nextStep = steps.find((step) => !step.done);
   const completedCount = steps.filter((step) => step.done).length;
 
   return (
     <div className={styles.page}>
+      {page && <RevenueCounter totalCents={revenueCents} />}
+
       <section className={styles.hero}>
         <div>
           <p className={styles.eyebrow}>Vue d&apos;ensemble</p>
@@ -261,7 +306,45 @@ export default async function EspacePage() {
         </Link>
       </section>
 
-      {page && <RevenueCounter totalCents={revenueCents} />}
+      <section className={styles.storefront}>
+        <div className={styles.storefrontVisual}>
+          <span className={styles.storefrontIcon}><Store aria-hidden="true" /></span>
+          <div>
+            <p className={styles.eyebrow}>Ma vitrine</p>
+            <h2>{page ? page.business_name || "Ta vitrine est en ligne" : "Crée ton adresse sur le web"}</h2>
+            <p>
+              {page
+                ? "Le lien unique à partager avec tes clients, partout où ils te cherchent."
+                : "Une page claire, belle et prête à recevoir tes premières demandes."}
+            </p>
+          </div>
+        </div>
+
+        {page && pageUrl ? (
+          <div className={styles.storefrontLink}>
+            <Globe2 aria-hidden="true" />
+            <code>{pageUrl}</code>
+            <CopyButton text={pageUrl} label="Copier le lien" />
+          </div>
+        ) : (
+          <div className={styles.storefrontEmpty}>
+            <Sparkles aria-hidden="true" />
+            <span>Quelques choix suffisent pour préparer ta première vitrine.</span>
+          </div>
+        )}
+
+        <div className={styles.storefrontActions}>
+          <Link className={styles.storefrontPrimary} href="/ma-page">
+            <Pencil aria-hidden="true" />
+            {page ? "Modifier ma vitrine" : "Créer ma vitrine"}
+          </Link>
+          {page && (
+            <Link className={styles.storefrontSecondary} href={`/p/${page.slug}`} target="_blank">
+              Voir ma vitrine <ExternalLink aria-hidden="true" />
+            </Link>
+          )}
+        </div>
+      </section>
 
       <section className={styles.metrics} aria-label="Indicateurs">
         <article className={styles.metric}>
@@ -283,7 +366,7 @@ export default async function EspacePage() {
 
       <div className={styles.sectionHeader}>
         <div><h2>Ton parcours</h2><p>Une étape claire à la fois.</p></div>
-        <span className={styles.progressLabel}><b>{completedCount}</b> / 5 terminé</span>
+        <span className={styles.progressLabel}><b>{completedCount}</b> / 8 terminé</span>
       </div>
 
       <ol className={styles.journey}>
@@ -302,15 +385,37 @@ export default async function EspacePage() {
       </ol>
 
       {nextStep && (
-        <div className={styles.nextDock}>
-          <div>
-            <small>Prochaine étape</small>
-            <strong>{nextStep.title}</strong>
+        <details className={styles.nextDock}>
+          <summary>
+            <span>
+              <small>Prochaine étape</small>
+              <strong>{nextStep.title}</strong>
+            </span>
+            <span className={styles.nextDockToggle}>
+              <ChevronDown aria-hidden="true" />
+            </span>
+          </summary>
+          <div className={styles.nextDockPanel}>
+            <div className={styles.nextDockHeading}>
+              <small>À faire maintenant</small>
+              <strong>{nextStep.title}</strong>
+            </div>
+            <div className={styles.nextDockActions}>
+              <a href={`#etape-${nextStep.n}`}>
+                Voir l&apos;étape
+                <ArrowRight aria-hidden="true" />
+              </a>
+              {(nextStep.n === 7 || nextStep.n === 8) && (
+                <form action={completeJourneyStep.bind(null, nextStep.n)}>
+                  <button type="submit">
+                    <Check aria-hidden="true" />
+                    Valider
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
-          <a href={`#etape-${nextStep.n}`} aria-label={`Aller à : ${nextStep.title}`}>
-            <ArrowRight aria-hidden="true" />
-          </a>
-        </div>
+        </details>
       )}
     </div>
   );

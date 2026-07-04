@@ -68,7 +68,19 @@
   letter-spacing: -.055em;
   line-height: 1.03;
 }
-.intro h1 em { color: var(--voice-red-soft); font-weight: 470; }
+.intro h1 em {
+  background: linear-gradient(110deg, #8a5a0a 0%, #d9a82e 22%, #fff3a6 42%, #b87909 58%, #f9d86f 78%, #7b4b05 100%);
+  background-size: 220% auto;
+  background-clip: text;
+  color: transparent;
+  font-weight: 470;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: voiceGoldShimmer 3.8s linear infinite;
+}
+@keyframes voiceGoldShimmer {
+  to { background-position: 220% center; }
+}
 .intro > p:nth-of-type(2) { max-width: 590px; margin: 24px auto 0; color: #aaa6ab; font-size: 14px; line-height: 1.7; }
 .intro .primary { margin-top: 30px; }
 .intro > small { display: block; margin-top: 14px; color: #666269; font-size: 10px; }
@@ -183,5 +195,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .progress i, .option, .primary { transition: none; }
+  .intro h1 em { animation: none; }
 }
-

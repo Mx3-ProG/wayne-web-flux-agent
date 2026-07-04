@@ -60,34 +60,56 @@ export async function POST(
 
   const supabase = createAdminClient();
 
-  const { data: page } = await supabase
+  const { data: page, error: pageError } = await supabase
     .from("pages")
     .select("id, user_id, published")
     .eq("slug", slug)
     .eq("published", true)
     .single();
-  if (!page) return NextResponse.json({ error: "not_found" }, { status: 404 });
+  if (pageError || !page) {
+    console.error("order: page lookup failed", { slug, error: pageError });
+    return NextResponse.json({ error: "not_found" }, { status: 404 });
+  }
 
   // Ne jamais faire confiance aux prix du client : on recharge produits ET
   // offres actifs de cette page et on recalcule tout côté serveur.
-  const [{ data: products }, { data: offers }] = await Promise.all([
+  // `select("*")` (plutôt que des colonnes nommées) rend la route tolérante si
+  // les migrations stock/offres ne sont pas encore appliquées.
+  type ProductRow = {
+    id: string;
+    name: string;
+    price_cents: number;
+    track_stock?: boolean | null;
+    stock?: number | null;
+  };
+  type OfferRow = { id: string; title: string; price_cents: number };
+
+  const [productsRes, offersRes] = await Promise.all([
     wantedProducts.size > 0
       ? supabase
           .from("products")
-          .select("id, name, price_cents, active, page_id, track_stock, stock")
+          .select("*")
           .eq("page_id", page.id)
           .eq("active", true)
           .in("id", [...wantedProducts.keys()])
-      : Promise.resolve({ data: [] as never[] }),
+      : Promise.resolve({ data: [], error: null }),
     wantedOffers.size > 0
       ? supabase
           .from("offers")
-          .select("id, title, price_cents, active, page_id")
+          .select("id, title, price_cents")
           .eq("page_id", page.id)
           .eq("active", true)
           .in("id", [...wantedOffers.keys()])
-      : Promise.resolve({ data: [] as never[] }),
+      : Promise.resolve({ data: [], error: null }),
   ]);
+  if (productsRes.error) {
+    console.error("order: products load failed", { slug, error: productsRes.error });
+  }
+  if (offersRes.error) {
+    console.error("order: offers load failed", { slug, error: offersRes.error });
+  }
+  const products = (productsRes.data ?? []) as ProductRow[];
+  const offers = (offersRes.data ?? []) as OfferRow[];
 
   let total = 0;
   const items: {
@@ -99,10 +121,13 @@ export async function POST(
     line_total_cents: number;
   }[] = [];
 
-  // Produits : écarte les épuisés, plafonne au stock suivi.
-  for (const p of (products ?? []).filter((p) => !(p.track_stock && p.stock <= 0))) {
+  // Produits : écarte les épuisés, plafonne au stock suivi (si le suivi existe).
+  for (const p of products) {
+    const tracked = p.track_stock === true;
+    const stock = typeof p.stock === "number" ? p.stock : 0;
+    if (tracked && stock <= 0) continue;
     const requested = wantedProducts.get(p.id) ?? 1;
-    const quantity = p.track_stock ? Math.min(requested, p.stock) : requested;
+    const quantity = tracked ? Math.min(requested, stock) : requested;
     if (quantity <= 0) continue;
     const lineTotal = p.price_cents * quantity;
     total += lineTotal;
@@ -117,7 +142,7 @@ export async function POST(
   }
 
   // Offres : autonomes, pas de stock.
-  for (const o of offers ?? []) {
+  for (const o of offers) {
     const quantity = wantedOffers.get(o.id) ?? 1;
     const lineTotal = o.price_cents * quantity;
     total += lineTotal;
@@ -148,13 +173,29 @@ export async function POST(
     .select("id")
     .single();
   if (orderError || !order) {
+    console.error("order: orders insert failed", { slug, error: orderError });
     return NextResponse.json({ error: "insert_failed" }, { status: 500 });
   }
 
-  const { error: itemsError } = await supabase
-    .from("order_items")
-    .insert(items.map((it) => ({ ...it, order_id: order.id })));
+  // On n'inclut `offer_id`/`product_id` que s'ils sont renseignés : une commande
+  // 100% produits ne référence pas la colonne offer_id (compat si 00007 pas encore
+  // appliquée en base).
+  const rows = items.map((it) => {
+    const row: Record<string, unknown> = {
+      order_id: order.id,
+      name: it.name,
+      unit_price_cents: it.unit_price_cents,
+      quantity: it.quantity,
+      line_total_cents: it.line_total_cents,
+    };
+    if (it.product_id) row.product_id = it.product_id;
+    if (it.offer_id) row.offer_id = it.offer_id;
+    return row;
+  });
+
+  const { error: itemsError } = await supabase.from("order_items").insert(rows);
   if (itemsError) {
+    console.error("order: order_items insert failed", { slug, error: itemsError });
     // Rollback best-effort de la commande orpheline.
     await supabase.from("orders").delete().eq("id", order.id);
     return NextResponse.json({ error: "insert_failed" }, { status: 500 });

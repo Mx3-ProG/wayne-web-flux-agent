@@ -1,0 +1,55 @@
+.page { width: min(960px, 100%); margin: 0 auto; }
+.hero { display: flex; align-items: center; gap: 18px; }
+.avatar, .sectionIcon { display: grid; place-items: center; color: var(--ww-red-soft); }
+.avatar { width: 66px; height: 66px; flex: 0 0 66px; border: 1px solid rgb(255 99 120 / 20%); border-radius: 21px; background: rgb(239 35 60 / 9%); }
+.avatar svg { width: 28px; }
+.eyebrow { color: var(--ww-red-soft); font-size: 9px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.hero h1 { margin-top: 5px; font-family: var(--font-inter), sans-serif; }
+.hero p:last-child, .sectionHeading p, .adventure p:last-child, .securityGrid > div p { margin-top: 7px; color: var(--ww-muted); font-size: 13px; }
+.anchorNav { display: flex; margin-top: 28px; gap: 7px; overflow-x: auto; scrollbar-width: none; }
+.anchorNav a { min-height: 38px; padding: 0 13px; display: inline-flex; align-items: center; border: 1px solid var(--ww-line); border-radius: 999px; color: var(--ww-muted); font-size: 10px; font-weight: 700; text-decoration: none; white-space: nowrap; }
+.section { margin-top: 16px; padding: clamp(20px, 4vw, 30px); scroll-margin-top: 90px; border: 1px solid var(--ww-line); border-radius: 24px; background: linear-gradient(145deg, rgb(25 25 30 / 82%), rgb(13 13 16 / 94%)); box-shadow: inset 0 1px rgb(255 255 255 / 5%); }
+.sectionHeading { margin-bottom: 22px; }
+.section h2 { font-family: var(--font-inter), sans-serif; font-size: 18px; font-weight: 720; }
+.profileForm { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.field { display: grid; gap: 6px; }
+.fieldWide { grid-column: 1 / -1; }
+.formFooter { display: flex; grid-column: 1 / -1; align-items: center; justify-content: space-between; gap: 15px; }
+.error { color: #ff7c8d; }
+.success { color: var(--ww-success); }
+.adventure { display: grid; grid-template-columns: 50px minmax(0, 1fr) auto; align-items: center; gap: 16px; background: radial-gradient(circle at 100% 0, rgb(239 35 60 / 14%), transparent 38%), rgb(20 20 25 / 82%); }
+.sectionIcon { width: 46px; height: 46px; border-radius: 14px; background: rgb(239 35 60 / 9%); }
+.sectionIcon svg { width: 20px; }
+.primaryAction, .creditCard > a { display: inline-flex; min-height: 44px; padding: 0 15px; align-items: center; justify-content: center; gap: 7px; border-radius: 999px; background: var(--ww-red); color: #fff; font-size: 11px; font-weight: 800; text-decoration: none; }
+.primaryAction svg, .creditCard > a svg { width: 14px; }
+.creditCard { display: grid; grid-template-columns: 50px 1fr auto; align-items: center; gap: 16px; }
+.creditCard strong { display: block; margin-top: 2px; font-size: 34px; line-height: 1; }
+.creditCard small { display: block; margin-top: 6px; color: var(--ww-muted); font-size: 10px; }
+.creditCard > a { background: rgb(255 255 255 / 6%); color: var(--ww-text); }
+.plans { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.plan, .planActive { padding: 20px; border: 1px solid var(--ww-line); border-radius: 18px; background: rgb(255 255 255 / 2%); }
+.planActive { border-color: rgb(255 99 120 / 30%); background: rgb(239 35 60 / 7%); }
+.planTop { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.planTop span { font-size: 14px; font-weight: 750; }
+.planTop small { padding: 4px 7px; border-radius: 999px; background: rgb(239 35 60 / 12%); color: var(--ww-red-soft); font-size: 8px; font-weight: 750; }
+.plan > strong, .planActive > strong { display: block; margin-top: 14px; font-size: 24px; }
+.plans ul { display: grid; margin-top: 16px; gap: 8px; color: var(--ww-muted); font-size: 11px; }
+.plans li { display: flex; align-items: center; gap: 7px; }
+.plans li svg { width: 13px; color: var(--ww-success); }
+.license, .dangerHeading { display: flex; align-items: flex-start; gap: 15px; }
+.license p, .dangerHeading p { margin-top: 7px; color: var(--ww-muted); font-size: 12px; line-height: 1.7; }
+.securityGrid { display: grid; grid-template-columns: minmax(180px, .7fr) 1fr; gap: 24px; }
+.securityGrid > form:last-child { grid-column: 2; }
+.secondaryAction { min-height: 42px; padding: 0 15px; border: 1px solid var(--ww-line); border-radius: 999px; background: rgb(255 255 255 / 4%); color: var(--ww-muted); font: inherit; font-size: 11px; font-weight: 750; cursor: pointer; }
+.danger { border-color: rgb(239 35 60 / 24%); background: rgb(87 10 20 / 10%); }
+.dangerHeading > svg { width: 24px; flex: 0 0 24px; color: var(--ww-red-soft); }
+.deleteForm { display: grid; max-width: 500px; margin-top: 20px; gap: 12px; }
+.deleteForm > div { display: grid; gap: 7px; }
+
+@media (max-width: 680px) {
+  .profileForm, .plans, .securityGrid { grid-template-columns: 1fr; }
+  .fieldWide, .formFooter, .securityGrid > form:last-child { grid-column: 1; }
+  .adventure, .creditCard { grid-template-columns: 44px 1fr; }
+  .adventure .primaryAction, .creditCard > a { grid-column: 1 / -1; width: 100%; }
+  .section { border-radius: 20px; }
+}

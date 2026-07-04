@@ -249,3 +249,15 @@
 @media (prefers-reduced-transparency: reduce) {
   :root { --ww-glass: rgb(20 20 24 / 96%); --ww-glass-blur: 4px; }
 }
+
+/* Retire les flèches (spinners) des champs numériques : peu utiles et peu
+   lisibles, surtout pour saisir un prix ou une quantité. */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}

@@ -16,7 +16,8 @@ import {
 } from "@/components/ui/card";
 
 // Première visite : 3 questions et la vitrine existe, pré-remplie pour le métier.
-export function CreatePageWizard() {
+// `redirectTo` permet de réutiliser le wizard pour créer un projet supplémentaire.
+export function CreatePageWizard({ redirectTo }: { redirectTo?: string } = {}) {
   const router = useRouter();
   const [vertical, setVertical] = useState("");
   const [businessName, setBusinessName] = useState("");
@@ -33,6 +34,7 @@ export function CreatePageWizard() {
     const result = await createPage({ vertical, businessName, jobTitle, city });
     setPending(false);
     if (result.error) setError(result.error);
+    else if (redirectTo) router.push(redirectTo);
     else router.refresh();
   }
 

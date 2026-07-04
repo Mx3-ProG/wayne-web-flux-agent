@@ -1,6 +1,6 @@
 import type { VoiceProfile } from "@/lib/types";
 
-export type VoiceDraft = Omit<VoiceProfile, "user_id" | "updated_at">;
+export type VoiceDraft = Omit<VoiceProfile, "user_id" | "page_id" | "updated_at">;
 
 export const EMPTY_VOICE: VoiceDraft = {
   tone: "",

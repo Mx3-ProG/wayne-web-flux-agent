@@ -45,7 +45,8 @@ export function RevenueCounter({ totalCents }: { totalCents: number }) {
 
       <strong className={styles.amount}>{formatPrice(shown)}</strong>
       <p className={styles.caption}>
-        Généré via ta vitrine Wayne — rendez-vous honorés et commandes acceptées.
+        Ton savoir-faire mérite d&apos;être partagé. Voici ce que ta vitrine FLUX
+        a déjà généré grâce aux rendez-vous honorés et aux commandes acceptées.
       </p>
 
       {p.next !== null ? (

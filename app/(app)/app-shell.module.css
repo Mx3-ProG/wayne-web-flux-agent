@@ -407,3 +407,5 @@
 @media (prefers-reduced-motion: reduce) {
   .drawerLayer, .drawerBackdrop, .mobileDrawer { transition: none; }
 }
+
+.switcher { margin: 6px 0 12px; }

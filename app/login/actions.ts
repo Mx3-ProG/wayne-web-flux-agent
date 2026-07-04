@@ -57,12 +57,14 @@ async function initializeTunnel(
       data: { user },
     } = await supabase.auth.getUser();
     if (user) {
-      const { data: existingPage } = await supabase
+      // Un user peut avoir plusieurs projets : on ne (re)crée la 1re vitrine
+      // que s'il n'en a aucune.
+      const { data: existingPages } = await supabase
         .from("pages")
         .select("id")
         .eq("user_id", user.id)
-        .maybeSingle();
-      if (!existingPage) {
+        .limit(1);
+      if (!existingPages || existingPages.length === 0) {
         await createPage({ vertical, businessName, jobTitle, city });
       }
     }

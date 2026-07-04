@@ -7,26 +7,35 @@ import {
   Boxes,
   CalendarDays,
   FolderOpen,
+  Layers,
+  Smartphone,
   LayoutDashboard,
+  MessageSquareText,
   ShoppingBag,
   Store,
+  UserRound,
 } from "lucide-react";
 import styles from "@/app/(app)/app-shell.module.css";
 
 const DESKTOP_ITEMS = [
   { href: "/espace", label: "Accueil", icon: LayoutDashboard },
+  { href: "/projets", label: "Mes projets", icon: Layers },
   { href: "/ma-page", label: "Vitrine", icon: Store },
+  { href: "/offres", label: "Offres", icon: BadgePercent },
+  { href: "/produits", label: "Produits", icon: Boxes },
   { href: "/commandes", label: "Commandes", icon: ShoppingBag },
-  { href: "/stock", label: "Stock", icon: Boxes },
   { href: "/agenda", label: "Agenda", icon: CalendarDays },
   { href: "/resultats", label: "Contenus", icon: FolderOpen },
+  { href: "/contexte/configurer", label: "FLUX – IA", icon: MessageSquareText },
+  { href: "/installer", label: "Installer l’app", icon: Smartphone },
+  { href: "/compte", label: "Profil", icon: UserRound },
 ];
 
 const MOBILE_ITEMS = [
   { href: "/espace", label: "Accueil", icon: LayoutDashboard },
-  { href: "/ma-page", label: "Vitrine", icon: Store },
-  { href: "/commandes", label: "Commandes", icon: ShoppingBag },
+  { href: "/produits", label: "Produits", icon: Boxes },
   { href: "/offres", label: "Offres", icon: BadgePercent },
+  { href: "/commandes", label: "Commandes", icon: ShoppingBag },
 ];
 
 export function AppNavigation({
@@ -51,7 +60,7 @@ export function AppNavigation({
         const badge =
           href === "/commandes"
             ? pendingOrders
-            : href === "/stock"
+            : href === "/produits"
               ? lowStock
               : 0;
         return (

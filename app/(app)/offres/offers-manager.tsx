@@ -1,12 +1,12 @@
 "use client";
 
 import { useRef, useState, useTransition } from "react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { Offer, OfferKind, Plan } from "@/lib/types";
 import { PLAN_LABEL } from "@/lib/plans";
 import { PhotoUpload } from "@/components/editor/photo-upload";
 import { Input } from "@/components/ui/input";
+import { PriceInput } from "@/components/ui/price-input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -35,7 +35,6 @@ type Props = {
 };
 
 export function OffersManager({ initialOffers, userId, plan, limit }: Props) {
-  const router = useRouter();
   const [offers, setOffers] = useState<Offer[]>(initialOffers);
   const [pending, startTransition] = useTransition();
   const timers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
@@ -55,8 +54,27 @@ export function OffersManager({ initialOffers, userId, plan, limit }: Props) {
   function add() {
     startTransition(async () => {
       const result = await createOffer();
-      if (result.error) toast.error(result.error);
-      else router.refresh();
+      if (result.error || !result.id) {
+        toast.error(result.error ?? "Création impossible.");
+        return;
+      }
+      // Ajout local (pas de reload → on garde focus et édits en cours).
+      setOffers((prev) => [
+        ...prev,
+        {
+          id: result.id!,
+          page_id: "",
+          title: "Nouvelle offre",
+          description: "",
+          image_url: null,
+          kind: "produit",
+          price_cents: 0,
+          compare_at_cents: null,
+          active: true,
+          position: prev.length,
+          created_at: "",
+        },
+      ]);
     });
   }
 
@@ -64,10 +82,7 @@ export function OffersManager({ initialOffers, userId, plan, limit }: Props) {
     setOffers((prev) => prev.filter((o) => o.id !== id));
     startTransition(async () => {
       const result = await deleteOffer(id);
-      if (result.error) {
-        toast.error(result.error);
-        router.refresh();
-      }
+      if (result.error) toast.error(result.error);
     });
   }
 
@@ -138,33 +153,18 @@ export function OffersManager({ initialOffers, userId, plan, limit }: Props) {
             <div className={styles.prices}>
               <div className={styles.field}>
                 <Label>Prix (€)</Label>
-                <Input
-                  type="number"
-                  min={0}
-                  step={0.5}
-                  value={offer.price_cents / 100}
-                  onChange={(e) =>
-                    patch(offer.id, {
-                      price_cents: Math.max(0, Math.round((parseFloat(e.target.value) || 0) * 100)),
-                    })
-                  }
+                <PriceInput
+                  cents={offer.price_cents}
+                  placeholder="0"
+                  onCents={(c) => patch(offer.id, { price_cents: c })}
                 />
               </div>
               <div className={styles.field}>
                 <Label>Prix barré (€, promo)</Label>
-                <Input
-                  type="number"
-                  min={0}
-                  step={0.5}
+                <PriceInput
+                  cents={offer.compare_at_cents ?? 0}
                   placeholder="—"
-                  value={offer.compare_at_cents != null ? offer.compare_at_cents / 100 : ""}
-                  onChange={(e) => {
-                    const v = e.target.value.trim();
-                    patch(offer.id, {
-                      compare_at_cents:
-                        v === "" ? null : Math.max(0, Math.round((parseFloat(v) || 0) * 100)),
-                    });
-                  }}
+                  onCents={(c) => patch(offer.id, { compare_at_cents: c === 0 ? null : c })}
                 />
               </div>
             </div>

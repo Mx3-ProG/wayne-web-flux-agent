@@ -23,6 +23,18 @@ export const metadata: Metadata = {
   },
   description:
     "Gagne du temps, booste ta visibilité Google et génère plus de prospects avec la solution tout-en-un de Wayne Web pour les professionnels.",
+  applicationName: "Wayne Web Flux",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "Wayne Flux",
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  icons: {
+    apple: "/pwa-icon-192.png",
+  },
   openGraph: {
     title: "Wayne Web Flux — Ton commerce, vu partout",
     description:

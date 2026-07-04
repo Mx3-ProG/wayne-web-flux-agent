@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getVertical } from "@/lib/verticals";
 import { defaultLegal } from "@/lib/legal";
-import type { Page } from "@/lib/types";
+import { projectLimit } from "@/lib/plans";
+import type { Page, Plan } from "@/lib/types";
 
 function slugify(input: string): string {
   return input
@@ -32,6 +33,18 @@ export async function createPage(input: {
 
   const businessName = input.businessName.trim().slice(0, 60);
   if (!businessName) return { error: "Donne un nom à ta vitrine." };
+
+  // Limite de projets selon le forfait (gratuit = 1, Plus = 3).
+  const [{ data: profile }, { count: pageCount }] = await Promise.all([
+    supabase.from("profiles").select("plan").eq("user_id", user.id).single(),
+    supabase
+      .from("pages")
+      .select("id", { count: "exact", head: true })
+      .eq("user_id", user.id),
+  ]);
+  if ((pageCount ?? 0) >= projectLimit((profile?.plan as Plan) ?? "free")) {
+    return { error: "Limite de projets atteinte pour ton forfait." };
+  }
 
   const vertical = getVertical(input.vertical);
   let slug = slugify(businessName);
@@ -122,12 +135,14 @@ export async function createPage(input: {
     }))
   );
 
+  // Active le nouveau projet et avance l'onboarding.
   await supabase
     .from("profiles")
-    .update({ onboarding_step: 2 })
+    .update({ onboarding_step: 2, active_page_id: page.id })
     .eq("user_id", user.id);
 
   revalidatePath("/ma-page");
+  revalidatePath("/projets");
   revalidatePath(`/p/${page.slug}`);
   return { slug: page.slug };
 }

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import type { Order, OrderItem, Page } from "@/lib/types";
+import { getActivePage } from "@/lib/active-project";
+import type { Order, OrderItem } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
 import { acceptOrder, cancelOrder, fulfillOrder } from "./actions";
 import styles from "./commandes.module.css";
@@ -99,11 +100,7 @@ export default async function CommandesPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: page } = await supabase
-    .from("pages")
-    .select("id")
-    .eq("user_id", user.id)
-    .maybeSingle<Pick<Page, "id">>();
+  const page = await getActivePage(supabase, user.id);
 
   let orders: OrderWithItems[] = [];
   if (page) {

@@ -1,0 +1,257 @@
+.vaultPage {
+  --gold-deep: #8a5a0a;
+  --gold: #d9a82e;
+  --gold-light: #ffe9a0;
+  width: min(1060px, 100%);
+  margin: 0 auto;
+}
+.hero {
+  position: relative;
+  min-height: 440px;
+  padding: 54px 28px 48px;
+  overflow: hidden;
+  border: 1px solid rgb(218 168 64 / 24%);
+  border-radius: 30px;
+  background:
+    radial-gradient(circle at 50% 35%, rgb(214 157 49 / 18%), transparent 24%),
+    radial-gradient(circle at 50% 0%, rgb(123 76 15 / 20%), transparent 48%),
+    linear-gradient(155deg, #17140e, #09090b 58%, #0d0b08);
+  box-shadow:
+    inset 0 1px rgb(255 234 167 / 13%),
+    inset 0 0 80px rgb(179 117 19 / 6%),
+    0 35px 100px rgb(0 0 0 / 36%);
+  text-align: center;
+}
+.hero::before, .hero::after {
+  position: absolute;
+  border: 1px solid rgb(218 168 64 / 16%);
+  border-radius: inherit;
+  content: "";
+  pointer-events: none;
+}
+.hero::before { inset: 8px; }
+.hero::after { inset: 15px; border-color: rgb(255 239 188 / 5%); }
+.heroGlow {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  width: 290px;
+  height: 290px;
+  border-radius: 50%;
+  background: rgb(217 168 46 / 10%);
+  filter: blur(55px);
+  transform: translateX(-50%);
+}
+.overline {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  min-height: 36px;
+  padding: 0 14px;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgb(218 168 64 / 24%);
+  border-radius: 999px;
+  background: rgb(218 168 64 / 5%);
+  color: #e7c979;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.overline svg { width: 13px; }
+.vaultMark {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 92px;
+  height: 92px;
+  margin: 38px auto 22px;
+  place-items: center;
+  border: 1px solid rgb(255 224 139 / 38%);
+  border-radius: 27px;
+  background:
+    linear-gradient(145deg, rgb(255 232 165 / 15%), rgb(139 86 10 / 8%)),
+    #16130e;
+  box-shadow:
+    0 0 45px rgb(219 160 43 / 20%),
+    inset 0 1px rgb(255 245 207 / 26%);
+  color: var(--gold-light);
+}
+.vaultMark svg { width: 43px; height: 43px; filter: drop-shadow(0 0 10px rgb(255 211 107 / 30%)); }
+.hero h1 {
+  position: relative;
+  z-index: 1;
+  font-family: var(--font-fraunces), Georgia, serif !important;
+  font-size: clamp(54px, 8vw, 86px) !important;
+  font-weight: 510 !important;
+  letter-spacing: -.06em !important;
+  line-height: .95 !important;
+}
+.hero h1 span, .goldLabel {
+  background: linear-gradient(110deg, #8a5a0a, #d9a82e 24%, #fff3a6 45%, #b87909 62%, #f9d86f 82%, #7b4b05);
+  background-size: 220% auto;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 10px rgb(218 165 32 / 18%));
+  -webkit-background-clip: text;
+  animation: goldShimmer 4.5s linear infinite;
+}
+@keyframes goldShimmer { to { background-position: -220% center; } }
+.hero > p {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+  margin: 19px auto 0;
+  color: #9f9a90;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.vaultCount {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  margin-top: 26px;
+  align-items: center;
+  gap: 8px;
+  color: #b5aa91;
+  font-size: 11px;
+}
+.vaultCount svg { width: 15px; color: var(--gold); }
+.vaultCount strong { color: var(--gold-light); font-size: 16px; }
+
+.empty {
+  position: relative;
+  margin-top: 15px;
+  padding: 50px 24px 58px;
+  overflow: hidden;
+  border: 1px solid rgb(218 168 64 / 18%);
+  border-radius: 27px;
+  background: linear-gradient(145deg, rgb(23 21 17 / 92%), rgb(11 11 13 / 98%));
+  box-shadow: inset 0 1px rgb(255 235 176 / 8%);
+  text-align: center;
+}
+.emptyVisual { position: relative; width: 260px; height: 180px; margin: 0 auto 22px; }
+.emptyVault {
+  position: absolute;
+  inset: 58px auto auto 92px;
+  display: grid;
+  width: 78px;
+  height: 78px;
+  place-items: center;
+  border-radius: 23px;
+  background: linear-gradient(145deg, #f2c563, #9c650c);
+  box-shadow: 0 0 45px rgb(231 175 62 / 28%);
+  color: #18120a;
+}
+.emptyVault svg { width: 38px; height: 38px; }
+.orbitOne, .orbitTwo, .orbitThree {
+  position: absolute;
+  display: grid;
+  width: 45px;
+  height: 45px;
+  place-items: center;
+  border: 1px solid rgb(218 168 64 / 24%);
+  border-radius: 15px;
+  background: #14120e;
+  color: #e9c974;
+}
+.orbitOne { top: 10px; left: 56px; transform: rotate(-8deg); }
+.orbitTwo { top: 20px; right: 44px; transform: rotate(8deg); }
+.orbitThree { right: 18px; bottom: 13px; transform: rotate(12deg); }
+.orbitOne svg, .orbitTwo svg, .orbitThree svg { width: 20px; }
+.emptyKicker, .goldLabel { font-size: 9px; font-weight: 800; letter-spacing: .18em; text-transform: uppercase; }
+.emptyKicker { color: #d3ae56; }
+.empty h2 { margin-top: 7px; font-family: var(--font-fraunces), Georgia, serif; font-size: clamp(28px, 5vw, 42px); font-weight: 520; }
+.empty > p:not(.emptyKicker) { max-width: 480px; margin: 14px auto 0; color: #8e8981; font-size: 13px; line-height: 1.7; }
+.goldAction {
+  display: inline-flex;
+  min-height: 52px;
+  margin-top: 27px;
+  padding: 0 23px;
+  align-items: center;
+  gap: 10px;
+  border-radius: 999px;
+  background: linear-gradient(115deg, #f6d47d, #c98b1d 70%, #f0bd51);
+  box-shadow: 0 15px 40px rgb(211 150 36 / 22%), inset 0 1px rgb(255 248 218 / 55%);
+  color: #171108;
+  font-size: 12px;
+  font-weight: 850;
+  text-decoration: none;
+}
+.goldAction svg { width: 16px; }
+
+.collection { margin-top: 32px; }
+.collectionHead { display: flex; align-items: end; justify-content: space-between; gap: 25px; }
+.collectionHead h2 { margin-top: 8px; font-family: var(--font-fraunces), Georgia, serif; font-size: clamp(28px, 4vw, 42px); font-weight: 520; }
+.collectionHead > span { max-width: 230px; color: #6f6a62; font-size: 10px; text-align: right; }
+.grid { display: grid; margin-top: 18px; gap: 11px; }
+.treasure, .treasureOpen {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgb(218 168 64 / 15%);
+  border-radius: 21px;
+  background:
+    radial-gradient(circle at 95% 0%, rgb(197 134 24 / 7%), transparent 30%),
+    linear-gradient(135deg, rgb(24 22 18 / 94%), rgb(12 12 14 / 98%));
+  box-shadow: inset 0 1px rgb(255 238 190 / 6%);
+  transition: border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.treasure:hover { border-color: rgb(218 168 64 / 30%); transform: translateY(-2px); }
+.treasureOpen { border-color: rgb(231 182 77 / 38%); box-shadow: 0 22px 60px rgb(0 0 0 / 30%), inset 0 1px rgb(255 238 190 / 10%); }
+.treasureTrigger {
+  display: grid;
+  width: 100%;
+  min-height: 102px;
+  padding: 15px 18px;
+  grid-template-columns: 34px 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  border: 0;
+  background: transparent;
+  color: var(--ww-text);
+  cursor: pointer;
+  font: inherit;
+  text-align: left;
+}
+.treasureNumber { align-self: start; padding-top: 3px; color: #625846; font-size: 9px; font-weight: 800; letter-spacing: .12em; }
+.treasureIcon { display: grid; width: 48px; height: 48px; place-items: center; border: 1px solid rgb(218 168 64 / 22%); border-radius: 15px; background: rgb(218 168 64 / 6%); color: #e2be68; }
+.treasureIcon svg { width: 21px; }
+.treasureTitle { display: grid; min-width: 0; gap: 3px; }
+.treasureTitle small { color: #a8863c; font-size: 8px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+.treasureTitle strong { overflow: hidden; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.treasureTitle > span { color: #716d67; font-size: 10px; }
+.openControl { display: inline-flex; min-height: 36px; padding: 0 11px; align-items: center; gap: 7px; border: 1px solid rgb(218 168 64 / 16%); border-radius: 11px; color: #a99365; font-size: 9px; font-weight: 750; }
+.openControl svg { width: 13px; transition: transform .2s ease; }
+.treasureOpen .openControl svg { transform: rotate(180deg); }
+.treasureContent { padding: 0 18px 18px 114px; }
+.contentPaper { padding: 21px; border: 1px solid rgb(218 168 64 / 12%); border-radius: 16px; background: rgb(7 7 8 / 48%); color: #c5c0b7; font-size: 13px; line-height: 1.8; white-space: pre-wrap; }
+.copyButton { display: inline-flex; min-height: 42px; margin-top: 11px; padding: 0 14px; align-items: center; gap: 7px; border: 1px solid rgb(218 168 64 / 20%); border-radius: 12px; background: rgb(218 168 64 / 7%); color: #ddbd70; cursor: pointer; font: inherit; font-size: 10px; font-weight: 800; }
+.copyButton svg { width: 14px; }
+
+@media (max-width: 680px) {
+  .hero { min-height: 390px; padding: 42px 18px 38px; border-radius: 24px; }
+  .vaultMark { width: 78px; height: 78px; margin-top: 30px; border-radius: 23px; }
+  .vaultMark svg { width: 36px; height: 36px; }
+  .collectionHead { align-items: start; flex-direction: column; gap: 8px; }
+  .collectionHead > span { text-align: left; }
+  .treasureTrigger { padding: 13px; grid-template-columns: 42px minmax(0, 1fr) 28px; gap: 10px; }
+  .treasureNumber { display: none; }
+  .treasureIcon { width: 42px; height: 42px; border-radius: 13px; }
+  .openControl { width: 28px; min-height: 32px; padding: 0; justify-content: center; border: 0; }
+  .openControl { font-size: 0; }
+  .openControl svg { width: 15px; }
+  .treasureContent { padding: 0 13px 13px; }
+  .contentPaper { padding: 16px; font-size: 12px; }
+  .empty { padding-inline: 18px; }
+  .emptyVisual { transform: scale(.88); }
+}
+
+@media (hover: none) {
+  .treasure:hover { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero h1 span, .goldLabel { animation: none; }
+  .treasure, .openControl svg { transition: none; }
+}

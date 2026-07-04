@@ -34,24 +34,43 @@ export function OrderModal({ slug, items, accentColor, onSetQty, onClose, onDone
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
-    setSubmitting(true);
+    // Lecture synchrone : après un await, e.currentTarget peut être null.
     const form = new FormData(e.currentTarget);
-    const res = await fetch(`/api/order/${slug}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        items: items.map((it) => ({ kind: it.kind, id: it.id, quantity: it.quantity })),
-        first_name: form.get("first_name"),
-        phone: form.get("phone"),
-        email: form.get("email"),
-        note: form.get("note"),
-      }),
-    });
+    setSubmitting(true);
+    let res: Response;
+    try {
+      res = await fetch(`/api/order/${slug}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: items.map((it) => ({ kind: it.kind, id: it.id, quantity: it.quantity })),
+          first_name: form.get("first_name"),
+          phone: form.get("phone"),
+          email: form.get("email"),
+          note: form.get("note"),
+        }),
+      });
+    } catch {
+      setSubmitting(false);
+      setError("Connexion impossible. Vérifie ta connexion et réessaie.");
+      return;
+    }
     setSubmitting(false);
     if (res.status === 201) {
       setStep("done");
+      return;
+    }
+    // Message adapté selon la raison renvoyée par le serveur.
+    const reason = await res.json().catch(() => ({}));
+    console.error("Order failed", res.status, reason);
+    if (res.status === 429) {
+      setError("Trop de tentatives. Patiente une minute et réessaie.");
+    } else if (reason?.error === "invalid_contact") {
+      setError("Vérifie ton prénom et ton numéro de téléphone.");
+    } else if (res.status === 404) {
+      setError("Cette boutique n'est pas disponible pour le moment.");
     } else {
-      setError("La commande n'a pas pu être enregistrée. Réessaie.");
+      setError("La commande n'a pas pu être enregistrée. Réessaie dans un instant.");
     }
   }
 

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getActivePageId } from "@/lib/active-project";
 import { getTool, TOOLS } from "@/lib/tools-config";
 import { voiceCompletion } from "@/lib/voice";
 import type { VoiceProfile } from "@/lib/types";
@@ -26,18 +27,19 @@ export default async function ToolPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: balance }, { data: voice }, { data: page }] =
-    await Promise.all([
-      supabase.rpc("credit_balance", { uid: user.id }),
-      supabase
+  const [{ data: balance }, pageId] = await Promise.all([
+    supabase.rpc("credit_balance", { uid: user.id }),
+    getActivePageId(supabase, user.id),
+  ]);
+  const { data: voice } = pageId
+    ? await supabase
         .from("voice_profiles")
         .select("*")
-        .eq("user_id", user.id)
-        .maybeSingle<VoiceProfile>(),
-      supabase.from("pages").select("id").eq("user_id", user.id).maybeSingle(),
-    ]);
+        .eq("page_id", pageId)
+        .maybeSingle<VoiceProfile>()
+    : { data: null as VoiceProfile | null };
 
-  const completion = voiceCompletion(voice, !!page);
+  const completion = voiceCompletion(voice, !!pageId);
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">

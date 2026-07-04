@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import type { Offer, Page, Plan } from "@/lib/types";
+import { getActivePage } from "@/lib/active-project";
+import type { Offer, Plan } from "@/lib/types";
 import { offerLimit } from "@/lib/plans";
 import { OffersManager } from "./offers-manager";
 import styles from "./offres.module.css";
@@ -15,9 +16,9 @@ export default async function OffresPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: profile }, { data: page }] = await Promise.all([
+  const [{ data: profile }, page] = await Promise.all([
     supabase.from("profiles").select("plan").eq("user_id", user.id).single(),
-    supabase.from("pages").select("id").eq("user_id", user.id).maybeSingle<Pick<Page, "id">>(),
+    getActivePage(supabase, user.id),
   ]);
 
   let offers: Offer[] = [];

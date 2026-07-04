@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { getActivePageId } from "@/lib/active-project";
 import type { TimeRange } from "@/lib/types";
 
 async function ownedPageId(): Promise<string | null> {
@@ -10,12 +11,8 @@ async function ownedPageId(): Promise<string | null> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
-  const { data: page } = await supabase
-    .from("pages")
-    .select("id")
-    .eq("user_id", user.id)
-    .maybeSingle();
-  return page?.id ?? null;
+  // Le projet actif du user (multi-boutiques).
+  return getActivePageId(supabase, user.id);
 }
 
 export type DaySetting = {

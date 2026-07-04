@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getActivePage } from "@/lib/active-project";
 import { anthropic, buildPrompt, GENERATION_MODEL } from "@/lib/claude";
 import { getTool } from "@/lib/tools-config";
 import { rateLimit } from "@/lib/rate-limit";
-import type { Page, Service, VoiceProfile } from "@/lib/types";
+import type { Service, VoiceProfile } from "@/lib/types";
 
 export const maxDuration = 120;
 
@@ -43,23 +44,21 @@ export async function POST(request: Request) {
     }
   }
 
-  // Contexte : vitrine + prestations + profil de voix
-  const [{ data: page }, { data: voice }] = await Promise.all([
-    supabase.from("pages").select("*").eq("user_id", user.id).maybeSingle<Page>(),
-    supabase
-      .from("voice_profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle<VoiceProfile>(),
-  ]);
+  // Contexte : vitrine (projet actif) + prestations + profil de voix (par projet)
+  const page = await getActivePage(supabase, user.id);
+  let voice: VoiceProfile | null = null;
   let services: Service[] = [];
   if (page) {
-    const { data } = await supabase
-      .from("services")
-      .select("*")
-      .eq("page_id", page.id)
-      .order("position");
-    services = (data ?? []) as Service[];
+    const [{ data: v }, { data: s }] = await Promise.all([
+      supabase
+        .from("voice_profiles")
+        .select("*")
+        .eq("page_id", page.id)
+        .maybeSingle<VoiceProfile>(),
+      supabase.from("services").select("*").eq("page_id", page.id).order("position"),
+    ]);
+    voice = v ?? null;
+    services = (s ?? []) as Service[];
   }
 
   // Débit AVANT génération, dans une fonction SQL sous verrou.
@@ -108,6 +107,7 @@ export async function POST(request: Request) {
         // Coffre-fort : le résultat reste accessible pour toujours.
         await admin.from("generations").insert({
           user_id: user.id,
+          page_id: page?.id ?? null,
           tool_slug: tool.slug,
           inputs,
           output: fullText,

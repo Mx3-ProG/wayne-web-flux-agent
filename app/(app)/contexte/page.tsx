@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getActivePageId } from "@/lib/active-project";
 import type { VoiceProfile } from "@/lib/types";
 import { voiceCompletion } from "@/lib/voice";
 import { VoiceForm } from "@/components/voice/voice-form";
@@ -28,14 +29,16 @@ export default async function ContextePage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: voice }, { data: page }] = await Promise.all([
-    supabase
-      .from("voice_profiles")
-      .select("*")
-      .eq("user_id", user.id)
-      .maybeSingle<VoiceProfile>(),
-    supabase.from("pages").select("id").eq("user_id", user.id).maybeSingle(),
-  ]);
+  // Voix du projet actif.
+  const pageId = await getActivePageId(supabase, user.id);
+  const { data: voice } = pageId
+    ? await supabase
+        .from("voice_profiles")
+        .select("*")
+        .eq("page_id", pageId)
+        .maybeSingle<VoiceProfile>()
+    : { data: null as VoiceProfile | null };
+  const page = pageId ? { id: pageId } : null;
 
   const params = await searchParams;
   const preparedVoice: VoiceDraft | null =

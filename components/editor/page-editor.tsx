@@ -3,15 +3,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import type { Page } from "@/lib/types";
+import type { Offer, Page } from "@/lib/types";
 import { FONTS, type VerticalKind } from "@/lib/verticals";
 import { VITRINE_THEMES } from "@/lib/vitrine-themes";
 import {
   savePageFields,
   syncCatalog,
-  syncProducts,
   type CatalogFamily,
-  type CatalogProductCategory,
 } from "@/app/(app)/ma-page/actions";
 import {
   VitrineView,
@@ -20,6 +18,7 @@ import {
 } from "@/components/vitrine/vitrine-view";
 import { PhotoUpload } from "./photo-upload";
 import { Input } from "@/components/ui/input";
+import { PriceInput } from "@/components/ui/price-input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
@@ -43,36 +42,26 @@ type EditableCatalog = {
   services: { name: string; duration_min: number; price_cents: number }[];
 }[];
 
-type EditableShop = {
-  id: string | null;
-  name: string;
-  products: {
-    id: string | null;
-    name: string;
-    description: string;
-    price_cents: number;
-    image_url: string | null;
-  }[];
-}[];
-
 type Props = {
   initialPage: Page;
   initialCatalog: EditableCatalog;
-  initialShop: EditableShop;
+  previewProducts: CategoryWithProducts[];
+  previewOffers: Offer[];
   verticalKind: VerticalKind;
 };
 
 // Éditeur de vitrine : tout s'enregistre tout seul (autosave débouncé),
-// la préview à droite se met à jour en direct.
+// la préview à droite se met à jour en direct. Les produits et offres se gèrent
+// sur leurs pages dédiées ; ici ils sont montrés en lecture seule dans l'aperçu.
 export function PageEditor({
   initialPage,
   initialCatalog,
-  initialShop,
+  previewProducts,
+  previewOffers,
   verticalKind,
 }: Props) {
   const [page, setPage] = useState<Page>(initialPage);
   const [catalog, setCatalog] = useState<EditableCatalog>(initialCatalog);
-  const [shop, setShop] = useState<EditableShop>(initialShop);
   const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">("mobile");
   const [panelMode, setPanelMode] = useState<"edit" | "preview">("edit");
   const [activeSection, setActiveSection] = useState("identite");
@@ -83,7 +72,6 @@ export function PageEditor({
 
   const fieldsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const catalogTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const shopTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const patch = useCallback((fields: Partial<Page>) => {
     setPage((prev) => ({ ...prev, ...fields }));
@@ -113,28 +101,10 @@ export function PageEditor({
     [initialPage.id]
   );
 
-  const patchShop = useCallback(
-    (next: EditableShop) => {
-      setShop(next);
-      if (shopTimer.current) clearTimeout(shopTimer.current);
-      shopTimer.current = setTimeout(async () => {
-        setSaving(true);
-        const result = await syncProducts(
-          initialPage.id,
-          next as CatalogProductCategory[]
-        );
-        setSaving(false);
-        if (result.error) toast.error(result.error);
-      }, 1200);
-    },
-    [initialPage.id]
-  );
-
   useEffect(
     () => () => {
       if (fieldsTimer.current) clearTimeout(fieldsTimer.current);
       if (catalogTimer.current) clearTimeout(catalogTimer.current);
-      if (shopTimer.current) clearTimeout(shopTimer.current);
     },
     []
   );
@@ -153,27 +123,6 @@ export function PageEditor({
       duration_min: s.duration_min,
       price_cents: s.price_cents,
       position: si,
-    })),
-  }));
-
-  const previewProductCategories: CategoryWithProducts[] = shop.map((c, ci) => ({
-    id: c.id ?? `preview-c${ci}`,
-    page_id: page.id,
-    name: c.name,
-    position: ci,
-    products: c.products.map((p, pi) => ({
-      id: p.id ?? `preview-p${ci}-${pi}`,
-      category_id: c.id ?? `preview-c${ci}`,
-      page_id: page.id,
-      name: p.name,
-      description: p.description,
-      price_cents: p.price_cents,
-      image_url: p.image_url,
-      active: true,
-      track_stock: false,
-      stock: 0,
-      position: pi,
-      created_at: "",
     })),
   }));
 
@@ -415,17 +364,12 @@ export function PageEditor({
                           patchCatalog(next);
                         }}
                       />
-                      <Input
-                        type="number"
-                        min={0}
-                        step={0.5}
-                        value={service.price_cents / 100}
-                        title="Prix (€)"
-                        onChange={(e) => {
+                      <PriceInput
+                        cents={service.price_cents}
+                        aria-label="Prix (€)"
+                        onCents={(c) => {
                           const next = structuredClone(catalog);
-                          next[fi].services[si].price_cents = Math.round(
-                            (parseFloat(e.target.value) || 0) * 100
-                          );
+                          next[fi].services[si].price_cents = c;
                           patchCatalog(next);
                         }}
                       />
@@ -478,146 +422,24 @@ export function PageEditor({
           </AccordionItem>
           )}
 
-          {/* Produits / Boutique */}
+          {/* Produits & offres — gérés sur leurs pages dédiées */}
           {showShop && (
           <AccordionItem value="boutique" className="border rounded-xl px-4">
-            <AccordionTrigger>Ma boutique — produits et prix</AccordionTrigger>
-            <AccordionContent className="space-y-4 pt-1">
+            <AccordionTrigger>Mes produits & offres</AccordionTrigger>
+            <AccordionContent className="space-y-3 pt-1">
               <p className="text-sm text-muted-foreground">
-                Les produits que tes clients peuvent commander depuis ta vitrine.
-                Une commande = une notification dans ton espace.
+                Tes produits (stock, chiffre d&apos;affaires) et tes offres promo se
+                gèrent sur leurs pages dédiées. Ils apparaissent tout de suite dans
+                l&apos;aperçu de ta vitrine.
               </p>
-              <Button asChild variant="secondary" size="sm">
-                <Link href="/stock">Gérer le stock →</Link>
-              </Button>
-              {shop.map((category, ci) => (
-                <div key={ci} className="rounded-lg border border-border p-3 space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Input
-                      value={category.name}
-                      maxLength={60}
-                      className="font-medium"
-                      placeholder="Nom de la catégorie"
-                      onChange={(e) => {
-                        const next = structuredClone(shop);
-                        next[ci].name = e.target.value;
-                        patchShop(next);
-                      }}
-                    />
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => patchShop(shop.filter((_, j) => j !== ci))}
-                    >
-                      Supprimer
-                    </Button>
-                  </div>
-                  {category.products.map((product, pi) => (
-                    <div key={pi} className="space-y-2 rounded-md border border-border/60 p-2">
-                      <div className={styles.productFields}>
-                        <Input
-                          value={product.name}
-                          maxLength={80}
-                          placeholder="Nom du produit"
-                          onChange={(e) => {
-                            const next = structuredClone(shop);
-                            next[ci].products[pi].name = e.target.value;
-                            patchShop(next);
-                          }}
-                        />
-                        <Input
-                          type="number"
-                          min={0}
-                          step={0.5}
-                          value={product.price_cents / 100}
-                          title="Prix (€)"
-                          onChange={(e) => {
-                            const next = structuredClone(shop);
-                            next[ci].products[pi].price_cents = Math.round(
-                              (parseFloat(e.target.value) || 0) * 100
-                            );
-                            patchShop(next);
-                          }}
-                        />
-                        <button
-                          type="button"
-                          aria-label="Retirer le produit"
-                          className="text-destructive text-sm px-1"
-                          onClick={() => {
-                            const next = structuredClone(shop);
-                            next[ci].products.splice(pi, 1);
-                            patchShop(next);
-                          }}
-                        >
-                          ×
-                        </button>
-                      </div>
-                      <Textarea
-                        value={product.description}
-                        maxLength={400}
-                        rows={3}
-                        className={styles.longText}
-                        placeholder="Description courte (facultatif)"
-                        onChange={(e) => {
-                          const next = structuredClone(shop);
-                          next[ci].products[pi].description = e.target.value;
-                          patchShop(next);
-                        }}
-                      />
-                      <div className="flex items-center gap-3">
-                        <PhotoUpload
-                          userId={page.user_id}
-                          label={product.image_url ? "Changer la photo" : "Ajouter une photo"}
-                          onUploaded={(url) => {
-                            const next = structuredClone(shop);
-                            next[ci].products[pi].image_url = url;
-                            patchShop(next);
-                          }}
-                        />
-                        {product.image_url && (
-                          <button
-                            type="button"
-                            className="text-destructive text-xs"
-                            onClick={() => {
-                              const next = structuredClone(shop);
-                              next[ci].products[pi].image_url = null;
-                              patchShop(next);
-                            }}
-                          >
-                            retirer la photo
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                  <p className="text-xs text-muted-foreground">Nom · prix (€) · photo</p>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => {
-                      const next = structuredClone(shop);
-                      next[ci].products.push({
-                        id: null,
-                        name: "",
-                        description: "",
-                        price_cents: 2000,
-                        image_url: null,
-                      });
-                      patchShop(next);
-                    }}
-                  >
-                    + Ajouter un produit
-                  </Button>
-                </div>
-              ))}
-              <Button
-                variant="secondary"
-                onClick={() =>
-                  patchShop([...shop, { id: null, name: "Nouvelle catégorie", products: [] }])
-                }
-              >
-                + Ajouter une catégorie
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button asChild variant="secondary" size="sm">
+                  <Link href="/produits">Gérer mes produits →</Link>
+                </Button>
+                <Button asChild variant="secondary" size="sm">
+                  <Link href="/offres">Gérer mes offres →</Link>
+                </Button>
+              </div>
             </AccordionContent>
           </AccordionItem>
           )}
@@ -857,7 +679,8 @@ export function PageEditor({
             <VitrineView
               page={page}
               families={previewFamilies}
-              productCategories={previewProductCategories}
+              productCategories={previewProducts}
+              offers={previewOffers}
             />
           </div>
         </div>

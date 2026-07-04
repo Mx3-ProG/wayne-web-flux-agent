@@ -1,7 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // Flux iCal en lecture seule : à coller une fois dans Google Agenda.
-// Le token (UUID) fait office de secret ; il est propre à chaque compte.
+// Le token (UUID) fait office de secret ; il est propre à chaque PROJET.
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ token: string }> }
@@ -12,17 +12,10 @@ export async function GET(
   }
 
   const supabase = createAdminClient();
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("user_id")
-    .eq("ical_token", token)
-    .single();
-  if (!profile) return new Response("Not found", { status: 404 });
-
   const { data: page } = await supabase
     .from("pages")
     .select("id, business_name")
-    .eq("user_id", profile.user_id)
+    .eq("ical_token", token)
     .maybeSingle();
   if (!page) return new Response("Not found", { status: 404 });
 

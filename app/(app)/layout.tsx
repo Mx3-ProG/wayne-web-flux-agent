@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { getActivePageId } from "@/lib/active-project";
 import { Coins } from "lucide-react";
 import styles from "./app-shell.module.css";
 import { AppNavigation } from "@/components/app-navigation";
 import { MobileAppMenu } from "@/components/mobile-app-menu";
+import { AppBadgeSync } from "@/components/app-badge-sync";
+import { ProjectSwitcher } from "@/components/project-switcher";
 
 export default async function AppLayout({
   children,
@@ -22,28 +25,52 @@ export default async function AppLayout({
     uid: user.id,
   });
 
-  // Badges de la nav (hooks de rétention). La RLS limite déjà aux données des
-  // pages du user connecté.
-  const [{ count: pendingOrders }, { count: lowStock }] = await Promise.all([
+  // Projet actif + liste des projets (pour le switcher).
+  const [activePageId, { data: pages }] = await Promise.all([
+    getActivePageId(supabase, user.id),
     supabase
-      .from("orders")
-      .select("id", { count: "exact", head: true })
-      .eq("status", "pending"),
-    supabase
-      .from("products")
-      .select("id", { count: "exact", head: true })
-      .eq("track_stock", true)
-      .lte("stock", 0),
+      .from("pages")
+      .select("id, business_name, slug")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: true }),
   ]);
+  const projects = pages ?? [];
+
+  // Badges de la nav : uniquement le PROJET ACTIF (pas tous les projets).
+  let pendingOrders = 0;
+  let lowStock = 0;
+  if (activePageId) {
+    const [{ count: pending }, { count: low }] = await Promise.all([
+      supabase
+        .from("orders")
+        .select("id", { count: "exact", head: true })
+        .eq("page_id", activePageId)
+        .eq("status", "pending"),
+      supabase
+        .from("products")
+        .select("id", { count: "exact", head: true })
+        .eq("page_id", activePageId)
+        .eq("track_stock", true)
+        .lte("stock", 0),
+    ]);
+    pendingOrders = pending ?? 0;
+    lowStock = low ?? 0;
+  }
 
   return (
     <div className={styles.shell}>
+      <AppBadgeSync pendingOrders={pendingOrders ?? 0} />
       <aside className={styles.sidebar}>
         <Link href="/espace" className={styles.brand}>
           <span className={styles.brandMark}>W</span>
           <span className={styles.brandWords}>WAYNE<b>WEB</b><small>FLUX</small></span>
         </Link>
-        <AppNavigation pendingOrders={pendingOrders ?? 0} lowStock={lowStock ?? 0} />
+        {projects.length > 0 && (
+          <div className={styles.switcher}>
+            <ProjectSwitcher projects={projects} activeId={activePageId} />
+          </div>
+        )}
+        <AppNavigation pendingOrders={pendingOrders} lowStock={lowStock} />
         <p className={styles.sidebarHint}>Ton commerce.<br />Un seul espace.</p>
       </aside>
       <header className={styles.header}>
@@ -61,8 +88,8 @@ export default async function AppLayout({
             </Link>
             <MobileAppMenu
               balance={balance ?? 0}
-              pendingOrders={pendingOrders ?? 0}
-              lowStock={lowStock ?? 0}
+              pendingOrders={pendingOrders}
+              lowStock={lowStock}
             />
           </div>
         </div>
@@ -70,7 +97,7 @@ export default async function AppLayout({
       <main className={styles.main}>
         {children}
       </main>
-      <AppNavigation mobile pendingOrders={pendingOrders ?? 0} lowStock={lowStock ?? 0} />
+      <AppNavigation mobile pendingOrders={pendingOrders} lowStock={lowStock} />
     </div>
   );
 }

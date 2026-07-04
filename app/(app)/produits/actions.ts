@@ -2,9 +2,17 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { getActivePageId } from "@/lib/active-project";
 
-// Réexport des actions de stock unitaires (prennent juste un productId).
-export { toggleTrackStock, incStock, decStock } from "@/app/(app)/stock/actions";
+type TunnelProduct = {
+  name: string;
+  description: string;
+  price_cents: number;
+  image_url: string | null;
+  track_stock: boolean;
+  stock: number;
+  active: boolean;
+};
 
 // Versions à paramètres numériques (plus pratiques à appeler côté client que
 // les variantes FormData). apply_stock_movement vérifie la propriété + le verrou.
@@ -45,17 +53,14 @@ async function ownedPageId(): Promise<string | null> {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return null;
-  const { data: page } = await supabase
-    .from("pages")
-    .select("id")
-    .eq("user_id", user.id)
-    .maybeSingle();
-  return page?.id ?? null;
+  // Le projet actif du user (multi-boutiques).
+  return getActivePageId(supabase, user.id);
 }
 
 function revalidateAll() {
   revalidatePath("/produits");
   revalidatePath("/ma-page");
+  revalidatePath("/projets");
 }
 
 export async function createCategory(): Promise<{ error?: string; id?: string; pageId?: string }> {
@@ -104,7 +109,7 @@ export async function deleteCategory(categoryId: string): Promise<{ error?: stri
 
 export async function createProduct(
   categoryId: string | null
-): Promise<{ error?: string }> {
+): Promise<{ error?: string; id?: string; pageId?: string }> {
   const supabase = await createClient();
   const pageId = await ownedPageId();
   if (!pageId) return { error: "Crée d'abord ta vitrine." };
@@ -112,14 +117,86 @@ export async function createProduct(
     .from("products")
     .select("id", { count: "exact", head: true })
     .eq("page_id", pageId);
-  const { error } = await supabase.from("products").insert({
-    page_id: pageId,
-    category_id: categoryId,
-    name: "Nouveau produit",
-    price_cents: 0,
-    position: count ?? 0,
-  });
-  if (error) return { error: "Création impossible." };
+  const { data, error } = await supabase
+    .from("products")
+    .insert({
+      page_id: pageId,
+      category_id: categoryId,
+      name: "Nouveau produit",
+      price_cents: 0,
+      position: count ?? 0,
+    })
+    .select("id")
+    .single();
+  if (error || !data) return { error: "Création impossible." };
+  revalidateAll();
+  return { id: data.id, pageId };
+}
+
+export async function createProductsFromTunnel(
+  categoryName: string,
+  products: TunnelProduct[]
+): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const pageId = await ownedPageId();
+  if (!pageId) return { error: "Crée d'abord ta vitrine." };
+
+  const cleanCategory = categoryName.trim().slice(0, 60);
+  const cleanProducts = products
+    .map((product) => ({
+      name: product.name.trim().slice(0, 80),
+      description: product.description.trim().slice(0, 400),
+      price_cents: Math.max(0, Math.round(product.price_cents)),
+      image_url: product.image_url,
+      track_stock: Boolean(product.track_stock),
+      stock:
+        product.track_stock && Number.isFinite(product.stock)
+          ? Math.max(0, Math.floor(product.stock))
+          : 0,
+      active: Boolean(product.active),
+    }))
+    .filter((product) => product.name)
+    .slice(0, 8);
+
+  if (!cleanCategory) return { error: "Donne un nom à ta catégorie." };
+  if (cleanProducts.length === 0) return { error: "Ajoute au moins un produit." };
+
+  const [{ count: categoryCount }, { count: productCount }] = await Promise.all([
+    supabase
+      .from("product_categories")
+      .select("id", { count: "exact", head: true })
+      .eq("page_id", pageId),
+    supabase
+      .from("products")
+      .select("id", { count: "exact", head: true })
+      .eq("page_id", pageId),
+  ]);
+
+  const { data: category, error: categoryError } = await supabase
+    .from("product_categories")
+    .insert({
+      page_id: pageId,
+      name: cleanCategory,
+      position: categoryCount ?? 0,
+    })
+    .select("id")
+    .single();
+  if (categoryError || !category) return { error: "Création de la catégorie impossible." };
+
+  const { error: productsError } = await supabase.from("products").insert(
+    cleanProducts.map((product, index) => ({
+      ...product,
+      page_id: pageId,
+      category_id: category.id,
+      position: (productCount ?? 0) + index,
+    }))
+  );
+
+  if (productsError) {
+    await supabase.from("product_categories").delete().eq("id", category.id);
+    return { error: "Création des produits impossible." };
+  }
+
   revalidateAll();
   return {};
 }
