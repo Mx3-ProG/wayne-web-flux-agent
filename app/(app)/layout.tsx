@@ -20,8 +20,8 @@ export default async function AppLayout({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  // Recharge mensuelle paresseuse + solde à jour, affiché dans le header.
-  const { data: balance } = await supabase.rpc("apply_monthly_topup", {
+  // Recharge paresseuse selon la formule + solde à jour, affiché dans le header.
+  const { data: balance } = await supabase.rpc("apply_plan_topup", {
     uid: user.id,
   });
 

@@ -1,0 +1,31 @@
+.page { width: min(1080px, 100%); margin: 0 auto; }
+.eyebrow { color: var(--ww-red-soft); font-size: 9px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.title { margin-top: 5px; font-family: var(--font-inter), sans-serif; }
+.subtitle { margin-top: 7px; max-width: 560px; color: var(--ww-muted); font-size: 13px; line-height: 1.7; }
+
+.grid { display: grid; margin-top: 28px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; }
+
+.plan, .planActive, .planFeatured {
+  display: flex; flex-direction: column; padding: 22px;
+  border: 1px solid var(--ww-line); border-radius: 20px;
+  background: rgb(255 255 255 / 2%);
+}
+.planActive { border-color: rgb(255 99 120 / 30%); background: rgb(239 35 60 / 7%); }
+.planFeatured { border-color: rgb(255 99 120 / 45%); background: radial-gradient(circle at 100% 0, rgb(239 35 60 / 16%), transparent 45%), rgb(255 255 255 / 2%); }
+
+.planTop { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.planTop span { font-size: 15px; font-weight: 750; }
+.planTop small { padding: 4px 8px; border-radius: 999px; background: rgb(239 35 60 / 12%); color: var(--ww-red-soft); font-size: 8px; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+
+.price { display: block; margin-top: 16px; font-size: 28px; font-weight: 800; }
+.price small { color: var(--ww-muted); font-size: 12px; font-weight: 500; }
+.credits { margin-top: 6px; color: var(--ww-red-soft); font-size: 12px; font-weight: 700; }
+
+.features { display: grid; flex: 1; margin-top: 18px; gap: 9px; color: var(--ww-muted); font-size: 11px; }
+.features li { display: flex; align-items: center; gap: 7px; }
+.features li svg { width: 13px; flex: 0 0 13px; color: var(--ww-success); }
+
+.cta { display: inline-flex; min-height: 42px; margin-top: 20px; align-items: center; justify-content: center; gap: 7px; border-radius: 999px; background: rgb(255 255 255 / 6%); color: var(--ww-muted); font-size: 11px; font-weight: 800; }
+
+.note { margin-top: 26px; padding: 18px 22px; border: 1px solid var(--ww-line); border-radius: 18px; background: rgb(255 255 255 / 2%); color: var(--ww-muted); font-size: 12px; line-height: 1.7; }
+.note strong { color: var(--ww-text); }

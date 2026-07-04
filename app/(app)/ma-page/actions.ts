@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getVertical } from "@/lib/verticals";
 import { defaultLegal } from "@/lib/legal";
 import { projectLimit } from "@/lib/plans";
-import type { Page, Plan } from "@/lib/types";
+import type { PageDraftFields, Plan } from "@/lib/types";
 
 function slugify(input: string): string {
   return input
@@ -147,40 +147,62 @@ export async function createPage(input: {
   return { slug: page.slug };
 }
 
-// Autosave des champs simples de la vitrine.
+// Autosave des champs simples de la vitrine — dans le BROUILLON (pages.draft).
+// Le site public ne bouge pas tant que la version n'est pas publiée (5 cr.).
+// Merge jsonb côté SQL (merge_page_draft) pour éviter les races de l'autosave.
 export async function savePageFields(
   pageId: string,
-  fields: Partial<
-    Pick<
-      Page,
-      | "business_name"
-      | "job_title"
-      | "tagline"
-      | "city"
-      | "address"
-      | "phone"
-      | "socials"
-      | "colors"
-      | "font"
-      | "theme"
-      | "logo_url"
-      | "hero_url"
-      | "gallery"
-      | "reviews"
-      | "offer"
-      | "hours_text"
-      | "legal"
-    >
-  >
+  fields: Partial<PageDraftFields>
 ): Promise<{ error?: string }> {
   const supabase = await createClient();
-  const { error } = await supabase
-    .from("pages")
-    .update(fields)
-    .eq("id", pageId); // RLS : seule la page du user connecté est modifiable
+  const { error } = await supabase.rpc("merge_page_draft", {
+    pid: pageId,
+    fields,
+  });
   if (error) return { error: "Enregistrement impossible." };
   revalidatePath("/ma-page");
   return {};
+}
+
+export type PublishError = "insufficient_credits" | "nothing_to_publish" | "unknown";
+
+// Publie une nouvelle version du site : débit atomique de 5 crédits + merge
+// des brouillons (vitrine + offres) + snapshot dans page_versions, le tout
+// dans la fonction SQL publish_page.
+export async function publishPage(
+  pageId: string
+): Promise<{ error?: PublishError; balance?: number }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "unknown" };
+
+  const { data: page } = await supabase
+    .from("pages")
+    .select("slug")
+    .eq("id", pageId)
+    .eq("user_id", user.id)
+    .single();
+  if (!page) return { error: "unknown" };
+
+  const { data: balance, error } = await supabase.rpc("publish_page", {
+    pid: pageId,
+  });
+  if (error) {
+    if (error.message.includes("insufficient_credits")) {
+      return { error: "insufficient_credits" };
+    }
+    if (error.message.includes("nothing_to_publish")) {
+      return { error: "nothing_to_publish" };
+    }
+    return { error: "unknown" };
+  }
+
+  revalidatePath("/ma-page");
+  revalidatePath("/offres");
+  revalidatePath(`/p/${page.slug}`);
+  return { balance: balance ?? undefined };
 }
 
 export type CatalogFamily = {

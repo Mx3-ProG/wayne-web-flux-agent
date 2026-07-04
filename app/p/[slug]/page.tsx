@@ -72,6 +72,9 @@ async function loadVitrine(slug: string) {
         .select("*")
         .eq("page_id", page.id)
         .eq("active", true)
+        // Une offre jamais publiée (brouillon `new`) n'apparaît pas en public ;
+        // une offre en suppression différée reste visible jusqu'à publication.
+        .or("draft_status.is.null,draft_status.eq.deleted")
         .order("position"),
     ]);
 

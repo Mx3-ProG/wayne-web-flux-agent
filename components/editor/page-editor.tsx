@@ -17,6 +17,7 @@ import {
   type FamilyWithServices,
 } from "@/components/vitrine/vitrine-view";
 import { PhotoUpload } from "./photo-upload";
+import { PublishButton } from "./publish-button";
 import { Input } from "@/components/ui/input";
 import { PriceInput } from "@/components/ui/price-input";
 import { Label } from "@/components/ui/label";
@@ -42,23 +43,34 @@ type EditableCatalog = {
   services: { name: string; duration_min: number; price_cents: number }[];
 }[];
 
+export type PublishProps = {
+  pageId: string;
+  balance: number;
+  hasDraft: boolean;
+  nextVersion: number;
+};
+
 type Props = {
   initialPage: Page;
   initialCatalog: EditableCatalog;
   previewProducts: CategoryWithProducts[];
   previewOffers: Offer[];
   verticalKind: VerticalKind;
+  publish: PublishProps;
 };
 
-// Éditeur de vitrine : tout s'enregistre tout seul (autosave débouncé),
-// la préview à droite se met à jour en direct. Les produits et offres se gèrent
-// sur leurs pages dédiées ; ici ils sont montrés en lecture seule dans l'aperçu.
+// Éditeur de vitrine : tout s'enregistre tout seul (autosave débouncé) dans le
+// BROUILLON, la préview à droite se met à jour en direct. Le site public ne
+// change qu'à la publication d'une nouvelle version (5 crédits). Les produits
+// et offres se gèrent sur leurs pages dédiées ; ici ils sont montrés en
+// lecture seule dans l'aperçu.
 export function PageEditor({
   initialPage,
   initialCatalog,
   previewProducts,
   previewOffers,
   verticalKind,
+  publish,
 }: Props) {
   const [page, setPage] = useState<Page>(initialPage);
   const [catalog, setCatalog] = useState<EditableCatalog>(initialCatalog);
@@ -66,6 +78,8 @@ export function PageEditor({
   const [panelMode, setPanelMode] = useState<"edit" | "preview">("edit");
   const [activeSection, setActiveSection] = useState("identite");
   const [saving, setSaving] = useState(false);
+  // Modif locale non publiée : dès qu'on touche un champ, il y a un brouillon.
+  const [dirty, setDirty] = useState(publish.hasDraft);
 
   const showServices = verticalKind !== "product";
   const showShop = verticalKind !== "service";
@@ -74,6 +88,7 @@ export function PageEditor({
   const catalogTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const patch = useCallback((fields: Partial<Page>) => {
+    setDirty(true);
     setPage((prev) => ({ ...prev, ...fields }));
     if (fieldsTimer.current) clearTimeout(fieldsTimer.current);
     fieldsTimer.current = setTimeout(async () => {
@@ -143,7 +158,8 @@ export function PageEditor({
             <p className={styles.editorKicker}>Créateur de vitrine</p>
             <h1>Construis ta boutique, simplement.</h1>
             <p>
-              Ouvre une étape, modifie, regarde le résultat. Tout s&apos;enregistre automatiquement.
+              Ouvre une étape, modifie, regarde le résultat. Tout s&apos;enregistre
+              en brouillon — ton site en ligne ne change qu&apos;à la publication.
             </p>
           </div>
           <Button asChild variant="secondary" className={styles.openPage}>
@@ -155,7 +171,20 @@ export function PageEditor({
 
         <div className={styles.saveStatus} data-saving={saving}>
           <span />
-          {saving ? "Enregistrement…" : "Toutes les modifications sont enregistrées"}
+          {saving
+            ? "Enregistrement du brouillon…"
+            : dirty
+              ? "Brouillon enregistré — modifications non publiées"
+              : "Ton site en ligne est à jour"}
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <PublishButton {...publish} hasDraft={dirty} />
+          {dirty && (
+            <p className="text-xs text-muted-foreground">
+              Tes clients voient encore l&apos;ancienne version.
+            </p>
+          )}
         </div>
 
         <nav className={styles.stepNav} aria-label="Étapes de personnalisation">

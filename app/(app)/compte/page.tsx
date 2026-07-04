@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { PLAN_LABEL, PLAN_LIMITS, projectLimit } from "@/lib/plans";
+import { FLUX_PLANS, PLAN_LABEL, PLAN_LIMITS, projectLimit } from "@/lib/plans";
 import type { CreditEntry, Plan, Profile } from "@/lib/types";
 import { signOut } from "@/app/login/actions";
 import { DeleteAccountForm, ProfileForm } from "@/components/account/profile-settings";
@@ -33,12 +33,12 @@ export default async function ComptePage() {
     { count: projectCount },
   ] = await Promise.all([
     supabase.from("profiles").select("*").eq("user_id", user.id).single<Profile>(),
-    supabase.rpc("apply_monthly_topup", { uid: user.id }),
+    supabase.rpc("apply_plan_topup", { uid: user.id }),
     supabase
       .from("credit_ledger")
       .select("created_at, reason")
       .eq("user_id", user.id)
-      .in("reason", ["signup", "monthly"])
+      .like("reason", "topup:%")
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle<Pick<CreditEntry, "created_at" | "reason">>(),
@@ -50,11 +50,14 @@ export default async function ComptePage() {
   if (!profile) redirect("/login");
 
   const plan = (profile.plan ?? "free") as Plan;
-  const nextRecharge = lastRecharge
-    ? new Date(
-        new Date(lastRecharge.created_at).getTime() + 30 * 86400_000
-      ).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
-    : null;
+  // Recharge : uniquement sur formule payante, ancrée sur le dernier topup.
+  const nextRecharge =
+    PLAN_LIMITS[plan].monthlyCredits > 0 &&
+    lastRecharge?.reason === `topup:${plan}`
+      ? new Date(
+          new Date(lastRecharge.created_at).getTime() + 30 * 86400_000
+        ).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
+      : null;
   const canCreateProject = (projectCount ?? 0) < projectLimit(plan);
 
   return (
@@ -107,7 +110,11 @@ export default async function ComptePage() {
           <div>
             <p className={styles.eyebrow}>Crédits disponibles</p>
             <strong>{balance ?? 0}</strong>
-            <small>{nextRecharge ? `Prochaine recharge le ${nextRecharge}` : "Recharge automatique"}</small>
+            <small>
+              {nextRecharge
+                ? `Prochaine recharge le ${nextRecharge}`
+                : "Recharge via les formules FLUX"}
+            </small>
           </div>
           <Link href="/credits">Voir mon utilisation <ArrowRight aria-hidden="true" /></Link>
         </div>
@@ -115,18 +122,19 @@ export default async function ComptePage() {
 
       <section id="formules" className={styles.section}>
         <div className={styles.sectionHeading}>
-          <h2>Formules</h2>
-          <p>Ton offre actuelle et ce qu’elle te permet de faire.</p>
+          <h2>Formules FLUX</h2>
+          <p>Ton offre actuelle et ce qu’elle te permet de faire. <Link href="/formules">Voir le détail des formules</Link></p>
         </div>
         <div className={styles.plans}>
-          {(["free", "plus"] as Plan[]).map((item) => (
+          {FLUX_PLANS.map((item) => (
             <article className={item === plan ? styles.planActive : styles.plan} key={item}>
               <div className={styles.planTop}>
                 <span>{PLAN_LABEL[item]}</span>
                 {item === plan && <small>Formule actuelle</small>}
               </div>
-              <strong>{item === "free" ? "0 €" : "Bientôt"}</strong>
+              <strong>{PLAN_LIMITS[item].priceEur === 0 ? "0 €" : `${PLAN_LIMITS[item].priceEur} €/mois`}</strong>
               <ul>
+                <li><Check aria-hidden="true" /> {PLAN_LIMITS[item].monthlyCredits > 0 ? `${PLAN_LIMITS[item].monthlyCredits} crédits/mois` : "100 crédits offerts"}</li>
                 <li><Check aria-hidden="true" /> {PLAN_LIMITS[item].projects} projet{PLAN_LIMITS[item].projects > 1 ? "s" : ""}</li>
                 <li><Check aria-hidden="true" /> {PLAN_LIMITS[item].offers} offres actives</li>
                 <li><Check aria-hidden="true" /> {PLAN_LIMITS[item].customDomain ? "Domaine personnalisé" : "Adresse FLUX incluse"}</li>

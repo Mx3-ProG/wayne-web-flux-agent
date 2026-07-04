@@ -36,9 +36,16 @@ export async function createOffer(): Promise<{ error?: string; id?: string }> {
     return { error: "Limite d'offres atteinte pour ton forfait." };
   }
 
+  // Créée en brouillon (`new`) : invisible sur la vitrine publique tant
+  // qu'une version du site n'est pas publiée.
   const { data: offer, error: insertError } = await supabase
     .from("offers")
-    .insert({ page_id: pageId, title: "Nouvelle offre", position: count ?? 0 })
+    .insert({
+      page_id: pageId,
+      title: "Nouvelle offre",
+      position: count ?? 0,
+      draft_status: "new",
+    })
     .select("id")
     .single();
   if (insertError || !offer) return { error: "Création impossible." };
@@ -73,8 +80,11 @@ export async function createOfferFromTunnel(
     return { error: "Limite d'offres atteinte pour ton forfait." };
   }
 
+  // Comme toute création : en brouillon (`new`), publiée avec la prochaine
+  // version du site.
   const { error: insertError } = await supabase.from("offers").insert({
     page_id: pageId,
+    draft_status: "new",
     title: fields.title.trim().slice(0, 80) || "Nouvelle offre",
     description: fields.description.trim().slice(0, 300),
     kind: fields.kind,
@@ -99,9 +109,27 @@ export async function updateOffer(
   fields: Partial<OfferFields>
 ): Promise<{ error?: string }> {
   const supabase = await createClient();
-  // RLS "own offers" garantit que seule une offre du user est modifiable.
-  const { error } = await supabase.from("offers").update(fields).eq("id", offerId);
-  if (error) return { error: "Enregistrement impossible." };
+  // RLS "own offers" garantit que seule une offre du user est lisible/modifiable.
+  const { data: offer } = await supabase
+    .from("offers")
+    .select("draft_status")
+    .eq("id", offerId)
+    .single();
+  if (!offer) return { error: "Offre introuvable." };
+
+  if (offer.draft_status === "new") {
+    // Jamais publiée (invisible en public) : on écrit directement les colonnes.
+    const { error } = await supabase.from("offers").update(fields).eq("id", offerId);
+    if (error) return { error: "Enregistrement impossible." };
+  } else {
+    // Déjà publiée : les modifications vont dans le brouillon, appliquées à la
+    // prochaine publication du site.
+    const { error } = await supabase.rpc("merge_offer_draft", {
+      oid: offerId,
+      fields,
+    });
+    if (error) return { error: "Enregistrement impossible." };
+  }
   revalidatePath("/offres");
   revalidatePath("/ma-page");
   return {};
@@ -109,8 +137,39 @@ export async function updateOffer(
 
 export async function deleteOffer(offerId: string): Promise<{ error?: string }> {
   const supabase = await createClient();
-  const { error } = await supabase.from("offers").delete().eq("id", offerId);
-  if (error) return { error: "Suppression impossible." };
+  const { data: offer } = await supabase
+    .from("offers")
+    .select("draft_status")
+    .eq("id", offerId)
+    .single();
+  if (!offer) return { error: "Offre introuvable." };
+
+  if (offer.draft_status === "new") {
+    // Jamais publiée : suppression immédiate.
+    const { error } = await supabase.from("offers").delete().eq("id", offerId);
+    if (error) return { error: "Suppression impossible." };
+  } else {
+    // Publiée : reste visible en public jusqu'à la prochaine publication.
+    const { error } = await supabase
+      .from("offers")
+      .update({ draft_status: "deleted" })
+      .eq("id", offerId);
+    if (error) return { error: "Suppression impossible." };
+  }
+  revalidatePath("/offres");
+  revalidatePath("/ma-page");
+  return {};
+}
+
+// Annule une suppression différée (draft_status = 'deleted').
+export async function restoreOffer(offerId: string): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("offers")
+    .update({ draft_status: null })
+    .eq("id", offerId)
+    .eq("draft_status", "deleted");
+  if (error) return { error: "Restauration impossible." };
   revalidatePath("/offres");
   revalidatePath("/ma-page");
   return {};

@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import type {
   Offer,
+  Page,
   Product,
   ProductCategory,
   Service,
@@ -27,12 +28,42 @@ export default async function MaPagePage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const page = await getActivePage(supabase, user.id);
+  const rawPage = await getActivePage(supabase, user.id);
 
-  if (!page) return <CreatePageWizard />;
+  if (!rawPage) return <CreatePageWizard />;
+
+  // L'éditeur travaille sur le brouillon : état publié + modifications en
+  // attente (pages.draft). La vitrine publique, elle, ne lit que les colonnes.
+  const page: Page = { ...rawPage, ...(rawPage.draft ?? {}) };
+
+  const [{ data: balance }, { data: lastVersion }, { count: pendingOffers }] =
+    await Promise.all([
+      supabase.rpc("credit_balance", { uid: user.id }),
+      supabase
+        .from("page_versions")
+        .select("version")
+        .eq("page_id", page.id)
+        .order("version", { ascending: false })
+        .limit(1)
+        .maybeSingle<{ version: number }>(),
+      supabase
+        .from("offers")
+        .select("id", { count: "exact", head: true })
+        .eq("page_id", page.id)
+        .or("draft.not.is.null,draft_status.not.is.null"),
+    ]);
+  const hasDraft = rawPage.draft != null || (pendingOffers ?? 0) > 0;
+  const publishProps = {
+    pageId: page.id,
+    balance: balance ?? 0,
+    hasDraft,
+    nextVersion: (lastVersion?.version ?? 0) + 1,
+  };
 
   const params = await searchParams;
-  if (params.view !== "editor") return <VitrineGuide initialPage={page} />;
+  if (params.view !== "editor") {
+    return <VitrineGuide initialPage={page} publish={publishProps} />;
+  }
 
   const [
     { data: families },
@@ -77,13 +108,20 @@ export default async function MaPagePage({
     products: allProducts.filter((p) => p.category_id === c.id),
   }));
 
+  // L'aperçu montre l'état futur : brouillons d'offres appliqués, suppressions
+  // différées exclues.
+  const previewOffers = ((offers ?? []) as Offer[])
+    .filter((o) => o.draft_status !== "deleted")
+    .map((o) => ({ ...o, ...(o.draft ?? {}) }));
+
   return (
     <PageEditor
       initialPage={page}
       initialCatalog={catalog}
       previewProducts={previewProducts}
-      previewOffers={(offers ?? []) as Offer[]}
+      previewOffers={previewOffers}
       verticalKind={getVertical(page.vertical).kind}
+      publish={publishProps}
     />
   );
 }

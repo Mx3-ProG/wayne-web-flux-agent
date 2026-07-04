@@ -20,14 +20,22 @@ import { FONTS } from "@/lib/verticals";
 import { VITRINE_THEMES } from "@/lib/vitrine-themes";
 import { savePageFields } from "@/app/(app)/ma-page/actions";
 import { PhotoUpload } from "./photo-upload";
+import { PublishButton } from "./publish-button";
+import type { PublishProps } from "./page-editor";
 import styles from "@/components/commerce/setup-tunnel.module.css";
 
-export function VitrineGuide({ initialPage }: { initialPage: Page }) {
+export function VitrineGuide({
+  initialPage,
+  publish,
+}: {
+  initialPage: Page;
+  publish: PublishProps;
+}) {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [page, setPage] = useState(initialPage);
   const [pending, startTransition] = useTransition();
-  const progress = ((step + 1) / 6) * 100;
+  const progress = Math.min(100, ((step + 1) / 6) * 100);
   const canContinue =
     step === 1
       ? Boolean(page.business_name.trim() && page.job_title.trim() && page.city.trim())
@@ -56,9 +64,11 @@ export function VitrineGuide({ initialPage }: { initialPage: Page }) {
         toast.error(result.error);
         return;
       }
-      toast.success("Ta vitrine a été mise à jour.");
-      router.push("/ma-page?view=editor");
+      // Les modifications sont en brouillon : le site public ne bougera qu'à
+      // la publication d'une nouvelle version (étape suivante).
+      toast.success("Brouillon enregistré.");
       router.refresh();
+      setStep(6);
     });
   }
 
@@ -67,7 +77,7 @@ export function VitrineGuide({ initialPage }: { initialPage: Page }) {
       <header className={styles.header}>
         <Link href="/espace" className={styles.brand}>WAYNE<span>WEB</span><small>FLUX</small></Link>
         <div className={styles.progressMeta}>
-          <span>Étape {step + 1} sur 6</span>
+          <span>Étape {Math.min(step + 1, 6)} sur 6</span>
           <div className={styles.progress}><i style={{ width: `${progress}%` }} /></div>
         </div>
         <Link href="/ma-page?view=editor" className={styles.exit}>Éditeur complet</Link>
@@ -162,7 +172,7 @@ export function VitrineGuide({ initialPage }: { initialPage: Page }) {
         )}
 
         {step === 5 && (
-          <Screen kicker="Confirmation" title={<>Ta vitrine est prête à <em>évoluer.</em></>} subtitle="Vérifie l’essentiel avant d’enregistrer toutes les modifications.">
+          <Screen kicker="Confirmation" title={<>Ta vitrine est prête à <em>évoluer.</em></>} subtitle="Vérifie l’essentiel : tes modifications partent en brouillon, tu choisis ensuite de les publier.">
             <VitrinePreview page={page} />
             <div className={styles.reviewGrid}>
               <article className={styles.reviewCard}><small>Commerce</small><strong>{page.business_name}</strong></article>
@@ -173,6 +183,18 @@ export function VitrineGuide({ initialPage }: { initialPage: Page }) {
             <div className={styles.confirm}>
               <button className={styles.back} type="button" onClick={() => setStep(4)}><ArrowLeft aria-hidden="true" /> Modifier</button>
               <button className={styles.primary} type="button" disabled={pending} onClick={save}>{pending ? "Enregistrement…" : "Confirmer mes modifications"} <Store aria-hidden="true" /></button>
+            </div>
+          </Screen>
+        )}
+
+        {step === 6 && (
+          <Screen kicker="Publication" title={<>Ton brouillon est prêt. On le met <em>en ligne ?</em></>} subtitle="Ton site public affiche encore l’ancienne version. Publier une nouvelle version la remplace pour tes clients.">
+            <VitrinePreview page={page} />
+            <div className={styles.confirm}>
+              <PublishButton {...publish} hasDraft />
+              <Link href="/ma-page?view=editor" className={styles.back}>
+                Plus tard — aller à l’éditeur
+              </Link>
             </div>
           </Screen>
         )}

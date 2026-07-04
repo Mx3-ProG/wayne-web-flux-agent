@@ -22,13 +22,25 @@ export default async function OffresPage() {
   ]);
 
   let offers: Offer[] = [];
+  let balance = 0;
+  let nextVersion = 1;
+  let pageHasDraft = false;
   if (page) {
-    const { data } = await supabase
-      .from("offers")
-      .select("*")
-      .eq("page_id", page.id)
-      .order("position");
+    const [{ data }, { data: bal }, { data: lastVersion }] = await Promise.all([
+      supabase.from("offers").select("*").eq("page_id", page.id).order("position"),
+      supabase.rpc("credit_balance", { uid: user.id }),
+      supabase
+        .from("page_versions")
+        .select("version")
+        .eq("page_id", page.id)
+        .order("version", { ascending: false })
+        .limit(1)
+        .maybeSingle<{ version: number }>(),
+    ]);
     offers = (data ?? []) as Offer[];
+    balance = bal ?? 0;
+    nextVersion = (lastVersion?.version ?? 0) + 1;
+    pageHasDraft = page.draft != null;
   }
 
   const plan = (profile?.plan as Plan) ?? "free";
@@ -39,7 +51,9 @@ export default async function OffresPage() {
       <h1 className={styles.title}>Mes offres</h1>
       <p className={styles.subtitle}>
         Tes promos mises en avant en grand tout en haut de ta vitrine. Un client
-        clique, il commande, tu reçois la commande dans ton espace.
+        clique, il commande, tu reçois la commande dans ton espace. Tes
+        changements partent en brouillon : publie une nouvelle version pour les
+        mettre en ligne.
       </p>
 
       {!page ? (
@@ -53,6 +67,10 @@ export default async function OffresPage() {
           userId={user.id}
           plan={plan}
           limit={offerLimit(plan)}
+          pageId={page.id}
+          balance={balance}
+          nextVersion={nextVersion}
+          pageHasDraft={pageHasDraft}
         />
       )}
     </div>

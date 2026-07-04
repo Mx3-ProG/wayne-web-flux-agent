@@ -45,7 +45,7 @@ export function ToolRunner({ tool, balance }: Props) {
         body: JSON.stringify({ tool: tool.slug, inputs }),
       });
       if (res.status === 402) {
-        toast.error("Plus assez de crédits. Ta recharge arrive tous les 30 jours.");
+        toast.error("Plus assez de crédits. Passe à une formule FLUX pour recharger.");
         setRunning(false);
         return;
       }
@@ -136,8 +136,8 @@ export function ToolRunner({ tool, balance }: Props) {
           {!canAfford && (
             <p className="text-sm text-destructive">
               Il te manque des crédits.{" "}
-              <Link href="/credits" className="underline underline-offset-4">
-                Voir mes crédits et la recharge
+              <Link href="/formules" className="underline underline-offset-4">
+                Découvrir les formules FLUX
               </Link>
             </p>
           )}

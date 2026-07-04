@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import type { Offer, OfferKind, Plan } from "@/lib/types";
 import { PLAN_LABEL } from "@/lib/plans";
 import { PhotoUpload } from "@/components/editor/photo-upload";
+import { PublishButton } from "@/components/editor/publish-button";
 import { Input } from "@/components/ui/input";
 import { PriceInput } from "@/components/ui/price-input";
 import { Label } from "@/components/ui/label";
@@ -17,8 +18,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Lock, Sparkles, Trash2 } from "lucide-react";
-import { createOffer, deleteOffer, updateOffer } from "./actions";
+import { Lock, Sparkles, Trash2, Undo2 } from "lucide-react";
+import { createOffer, deleteOffer, restoreOffer, updateOffer } from "./actions";
 import styles from "./offres.module.css";
 
 const KINDS: { value: OfferKind; label: string }[] = [
@@ -32,18 +33,53 @@ type Props = {
   userId: string;
   plan: Plan;
   limit: number;
+  pageId: string;
+  balance: number;
+  nextVersion: number;
+  // La vitrine (/ma-page) a-t-elle aussi un brouillon en attente ?
+  pageHasDraft: boolean;
 };
 
-export function OffersManager({ initialOffers, userId, plan, limit }: Props) {
-  const [offers, setOffers] = useState<Offer[]>(initialOffers);
+export function OffersManager({
+  initialOffers,
+  userId,
+  plan,
+  limit,
+  pageId,
+  balance,
+  nextVersion,
+  pageHasDraft,
+}: Props) {
+  // Vue fusionnée : état publié + brouillon par offre. Les modifications
+  // restent en brouillon jusqu'à la publication d'une version du site.
+  const [offers, setOffers] = useState<Offer[]>(
+    initialOffers.map((o) => ({ ...o, ...(o.draft ?? {}) }))
+  );
   const [pending, startTransition] = useTransition();
   const timers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
-  const used = offers.length;
+  const alive = offers.filter((o) => o.draft_status !== "deleted");
+  const used = alive.length;
   const atLimit = used >= limit;
+  const hasPending =
+    pageHasDraft || offers.some((o) => o.draft != null || o.draft_status != null);
 
   function patch(id: string, fields: Partial<Offer>) {
-    setOffers((prev) => prev.map((o) => (o.id === id ? { ...o, ...fields } : o)));
+    setOffers((prev) =>
+      prev.map((o) =>
+        o.id === id
+          ? {
+              ...o,
+              ...fields,
+              // Hors création : les champs modifiés vivent dans le brouillon.
+              draft:
+                o.draft_status === "new"
+                  ? o.draft
+                  : { ...(o.draft ?? {}), ...fields },
+            }
+          : o
+      )
+    );
     if (timers.current[id]) clearTimeout(timers.current[id]);
     timers.current[id] = setTimeout(async () => {
       const result = await updateOffer(id, fields);
@@ -72,6 +108,8 @@ export function OffersManager({ initialOffers, userId, plan, limit }: Props) {
           compare_at_cents: null,
           active: true,
           position: prev.length,
+          draft: null,
+          draft_status: "new",
           created_at: "",
         },
       ]);
@@ -79,117 +117,181 @@ export function OffersManager({ initialOffers, userId, plan, limit }: Props) {
   }
 
   function remove(id: string) {
-    setOffers((prev) => prev.filter((o) => o.id !== id));
+    const offer = offers.find((o) => o.id === id);
+    if (offer?.draft_status === "new") {
+      // Jamais publiée : disparaît immédiatement.
+      setOffers((prev) => prev.filter((o) => o.id !== id));
+    } else {
+      // Publiée : suppression différée, visible en public jusqu'au publish.
+      setOffers((prev) =>
+        prev.map((o) => (o.id === id ? { ...o, draft_status: "deleted" } : o))
+      );
+    }
     startTransition(async () => {
       const result = await deleteOffer(id);
       if (result.error) toast.error(result.error);
     });
   }
 
+  function restore(id: string) {
+    setOffers((prev) =>
+      prev.map((o) => (o.id === id ? { ...o, draft_status: null } : o))
+    );
+    startTransition(async () => {
+      const result = await restoreOffer(id);
+      if (result.error) toast.error(result.error);
+    });
+  }
+
+  function statusBadge(offer: Offer): string | null {
+    if (offer.draft_status === "new") return "Non publiée";
+    if (offer.draft_status === "deleted") return "Sera supprimée à la publication";
+    if (offer.draft != null) return "Modifications non publiées";
+    return null;
+  }
+
   return (
     <>
       <div className={styles.counter}>
-        <b>{used}</b> / {limit} offre{limit > 1 ? "s" : ""} — forfait {PLAN_LABEL[plan]}
+        <b>{used}</b> / {limit} offre{limit > 1 ? "s" : ""} — formule {PLAN_LABEL[plan]}
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <PublishButton
+          pageId={pageId}
+          balance={balance}
+          hasDraft={hasPending}
+          nextVersion={nextVersion}
+        />
+        {hasPending && (
+          <p className="text-xs text-muted-foreground">
+            Tes clients voient encore l&apos;ancienne version de ta vitrine.
+          </p>
+        )}
       </div>
 
       <div className={styles.grid}>
-        {offers.map((offer) => (
-          <article key={offer.id} className={styles.card}>
-            <div className={styles.cardHead}>
-              <Select
-                value={offer.kind}
-                onValueChange={(kind) => patch(offer.id, { kind: kind as OfferKind })}
-              >
-                <SelectTrigger className={styles.kindSelect}>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {KINDS.map((k) => (
-                    <SelectItem key={k.value} value={k.value}>
-                      {k.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <label className={styles.switch}>
-                <input
-                  type="checkbox"
-                  checked={offer.active}
-                  onChange={(e) => patch(offer.id, { active: e.target.checked })}
-                />
-                {offer.active ? "En ligne" : "Masquée"}
-              </label>
-              <button
-                type="button"
-                className={styles.delete}
-                aria-label="Supprimer l'offre"
-                onClick={() => remove(offer.id)}
-              >
-                <Trash2 aria-hidden="true" />
-              </button>
-            </div>
+        {offers.map((offer) =>
+          offer.draft_status === "deleted" ? (
+            <article
+              key={offer.id}
+              className={styles.card}
+              style={{ opacity: 0.55 }}
+            >
+              <div className={styles.cardHead}>
+                <strong className="flex-1 truncate">{offer.title}</strong>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Sera supprimée à la prochaine publication. En attendant, elle
+                reste visible sur ta vitrine.
+              </p>
+              <Button variant="secondary" size="sm" onClick={() => restore(offer.id)}>
+                <Undo2 aria-hidden="true" /> Annuler la suppression
+              </Button>
+            </article>
+          ) : (
+            <article key={offer.id} className={styles.card}>
+              {statusBadge(offer) && (
+                <p className="text-xs text-muted-foreground -mb-1">
+                  {statusBadge(offer)}
+                </p>
+              )}
+              <div className={styles.cardHead}>
+                <Select
+                  value={offer.kind}
+                  onValueChange={(kind) => patch(offer.id, { kind: kind as OfferKind })}
+                >
+                  <SelectTrigger className={styles.kindSelect}>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {KINDS.map((k) => (
+                      <SelectItem key={k.value} value={k.value}>
+                        {k.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <label className={styles.switch}>
+                  <input
+                    type="checkbox"
+                    checked={offer.active}
+                    onChange={(e) => patch(offer.id, { active: e.target.checked })}
+                  />
+                  {offer.active ? "En ligne" : "Masquée"}
+                </label>
+                <button
+                  type="button"
+                  className={styles.delete}
+                  aria-label="Supprimer l'offre"
+                  onClick={() => remove(offer.id)}
+                >
+                  <Trash2 aria-hidden="true" />
+                </button>
+              </div>
 
-            <div className={styles.field}>
-              <Label>Titre</Label>
-              <Input
-                value={offer.title}
-                maxLength={80}
-                placeholder="Ex : Pack révision hiver"
-                onChange={(e) => patch(offer.id, { title: e.target.value })}
-              />
-            </div>
-
-            <div className={styles.field}>
-              <Label>Description</Label>
-              <Textarea
-                value={offer.description}
-                rows={2}
-                maxLength={300}
-                placeholder="Ce que comprend l'offre"
-                onChange={(e) => patch(offer.id, { description: e.target.value })}
-              />
-            </div>
-
-            <div className={styles.prices}>
               <div className={styles.field}>
-                <Label>Prix (€)</Label>
-                <PriceInput
-                  cents={offer.price_cents}
-                  placeholder="0"
-                  onCents={(c) => patch(offer.id, { price_cents: c })}
+                <Label>Titre</Label>
+                <Input
+                  value={offer.title}
+                  maxLength={80}
+                  placeholder="Ex : Pack révision hiver"
+                  onChange={(e) => patch(offer.id, { title: e.target.value })}
                 />
               </div>
-              <div className={styles.field}>
-                <Label>Prix barré (€, promo)</Label>
-                <PriceInput
-                  cents={offer.compare_at_cents ?? 0}
-                  placeholder="—"
-                  onCents={(c) => patch(offer.id, { compare_at_cents: c === 0 ? null : c })}
-                />
-              </div>
-            </div>
 
-            <div className={styles.field}>
-              <Label>Photo (facultatif)</Label>
-              <div className={styles.photoRow}>
-                <PhotoUpload
-                  userId={userId}
-                  label={offer.image_url ? "Changer la photo" : "Ajouter une photo"}
-                  onUploaded={(url) => patch(offer.id, { image_url: url })}
+              <div className={styles.field}>
+                <Label>Description</Label>
+                <Textarea
+                  value={offer.description}
+                  rows={2}
+                  maxLength={300}
+                  placeholder="Ce que comprend l'offre"
+                  onChange={(e) => patch(offer.id, { description: e.target.value })}
                 />
-                {offer.image_url && (
-                  <button
-                    type="button"
-                    className={styles.removePhoto}
-                    onClick={() => patch(offer.id, { image_url: null })}
-                  >
-                    retirer
-                  </button>
-                )}
               </div>
-            </div>
-          </article>
-        ))}
+
+              <div className={styles.prices}>
+                <div className={styles.field}>
+                  <Label>Prix (€)</Label>
+                  <PriceInput
+                    cents={offer.price_cents}
+                    placeholder="0"
+                    onCents={(c) => patch(offer.id, { price_cents: c })}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <Label>Prix barré (€, promo)</Label>
+                  <PriceInput
+                    cents={offer.compare_at_cents ?? 0}
+                    placeholder="—"
+                    onCents={(c) => patch(offer.id, { compare_at_cents: c === 0 ? null : c })}
+                  />
+                </div>
+              </div>
+
+              <div className={styles.field}>
+                <Label>Photo (facultatif)</Label>
+                <div className={styles.photoRow}>
+                  <PhotoUpload
+                    userId={userId}
+                    label={offer.image_url ? "Changer la photo" : "Ajouter une photo"}
+                    onUploaded={(url) => patch(offer.id, { image_url: url })}
+                  />
+                  {offer.image_url && (
+                    <button
+                      type="button"
+                      className={styles.removePhoto}
+                      onClick={() => patch(offer.id, { image_url: null })}
+                    >
+                      retirer
+                    </button>
+                  )}
+                </div>
+              </div>
+            </article>
+          )
+        )}
 
         {!atLimit && (
           <button
@@ -206,10 +308,10 @@ export function OffersManager({ initialOffers, userId, plan, limit }: Props) {
         {plan === "free" && (
           <div className={styles.upsell}>
             <Lock aria-hidden="true" />
-            <strong>Forfait Plus</strong>
-            <p>Jusqu&apos;à 5 offres en avant sur ta vitrine, et bien plus.</p>
-            <Button variant="secondary" size="sm" disabled title="Bientôt disponible">
-              Passer au forfait Plus (bientôt)
+            <strong>Formules FLUX</strong>
+            <p>Jusqu&apos;à 30 offres en avant sur ta vitrine, des crédits chaque mois, et bien plus.</p>
+            <Button asChild variant="secondary" size="sm">
+              <a href="/formules">Découvrir les formules</a>
             </Button>
           </div>
         )}

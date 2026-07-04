@@ -1,6 +1,6 @@
 // Types des lignes de la base (miroir de supabase/migrations/00001_schema.sql)
 
-export type Plan = "free" | "plus";
+export type Plan = "free" | "pro" | "business" | "entreprise";
 
 export type Profile = {
   user_id: string;
@@ -56,9 +56,32 @@ export type Page = {
   custom_domain: string | null;
   ical_token: string;
   journey_completed_steps: number[];
+  draft: Partial<PageDraftFields> | null;
   created_at: string;
   updated_at: string;
 };
+
+// Champs de la vitrine éditables via le brouillon (pages.draft).
+export type PageDraftFields = Pick<
+  Page,
+  | "business_name"
+  | "job_title"
+  | "tagline"
+  | "city"
+  | "address"
+  | "phone"
+  | "socials"
+  | "colors"
+  | "font"
+  | "theme"
+  | "logo_url"
+  | "hero_url"
+  | "gallery"
+  | "reviews"
+  | "offer"
+  | "hours_text"
+  | "legal"
+>;
 
 export type ServiceFamily = {
   id: string;
@@ -134,6 +157,17 @@ export type Product = {
 
 export type OfferKind = "produit" | "service" | "evenement";
 
+export type OfferDraftFields = Pick<
+  Offer,
+  | "title"
+  | "description"
+  | "image_url"
+  | "kind"
+  | "price_cents"
+  | "compare_at_cents"
+  | "active"
+>;
+
 export type Offer = {
   id: string;
   page_id: string;
@@ -145,6 +179,20 @@ export type Offer = {
   compare_at_cents: number | null;
   active: boolean;
   position: number;
+  // Brouillon : modifications en attente de publication. `new` = jamais
+  // publiée (invisible en public), `deleted` = supprimée à la prochaine
+  // publication.
+  draft: Partial<OfferDraftFields> | null;
+  draft_status: "new" | "deleted" | null;
+  created_at: string;
+};
+
+export type PageVersion = {
+  id: string;
+  page_id: string;
+  version: number;
+  snapshot: Record<string, unknown>;
+  credits_spent: number;
   created_at: string;
 };
 
