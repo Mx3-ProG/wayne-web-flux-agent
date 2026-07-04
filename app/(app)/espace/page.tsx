@@ -6,8 +6,9 @@ import { TOOLS } from "@/lib/tools-config";
 import { voiceCompletion } from "@/lib/voice";
 import { parisNow } from "@/lib/slots";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { CopyButton } from "@/components/copy-button";
+import { ArrowRight } from "lucide-react";
+import styles from "./espace.module.css";
 
 export const metadata = { title: "Mon espace" };
 
@@ -239,67 +240,68 @@ export default async function EspacePage() {
   ];
 
   const nextStep = steps.find((s) => !s.done);
+  const completedCount = steps.filter((step) => step.done).length;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-8 pb-24">
-      <div>
-        <p className="text-xs uppercase tracking-[0.2em] text-red-bright mb-2">
-          Bienvenue
-        </p>
-        <h1 className="text-4xl font-bold mb-2">
-          {profile?.name ? `Te revoilà ${profile.name}` : "Te revoilà"}
-        </h1>
-        <p className="text-muted-foreground">
-          On avance dans l&apos;ordre. À chaque étape, une seule chose à faire.
-        </p>
+    <div className={styles.page}>
+      <section className={styles.hero}>
+        <div>
+          <p className={styles.eyebrow}>Vue d&apos;ensemble</p>
+          <h1>{profile?.name ? `Bonjour ${profile.name}` : "Bonjour"}</h1>
+          <p>Voici ce qui fait avancer ton commerce aujourd&apos;hui.</p>
+        </div>
+        <Link className={styles.heroAction} href="/outil/posts">
+          Créer un contenu <ArrowRight aria-hidden="true" />
+        </Link>
+      </section>
+
+      <section className={styles.metrics} aria-label="Indicateurs">
+        <article className={styles.metric}>
+          <span>Ton espace est prêt à</span>
+          <strong>{completion}%</strong>
+          <small>{completion >= 70 ? "Ta voix est bien configurée" : "Continue de personnaliser ta voix"}</small>
+        </article>
+        <article className={styles.metric}>
+          <span>Rendez-vous à venir</span>
+          <strong>{upcomingCount}</strong>
+          <small>Agenda synchronisé</small>
+        </article>
+        <article className={styles.metric}>
+          <span>Crédits disponibles</span>
+          <strong>{balance ?? 0}</strong>
+          <small>{generations.length} contenu{generations.length > 1 ? "s" : ""} créé{generations.length > 1 ? "s" : ""}</small>
+        </article>
+      </section>
+
+      <div className={styles.sectionHeader}>
+        <div><h2>Ton parcours</h2><p>Une étape claire à la fois.</p></div>
+        <span className={styles.progressLabel}><b>{completedCount}</b> / 5 terminé</span>
       </div>
 
-      <ol className="relative space-y-6 before:absolute before:left-[15px] before:top-2 before:bottom-2 before:w-px before:bg-border">
+      <ol className={styles.journey}>
         {steps.map((step) => (
-          <li key={step.n} id={`etape-${step.n}`} className="relative pl-12 scroll-mt-20">
-            <span
-              className={`absolute left-0 top-0 flex size-8 items-center justify-center rounded-full border text-sm font-semibold ${
-                step.done
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-card"
-              }`}
-            >
+          <li key={step.n} id={`etape-${step.n}`} className={step.done ? styles.stepDone : styles.step}>
+            <span className={styles.stepNumber}>
               {step.done ? "✓" : step.n}
             </span>
-            <Card>
-              <CardContent className="pt-1">
-                <div className="flex items-center justify-between mb-3">
-                  <h2 className="font-semibold">{step.title}</h2>
-                  <span
-                    className={`text-xs rounded-full px-2 py-0.5 ${
-                      step.done
-                        ? "bg-primary/15 text-red-bright"
-                        : "bg-secondary text-muted-foreground"
-                    }`}
-                  >
-                    {step.done ? "Validé" : `Étape ${step.n} sur 5`}
-                  </span>
-                </div>
-                {step.content}
-              </CardContent>
-            </Card>
+            <div>
+              <h3>{step.title}</h3>
+              <div className={styles.stepContent}>{step.content}</div>
+            </div>
+            <span className={styles.status}>{step.done ? "Terminé" : "À faire"}</span>
           </li>
         ))}
       </ol>
 
       {nextStep && (
-        <div className="fixed bottom-4 inset-x-4 z-30">
-          <div className="mx-auto max-w-3xl flex items-center justify-between gap-4 rounded-2xl border border-primary/40 bg-black/90 backdrop-blur px-5 py-3 shadow-[0_0_30px_var(--red-glow)]">
-            <div>
-              <p className="text-[10px] uppercase tracking-widest text-red-bright">
-                Ta prochaine étape
-              </p>
-              <p className="font-medium text-sm">{nextStep.title}</p>
-            </div>
-            <Button asChild size="sm">
-              <a href={`#etape-${nextStep.n}`}>Y aller →</a>
-            </Button>
+        <div className={styles.nextDock}>
+          <div>
+            <small>Prochaine étape</small>
+            <strong>{nextStep.title}</strong>
           </div>
+          <a href={`#etape-${nextStep.n}`} aria-label={`Aller à : ${nextStep.title}`}>
+            <ArrowRight aria-hidden="true" />
+          </a>
         </div>
       )}
     </div>

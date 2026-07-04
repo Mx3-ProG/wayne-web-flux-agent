@@ -108,6 +108,10 @@ export function Tunnel() {
               C&apos;est parti <ArrowRight aria-hidden="true" />
             </button>
             <small>Gratuit · 2 minutes · Sans carte bancaire</small>
+            <div className={styles.socialProof}>
+              <span aria-hidden="true"><i>ML</i><i>SC</i><i>TN</i></span>
+              <p>Déjà 150 commerçants ont commencé avec Wayne‑Web.</p>
+            </div>
           </div>
         )}
 

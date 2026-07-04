@@ -5,6 +5,7 @@ import Link from "next/link";
 import { toast } from "sonner";
 import type { Page } from "@/lib/types";
 import { FONTS } from "@/lib/verticals";
+import { VITRINE_THEMES } from "@/lib/vitrine-themes";
 import {
   savePageFields,
   syncCatalog,
@@ -32,6 +33,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import styles from "./page-editor.module.css";
 
 type EditableCatalog = {
   name: string;
@@ -49,6 +51,7 @@ export function PageEditor({ initialPage, initialCatalog }: Props) {
   const [page, setPage] = useState<Page>(initialPage);
   const [catalog, setCatalog] = useState<EditableCatalog>(initialCatalog);
   const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">("mobile");
+  const [panelMode, setPanelMode] = useState<"edit" | "preview">("edit");
   const [saving, setSaving] = useState(false);
 
   const fieldsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -108,8 +111,17 @@ export function PageEditor({ initialPage, initialCatalog }: Props) {
   }));
 
   return (
-    <div className="grid lg:grid-cols-[1fr_minmax(340px,42%)] gap-6 items-start">
-      <div className="space-y-4">
+    <>
+      <div className={styles.mobileSwitch} aria-label="Mode de l’éditeur">
+        <button className={panelMode === "edit" ? styles.active : ""} type="button" onClick={() => setPanelMode("edit")}>
+          Réglages
+        </button>
+        <button className={panelMode === "preview" ? styles.active : ""} type="button" onClick={() => setPanelMode("preview")}>
+          Aperçu
+        </button>
+      </div>
+      <div className={styles.editor}>
+      <div className={`${styles.panel} ${panelMode === "preview" ? styles.panelHidden : ""} space-y-4`}>
         <div className="flex items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold">Ma vitrine</h1>
@@ -412,6 +424,28 @@ export function PageEditor({ initialPage, initialCatalog }: Props) {
           <AccordionItem value="style" className="border rounded-xl px-4">
             <AccordionTrigger>Le style — couleurs et écriture</AccordionTrigger>
             <AccordionContent className="space-y-4 pt-1">
+              <div className="space-y-2">
+                <Label>Ambiance de ta vitrine</Label>
+                <div className="grid sm:grid-cols-2 gap-2">
+                  {VITRINE_THEMES.map((theme) => (
+                    <button
+                      key={theme.id}
+                      type="button"
+                      onClick={() => patch({ theme: theme.id })}
+                      className={`min-h-20 rounded-2xl border p-3 text-left transition-colors ${
+                        (page.theme || "editorial") === theme.id
+                          ? "border-primary bg-primary/10"
+                          : "border-border bg-secondary/40"
+                      }`}
+                    >
+                      <strong className="block text-sm">{theme.name}</strong>
+                      <span className="mt-1 block text-xs text-muted-foreground">
+                        {theme.description}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
               <div className="grid grid-cols-3 gap-3">
                 {(
                   [
@@ -557,36 +591,33 @@ export function PageEditor({ initialPage, initialCatalog }: Props) {
       </div>
 
       {/* Préview live */}
-      <div className="lg:sticky lg:top-20">
-        <div className="flex items-center justify-between mb-2">
-          <p className="text-sm text-muted-foreground">Ta page, en direct</p>
-          <div className="flex gap-1 text-xs">
+      <div className={`${styles.previewPanel} ${panelMode === "edit" ? styles.panelHidden : ""}`}>
+        <div className={styles.previewToolbar}>
+          <p>Ta page, en direct</p>
+          <div className={styles.deviceToggle}>
             <button
               type="button"
               onClick={() => setPreviewMode("mobile")}
-              className={`px-2.5 py-1 rounded-md ${previewMode === "mobile" ? "bg-primary text-primary-foreground" : "bg-secondary"}`}
+              className={previewMode === "mobile" ? styles.active : ""}
             >
               Téléphone
             </button>
             <button
               type="button"
               onClick={() => setPreviewMode("desktop")}
-              className={`px-2.5 py-1 rounded-md ${previewMode === "desktop" ? "bg-primary text-primary-foreground" : "bg-secondary"}`}
+              className={previewMode === "desktop" ? styles.active : ""}
             >
               Ordi
             </button>
           </div>
         </div>
-        <div
-          className={`mx-auto overflow-hidden rounded-2xl border border-border bg-white shadow-2xl transition-all ${
-            previewMode === "mobile" ? "max-w-[375px]" : "max-w-full"
-          }`}
-        >
-          <div className="h-[70vh] overflow-y-auto">
+        <div className={`${styles.device} ${previewMode === "mobile" ? styles.deviceMobile : styles.deviceDesktop}`}>
+          <div className={styles.deviceScreen}>
             <VitrineView page={page} families={previewFamilies} />
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

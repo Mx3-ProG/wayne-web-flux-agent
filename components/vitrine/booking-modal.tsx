@@ -78,13 +78,13 @@ export function BookingModal({ slug, service, accentColor, onClose }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 p-3 backdrop-blur-md sm:items-center sm:p-4"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
     >
       <div
-        className="w-full max-w-md max-h-[85vh] overflow-y-auto rounded-2xl bg-[#faf7f4] p-6 text-[#1c1c1c]"
+        className="w-full max-w-md max-h-[88svh] overflow-y-auto rounded-[28px] border border-white/60 bg-[#faf7f4]/95 p-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] text-[#1c1c1c] shadow-[0_30px_100px_rgb(0_0_0_/_55%)] backdrop-blur-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between mb-1">
@@ -119,7 +119,7 @@ export function BookingModal({ slug, service, accentColor, onClose }: Props) {
                   type="button"
                   disabled={d.status !== "open"}
                   onClick={() => pickDay(d.date)}
-                  className="rounded-xl bg-white px-3 py-3 text-center shadow-sm disabled:opacity-40 disabled:bg-transparent hover:shadow transition-shadow"
+                  className="min-h-14 rounded-2xl border border-black/5 bg-white/80 px-3 py-3 text-center shadow-sm disabled:opacity-40 disabled:bg-transparent hover:shadow transition-shadow"
                 >
                   <span className="block font-medium capitalize">
                     {formatDay(d.date)}
@@ -156,7 +156,7 @@ export function BookingModal({ slug, service, accentColor, onClose }: Props) {
                     setTime(s);
                     setStep("form");
                   }}
-                  className="rounded-lg bg-white px-2 py-2 text-sm font-medium shadow-sm hover:shadow transition-shadow"
+                  className="min-h-12 rounded-xl border border-black/5 bg-white/80 px-2 py-2 text-sm font-medium shadow-sm hover:shadow transition-shadow"
                 >
                   {s}
                 </button>

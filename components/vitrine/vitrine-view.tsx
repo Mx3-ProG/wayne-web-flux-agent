@@ -45,6 +45,7 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
   return (
     <div
       className={styles.page}
+      data-theme={page.theme || "editorial"}
       style={
         {
           fontFamily: font.css,

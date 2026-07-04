@@ -1,97 +1,197 @@
 .shell {
   min-height: 100svh;
+  padding-left: 244px;
+}
+
+.sidebar {
+  position: fixed;
+  inset: 16px auto 16px 16px;
+  z-index: 50;
+  display: flex;
+  width: 212px;
+  padding: 16px 12px;
+  flex-direction: column;
+  border: 1px solid var(--ww-line);
+  border-radius: 25px;
+  background: rgb(18 18 22 / 82%);
+  box-shadow: var(--ww-shadow-float);
+  backdrop-filter: blur(24px) saturate(160%);
+}
+
+.brand {
+  display: flex;
+  min-height: 52px;
+  padding: 0 8px;
+  align-items: center;
+  gap: 11px;
+  color: #fff;
+  text-decoration: none;
+}
+.brandMark {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  place-items: center;
+  border-radius: 11px;
+  background: linear-gradient(145deg, #ff3a52, #c90d27);
+  box-shadow: 0 10px 25px rgb(239 35 60 / 26%), inset 0 1px rgb(255 255 255 / 24%);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 850;
+}
+.brandWords {
+  font-size: 14px;
+  font-weight: 850;
+  letter-spacing: -.055em;
+}
+.brandWords b { color: var(--ww-red-soft); }
+.brandWords small {
+  margin-left: 7px;
+  color: #6f6c73;
+  font-size: 6px;
+  letter-spacing: .18em;
+}
+
+.sidebarNav {
+  display: grid;
+  margin-top: 38px;
+  gap: 5px;
+}
+.navLink, .navLinkActive {
+  position: relative;
+  display: flex;
+  min-height: 48px;
+  padding: 0 13px;
+  align-items: center;
+  gap: 11px;
+  border-radius: 14px;
+  color: #8e8b92;
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color .18s ease, background .18s ease, transform .18s ease;
+}
+.navLink svg, .navLinkActive svg { width: 18px; }
+.navLink:hover { color: #fff; background: rgb(255 255 255 / 5%); }
+.navLinkActive {
+  background: linear-gradient(120deg, rgb(239 35 60 / 20%), rgb(239 35 60 / 6%));
+  color: #fff;
+  box-shadow: inset 0 0 0 1px rgb(255 99 120 / 18%);
+}
+.navLinkActive::before {
+  position: absolute;
+  left: -3px;
+  width: 3px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--ww-red-soft);
+  content: "";
+}
+.sidebarHint {
+  margin: auto 11px 7px;
+  color: #555259;
+  font-size: 10px;
+  line-height: 1.5;
 }
 
 .header {
   position: sticky;
   top: 0;
   z-index: 40;
-  border-bottom: 1px solid rgb(255 255 255 / 8%);
-  background: rgb(7 7 8 / 78%);
-  backdrop-filter: blur(18px);
+  padding: 16px 22px 0;
 }
-
 .headerInner {
   display: flex;
-  width: min(1240px, calc(100% - 32px));
-  height: 70px;
+  width: min(1200px, 100%);
+  min-height: 54px;
   margin: 0 auto;
   align-items: center;
-  justify-content: space-between;
-  gap: 20px;
+  justify-content: flex-end;
 }
-
-.brand {
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: baseline;
-  color: #fff;
-  font-size: 17px;
-  font-weight: 850;
-  letter-spacing: -.06em;
-  text-decoration: none;
-}
-.brand span { color: #ef233c; }
-.brand small {
-  margin-left: 8px;
-  color: #747177;
-  font-size: 7px;
-  letter-spacing: .2em;
-}
-
-.desktopNav {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-}
-.navLink {
-  display: inline-flex;
-  min-height: 42px;
-  padding: 0 13px;
-  align-items: center;
-  gap: 7px;
-  border-radius: 999px;
-  color: #979399;
-  font-size: 12px;
-  text-decoration: none;
-  transition: color .2s ease, background .2s ease;
-}
-.navLink svg { width: 15px; }
-.navLink:hover { background: #141417; color: #fff; }
-
+.mobileBrand { display: none; }
 .actions { display: flex; align-items: center; gap: 8px; }
 .credits {
   display: inline-flex;
-  min-height: 40px;
-  padding: 0 13px;
+  min-height: 42px;
+  padding: 0 14px;
   align-items: center;
   gap: 7px;
-  border: 1px solid rgb(255 99 120 / 30%);
+  border: 1px solid rgb(255 99 120 / 24%);
   border-radius: 999px;
-  background: rgb(239 35 60 / 8%);
-  color: #ff6378;
+  background: rgb(239 35 60 / 9%);
+  color: var(--ww-red-soft);
   font-size: 12px;
-  font-weight: 700;
+  font-weight: 750;
   text-decoration: none;
 }
 .credits svg { width: 15px; }
 
 .main {
-  width: min(1160px, calc(100% - 32px));
+  width: min(1180px, calc(100% - 44px));
   margin: 0 auto;
-  padding: 60px 0 100px;
+  padding: 38px 0 110px;
 }
 .main > div > div:first-child h1 {
-  font-size: clamp(2.4rem, 5vw, 4rem);
-  line-height: 1;
+  font-family: var(--font-inter), sans-serif;
+  font-size: clamp(2.1rem, 5vw, 3.8rem);
+  font-weight: 760;
+  letter-spacing: -.055em;
+  line-height: .98;
 }
-.main > div > div:first-child > p {
-  max-width: 650px;
-  margin-top: 12px;
+.main > div > div:first-child > p { max-width: 650px; margin-top: 12px; }
+.mobileNav { display: none; }
+
+@media (max-width: 979px) {
+  .shell { padding-left: 0; }
+  .sidebar { display: none; }
+  .header { padding: 10px 14px 0; }
+  .headerInner {
+    min-height: 52px;
+    padding: 0 8px 0 12px;
+    justify-content: space-between;
+    border: 1px solid var(--ww-line);
+    border-radius: 18px;
+    background: var(--ww-glass);
+    box-shadow: var(--ww-shadow-float);
+    backdrop-filter: blur(var(--ww-glass-blur)) saturate(160%);
+  }
+  .mobileBrand { display: flex; align-items: center; gap: 9px; color: #d9d6da; font-size: 11px; font-weight: 700; }
+  .mobileBrand .brandMark { width: 31px; height: 31px; flex-basis: 31px; border-radius: 9px; font-size: 14px; }
+  .main { width: min(100% - 28px, 860px); padding-top: 30px; padding-bottom: 120px; }
+  .mobileNav {
+    position: fixed;
+    inset: auto 12px calc(10px + env(safe-area-inset-bottom));
+    z-index: 60;
+    display: grid;
+    height: 68px;
+    padding: 7px;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--ww-line-strong);
+    border-radius: 23px;
+    background: rgb(20 20 25 / 84%);
+    box-shadow: var(--ww-shadow-float);
+    backdrop-filter: blur(26px) saturate(180%);
+  }
+  .mobileNav .navLink, .mobileNav .navLinkActive {
+    min-height: 52px;
+    padding: 4px 2px;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    border-radius: 17px;
+    font-size: 9px;
+  }
+  .mobileNav .navLink svg, .mobileNav .navLinkActive svg { width: 19px; height: 19px; }
+  .mobileNav .navLinkActive::before { display: none; }
 }
 
-@media (max-width: 760px) {
-  .desktopNav { display: none; }
-  .headerInner { height: 62px; }
-  .main { padding-top: 38px; }
+@media (max-width: 440px) {
+  .credits { padding: 0 10px; }
+  .credits svg { display: none; }
+  .mobileBrand > span:last-child { display: none; }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .sidebar, .headerInner, .mobileNav { backdrop-filter: none; }
 }

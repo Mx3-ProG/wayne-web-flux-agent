@@ -15,6 +15,8 @@ export type PageColors = {
   text?: string;
 };
 
+export type PageTheme = "editorial" | "studio" | "local" | "bold";
+
 export type Review = { author: string; text: string };
 export type GalleryPhoto = { url: string; title?: string };
 
@@ -32,6 +34,7 @@ export type Page = {
   socials: Record<string, string>;
   colors: PageColors;
   font: string;
+  theme: PageTheme;
   logo_url: string | null;
   hero_url: string | null;
   gallery: GalleryPhoto[];

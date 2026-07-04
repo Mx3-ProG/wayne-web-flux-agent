@@ -125,6 +125,7 @@ export async function savePageFields(
       | "socials"
       | "colors"
       | "font"
+      | "theme"
       | "logo_url"
       | "hero_url"
       | "gallery"

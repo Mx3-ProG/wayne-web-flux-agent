@@ -3,7 +3,7 @@
   --red-soft: #ff6378;
   --surface: #111114;
   min-height: 100svh;
-  overflow: hidden;
+  overflow-x: hidden;
   background:
     radial-gradient(circle at 80% 5%, rgb(239 35 60 / 13%), transparent 30%),
     #070708;
@@ -11,7 +11,8 @@
 }
 
 .header {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 5;
   display: grid;
   width: min(1180px, calc(100% - 40px));
@@ -19,6 +20,8 @@
   margin: 0 auto;
   grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
+  background: rgb(7 7 8 / 70%);
+  backdrop-filter: blur(18px);
 }
 .header > a:first-child { justify-self: start; text-decoration: none; }
 .brand { display: inline-flex; align-items: baseline; color: #fff; font-size: 17px; font-weight: 850; letter-spacing: -.06em; }
@@ -28,8 +31,8 @@
 .accountLink:hover { color: #fff; }
 .progressMeta { width: min(300px, 100%); justify-self: center; text-align: center; }
 .progressMeta > span { color: #817e82; font-size: 10px; text-transform: uppercase; letter-spacing: .12em; }
-.progress { height: 2px; margin-top: 9px; overflow: hidden; background: #26262a; }
-.progress i { display: block; height: 100%; background: var(--red); transition: width .35s ease; }
+.progress { height: 4px; margin-top: 9px; overflow: hidden; border-radius: 999px; background: #26262a; }
+.progress i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--red), var(--red-soft)); transition: width .35s ease; }
 
 .stage {
   display: grid;
@@ -41,7 +44,7 @@
 }
 .intro, .valueScreen, .reveal, .claim { width: 100%; text-align: center; }
 .intro { max-width: 800px; }
-.introIcon { display: grid; width: 60px; height: 60px; margin: 0 auto 24px; place-items: center; border: 1px solid rgb(239 35 60 / 30%); border-radius: 18px; background: rgb(239 35 60 / 9%); color: var(--red-soft); }
+.introIcon { display: grid; width: 60px; height: 60px; margin: 0 auto 24px; place-items: center; border: 1px solid rgb(255 255 255 / 12%); border-radius: 19px; background: linear-gradient(145deg, rgb(255 99 120 / 22%), rgb(239 35 60 / 7%)); box-shadow: 0 18px 50px rgb(239 35 60 / 15%), inset 0 1px rgb(255 255 255 / 15%); color: var(--red-soft); backdrop-filter: blur(18px); }
 .introIcon svg { width: 27px; }
 .kicker { color: var(--red-soft); font-size: 10px; font-weight: 750; letter-spacing: .2em; text-transform: uppercase; }
 .intro h1, .question h1, .reveal h1, .valueScreen h1, .claim h1 {
@@ -56,6 +59,11 @@
 .intro > p:nth-of-type(2), .claim > p:nth-of-type(2) { max-width: 580px; margin: 24px auto 0; color: #aaa6aa; line-height: 1.7; }
 .intro .primary, .valueScreen .primary { margin-top: 32px; }
 .intro > small { display: block; margin-top: 14px; color: #68656a; font-size: 10px; }
+.socialProof { display: flex; width: fit-content; margin: 23px auto 0; padding: 8px 13px 8px 9px; align-items: center; gap: 11px; border: 1px solid rgb(255 255 255 / 9%); border-radius: 999px; background: rgb(24 24 29 / 66%); box-shadow: inset 0 1px rgb(255 255 255 / 5%); backdrop-filter: blur(18px); }
+.socialProof > span { display: flex; }
+.socialProof i { display: grid; width: 25px; height: 25px; margin-left: -5px; place-items: center; border: 2px solid #16161a; border-radius: 50%; background: linear-gradient(145deg, #45424a, #211f24); color: #ddd9dd; font-size: 6px; font-style: normal; font-weight: 750; }
+.socialProof i:first-child { margin-left: 0; }
+.socialProof p { color: #aaa6aa; font-size: 10px; }
 .primary {
   display: inline-flex;
   min-height: 54px;
@@ -85,7 +93,8 @@
 .choice, .choiceActive, .goal, .goalActive, .tone, .toneActive {
   position: relative;
   border: 1px solid rgb(255 255 255 / 9%);
-  background: var(--surface);
+  background: linear-gradient(145deg, rgb(26 26 31 / 86%), rgb(15 15 18 / 94%));
+  box-shadow: inset 0 1px rgb(255 255 255 / 4%);
   color: #f4f1f3;
   cursor: pointer;
   font: inherit;
@@ -94,7 +103,7 @@
 }
 .choice:hover, .goal:hover, .tone:hover { border-color: rgb(255 99 120 / 40%); transform: translateY(-2px); }
 .choice, .choiceActive { display: flex; min-height: 112px; padding: 20px; flex-direction: column; justify-content: space-between; border-radius: 16px; }
-.choiceActive, .goalActive, .toneActive { border-color: rgb(255 99 120 / 65%); background: rgb(239 35 60 / 8%); }
+.choiceActive, .goalActive, .toneActive { border-color: rgb(255 99 120 / 55%); background: linear-gradient(145deg, rgb(239 35 60 / 16%), rgb(239 35 60 / 5%)); box-shadow: 0 12px 38px rgb(239 35 60 / 8%), inset 0 1px rgb(255 255 255 / 7%); }
 .choice > span, .choiceActive > span { font-size: 22px; }
 .choice strong, .choiceActive strong { font-size: 13px; }
 .choice svg, .choiceActive svg { position: absolute; top: 14px; right: 14px; width: 15px; color: var(--red-soft); }
@@ -110,7 +119,8 @@
 .fields label, .claim form label { text-align: left; }
 .fields label > span, .claim label > span { display: block; margin-bottom: 8px; color: #aaa7ab; font-size: 11px; font-weight: 650; }
 .fields label > span small { float: right; color: #68656a; font-weight: 400; }
-.fields label > div { display: flex; height: 58px; padding: 0 17px; align-items: center; gap: 12px; border: 1px solid rgb(255 255 255 / 10%); border-radius: 14px; background: var(--surface); }
+.fields label > div { display: flex; height: 58px; padding: 0 17px; align-items: center; gap: 12px; border: 1px solid rgb(255 255 255 / 10%); border-radius: 16px; background: rgb(23 23 28 / 78%); box-shadow: inset 0 1px rgb(255 255 255 / 5%); backdrop-filter: blur(14px); }
+.fields label > div:focus-within { border-color: rgb(255 99 120 / 62%); box-shadow: 0 0 0 4px rgb(239 35 60 / 10%); }
 .fields svg { width: 18px; color: var(--red-soft); }
 .fields input, .claim input { width: 100%; border: 0; outline: 0; background: transparent; color: #fff; font: inherit; font-size: 14px; }
 .fields input::placeholder, .claim input::placeholder { color: #555257; }
@@ -171,19 +181,22 @@
   .progressMeta { position: absolute; top: 65px; left: 0; width: 100%; }
   .progressMeta > span { display: none; }
   .accountLink { font-size: 10px; }
-  .stage { width: calc(100% - 30px); min-height: calc(100svh - 145px); padding-top: 55px; }
+  .stage { width: calc(100% - 30px); min-height: calc(100svh - 155px); padding: 55px 0 130px; align-items: start; }
   .intro h1, .question h1, .reveal h1, .valueScreen h1, .claim h1 { font-size: clamp(39px, 11vw, 52px); }
   .choiceGrid { grid-template-columns: 1fr 1fr; }
   .choice, .choiceActive { min-height: 100px; }
   .goalGrid, .toneGrid { grid-template-columns: 1fr; }
   .goal, .goalActive { min-height: 94px; }
   .tone, .toneActive { min-height: 95px; }
-  .controls { width: calc(100% - 30px); min-height: 78px; }
+  .controls { position: fixed; inset: auto 12px calc(10px + env(safe-area-inset-bottom)); z-index: 20; width: auto; min-height: 68px; padding: 7px 7px 7px 16px; border: 1px solid rgb(255 255 255 / 13%); border-radius: 22px; background: rgb(22 22 27 / 84%); box-shadow: 0 20px 55px rgb(0 0 0 / 55%); backdrop-filter: blur(24px) saturate(170%); }
+  .controls .primary { min-height: 52px; }
   .previewHero { padding: 35px 25px 30px; }
   .previewHero h2 { font-size: 35px; }
   .previewStats { padding: 18px; gap: 8px; }
   .previewStats span { grid-template-columns: 20px 1fr; }
   .floatingBack { bottom: 18px; left: 18px; }
+  .socialProof { max-width: 100%; }
+  .socialProof p { text-align: left; }
 }
 
 @media (prefers-reduced-motion: reduce) {

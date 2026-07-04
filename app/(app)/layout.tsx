@@ -11,14 +11,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  CalendarDays,
   Coins,
-  FolderOpen,
-  LayoutDashboard,
   Menu,
-  Store,
 } from "lucide-react";
 import styles from "./app-shell.module.css";
+import { AppNavigation } from "@/components/app-navigation";
 
 export default async function AppLayout({
   children,
@@ -38,37 +35,20 @@ export default async function AppLayout({
 
   return (
     <div className={styles.shell}>
+      <aside className={styles.sidebar}>
+        <Link href="/espace" className={styles.brand}>
+          <span className={styles.brandMark}>W</span>
+          <span className={styles.brandWords}>WAYNE<b>WEB</b><small>FLUX</small></span>
+        </Link>
+        <AppNavigation />
+        <p className={styles.sidebarHint}>Ton commerce.<br />Un seul espace.</p>
+      </aside>
       <header className={styles.header}>
         <div className={styles.headerInner}>
-          <Link href="/espace" className={styles.brand}>
-            WAYNE<span>WEB</span><small>FLUX</small>
-          </Link>
-          <nav className={styles.desktopNav}>
-            <Link
-              href="/espace"
-              className={styles.navLink}
-            >
-              <LayoutDashboard aria-hidden="true" /> Espace
-            </Link>
-            <Link
-              href="/ma-page"
-              className={styles.navLink}
-            >
-              <Store aria-hidden="true" /> Vitrine
-            </Link>
-            <Link
-              href="/agenda"
-              className={styles.navLink}
-            >
-              <CalendarDays aria-hidden="true" /> Agenda
-            </Link>
-            <Link
-              href="/resultats"
-              className={styles.navLink}
-            >
-              <FolderOpen aria-hidden="true" /> Contenus
-            </Link>
-          </nav>
+          <div className={styles.mobileBrand}>
+            <span className={styles.brandMark}>W</span>
+            <span>Wayne Web Flux</span>
+          </div>
           <div className={styles.actions}>
             <Link
               href="/credits"
@@ -120,6 +100,7 @@ export default async function AppLayout({
       <main className={styles.main}>
         {children}
       </main>
+      <AppNavigation mobile />
     </div>
   );
 }

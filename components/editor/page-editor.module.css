@@ -1,0 +1,53 @@
+.editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 42%);
+  align-items: start;
+  gap: 24px;
+}
+.mobileSwitch { display: none; }
+.panel { min-width: 0; }
+.previewPanel { position: sticky; top: 86px; min-width: 0; }
+.previewToolbar { display: flex; margin-bottom: 10px; align-items: center; justify-content: space-between; }
+.previewToolbar p { color: var(--ww-muted); font-size: 12px; }
+.deviceToggle { display: flex; padding: 3px; gap: 2px; border: 1px solid var(--ww-line); border-radius: 12px; background: #111115; }
+.deviceToggle button { min-height: 34px; padding: 0 10px; border: 0; border-radius: 9px; background: transparent; color: #77747b; font: inherit; font-size: 10px; cursor: pointer; }
+.deviceToggle .active { background: #2a2a30; color: #fff; }
+.device {
+  overflow: hidden;
+  margin-inline: auto;
+  border: 1px solid var(--ww-line-strong);
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 0 35px 90px rgb(0 0 0 / 48%);
+  transition: max-width .3s ease;
+}
+.deviceMobile { max-width: 390px; }
+.deviceDesktop { max-width: 100%; }
+.deviceScreen { height: min(720px, 72vh); overflow-y: auto; }
+
+@media (max-width: 1023px) {
+  .mobileSwitch {
+    position: sticky;
+    top: 74px;
+    z-index: 20;
+    display: grid;
+    margin-bottom: 18px;
+    padding: 4px;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid var(--ww-line);
+    border-radius: 16px;
+    background: rgb(22 22 27 / 88%);
+    box-shadow: var(--ww-shadow-float);
+    backdrop-filter: blur(20px);
+  }
+  .mobileSwitch button { min-height: 44px; border: 0; border-radius: 12px; background: transparent; color: #77747b; font: inherit; font-size: 11px; }
+  .mobileSwitch .active { background: rgb(255 255 255 / 9%); color: #fff; }
+  .editor { display: block; }
+  .panelHidden { display: none; }
+  .previewPanel { position: static; }
+  .deviceScreen { height: 74svh; }
+}
+
+@media (max-width: 560px) {
+  .device { border-radius: 20px; }
+}
