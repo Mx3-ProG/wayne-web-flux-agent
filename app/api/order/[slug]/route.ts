@@ -5,7 +5,14 @@ import { formatPrice } from "@/lib/types";
 
 const PHONE_RE = /^[+0-9 ().-]{6,20}$/;
 
-type IncomingItem = { product_id: string; quantity: number };
+// Item entrant : { kind: 'product'|'offer', id, quantity }. On tolère aussi
+// l'ancien format { product_id, quantity }.
+type IncomingItem = {
+  kind?: string;
+  id?: string;
+  product_id?: string;
+  quantity: number;
+};
 
 export async function POST(
   request: Request,
@@ -33,17 +40,21 @@ export async function POST(
     return NextResponse.json({ error: "invalid_contact" }, { status: 400 });
   }
 
-  // Agrège les quantités par produit (ignore les entrées invalides).
-  const wanted = new Map<string, number>();
+  // Agrège les quantités par produit et par offre (ignore les invalides).
+  const wantedProducts = new Map<string, number>();
+  const wantedOffers = new Map<string, number>();
   for (const raw of rawItems) {
     if (!raw || typeof raw !== "object") continue;
-    const { product_id, quantity } = raw as IncomingItem;
-    const id = String(product_id ?? "");
-    const qty = Math.floor(Number(quantity));
-    if (!id || !Number.isFinite(qty) || qty <= 0) continue;
-    wanted.set(id, Math.min(999, (wanted.get(id) ?? 0) + qty));
+    const it = raw as IncomingItem;
+    const qty = Math.floor(Number(it.quantity));
+    if (!Number.isFinite(qty) || qty <= 0) continue;
+    const isOffer = it.kind === "offer";
+    const id = String((isOffer ? it.id : it.id ?? it.product_id) ?? "");
+    if (!id) continue;
+    const target = isOffer ? wantedOffers : wantedProducts;
+    target.set(id, Math.min(999, (target.get(id) ?? 0) + qty));
   }
-  if (wanted.size === 0) {
+  if (wantedProducts.size === 0 && wantedOffers.size === 0) {
     return NextResponse.json({ error: "empty_order" }, { status: 400 });
   }
 
@@ -57,37 +68,72 @@ export async function POST(
     .single();
   if (!page) return NextResponse.json({ error: "not_found" }, { status: 404 });
 
-  // Ne jamais faire confiance aux prix du client : on recharge les produits
-  // actifs de cette page et on recalcule tout côté serveur.
-  const { data: products } = await supabase
-    .from("products")
-    .select("id, name, price_cents, active, page_id, track_stock, stock")
-    .eq("page_id", page.id)
-    .eq("active", true)
-    .in("id", [...wanted.keys()]);
-
-  // Écarte les produits épuisés (stock suivi à 0) : on ne prend pas de commande
-  // qu'on ne pourra pas honorer.
-  const found = (products ?? []).filter((p) => !(p.track_stock && p.stock <= 0));
-  if (found.length === 0) {
-    return NextResponse.json({ error: "invalid_items" }, { status: 400 });
-  }
+  // Ne jamais faire confiance aux prix du client : on recharge produits ET
+  // offres actifs de cette page et on recalcule tout côté serveur.
+  const [{ data: products }, { data: offers }] = await Promise.all([
+    wantedProducts.size > 0
+      ? supabase
+          .from("products")
+          .select("id, name, price_cents, active, page_id, track_stock, stock")
+          .eq("page_id", page.id)
+          .eq("active", true)
+          .in("id", [...wantedProducts.keys()])
+      : Promise.resolve({ data: [] as never[] }),
+    wantedOffers.size > 0
+      ? supabase
+          .from("offers")
+          .select("id, title, price_cents, active, page_id")
+          .eq("page_id", page.id)
+          .eq("active", true)
+          .in("id", [...wantedOffers.keys()])
+      : Promise.resolve({ data: [] as never[] }),
+  ]);
 
   let total = 0;
-  const items = found.map((p) => {
-    // Plafonne la quantité au stock disponible si le stock est suivi.
-    const requested = wanted.get(p.id) ?? 1;
+  const items: {
+    product_id: string | null;
+    offer_id: string | null;
+    name: string;
+    unit_price_cents: number;
+    quantity: number;
+    line_total_cents: number;
+  }[] = [];
+
+  // Produits : écarte les épuisés, plafonne au stock suivi.
+  for (const p of (products ?? []).filter((p) => !(p.track_stock && p.stock <= 0))) {
+    const requested = wantedProducts.get(p.id) ?? 1;
     const quantity = p.track_stock ? Math.min(requested, p.stock) : requested;
+    if (quantity <= 0) continue;
     const lineTotal = p.price_cents * quantity;
     total += lineTotal;
-    return {
+    items.push({
       product_id: p.id,
+      offer_id: null,
       name: p.name,
       unit_price_cents: p.price_cents,
       quantity,
       line_total_cents: lineTotal,
-    };
-  });
+    });
+  }
+
+  // Offres : autonomes, pas de stock.
+  for (const o of offers ?? []) {
+    const quantity = wantedOffers.get(o.id) ?? 1;
+    const lineTotal = o.price_cents * quantity;
+    total += lineTotal;
+    items.push({
+      product_id: null,
+      offer_id: o.id,
+      name: o.title,
+      unit_price_cents: o.price_cents,
+      quantity,
+      line_total_cents: lineTotal,
+    });
+  }
+
+  if (items.length === 0) {
+    return NextResponse.json({ error: "invalid_items" }, { status: 400 });
+  }
 
   const { data: order, error: orderError } = await supabase
     .from("orders")

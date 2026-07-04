@@ -1,21 +1,10 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { signOut } from "@/app/login/actions";
-import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Coins,
-  Menu,
-} from "lucide-react";
+import { Coins } from "lucide-react";
 import styles from "./app-shell.module.css";
 import { AppNavigation } from "@/components/app-navigation";
+import { MobileAppMenu } from "@/components/mobile-app-menu";
 
 export default async function AppLayout({
   children,
@@ -70,50 +59,11 @@ export default async function AppLayout({
             >
               <Coins aria-hidden="true" /> {balance ?? 0}
             </Link>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="secondary" size="sm" aria-label="Ouvrir le menu">
-                  <Menu aria-hidden="true" /> Menu
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link href="/espace">Mon espace</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/ma-page">Ma vitrine</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/commandes">Mes commandes</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/stock">Mon stock</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/agenda">Mon agenda</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/contexte">Ma voix</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/resultats">Mes contenus</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/credits">Mes crédits</Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link href="/compte">Mon compte</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <form action={signOut}>
-                    <button type="submit" className="w-full text-left">
-                      Se déconnecter
-                    </button>
-                  </form>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <MobileAppMenu
+              balance={balance ?? 0}
+              pendingOrders={pendingOrders ?? 0}
+              lowStock={lowStock ?? 0}
+            />
           </div>
         </div>
       </header>

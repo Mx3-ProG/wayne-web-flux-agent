@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createPublicClient } from "@/lib/supabase/public";
 import type {
+  Offer,
   Page,
   Product,
   ProductCategory,
@@ -42,6 +43,7 @@ async function loadVitrine(slug: string) {
     schedulesResult,
     productCategoriesResult,
     productsResult,
+    offersResult,
   ] = await Promise.all([
       supabase
         .from("service_families")
@@ -65,6 +67,12 @@ async function loadVitrine(slug: string) {
         .eq("page_id", page.id)
         .eq("active", true)
         .order("position"),
+      supabase
+        .from("offers")
+        .select("*")
+        .eq("page_id", page.id)
+        .eq("active", true)
+        .order("position"),
     ]);
 
   const relatedError =
@@ -72,7 +80,8 @@ async function loadVitrine(slug: string) {
     servicesResult.error ||
     schedulesResult.error ||
     productCategoriesResult.error ||
-    productsResult.error;
+    productsResult.error ||
+    offersResult.error;
   if (relatedError) {
     console.error("Unable to load public page content", {
       slug,
@@ -101,7 +110,9 @@ async function loadVitrine(slug: string) {
     products: products.filter((product) => product.category_id === category.id),
   }));
 
-  return { page, families, productCategories, bookingEnabled };
+  const offers = (offersResult.data ?? []) as Offer[];
+
+  return { page, families, productCategories, offers, bookingEnabled };
 }
 
 export async function generateMetadata({
@@ -138,7 +149,7 @@ export default async function VitrinePage({
   const data = await loadVitrine(slug);
   if (!data) notFound();
 
-  const { page, families, productCategories, bookingEnabled } = data;
+  const { page, families, productCategories, offers, bookingEnabled } = data;
 
   // SEO local : données structurées LocalBusiness
   const jsonLd = {
@@ -174,6 +185,12 @@ export default async function VitrinePage({
           priceCurrency: "EUR",
         }))
       ),
+      ...offers.map((o) => ({
+        "@type": "Offer",
+        name: o.title,
+        price: (o.price_cents / 100).toFixed(2),
+        priceCurrency: "EUR",
+      })),
     ],
   };
 
@@ -189,6 +206,7 @@ export default async function VitrinePage({
         page={page}
         families={families}
         productCategories={productCategories}
+        offers={offers}
         bookingEnabled={bookingEnabled}
       />
     </>

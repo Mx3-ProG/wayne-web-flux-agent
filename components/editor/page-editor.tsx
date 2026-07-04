@@ -75,6 +75,7 @@ export function PageEditor({
   const [shop, setShop] = useState<EditableShop>(initialShop);
   const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">("mobile");
   const [panelMode, setPanelMode] = useState<"edit" | "preview">("edit");
+  const [activeSection, setActiveSection] = useState("identite");
   const [saving, setSaving] = useState(false);
 
   const showServices = verticalKind !== "product";
@@ -188,22 +189,52 @@ export function PageEditor({
       </div>
       <div className={styles.editor}>
       <div className={`${styles.panel} ${panelMode === "preview" ? styles.panelHidden : ""} space-y-4`}>
-        <div className="flex items-center justify-between gap-4">
+        <div className={styles.editorHeader}>
           <div>
-            <h1 className="text-2xl font-bold">Ma vitrine</h1>
-            <p className="text-sm text-muted-foreground">
-              Tout s&apos;enregistre tout seul.{" "}
-              {saving ? "Enregistrement…" : "À jour."}
+            <p className={styles.editorKicker}>Créateur de vitrine</p>
+            <h1>Construis ta boutique, simplement.</h1>
+            <p>
+              Ouvre une étape, modifie, regarde le résultat. Tout s&apos;enregistre automatiquement.
             </p>
           </div>
-          <Button asChild variant="secondary">
+          <Button asChild variant="secondary" className={styles.openPage}>
             <Link href={`/p/${page.slug}`} target="_blank">
               Voir ma page ↗
             </Link>
           </Button>
         </div>
 
-        <Accordion type="multiple" defaultValue={["identite"]} className="space-y-2">
+        <div className={styles.saveStatus} data-saving={saving}>
+          <span />
+          {saving ? "Enregistrement…" : "Toutes les modifications sont enregistrées"}
+        </div>
+
+        <nav className={styles.stepNav} aria-label="Étapes de personnalisation">
+          {[
+            ["identite", "1", "Identité"],
+            ["photos", "2", "Photos"],
+            ["style", "3", "Style"],
+            [showServices ? "prestations" : "boutique", "4", showServices ? "Prestations" : "Produits"],
+            ["contact", "5", "Contact"],
+          ].map(([value, number, label]) => (
+            <button
+              key={value}
+              type="button"
+              className={activeSection === value ? styles.stepActive : ""}
+              onClick={() => setActiveSection(value)}
+            >
+              <span>{number}</span>{label}
+            </button>
+          ))}
+        </nav>
+
+        <Accordion
+          type="single"
+          collapsible
+          value={activeSection}
+          onValueChange={setActiveSection}
+          className={styles.sectionList}
+        >
           {/* Identité */}
           <AccordionItem value="identite" className="border rounded-xl px-4">
             <AccordionTrigger>Mon commerce — nom, métier, ville</AccordionTrigger>
@@ -233,7 +264,7 @@ export function PageEditor({
                   onChange={(e) => patch({ tagline: e.target.value })}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
                   <Label>Ville</Label>
                   <Input
@@ -359,7 +390,7 @@ export function PageEditor({
                     </Button>
                   </div>
                   {family.services.map((service, si) => (
-                    <div key={si} className="grid grid-cols-[1fr_78px_86px_auto] gap-2 items-center">
+                    <div key={si} className={styles.serviceFields}>
                       <Input
                         value={service.name}
                         maxLength={80}
@@ -483,7 +514,7 @@ export function PageEditor({
                   </div>
                   {category.products.map((product, pi) => (
                     <div key={pi} className="space-y-2 rounded-md border border-border/60 p-2">
-                      <div className="grid grid-cols-[1fr_86px_auto] gap-2 items-center">
+                      <div className={styles.productFields}>
                         <Input
                           value={product.name}
                           maxLength={80}
@@ -521,9 +552,11 @@ export function PageEditor({
                           ×
                         </button>
                       </div>
-                      <Input
+                      <Textarea
                         value={product.description}
                         maxLength={400}
+                        rows={3}
+                        className={styles.longText}
                         placeholder="Description courte (facultatif)"
                         onChange={(e) => {
                           const next = structuredClone(shop);
@@ -622,6 +655,7 @@ export function PageEditor({
                 <Textarea
                   value={page.hours_text}
                   rows={4}
+                  className={styles.longText}
                   maxLength={400}
                   placeholder={"Mar-Ven : 9h - 19h\nSam : 9h - 17h"}
                   onChange={(e) => patch({ hours_text: e.target.value })}
@@ -636,32 +670,27 @@ export function PageEditor({
             <AccordionContent className="space-y-4 pt-1">
               <div className="space-y-2">
                 <Label>Ambiance de ta vitrine</Label>
-                <div className="grid sm:grid-cols-2 gap-2">
+                <div className={styles.themeGrid}>
                   {VITRINE_THEMES.map((theme) => (
                     <button
                       key={theme.id}
                       type="button"
                       onClick={() => patch({ theme: theme.id })}
-                      className={`min-h-20 rounded-2xl border p-3 text-left transition-colors ${
-                        (page.theme || "editorial") === theme.id
-                          ? "border-primary bg-primary/10"
-                          : "border-border bg-secondary/40"
-                      }`}
+                      data-theme={theme.id}
+                      className={(page.theme || "editorial") === theme.id ? styles.themeActive : styles.themeChoice}
                     >
-                      <strong className="block text-sm">{theme.name}</strong>
-                      <span className="mt-1 block text-xs text-muted-foreground">
-                        {theme.description}
-                      </span>
+                      <span className={styles.themePreview}><i /><i /><i /></span>
+                      <strong>{theme.name}</strong>
+                      <small>{theme.description}</small>
                     </button>
                   ))}
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-3">
+              <div className={styles.colorGrid}>
                 {(
                   [
                     ["primary", "Principale"],
                     ["dark", "Foncée"],
-                    ["text", "Écriture"],
                   ] as const
                 ).map(([key, label]) => (
                   <div key={key} className="space-y-2">
@@ -679,7 +708,7 @@ export function PageEditor({
               </div>
               <p className="text-xs text-muted-foreground">
                 La principale colore tes boutons et tes prix. La foncée habille le
-                bas de ta page.
+                bas de ta page. Les textes s&apos;adaptent automatiquement pour rester lisibles.
               </p>
               <div className="space-y-2">
                 <Label>Ton style d&apos;écriture</Label>
@@ -722,6 +751,7 @@ export function PageEditor({
                   <Textarea
                     value={review.text}
                     rows={2}
+                    className={styles.longText}
                     maxLength={300}
                     placeholder="Son avis"
                     onChange={(e) => {
@@ -789,6 +819,7 @@ export function PageEditor({
                   <Textarea
                     value={page.legal[key] ?? ""}
                     rows={5}
+                    className={styles.longText}
                     onChange={(e) =>
                       patch({ legal: { ...page.legal, [key]: e.target.value } })
                     }

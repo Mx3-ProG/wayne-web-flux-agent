@@ -1,16 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import type { Product } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
 
-export type CartLine = { product: Product; quantity: number };
+// Ligne de panier générique : produit OU offre. La clé de panier est
+// `${kind}:${id}` pour éviter les collisions d'ids entre tables.
+export type CartLine = {
+  kind: "product" | "offer";
+  id: string;
+  name: string;
+  price_cents: number;
+  quantity: number;
+};
 
 type Props = {
   slug: string;
   items: CartLine[];
   accentColor: string;
-  onSetQty: (productId: string, quantity: number) => void;
+  onSetQty: (kind: CartLine["kind"], id: string, quantity: number) => void;
   onClose: () => void;
   onDone: () => void;
 };
@@ -21,7 +28,7 @@ export function OrderModal({ slug, items, accentColor, onSetQty, onClose, onDone
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
-  const total = items.reduce((sum, it) => sum + it.product.price_cents * it.quantity, 0);
+  const total = items.reduce((sum, it) => sum + it.price_cents * it.quantity, 0);
   const count = items.reduce((sum, it) => sum + it.quantity, 0);
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
@@ -33,7 +40,7 @@ export function OrderModal({ slug, items, accentColor, onSetQty, onClose, onDone
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        items: items.map((it) => ({ product_id: it.product.id, quantity: it.quantity })),
+        items: items.map((it) => ({ kind: it.kind, id: it.id, quantity: it.quantity })),
         first_name: form.get("first_name"),
         phone: form.get("phone"),
         email: form.get("email"),
@@ -83,29 +90,29 @@ export function OrderModal({ slug, items, accentColor, onSetQty, onClose, onDone
         {step === "cart" && (
           <>
             <ul className="space-y-2 mb-4">
-              {items.map(({ product, quantity }) => (
+              {items.map((line) => (
                 <li
-                  key={product.id}
+                  key={`${line.kind}:${line.id}`}
                   className="flex items-center justify-between gap-3 rounded-2xl border border-black/5 bg-white/80 px-4 py-3 shadow-sm"
                 >
                   <div className="min-w-0">
-                    <p className="truncate font-medium">{product.name}</p>
-                    <p className="text-sm opacity-60">{formatPrice(product.price_cents)}</p>
+                    <p className="truncate font-medium">{line.name}</p>
+                    <p className="text-sm opacity-60">{formatPrice(line.price_cents)}</p>
                   </div>
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
                       aria-label="Retirer un"
-                      onClick={() => onSetQty(product.id, quantity - 1)}
+                      onClick={() => onSetQty(line.kind, line.id, line.quantity - 1)}
                       className="grid h-8 w-8 place-items-center rounded-full border border-black/10 bg-white text-lg leading-none"
                     >
                       −
                     </button>
-                    <span className="w-5 text-center font-medium">{quantity}</span>
+                    <span className="w-5 text-center font-medium">{line.quantity}</span>
                     <button
                       type="button"
                       aria-label="Ajouter un"
-                      onClick={() => onSetQty(product.id, quantity + 1)}
+                      onClick={() => onSetQty(line.kind, line.id, line.quantity + 1)}
                       className="grid h-8 w-8 place-items-center rounded-full border border-black/10 bg-white text-lg leading-none"
                     >
                       +

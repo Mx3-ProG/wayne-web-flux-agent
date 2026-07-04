@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import type { Page, Product, ProductCategory, Service, ServiceFamily } from "@/lib/types";
+import type { Offer, Page, Product, ProductCategory, Service, ServiceFamily } from "@/lib/types";
 import { formatDuration, formatPrice } from "@/lib/types";
 import { getFont } from "@/lib/verticals";
 import { defaultLegal } from "@/lib/legal";
@@ -15,18 +15,27 @@ import {
   Phone,
   ShoppingBag,
   Sparkles,
+  Tag,
 } from "lucide-react";
 import styles from "./vitrine.module.css";
 
 export type FamilyWithServices = ServiceFamily & { services: Service[] };
 export type CategoryWithProducts = ProductCategory & { products: Product[] };
 
+const OFFER_KIND_LABEL: Record<Offer["kind"], string> = {
+  produit: "Produit",
+  service: "Service",
+  evenement: "Événement",
+};
+
 type Props = {
   page: Page;
   families: FamilyWithServices[];
   productCategories?: CategoryWithProducts[];
+  offers?: Offer[];
   onBook?: (service: Service) => void; // absent en préview éditeur
   onAddToCart?: (product: Product) => void; // absent en préview éditeur
+  onAddOffer?: (offer: Offer) => void; // absent en préview éditeur
   cartCount?: number;
   onOpenCart?: () => void;
   poweredBy?: boolean;
@@ -38,13 +47,17 @@ export function VitrineView({
   page,
   families,
   productCategories = [],
+  offers = [],
   onBook,
   onAddToCart,
+  onAddOffer,
   cartCount = 0,
   onOpenCart,
   poweredBy = true,
 }: Props) {
-  const [openFamily, setOpenFamily] = useState<string | null>(null);
+  const [openFamily, setOpenFamily] = useState<string | null>(
+    families[0]?.id ?? null
+  );
   const [legalOpen, setLegalOpen] = useState<string | null>(null);
 
   const colors = {
@@ -58,6 +71,9 @@ export function VitrineView({
   const socials = Object.entries(page.socials || {}).filter(([, v]) => v);
   const hasServices = families.length > 0;
   const hasShop = productCategories.some((c) => c.products.length > 0);
+  const activeOffers = offers.filter((o) => o.active);
+  const hasOffers = activeOffers.length > 0;
+  const primaryAnchor = hasOffers ? "#offres" : "#prestations";
 
   return (
     <div
@@ -96,6 +112,24 @@ export function VitrineView({
             <div className={styles.heroOverlay} />
           </>
         )}
+        <div className={styles.storeNav}>
+          <span className={styles.storeNavName}>
+            {page.logo_url ? (
+              <Image
+                src={page.logo_url}
+                alt=""
+                width={34}
+                height={34}
+              />
+            ) : (
+              <i>{(page.business_name || "M").charAt(0).toUpperCase()}</i>
+            )}
+            <b>{page.business_name || "Mon commerce"}</b>
+          </span>
+          <a href={primaryAnchor}>
+            {hasOffers ? "Voir les offres" : hasServices ? "Réserver" : "Découvrir"}
+          </a>
+        </div>
         <div className={styles.heroInner}>
           {page.logo_url && (
             <Image
@@ -116,11 +150,12 @@ export function VitrineView({
           </h1>
           {page.tagline && <p className={styles.tagline}>{page.tagline}</p>}
           <div className={styles.heroActions}>
-            <a
-              className={styles.heroCta}
-              href={hasServices || !hasShop ? "#prestations" : "#boutique"}
-            >
-              {hasServices || !hasShop ? "Voir les prestations" : "Voir la boutique"}{" "}
+            <a className={styles.heroCta} href={primaryAnchor}>
+              {hasOffers
+                ? "Voir les offres"
+                : hasServices
+                  ? "Voir les prestations"
+                  : "Découvrir la boutique"}{" "}
               <ArrowRight aria-hidden="true" />
             </a>
             <span className={styles.online}>
@@ -131,17 +166,143 @@ export function VitrineView({
         </div>
       </header>
 
-      {/* Prestations */}
+      {/* Offres mises en avant */}
+      {hasOffers && (
+        <section className={styles.offers} id="offres">
+          <div className={styles.sectionHeading}>
+            <p>À ne pas manquer</p>
+            <h2>Mes offres</h2>
+            <span>Des offres à saisir maintenant.</span>
+          </div>
+          <div className={styles.offersGrid}>
+            {activeOffers.map((offer) => {
+              const promo =
+                offer.compare_at_cents != null &&
+                offer.compare_at_cents > offer.price_cents;
+              return (
+                <article key={offer.id} className={styles.offerCard}>
+                  {offer.image_url && (
+                    <div className={styles.offerImage}>
+                      <Image
+                        src={offer.image_url}
+                        alt={offer.title}
+                        fill
+                        className={styles.galleryImage}
+                        sizes="(max-width: 640px) 100vw, 33vw"
+                      />
+                    </div>
+                  )}
+                  <div className={styles.offerBody}>
+                    <span className={styles.offerKind}>
+                      <Tag aria-hidden="true" /> {OFFER_KIND_LABEL[offer.kind]}
+                    </span>
+                    <h3 className={styles.offerTitle}>{offer.title}</h3>
+                    {offer.description && (
+                      <p className={styles.offerDesc}>{offer.description}</p>
+                    )}
+                    <div className={styles.offerFoot}>
+                      <span className={styles.offerPrice}>
+                        {promo && (
+                          <s className={styles.offerCompare}>
+                            {formatPrice(offer.compare_at_cents!)}
+                          </s>
+                        )}
+                        {formatPrice(offer.price_cents)}
+                      </span>
+                      {onAddOffer && (
+                        <button
+                          type="button"
+                          onClick={() => onAddOffer(offer)}
+                          className={styles.addButton}
+                          style={{ backgroundColor: colors.primary }}
+                        >
+                          {offer.kind === "produit" ? "Commander" : "J'en profite"}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      )}
+
+      {/* Prestations : produits (haut) puis réservations (bas) */}
       <section className={styles.services} id="prestations">
-        {!hasServices && !hasShop && (
+        {!hasServices && !hasShop && !hasOffers && (
           <p className={styles.empty}>Le catalogue arrive bientôt.</p>
         )}
-        {hasServices && (
-        <>
+        {(hasServices || hasShop) && (
         <div className={styles.sectionHeading}>
           <p>Ce que je propose</p>
           <h2>Mes prestations</h2>
+          <span>Produits à commander et rendez-vous à réserver.</span>
         </div>
+        )}
+
+        {/* Produits */}
+        {hasShop && (
+          <div className={styles.contentSection} id="boutique">
+            {hasServices && <h3 className={styles.subHeading}>Produits</h3>}
+            {productCategories
+              .filter((c) => c.products.length > 0)
+              .map((category) => (
+                <div key={category.id} className={styles.shopCategory}>
+                  {productCategories.filter((c) => c.products.length > 0).length > 1 && (
+                    <h4 className={styles.shopCategoryName}>{category.name}</h4>
+                  )}
+                  <div className={styles.shopGrid}>
+                    {category.products.map((product) => (
+                      <article key={product.id} className={styles.product}>
+                        {product.image_url && (
+                          <div className={styles.productImage}>
+                            <Image
+                              src={product.image_url}
+                              alt={product.name}
+                              fill
+                              className={styles.galleryImage}
+                              sizes="(max-width: 640px) 50vw, 33vw"
+                            />
+                          </div>
+                        )}
+                        <div className={styles.productBody}>
+                          <p className={styles.productName}>{product.name}</p>
+                          {product.description && (
+                            <p className={styles.productDesc}>{product.description}</p>
+                          )}
+                          <div className={styles.productFoot}>
+                            <span className={styles.productPrice}>
+                              {formatPrice(product.price_cents)}
+                            </span>
+                            {product.track_stock && product.stock <= 0 ? (
+                              <span className={styles.soldOut}>Épuisé</span>
+                            ) : (
+                              onAddToCart && (
+                                <button
+                                  type="button"
+                                  onClick={() => onAddToCart(product)}
+                                  className={styles.addButton}
+                                  style={{ backgroundColor: colors.primary }}
+                                >
+                                  Ajouter
+                                </button>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              ))}
+          </div>
+        )}
+
+        {/* Réservations */}
+        {hasServices && (
+        <div className={hasShop ? styles.contentSection : undefined} id="reservations">
+          {hasShop && <h3 className={styles.subHeading}>Réservations</h3>}
         <div className={styles.familyList}>
           {families.map((family) => {
             const open = openFamily === family.id;
@@ -196,74 +357,13 @@ export function VitrineView({
             );
           })}
         </div>
-        </>
-        )}
-
-        {/* Boutique */}
-        {hasShop && (
-          <div className={styles.contentSection} id="boutique">
-            <div className={styles.sectionHeading}>
-              <p>La boutique</p>
-              <h2>{hasServices ? "Mes produits" : "Ce que je propose"}</h2>
-            </div>
-            {productCategories
-              .filter((c) => c.products.length > 0)
-              .map((category) => (
-                <div key={category.id} className={styles.shopCategory}>
-                  {productCategories.filter((c) => c.products.length > 0).length > 1 && (
-                    <h3 className={styles.shopCategoryName}>{category.name}</h3>
-                  )}
-                  <div className={styles.shopGrid}>
-                    {category.products.map((product) => (
-                      <article key={product.id} className={styles.product}>
-                        {product.image_url && (
-                          <div className={styles.productImage}>
-                            <Image
-                              src={product.image_url}
-                              alt={product.name}
-                              fill
-                              className={styles.galleryImage}
-                              sizes="(max-width: 640px) 50vw, 33vw"
-                            />
-                          </div>
-                        )}
-                        <div className={styles.productBody}>
-                          <p className={styles.productName}>{product.name}</p>
-                          {product.description && (
-                            <p className={styles.productDesc}>{product.description}</p>
-                          )}
-                          <div className={styles.productFoot}>
-                            <span className={styles.productPrice}>
-                              {formatPrice(product.price_cents)}
-                            </span>
-                            {product.track_stock && product.stock <= 0 ? (
-                              <span className={styles.soldOut}>Épuisé</span>
-                            ) : (
-                              onAddToCart && (
-                                <button
-                                  type="button"
-                                  onClick={() => onAddToCart(product)}
-                                  className={styles.addButton}
-                                  style={{ backgroundColor: colors.primary }}
-                                >
-                                  Ajouter
-                                </button>
-                              )
-                            )}
-                          </div>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-              ))}
-          </div>
+        </div>
         )}
 
         {/* Galerie */}
         {page.gallery.length > 0 && (
           <div className={styles.contentSection}>
-            <div className={styles.sectionHeading}><p>En images</p><h2>Mon travail</h2></div>
+            <div className={styles.sectionHeading}><p>En images</p><h2>Mon travail</h2><span>Quelques détails qui racontent mon univers.</span></div>
             <div className={styles.gallery}>
               {page.gallery.map((photo, i) => (
                 <figure key={i}>
@@ -288,7 +388,7 @@ export function VitrineView({
         {/* Avis */}
         {page.reviews.length > 0 && (
           <div className={styles.contentSection}>
-            <div className={styles.sectionHeading}><p>Ils me font confiance</p><h2>Ce qu&apos;on dit de moi</h2></div>
+            <div className={styles.sectionHeading}><p>Ils me font confiance</p><h2>Ce qu&apos;on dit de moi</h2><span>Des mots vrais, laissés par mes clients.</span></div>
             <div className={styles.reviews}>
               {page.reviews.map((review, i) => (
                 <blockquote
@@ -309,7 +409,7 @@ export function VitrineView({
         {/* Horaires */}
         {page.hours_text && (
           <div className={styles.hours}>
-            <div className={styles.sectionHeading}><p>Quand venir</p><h2>Mes horaires</h2></div>
+            <div className={styles.sectionHeading}><p>Quand venir</p><h2>Mes horaires</h2><span>Retrouve-moi au bon moment.</span></div>
             <pre
               className={styles.hoursText}
               style={{ fontFamily: font.css }}

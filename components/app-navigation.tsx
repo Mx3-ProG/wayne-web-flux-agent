@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BadgePercent,
   Boxes,
   CalendarDays,
   FolderOpen,
@@ -12,13 +13,20 @@ import {
 } from "lucide-react";
 import styles from "@/app/(app)/app-shell.module.css";
 
-const ITEMS = [
+const DESKTOP_ITEMS = [
   { href: "/espace", label: "Accueil", icon: LayoutDashboard },
   { href: "/ma-page", label: "Vitrine", icon: Store },
   { href: "/commandes", label: "Commandes", icon: ShoppingBag },
   { href: "/stock", label: "Stock", icon: Boxes },
   { href: "/agenda", label: "Agenda", icon: CalendarDays },
   { href: "/resultats", label: "Contenus", icon: FolderOpen },
+];
+
+const MOBILE_ITEMS = [
+  { href: "/espace", label: "Accueil", icon: LayoutDashboard },
+  { href: "/ma-page", label: "Vitrine", icon: Store },
+  { href: "/commandes", label: "Commandes", icon: ShoppingBag },
+  { href: "/offres", label: "Offres", icon: BadgePercent },
 ];
 
 export function AppNavigation({
@@ -31,13 +39,14 @@ export function AppNavigation({
   lowStock?: number;
 }) {
   const pathname = usePathname();
+  const items = mobile ? MOBILE_ITEMS : DESKTOP_ITEMS;
 
   return (
     <nav
       className={mobile ? styles.mobileNav : styles.sidebarNav}
       aria-label={mobile ? "Navigation mobile" : "Navigation principale"}
     >
-      {ITEMS.map(({ href, label, icon: Icon }) => {
+      {items.map(({ href, label, icon: Icon }) => {
         const active = pathname === href || pathname.startsWith(`${href}/`);
         const badge =
           href === "/commandes"

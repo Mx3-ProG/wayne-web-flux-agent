@@ -1,11 +1,14 @@
 // Types des lignes de la base (miroir de supabase/migrations/00001_schema.sql)
 
+export type Plan = "free" | "plus";
+
 export type Profile = {
   user_id: string;
   name: string | null;
   email: string | null;
   onboarding_step: number;
   ical_token: string;
+  plan: Plan;
   created_at: string;
 };
 
@@ -119,6 +122,22 @@ export type Product = {
   created_at: string;
 };
 
+export type OfferKind = "produit" | "service" | "evenement";
+
+export type Offer = {
+  id: string;
+  page_id: string;
+  title: string;
+  description: string;
+  image_url: string | null;
+  kind: OfferKind;
+  price_cents: number;
+  compare_at_cents: number | null;
+  active: boolean;
+  position: number;
+  created_at: string;
+};
+
 export type StockMovement = {
   id: number;
   product_id: string;
@@ -148,6 +167,7 @@ export type OrderItem = {
   id: string;
   order_id: string;
   product_id: string | null;
+  offer_id: string | null;
   name: string;
   unit_price_cents: number;
   quantity: number;

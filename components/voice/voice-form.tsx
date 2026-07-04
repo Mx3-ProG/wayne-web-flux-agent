@@ -1,223 +1,128 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
+import { Check, MessageSquareText, Pencil, Save, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import type { VoiceProfile } from "@/lib/types";
 import { saveVoiceProfile } from "@/app/(app)/contexte/actions";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { EMPTY_VOICE, type VoiceDraft } from "./voice-options";
+import styles from "./voice-form.module.css";
 
-type Draft = Omit<VoiceProfile, "user_id" | "updated_at">;
-
-const EMPTY: Draft = {
-  tone: "",
-  address_form: "",
-  emojis: "",
-  specialty: "",
-  often_told: "",
-  story: "",
-  vals: "",
-};
-
-const TONES = [
-  "Complice et chaleureux",
-  "Pro et expert",
-  "Doux et posé",
-  "Solaire et pétillant",
-  "Chic et raffiné",
-  "Direct et sans détour",
+const SUMMARY: {
+  key: keyof VoiceDraft;
+  label: string;
+  fallback: string;
+  format?: (value: string) => string;
+}[] = [
+  { key: "tone", label: "Ton énergie", fallback: "À définir" },
+  { key: "address_form", label: "Ta façon de t’adresser aux clients", fallback: "À définir", format: (value: string) => value === "tu" ? "Tu tutoies tes clients" : "Tu vouvoies tes clients" },
+  { key: "emojis", label: "Ton usage des emojis", fallback: "À définir", format: (value: string) => value === "beaucoup" ? "Souvent, ils font partie de ton style" : value === "parfois" ? "Avec modération" : "Une communication sans emoji" },
+  { key: "specialty", label: "Ta signature", fallback: "À définir" },
+  { key: "often_told", label: "Ce que tes clients disent de toi", fallback: "À définir" },
+  { key: "story", label: "Ton histoire", fallback: "À définir" },
+  { key: "vals", label: "Tes valeurs", fallback: "À définir" },
 ];
 
-const SPECIALTIES = [
-  "Le rendu naturel, on ne voit que le résultat",
-  "La précision, le travail propre",
-  "La qualité qui dure",
-  "Le sur-mesure, jamais deux fois pareil",
-  "Le rapport qualité-prix imbattable",
-  "La rapidité sans bâcler",
-];
-
-function Chips({
-  options,
-  value,
-  onChange,
-}: {
-  options: string[];
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <div className="flex flex-wrap gap-1.5">
-      {options.map((option) => (
-        <button
-          key={option}
-          type="button"
-          onClick={() => onChange(value === option ? "" : option)}
-          className={`rounded-full border px-3 py-1.5 text-sm transition-colors ${
-            value === option
-              ? "border-primary bg-primary/10"
-              : "border-border hover:bg-secondary"
-          }`}
-        >
-          {option}
-        </button>
-      ))}
-    </div>
-  );
-}
-
-// Profil de voix : plus il en sait sur toi, plus les contenus te ressemblent.
 export function VoiceForm({
   initialVoice,
+  preparedVoice,
   completion,
 }: {
   initialVoice: VoiceProfile | null;
+  preparedVoice: VoiceDraft | null;
   completion: number;
 }) {
-  const [draft, setDraft] = useState<Draft>({ ...EMPTY, ...initialVoice });
+  const router = useRouter();
+  const [draft] = useState<VoiceDraft>({ ...EMPTY_VOICE, ...initialVoice, ...preparedVoice });
   const [isPending, startTransition] = useTransition();
-
-  function set<K extends keyof Draft>(key: K, value: string) {
-    setDraft((d) => ({ ...d, [key]: value }));
-  }
+  const isReview = Boolean(preparedVoice);
+  const filled = SUMMARY.filter((item) => draft[item.key]).length;
+  const profileCompletion = isReview
+    ? Math.round((filled / SUMMARY.length) * 100)
+    : completion;
 
   function save() {
     startTransition(async () => {
       const result = await saveVoiceProfile(draft);
-      if (result.error) toast.error(result.error);
-      else toast.success("C'est noté. Tes prochains contenus auront ta voix.");
+      if (result.error) {
+        toast.error(result.error);
+        return;
+      }
+      toast.success("Ta voix est enregistrée. Flux peut maintenant parler comme toi.");
+      router.replace("/contexte");
+      router.refresh();
     });
   }
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-1">Apprends-lui à parler comme toi</h1>
-        <p className="text-muted-foreground">
-          Réponds à ce qui te parle, ignore le reste. Chaque réponse affine tes
-          contenus.
-        </p>
-      </div>
+    <div className={styles.page}>
+      <section className={styles.hero}>
+        <span className={styles.heroIcon}><MessageSquareText aria-hidden="true" /></span>
+        <div>
+          <p className={styles.kicker}>{isReview ? "Ta voix est prête" : "Ton identité éditoriale"}</p>
+          <h1>{isReview ? "Voici comment Flux va parler pour toi." : "Flux connaît ta voix."}</h1>
+          <p>
+            {isReview
+              ? "Vérifie le résumé. Si tout te ressemble, il ne reste plus qu’à l’enregistrer."
+              : "Retrouve ici les choix qui guident tous tes prochains contenus."}
+          </p>
+        </div>
+      </section>
 
-      <div className="rounded-xl border border-border px-4 py-3">
-        <div className="flex items-center justify-between text-sm mb-2">
+      <section className={styles.completion} aria-label={`Profil complété à ${profileCompletion}%`}>
+        <span>
+          <Sparkles aria-hidden="true" />
+          <strong>{profileCompletion}%</strong>
+          <small>de ta voix comprise par Flux</small>
+        </span>
+        <div><i style={{ width: `${profileCompletion}%` }} /></div>
+      </section>
+
+      <section className={styles.summary}>
+        <div className={styles.summaryHeader}>
+          <div>
+            <p className={styles.kicker}>Ton profil</p>
+            <h2>Ce que Flux a retenu</h2>
+          </div>
+          <Link href="/contexte/configurer" className={styles.editLink}>
+            <Pencil aria-hidden="true" /> Refaire le questionnaire
+          </Link>
+        </div>
+
+        <div className={styles.summaryGrid}>
+          {SUMMARY.map((item, index) => {
+            const rawValue = draft[item.key];
+            const value = rawValue && item.format ? item.format(rawValue) : rawValue;
+            return (
+              <article className={styles.summaryCard} key={item.key}>
+                <span className={styles.cardNumber}>{String(index + 1).padStart(2, "0")}</span>
+                <span className={styles.cardCheck}><Check aria-hidden="true" /></span>
+                <small>{item.label}</small>
+                <strong>{value || item.fallback}</strong>
+              </article>
+            );
+          })}
+        </div>
+      </section>
+
+      {isReview ? (
+        <div className={styles.saveBar}>
           <span>
-            J&apos;écris comme toi à{" "}
-            <strong className="text-red-bright">{completion}%</strong>
+            <strong>Tout te ressemble ?</strong>
+            <small>Tu pourras refaire ce questionnaire à tout moment.</small>
           </span>
+          <button type="button" disabled={isPending} onClick={save}>
+            <Save aria-hidden="true" />
+            {isPending ? "Enregistrement…" : "Enregistrer ma voix"}
+          </button>
         </div>
-        <div className="h-1.5 rounded-full bg-secondary overflow-hidden">
-          <div
-            className="h-full rounded-full bg-primary transition-all"
-            style={{ width: `${completion}%` }}
-          />
-        </div>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Et toi, tu parles comment ?</CardTitle>
-          <CardDescription>
-            À tes clients, en story, en message. Sois honnête, c&apos;est ce qui
-            te rend reconnaissable.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-5">
-          <div className="space-y-2">
-            <Label>Ton ton</Label>
-            <Chips options={TONES} value={draft.tone} onChange={(v) => set("tone", v)} />
-          </div>
-          <div className="space-y-2">
-            <Label>Tu dis « tu » ou « vous » à tes clients ?</Label>
-            <Chips
-              options={["tu", "vous"]}
-              value={draft.address_form}
-              onChange={(v) => set("address_form", v)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Les emojis, tu en mets ?</Label>
-            <Chips
-              options={["beaucoup", "parfois", "jamais"]}
-              value={draft.emojis}
-              onChange={(v) => set("emojis", v)}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>C&apos;est quoi, ta signature ?</CardTitle>
-          <CardDescription>
-            Ce pour quoi on vient te voir TOI, et pas un autre.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-5">
-          <div className="space-y-2">
-            <Label>Ta spécialité</Label>
-            <Chips
-              options={SPECIALTIES}
-              value={draft.specialty}
-              onChange={(v) => set("specialty", v)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Une chose qu&apos;on te dit souvent ? (facultatif)</Label>
-            <Input
-              value={draft.often_told}
-              maxLength={150}
-              placeholder="Ex : « on sent que tu prends le temps »"
-              onChange={(e) => set("often_told", e.target.value)}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Ton histoire et tes valeurs</CardTitle>
-          <CardDescription>
-            C&apos;est ce qui fait que tes mots ne ressembleront à personne
-            d&apos;autre. Quelques lignes suffisent.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-5">
-          <div className="space-y-2">
-            <Label>Ton parcours (facultatif)</Label>
-            <Textarea
-              rows={3}
-              maxLength={800}
-              placeholder="Ce qui t'a mené à ce métier, depuis combien de temps tu exerces…"
-              value={draft.story}
-              onChange={(e) => set("story", e.target.value)}
-            />
-          </div>
-          <div className="space-y-2">
-            <Label>Ce qui compte avant tout pour toi (facultatif)</Label>
-            <Textarea
-              rows={3}
-              maxLength={800}
-              placeholder="La qualité, l'écoute, la ponctualité, le naturel…"
-              value={draft.vals}
-              onChange={(e) => set("vals", e.target.value)}
-            />
-          </div>
-        </CardContent>
-      </Card>
-
-      <Button size="lg" className="w-full" disabled={isPending} onClick={save}>
-        {isPending ? "Enregistrement…" : "Enregistrer ma voix"}
-      </Button>
+      ) : (
+        <Link href="/contexte/configurer" className={styles.restart}>
+          <Pencil aria-hidden="true" /> Mettre à jour ma voix
+        </Link>
+      )}
     </div>
   );
 }
