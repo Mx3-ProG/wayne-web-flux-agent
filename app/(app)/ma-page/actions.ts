@@ -90,6 +90,28 @@ export async function createPage(input: {
     }
   }
 
+  // Boutique pré-remplie du métier (verticals product/hybrid uniquement).
+  const productCategories = vertical.productCategories ?? [];
+  for (let ci = 0; ci < productCategories.length; ci++) {
+    const cat = productCategories[ci];
+    const { data: category } = await supabase
+      .from("product_categories")
+      .insert({ page_id: page.id, name: cat.name, position: ci })
+      .select("id")
+      .single();
+    if (category) {
+      await supabase.from("products").insert(
+        cat.products.map((p, pi) => ({
+          category_id: category.id,
+          page_id: page.id,
+          name: p.name,
+          price_cents: p.price_cents,
+          position: pi,
+        }))
+      );
+    }
+  }
+
   // Horaires par défaut : mardi → samedi, 9h-19h. Modifiables dans l'agenda.
   await supabase.from("schedules").insert(
     [0, 1, 2, 3, 4, 5, 6].map((weekday) => ({
@@ -196,6 +218,110 @@ export async function syncCatalog(
           }))
       );
     }
+  }
+
+  revalidatePath("/ma-page");
+  return {};
+}
+
+export type CatalogProduct = {
+  id: string | null; // null = nouveau produit
+  name: string;
+  description: string;
+  price_cents: number;
+  image_url: string | null;
+};
+export type CatalogProductCategory = {
+  id: string | null; // null = nouvelle catégorie
+  name: string;
+  products: CatalogProduct[];
+};
+
+// Synchronise la boutique par diff (update/insert/delete) pour garder des IDs
+// produits STABLES — indispensable au stock et à son historique (Phase 2).
+// Ne touche jamais aux colonnes stock/track_stock (gérées via /stock).
+export async function syncProducts(
+  pageId: string,
+  categories: CatalogProductCategory[]
+): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Non connecté." };
+
+  const { data: page } = await supabase
+    .from("pages")
+    .select("id")
+    .eq("id", pageId)
+    .eq("user_id", user.id)
+    .single();
+  if (!page) return { error: "Page introuvable." };
+
+  const [{ data: existingCats }, { data: existingProds }] = await Promise.all([
+    supabase.from("product_categories").select("id").eq("page_id", pageId),
+    supabase.from("products").select("id").eq("page_id", pageId),
+  ]);
+  const existingCatIds = new Set((existingCats ?? []).map((c) => c.id));
+  const existingProdIds = new Set((existingProds ?? []).map((p) => p.id));
+  const keepCatIds = new Set<string>();
+  const keepProdIds = new Set<string>();
+
+  for (let ci = 0; ci < categories.length; ci++) {
+    const cat = categories[ci];
+    const name = cat.name.trim().slice(0, 60);
+    if (!name) continue;
+
+    let catId = cat.id;
+    if (catId && existingCatIds.has(catId)) {
+      await supabase
+        .from("product_categories")
+        .update({ name, position: ci })
+        .eq("id", catId);
+    } else {
+      const { data: inserted } = await supabase
+        .from("product_categories")
+        .insert({ page_id: pageId, name, position: ci })
+        .select("id")
+        .single();
+      catId = inserted?.id ?? null;
+    }
+    if (!catId) continue;
+    keepCatIds.add(catId);
+
+    for (let pi = 0; pi < cat.products.length; pi++) {
+      const p = cat.products[pi];
+      if (!p.name.trim()) continue;
+      const fields = {
+        category_id: catId,
+        name: p.name.trim().slice(0, 80),
+        description: p.description.trim().slice(0, 400),
+        price_cents: Math.max(0, Math.round(p.price_cents || 0)),
+        image_url: p.image_url,
+        position: pi,
+      };
+      if (p.id && existingProdIds.has(p.id)) {
+        await supabase.from("products").update(fields).eq("id", p.id);
+        keepProdIds.add(p.id);
+      } else {
+        const { data: inserted } = await supabase
+          .from("products")
+          .insert({ page_id: pageId, ...fields })
+          .select("id")
+          .single();
+        if (inserted?.id) keepProdIds.add(inserted.id);
+      }
+    }
+  }
+
+  // Suppression de ce qui n'est plus présent (cascade → mouvements de stock).
+  const prodToDelete = [...existingProdIds].filter((id) => !keepProdIds.has(id));
+  if (prodToDelete.length > 0) {
+    await supabase.from("products").delete().in("id", prodToDelete);
+  }
+  const catToDelete = [...existingCatIds].filter((id) => !keepCatIds.has(id));
+  if (catToDelete.length > 0) {
+    await supabase.from("product_categories").delete().in("id", catToDelete);
   }
 
   revalidatePath("/ma-page");

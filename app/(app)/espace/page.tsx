@@ -7,6 +7,7 @@ import { voiceCompletion } from "@/lib/voice";
 import { parisNow } from "@/lib/slots";
 import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/copy-button";
+import { RevenueCounter } from "@/components/revenue-counter";
 import { ArrowRight } from "lucide-react";
 import styles from "./espace.module.css";
 
@@ -43,8 +44,13 @@ export default async function EspacePage() {
 
   let upcomingCount = 0;
   let generations: Generation[] = [];
+  let revenueCents = 0;
   if (page) {
     const today = parisNow().date;
+    const { data: rev } = await supabase.rpc("revenue_total", {
+      p_page: page.id,
+    });
+    revenueCents = Number(rev ?? 0);
     const [{ count }, { data: gens }] = await Promise.all([
       supabase
         .from("bookings")
@@ -254,6 +260,8 @@ export default async function EspacePage() {
           Créer un contenu <ArrowRight aria-hidden="true" />
         </Link>
       </section>
+
+      {page && <RevenueCounter totalCents={revenueCents} />}
 
       <section className={styles.metrics} aria-label="Indicateurs">
         <article className={styles.metric}>

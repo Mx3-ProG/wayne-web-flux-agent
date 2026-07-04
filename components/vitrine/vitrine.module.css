@@ -122,3 +122,25 @@
 @media (prefers-reduced-transparency: reduce) {
   .modal { background: #16161b; backdrop-filter: none; }
 }
+
+/* ----------------------------------------------------------------- boutique */
+.shopCategory { margin-top: 34px; }
+.shopCategory:first-of-type { margin-top: 0; }
+.shopCategoryName { margin-bottom: 14px; color: var(--client-accent); font-size: 13px; font-weight: 750; letter-spacing: .04em; }
+.shopGrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.product { display: flex; flex-direction: column; overflow: hidden; border: 1px solid color-mix(in srgb, var(--store-line) 75%, transparent); border-radius: 16px; background: var(--store-surface); }
+.productImage { position: relative; aspect-ratio: 4 / 3; }
+.productBody { display: flex; flex: 1; flex-direction: column; gap: 6px; padding: 14px 16px; }
+.productName { font-size: 14px; font-weight: 650; }
+.productDesc { color: #716b6d; font-size: 12px; line-height: 1.5; }
+.productFoot { display: flex; margin-top: auto; padding-top: 8px; align-items: center; justify-content: space-between; gap: 12px; }
+.productPrice { color: var(--client-accent); font-size: 14px; font-weight: 750; }
+.addButton { display: inline-flex; min-height: 40px; padding: 0 16px; align-items: center; border: 0; border-radius: 999px; background: var(--client-accent); color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 10px 24px color-mix(in srgb, var(--client-accent) 22%, transparent); }
+.soldOut { font-size: 12px; font-weight: 700; color: #a1483f; opacity: .8; }
+.cartFab { position: fixed; inset: auto 0 0; z-index: 40; display: inline-flex; margin: 0 auto 20px; padding: 0 22px; min-height: 54px; left: 0; right: 0; width: fit-content; align-items: center; gap: 10px; border: 0; border-radius: 999px; background: var(--client-accent); color: #fff; font-size: 14px; font-weight: 700; cursor: pointer; box-shadow: 0 16px 40px rgb(0 0 0 / 45%); }
+.cartFab svg { width: 19px; }
+.cartFabCount { display: inline-grid; min-width: 24px; height: 24px; place-items: center; padding: 0 6px; border-radius: 999px; background: rgb(255 255 255 / 22%); font-size: 12px; }
+
+@media (max-width: 640px) {
+  .shopGrid { grid-template-columns: 1fr 1fr; }
+}

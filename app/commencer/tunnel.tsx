@@ -49,7 +49,7 @@ export function Tunnel() {
   const [step, setStep] = useState(0);
   const [vertical, setVertical] = useState("");
   const [jobTitle, setJobTitle] = useState("");
-  const [goal, setGoal] = useState("");
+  const [goals, setGoals] = useState<string[]>([]);
   const [city, setCity] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [tone, setTone] = useState("");
@@ -61,16 +61,24 @@ export function Tunnel() {
   const previewJob = jobTitle.trim() || selectedVertical?.jobTitles[0] || "Ton activité";
   const canContinue = useMemo(() => {
     if (step === 1) return Boolean(vertical);
-    if (step === 2) return Boolean(goal);
+    if (step === 2) return goals.length > 0;
     if (step === 3) return Boolean(city.trim() && businessName.trim() && jobTitle.trim());
     if (step === 4) return Boolean(tone);
     return true;
-  }, [step, vertical, goal, city, businessName, jobTitle, tone]);
+  }, [step, vertical, goals, city, businessName, jobTitle, tone]);
 
   function chooseVertical(slug: string) {
     const next = getVertical(slug);
     setVertical(slug);
     setJobTitle(next.jobTitles[0]);
+  }
+
+  function toggleGoal(goalId: string) {
+    setGoals((current) =>
+      current.includes(goalId)
+        ? current.filter((item) => item !== goalId)
+        : [...current, goalId]
+    );
   }
 
   function next() {
@@ -135,20 +143,21 @@ export function Tunnel() {
         )}
 
         {step === 2 && (
-          <Question kicker="Ton objectif" title={<>Qu&apos;est-ce qui te <em>freine</em> aujourd&apos;hui ?</>} subtitle="Une réponse suffit. On organise ton espace autour de cette priorité.">
+          <Question kicker="Tes objectifs" title={<>Qu&apos;est-ce qui te <em>freine</em> aujourd&apos;hui ?</>} subtitle="Choisis tout ce qui te correspond. On organisera ton espace autour de tes priorités.">
             <div className={styles.goalGrid}>
               {GOALS.map((item) => {
                 const Icon = item.icon;
                 return (
                   <button
-                    className={goal === item.id ? styles.goalActive : styles.goal}
+                    className={goals.includes(item.id) ? styles.goalActive : styles.goal}
                     key={item.id}
                     type="button"
-                    onClick={() => setGoal(item.id)}
+                    onClick={() => toggleGoal(item.id)}
+                    aria-pressed={goals.includes(item.id)}
                   >
                     <Icon aria-hidden="true" />
                     <span><strong>{item.title}</strong><small>{item.text}</small></span>
-                    {goal === item.id && <Check aria-hidden="true" />}
+                    {goals.includes(item.id) && <Check aria-hidden="true" />}
                   </button>
                 );
               })}
@@ -248,7 +257,7 @@ export function Tunnel() {
               <input type="hidden" name="jobTitle" value={jobTitle} />
               <input type="hidden" name="city" value={city} />
               <input type="hidden" name="tone" value={tone} />
-              <input type="hidden" name="goal" value={goal} />
+              <input type="hidden" name="goal" value={goals.join(",")} />
               <label><span>Ton prénom</span><input name="name" required maxLength={40} placeholder="Alex" autoComplete="given-name" /></label>
               <label><span>Ton email professionnel</span><input name="email" type="email" required placeholder="alex@moncommerce.fr" autoComplete="email" /></label>
               <label><span>Choisis un mot de passe</span><input name="password" type="password" required minLength={8} placeholder="8 caractères minimum" autoComplete="new-password" /></label>

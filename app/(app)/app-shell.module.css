@@ -73,6 +73,23 @@
   transition: color .18s ease, background .18s ease, transform .18s ease;
 }
 .navLink svg, .navLinkActive svg { width: 18px; }
+.navIcon { position: relative; display: inline-flex; }
+.navBadge {
+  position: absolute;
+  top: -7px;
+  left: 10px;
+  display: inline-grid;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--ww-red-soft, #ff6378);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}
 .navLink:hover { color: #fff; background: rgb(255 255 255 / 5%); }
 .navLinkActive {
   background: linear-gradient(120deg, rgb(239 35 60 / 20%), rgb(239 35 60 / 6%));

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import type { Page, Service, ServiceFamily } from "@/lib/types";
+import type { Page, Product, ProductCategory, Service, ServiceFamily } from "@/lib/types";
 import { formatDuration, formatPrice } from "@/lib/types";
 import { getFont } from "@/lib/verticals";
 import { defaultLegal } from "@/lib/legal";
@@ -13,22 +13,37 @@ import {
   Clock3,
   MapPin,
   Phone,
+  ShoppingBag,
   Sparkles,
 } from "lucide-react";
 import styles from "./vitrine.module.css";
 
 export type FamilyWithServices = ServiceFamily & { services: Service[] };
+export type CategoryWithProducts = ProductCategory & { products: Product[] };
 
 type Props = {
   page: Page;
   families: FamilyWithServices[];
+  productCategories?: CategoryWithProducts[];
   onBook?: (service: Service) => void; // absent en préview éditeur
+  onAddToCart?: (product: Product) => void; // absent en préview éditeur
+  cartCount?: number;
+  onOpenCart?: () => void;
   poweredBy?: boolean;
 };
 
 // Vitrine publique du commerçant, aux couleurs qu'il a choisies.
 // Utilisée en SSR sur /p/[slug] et en préview live dans l'éditeur.
-export function VitrineView({ page, families, onBook, poweredBy = true }: Props) {
+export function VitrineView({
+  page,
+  families,
+  productCategories = [],
+  onBook,
+  onAddToCart,
+  cartCount = 0,
+  onOpenCart,
+  poweredBy = true,
+}: Props) {
   const [openFamily, setOpenFamily] = useState<string | null>(null);
   const [legalOpen, setLegalOpen] = useState<string | null>(null);
 
@@ -41,6 +56,8 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
   const legal = { ...defaultLegal(page.business_name), ...page.legal };
 
   const socials = Object.entries(page.socials || {}).filter(([, v]) => v);
+  const hasServices = families.length > 0;
+  const hasShop = productCategories.some((c) => c.products.length > 0);
 
   return (
     <div
@@ -99,12 +116,16 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
           </h1>
           {page.tagline && <p className={styles.tagline}>{page.tagline}</p>}
           <div className={styles.heroActions}>
-            <a className={styles.heroCta} href="#prestations">
-              Voir les prestations <ArrowRight aria-hidden="true" />
+            <a
+              className={styles.heroCta}
+              href={hasServices || !hasShop ? "#prestations" : "#boutique"}
+            >
+              {hasServices || !hasShop ? "Voir les prestations" : "Voir la boutique"}{" "}
+              <ArrowRight aria-hidden="true" />
             </a>
             <span className={styles.online}>
               <span />
-              Réservation en ligne
+              {hasServices ? "Réservation en ligne" : "Commande en ligne"}
             </span>
           </div>
         </div>
@@ -112,15 +133,15 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
 
       {/* Prestations */}
       <section className={styles.services} id="prestations">
+        {!hasServices && !hasShop && (
+          <p className={styles.empty}>Le catalogue arrive bientôt.</p>
+        )}
+        {hasServices && (
+        <>
         <div className={styles.sectionHeading}>
           <p>Ce que je propose</p>
           <h2>Mes prestations</h2>
         </div>
-        {families.length === 0 && (
-          <p className={styles.empty}>
-            Les prestations arrivent bientôt.
-          </p>
-        )}
         <div className={styles.familyList}>
           {families.map((family) => {
             const open = openFamily === family.id;
@@ -175,6 +196,69 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
             );
           })}
         </div>
+        </>
+        )}
+
+        {/* Boutique */}
+        {hasShop && (
+          <div className={styles.contentSection} id="boutique">
+            <div className={styles.sectionHeading}>
+              <p>La boutique</p>
+              <h2>{hasServices ? "Mes produits" : "Ce que je propose"}</h2>
+            </div>
+            {productCategories
+              .filter((c) => c.products.length > 0)
+              .map((category) => (
+                <div key={category.id} className={styles.shopCategory}>
+                  {productCategories.filter((c) => c.products.length > 0).length > 1 && (
+                    <h3 className={styles.shopCategoryName}>{category.name}</h3>
+                  )}
+                  <div className={styles.shopGrid}>
+                    {category.products.map((product) => (
+                      <article key={product.id} className={styles.product}>
+                        {product.image_url && (
+                          <div className={styles.productImage}>
+                            <Image
+                              src={product.image_url}
+                              alt={product.name}
+                              fill
+                              className={styles.galleryImage}
+                              sizes="(max-width: 640px) 50vw, 33vw"
+                            />
+                          </div>
+                        )}
+                        <div className={styles.productBody}>
+                          <p className={styles.productName}>{product.name}</p>
+                          {product.description && (
+                            <p className={styles.productDesc}>{product.description}</p>
+                          )}
+                          <div className={styles.productFoot}>
+                            <span className={styles.productPrice}>
+                              {formatPrice(product.price_cents)}
+                            </span>
+                            {product.track_stock && product.stock <= 0 ? (
+                              <span className={styles.soldOut}>Épuisé</span>
+                            ) : (
+                              onAddToCart && (
+                                <button
+                                  type="button"
+                                  onClick={() => onAddToCart(product)}
+                                  className={styles.addButton}
+                                  style={{ backgroundColor: colors.primary }}
+                                >
+                                  Ajouter
+                                </button>
+                              )
+                            )}
+                          </div>
+                        </div>
+                      </article>
+                    ))}
+                  </div>
+                </div>
+              ))}
+          </div>
+        )}
 
         {/* Galerie */}
         {page.gallery.length > 0 && (
@@ -242,6 +326,20 @@ export function VitrineView({ page, families, onBook, poweredBy = true }: Props)
           </p>
         )}
       </section>
+
+      {/* Panier flottant */}
+      {onOpenCart && cartCount > 0 && (
+        <button
+          type="button"
+          onClick={onOpenCart}
+          className={styles.cartFab}
+          style={{ backgroundColor: colors.primary }}
+        >
+          <ShoppingBag aria-hidden="true" />
+          <span>Voir le panier</span>
+          <span className={styles.cartFabCount}>{cartCount}</span>
+        </button>
+      )}
 
       {/* Footer */}
       <footer

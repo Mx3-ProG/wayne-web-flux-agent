@@ -97,6 +97,75 @@ export type Booking = {
   created_at: string;
 };
 
+export type ProductCategory = {
+  id: string;
+  page_id: string;
+  name: string;
+  position: number;
+};
+
+export type Product = {
+  id: string;
+  category_id: string | null;
+  page_id: string;
+  name: string;
+  description: string;
+  price_cents: number;
+  image_url: string | null;
+  active: boolean;
+  track_stock: boolean;
+  stock: number;
+  position: number;
+  created_at: string;
+};
+
+export type StockMovement = {
+  id: number;
+  product_id: string;
+  page_id: string;
+  delta: number;
+  reason: "sale" | "restock" | "adjustment" | "cancel";
+  order_id: string | null;
+  created_at: string;
+};
+
+export type OrderStatus = "pending" | "accepted" | "fulfilled" | "cancelled";
+
+export type Order = {
+  id: string;
+  page_id: string;
+  first_name: string;
+  phone: string;
+  email: string | null;
+  note: string;
+  status: OrderStatus;
+  total_cents: number;
+  created_at: string;
+  accepted_at: string | null;
+};
+
+export type OrderItem = {
+  id: string;
+  order_id: string;
+  product_id: string | null;
+  name: string;
+  unit_price_cents: number;
+  quantity: number;
+  line_total_cents: number;
+};
+
+export type Notification = {
+  id: string;
+  user_id: string;
+  page_id: string;
+  type: "order" | "booking";
+  ref_id: string | null;
+  title: string;
+  body: string;
+  read: boolean;
+  created_at: string;
+};
+
 export type Customer = {
   id: string;
   page_id: string;

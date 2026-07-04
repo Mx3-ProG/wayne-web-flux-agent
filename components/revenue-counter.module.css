@@ -1,0 +1,65 @@
+.card {
+  margin-top: 22px;
+  padding: 26px 28px;
+  border: 1px solid var(--ww-line);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 88% -20%, rgb(239 35 60 / 18%), transparent 42%),
+    linear-gradient(145deg, rgb(25 25 30 / 92%), rgb(13 13 16 / 97%));
+  box-shadow: inset 0 1px rgb(255 255 255 / 6%), 0 24px 60px rgb(0 0 0 / 32%);
+}
+.head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ww-red-soft);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.eyebrow svg { width: 15px; }
+.badge {
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgb(86 211 155 / 14%);
+  color: var(--ww-success);
+  font-size: 11px;
+  font-weight: 700;
+}
+.amount {
+  display: block;
+  margin-top: 14px;
+  font-family: var(--font-inter), sans-serif;
+  font-size: clamp(38px, 8vw, 58px);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  color: var(--ww-text);
+  font-variant-numeric: tabular-nums;
+}
+.caption { margin-top: 10px; color: var(--ww-muted); font-size: 13px; max-width: 46ch; }
+
+.progress { margin-top: 20px; }
+.progressHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+  color: var(--ww-muted);
+  font-size: 13px;
+}
+.progressHead b { color: var(--ww-text); font-weight: 700; }
+.track { height: 10px; border-radius: 999px; background: rgb(255 255 255 / 8%); overflow: hidden; }
+.fill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--ww-red), var(--ww-red-soft));
+  box-shadow: 0 0 18px rgb(239 35 60 / 45%);
+  transition: width .6s cubic-bezier(.2, .7, .2, 1);
+}
+.remaining { margin-top: 10px; color: var(--ww-muted); font-size: 13px; }
+.remaining b { color: var(--ww-text); font-weight: 700; }
+.maxed { margin-top: 18px; color: var(--ww-success); font-size: 14px; font-weight: 650; }

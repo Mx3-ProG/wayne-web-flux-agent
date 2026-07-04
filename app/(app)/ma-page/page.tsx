@@ -1,6 +1,13 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import type { Page, Service, ServiceFamily } from "@/lib/types";
+import type {
+  Page,
+  Product,
+  ProductCategory,
+  Service,
+  ServiceFamily,
+} from "@/lib/types";
+import { getVertical } from "@/lib/verticals";
 import { CreatePageWizard } from "@/components/editor/create-page-wizard";
 import { PageEditor } from "@/components/editor/page-editor";
 
@@ -21,13 +28,24 @@ export default async function MaPagePage() {
 
   if (!page) return <CreatePageWizard />;
 
-  const [{ data: families }, { data: services }] = await Promise.all([
+  const [
+    { data: families },
+    { data: services },
+    { data: productCategories },
+    { data: products },
+  ] = await Promise.all([
     supabase
       .from("service_families")
       .select("*")
       .eq("page_id", page.id)
       .order("position"),
     supabase.from("services").select("*").eq("page_id", page.id).order("position"),
+    supabase
+      .from("product_categories")
+      .select("*")
+      .eq("page_id", page.id)
+      .order("position"),
+    supabase.from("products").select("*").eq("page_id", page.id).order("position"),
   ]);
 
   const catalog = ((families ?? []) as ServiceFamily[]).map((f) => ({
@@ -41,5 +59,26 @@ export default async function MaPagePage() {
       })),
   }));
 
-  return <PageEditor initialPage={page} initialCatalog={catalog} />;
+  const shop = ((productCategories ?? []) as ProductCategory[]).map((c) => ({
+    id: c.id,
+    name: c.name,
+    products: ((products ?? []) as Product[])
+      .filter((p) => p.category_id === c.id)
+      .map((p) => ({
+        id: p.id,
+        name: p.name,
+        description: p.description,
+        price_cents: p.price_cents,
+        image_url: p.image_url,
+      })),
+  }));
+
+  return (
+    <PageEditor
+      initialPage={page}
+      initialCatalog={catalog}
+      initialShop={shop}
+      verticalKind={getVertical(page.vertical).kind}
+    />
+  );
 }

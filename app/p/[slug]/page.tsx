@@ -1,8 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { createPublicClient } from "@/lib/supabase/public";
-import type { Page, Schedule, Service, ServiceFamily } from "@/lib/types";
-import type { FamilyWithServices } from "@/components/vitrine/vitrine-view";
+import type {
+  Page,
+  Product,
+  ProductCategory,
+  Schedule,
+  Service,
+  ServiceFamily,
+} from "@/lib/types";
+import type {
+  CategoryWithProducts,
+  FamilyWithServices,
+} from "@/components/vitrine/vitrine-view";
 import { VitrinePublic } from "@/components/vitrine/vitrine-public";
 import { GOOGLE_FONTS_URL } from "@/lib/verticals";
 
@@ -26,7 +36,13 @@ async function loadVitrine(slug: string) {
   }
   if (!page) return null;
 
-  const [familiesResult, servicesResult, schedulesResult] = await Promise.all([
+  const [
+    familiesResult,
+    servicesResult,
+    schedulesResult,
+    productCategoriesResult,
+    productsResult,
+  ] = await Promise.all([
       supabase
         .from("service_families")
         .select("*")
@@ -38,10 +54,25 @@ async function loadVitrine(slug: string) {
         .eq("page_id", page.id)
         .order("position"),
       supabase.from("schedules").select("*").eq("page_id", page.id),
+      supabase
+        .from("product_categories")
+        .select("*")
+        .eq("page_id", page.id)
+        .order("position"),
+      supabase
+        .from("products")
+        .select("*")
+        .eq("page_id", page.id)
+        .eq("active", true)
+        .order("position"),
     ]);
 
   const relatedError =
-    familiesResult.error || servicesResult.error || schedulesResult.error;
+    familiesResult.error ||
+    servicesResult.error ||
+    schedulesResult.error ||
+    productCategoriesResult.error ||
+    productsResult.error;
   if (relatedError) {
     console.error("Unable to load public page content", {
       slug,
@@ -62,7 +93,15 @@ async function loadVitrine(slug: string) {
     (schedulesResult.data ?? []) as Schedule[]
   ).some((schedule) => schedule.open);
 
-  return { page, families, bookingEnabled };
+  const products = (productsResult.data ?? []) as Product[];
+  const productCategories: CategoryWithProducts[] = (
+    (productCategoriesResult.data ?? []) as ProductCategory[]
+  ).map((category) => ({
+    ...category,
+    products: products.filter((product) => product.category_id === category.id),
+  }));
+
+  return { page, families, productCategories, bookingEnabled };
 }
 
 export async function generateMetadata({
@@ -99,7 +138,7 @@ export default async function VitrinePage({
   const data = await loadVitrine(slug);
   if (!data) notFound();
 
-  const { page, families, bookingEnabled } = data;
+  const { page, families, productCategories, bookingEnabled } = data;
 
   // SEO local : données structurées LocalBusiness
   const jsonLd = {
@@ -118,14 +157,24 @@ export default async function VitrinePage({
       : undefined,
     image: page.hero_url || page.logo_url || undefined,
     url: `${process.env.NEXT_PUBLIC_SITE_URL}/p/${page.slug}`,
-    makesOffer: families.flatMap((f) =>
-      f.services.map((s) => ({
-        "@type": "Offer",
-        name: s.name,
-        price: (s.price_cents / 100).toFixed(2),
-        priceCurrency: "EUR",
-      }))
-    ),
+    makesOffer: [
+      ...families.flatMap((f) =>
+        f.services.map((s) => ({
+          "@type": "Offer",
+          name: s.name,
+          price: (s.price_cents / 100).toFixed(2),
+          priceCurrency: "EUR",
+        }))
+      ),
+      ...productCategories.flatMap((c) =>
+        c.products.map((p) => ({
+          "@type": "Offer",
+          name: p.name,
+          price: (p.price_cents / 100).toFixed(2),
+          priceCurrency: "EUR",
+        }))
+      ),
+    ],
   };
 
   return (
@@ -139,6 +188,7 @@ export default async function VitrinePage({
       <VitrinePublic
         page={page}
         families={families}
+        productCategories={productCategories}
         bookingEnabled={bookingEnabled}
       />
     </>

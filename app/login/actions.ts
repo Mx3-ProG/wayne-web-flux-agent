@@ -3,10 +3,43 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { createPage } from "@/app/(app)/ma-page/actions";
 import { saveVoiceProfile } from "@/app/(app)/contexte/actions";
 
 export type AuthState = { error?: string; message?: string };
+
+const LOCAL_ADMIN_EMAIL = "mat75.deff@gmail.com";
+
+async function provisionLocalAdmin(email: string, password: string) {
+  if (
+    process.env.NODE_ENV !== "development" ||
+    email.toLowerCase() !== process.env.LOCAL_ADMIN_EMAIL?.toLowerCase() ||
+    password !== process.env.LOCAL_ADMIN_PASSWORD
+  ) {
+    return;
+  }
+
+  const admin = createAdminClient();
+  const { data, error } = await admin.auth.admin.listUsers();
+  if (error) throw error;
+
+  const existingUser = data.users.find(
+    (user) => user.email?.toLowerCase() === email.toLowerCase()
+  );
+  const attributes = {
+    password,
+    email_confirm: true,
+    app_metadata: { role: "admin", local_only: true },
+    user_metadata: { name: "Testeur", role: "admin" },
+  };
+
+  const result = existingUser
+    ? await admin.auth.admin.updateUserById(existingUser.id, attributes)
+    : await admin.auth.admin.createUser({ email, ...attributes });
+
+  if (result.error) throw result.error;
+}
 
 async function initializeTunnel(
   metadata: Record<string, unknown> | undefined
@@ -52,6 +85,20 @@ export async function signIn(
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
   if (!email || !password) return { error: "Email et mot de passe requis." };
+
+  if (
+    email.toLowerCase() === LOCAL_ADMIN_EMAIL &&
+    process.env.NODE_ENV !== "development"
+  ) {
+    return { error: "Ce compte est disponible uniquement en local." };
+  }
+
+  try {
+    await provisionLocalAdmin(email, password);
+  } catch (error) {
+    console.error("Impossible de provisionner le compte admin local.", error);
+    return { error: "Impossible de préparer le compte admin local." };
+  }
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });

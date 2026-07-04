@@ -73,5 +73,15 @@ export async function POST(
       { onConflict: "page_id,phone" }
     );
 
+  // Notification propriétaire (feed générique commandes + réservations).
+  await ctx.supabase.from("notifications").insert({
+    user_id: ctx.page.user_id,
+    page_id: ctx.page.id,
+    type: "booking",
+    ref_id: null,
+    title: "Nouvelle réservation",
+    body: `${firstName} · ${ctx.service.name} · ${date} à ${time}`,
+  });
+
   return new NextResponse(null, { status: 204 });
 }

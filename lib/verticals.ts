@@ -12,15 +12,32 @@ export type VerticalFamily = {
   services: VerticalService[];
 };
 
+export type VerticalProduct = {
+  name: string;
+  price_cents: number;
+};
+
+export type VerticalProductCategory = {
+  name: string;
+  products: VerticalProduct[];
+};
+
+// service : uniquement des prestations sur RDV (par défaut, historique).
+// product : uniquement une boutique de produits.
+// hybrid  : les deux (prestations + boutique).
+export type VerticalKind = "service" | "product" | "hybrid";
+
 export type Vertical = {
   slug: string;
   label: string;
   jobTitles: string[];
   emoji: string;
   clientWord: string; // "clientes", "clients", "convives"…
+  kind: VerticalKind;
   promptContext: string; // injecté dans les prompts IA
   defaultColors: { primary: string; dark: string; text: string };
   families: VerticalFamily[];
+  productCategories?: VerticalProductCategory[]; // boutique pré-remplie
 };
 
 export const VERTICALS: Vertical[] = [
@@ -30,6 +47,7 @@ export const VERTICALS: Vertical[] = [
     jobTitles: ["Esthéticienne", "Prothésiste ongulaire", "Technicienne de cils", "Dermographe"],
     emoji: "💅",
     clientWord: "clientes",
+    kind: "service",
     promptContext:
       "Institut de beauté / esthétique : soins, ongles, cils, sourcils. Clientèle majoritairement féminine, ton chaleureux et rassurant.",
     defaultColors: { primary: "#b4886b", dark: "#1c1512", text: "#2b211c" },
@@ -65,6 +83,7 @@ export const VERTICALS: Vertical[] = [
     jobTitles: ["Coiffeuse", "Coiffeur", "Barbier", "Coloriste"],
     emoji: "✂️",
     clientWord: "clients",
+    kind: "service",
     promptContext:
       "Salon de coiffure ou barbier : coupes, couleurs, soins capillaires. Ton dynamique et de proximité.",
     defaultColors: { primary: "#8a6d5c", dark: "#171310", text: "#241d18" },
@@ -92,6 +111,7 @@ export const VERTICALS: Vertical[] = [
     jobTitles: ["Restaurateur", "Restauratrice", "Chef à domicile", "Traiteur"],
     emoji: "🍽️",
     clientWord: "convives",
+    kind: "service",
     promptContext:
       "Restaurant, traiteur ou chef : réservation de tables ou d'événements. Ton gourmand et convivial, mise en avant des produits et du fait-maison.",
     defaultColors: { primary: "#a33b2e", dark: "#14100d", text: "#241b16" },
@@ -118,6 +138,7 @@ export const VERTICALS: Vertical[] = [
     jobTitles: ["Garagiste", "Mécanicien", "Detailer auto", "Carrossier"],
     emoji: "🚗",
     clientWord: "clients",
+    kind: "hybrid",
     promptContext:
       "Garage, mécanique ou esthétique automobile. Ton direct et de confiance : transparence des prix, sérieux, délais tenus.",
     defaultColors: { primary: "#2e5aa3", dark: "#0e1116", text: "#1a1e24" },
@@ -138,6 +159,23 @@ export const VERTICALS: Vertical[] = [
         ],
       },
     ],
+    productCategories: [
+      {
+        name: "Pièces & accessoires",
+        products: [
+          { name: "Roue (unité)", price_cents: 2000 },
+          { name: "Jeu de balais d'essuie-glace", price_cents: 1900 },
+          { name: "Batterie 12V", price_cents: 8900 },
+        ],
+      },
+      {
+        name: "Produits d'entretien",
+        products: [
+          { name: "Bidon d'huile moteur 5L", price_cents: 4500 },
+          { name: "Kit lavage auto", price_cents: 2500 },
+        ],
+      },
+    ],
   },
   {
     slug: "artisan",
@@ -145,6 +183,7 @@ export const VERTICALS: Vertical[] = [
     jobTitles: ["Plombier", "Électricien", "Peintre", "Menuisier", "Multi-services"],
     emoji: "🔧",
     clientWord: "clients",
+    kind: "service",
     promptContext:
       "Artisan du bâtiment : dépannages et chantiers. Ton fiable et sans jargon : devis clair, ponctualité, travail soigné.",
     defaultColors: { primary: "#c07f24", dark: "#12100c", text: "#211c14" },
@@ -160,11 +199,131 @@ export const VERTICALS: Vertical[] = [
     ],
   },
   {
+    slug: "commerce",
+    label: "Commerce & boutique",
+    jobTitles: ["Commerçant", "Commerçante", "Gérant de boutique", "Vendeur", "Vendeuse"],
+    emoji: "🛍️",
+    clientWord: "clients",
+    kind: "product",
+    promptContext:
+      "Commerce de détail / boutique : vente de produits en magasin et en click-and-collect. Ton commercial et de proximité, mise en avant des nouveautés, promotions et disponibilités.",
+    defaultColors: { primary: "#c2410c", dark: "#12100e", text: "#211b16" },
+    families: [],
+    productCategories: [
+      {
+        name: "Nouveautés",
+        products: [
+          { name: "Article vedette", price_cents: 2900 },
+          { name: "Coup de cœur", price_cents: 1900 },
+        ],
+      },
+      {
+        name: "Best-sellers",
+        products: [
+          { name: "Produit populaire", price_cents: 2500 },
+          { name: "Pack découverte", price_cents: 4900 },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "alimentation",
+    label: "Alimentation & épicerie",
+    jobTitles: ["Boulanger", "Boulangère", "Pâtissier", "Primeur", "Épicier", "Fromager", "Caviste"],
+    emoji: "🥖",
+    clientWord: "clients",
+    kind: "product",
+    promptContext:
+      "Commerce de bouche (boulangerie, pâtisserie, primeur, épicerie fine) : vente de produits frais et précommande / click-and-collect. Ton gourmand, artisanal et local, insiste sur la fraîcheur et le fait-maison.",
+    defaultColors: { primary: "#b45309", dark: "#141009", text: "#241d12" },
+    families: [],
+    productCategories: [
+      {
+        name: "Boulangerie",
+        products: [
+          { name: "Baguette tradition", price_cents: 130 },
+          { name: "Pain de campagne", price_cents: 350 },
+          { name: "Croissant", price_cents: 130 },
+        ],
+      },
+      {
+        name: "Pâtisserie",
+        products: [
+          { name: "Éclair", price_cents: 350 },
+          { name: "Tarte du jour (part)", price_cents: 400 },
+          { name: "Gâteau à commander", price_cents: 2500 },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "mode",
+    label: "Mode & accessoires",
+    jobTitles: ["Créateur", "Créatrice", "Styliste", "Bijoutier", "Bijoutière", "Maroquinier"],
+    emoji: "👗",
+    clientWord: "clients",
+    kind: "product",
+    promptContext:
+      "Prêt-à-porter, bijoux ou accessoires : boutique de créations et pièces sélectionnées. Ton élégant et désirable, storytelling autour des matières, des tailles et des éditions limitées.",
+    defaultColors: { primary: "#9d174d", dark: "#120a0e", text: "#20141a" },
+    families: [],
+    productCategories: [
+      {
+        name: "Vêtements",
+        products: [
+          { name: "T-shirt", price_cents: 3500 },
+          { name: "Robe", price_cents: 7900 },
+          { name: "Veste", price_cents: 12900 },
+        ],
+      },
+      {
+        name: "Accessoires",
+        products: [
+          { name: "Collier", price_cents: 4500 },
+          { name: "Sac", price_cents: 8900 },
+          { name: "Carte cadeau", price_cents: 5000 },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "bienetre",
+    label: "Bien-être & coaching",
+    jobTitles: ["Coach sportif", "Naturopathe", "Photographe", "Sophrologue", "Praticien bien-être"],
+    emoji: "🧘",
+    clientWord: "clients",
+    kind: "hybrid",
+    promptContext:
+      "Bien-être, coaching ou photographie : prestations sur rendez-vous ET vente de forfaits, cures ou produits (séances, ebooks, programmes). Ton bienveillant, motivant et expert, orienté transformation et résultats.",
+    defaultColors: { primary: "#0d9488", dark: "#0a1211", text: "#14201e" },
+    families: [
+      {
+        name: "Séances",
+        services: [
+          { name: "Séance découverte", duration_min: 60, price_cents: 0 },
+          { name: "Séance individuelle", duration_min: 60, price_cents: 6000 },
+          { name: "Bilan complet", duration_min: 90, price_cents: 9000 },
+        ],
+      },
+    ],
+    productCategories: [
+      {
+        name: "Forfaits & programmes",
+        products: [
+          { name: "Forfait 5 séances", price_cents: 27000 },
+          { name: "Forfait 10 séances", price_cents: 50000 },
+          { name: "Programme en ligne", price_cents: 9900 },
+        ],
+      },
+    ],
+  },
+  {
     slug: "autre",
     label: "Autre activité",
     jobTitles: ["Indépendant", "Indépendante"],
     emoji: "⭐",
     clientWord: "clients",
+    kind: "service",
     promptContext:
       "Commerce ou activité indépendante de proximité. Ton professionnel et accessible.",
     defaultColors: { primary: "#d31212", dark: "#0a0a0a", text: "#1c1c1c" },

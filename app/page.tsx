@@ -4,46 +4,13 @@ import {
   BarChart3,
   CalendarCheck2,
   Check,
-  Clock3,
-  Globe2,
   MessageCircleMore,
   Search,
   Sparkles,
   Star,
-  Users,
 } from "lucide-react";
 import styles from "./home.module.css";
-
-const PILLARS = [
-  {
-    number: "01",
-    icon: Clock3,
-    title: "Gagne du temps",
-    text: "Posts, réponses clients et contenus prêts à publier. Tu gardes ta voix, tu récupères tes soirées.",
-    tag: "Outils de gains de temps",
-  },
-  {
-    number: "02",
-    icon: Search,
-    title: "Sois trouvé sur Google",
-    text: "Une présence locale claire, des textes optimisés et une fiche Google qui travaille pour ton commerce.",
-    tag: "Boost ton commerce",
-  },
-  {
-    number: "03",
-    icon: Users,
-    title: "Transforme les vues en clients",
-    text: "Une vitrine qui rassure, un parcours simple et des rendez-vous qui arrivent sans courir après les prospects.",
-    tag: "Génère des leads",
-  },
-  {
-    number: "04",
-    icon: Globe2,
-    title: "Pilote tout au même endroit",
-    text: "Page, agenda, messages et visibilité réunis dans un espace pensé pour les professionnels de terrain.",
-    tag: "Solution tout-en-un",
-  },
-];
+import { PillarGrid } from "@/components/landing/pillar-grid";
 
 const TOOLS = [
   {
@@ -230,7 +197,8 @@ export default function LandingPage() {
             <h2>
               Tu maîtrises ton métier.
               <br />
-              Nous maîtrisons <em>le digital.</em>
+              Nous maîtrisons{" "}
+              <em className={styles.glitch} data-text="le digital.">le digital.</em>
             </h2>
             <div>
               <p>
@@ -251,29 +219,14 @@ export default function LandingPage() {
           <div className={styles.sectionHeading}>
             <div>
               <p className={styles.sectionIndex}>02 / CE QUE ÇA CHANGE</p>
-              <h2>Moins de tâches.<br />Plus de business.</h2>
+              <h2>Moins de tâches.<br />Plus de <span className={styles.goldWord}>Business.</span></h2>
             </div>
             <p>
               Quatre leviers, une seule direction : faire venir les bons
               clients jusqu&apos;à toi.
             </p>
           </div>
-          <div className={styles.pillarGrid}>
-            {PILLARS.map((pillar) => {
-              const Icon = pillar.icon;
-              return (
-                <article key={pillar.number} className={styles.pillar}>
-                  <div className={styles.pillarTop}>
-                    <span>{pillar.number}</span>
-                    <Icon aria-hidden="true" />
-                  </div>
-                  <p className={styles.pillarTag}>{pillar.tag}</p>
-                  <h3>{pillar.title}</h3>
-                  <p>{pillar.text}</p>
-                </article>
-              );
-            })}
-          </div>
+          <PillarGrid />
         </section>
 
         <section className={styles.toolsSection} id="outils">
@@ -327,7 +280,13 @@ export default function LandingPage() {
                 Wayne Web est né d&apos;une conviction simple : la technologie
                 doit servir les entrepreneurs, pas les perdre. Après des
                 centaines de sites, d&apos;automatisations et de problématiques
-                business résolues, nous avons réuni notre savoir-faire dans Flux.
+                business résolues,{" "}
+                <span
+                  className={styles.storyGlitch}
+                  data-text="nous avons réuni notre savoir-faire dans Flux."
+                >
+                  nous avons réuni notre savoir-faire dans Flux.
+                </span>
               </p>
               <div className={styles.storyProofs}>
                 <span><strong>48 h</strong> livraison moyenne</span>
@@ -352,7 +311,7 @@ export default function LandingPage() {
             Crée ta vitrine, active tes outils et transforme ta présence en
             ligne en véritable moteur de croissance.
           </p>
-          <Link className={styles.primaryCta} href="/commencer">
+          <Link className={`${styles.primaryCta} ${styles.ctaFloat}`} href="/commencer">
             Commencer gratuitement
             <ArrowRight aria-hidden="true" />
           </Link>
