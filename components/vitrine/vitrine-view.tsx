@@ -1,32 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import type { Offer, Page, Product, ProductCategory, Service, ServiceFamily } from "@/lib/types";
-import { formatDuration, formatPrice } from "@/lib/types";
 import { getFont } from "@/lib/verticals";
 import { defaultLegal } from "@/lib/legal";
+import { resolveSections, type PageSection } from "@/lib/sections";
 import {
   ArrowRight,
-  ChevronDown,
-  Clock3,
   MapPin,
+  MessageCircle,
+  Moon,
   Phone,
   ShoppingBag,
   Sparkles,
-  Tag,
+  Sun,
 } from "lucide-react";
+import { PromoBanner } from "./sections/promo-banner";
+import { OffersSection } from "./sections/offers-section";
+import { CatalogSection } from "./sections/catalog-section";
+import { SectionRenderer, type SectionContext } from "./section-renderer";
 import styles from "./vitrine.module.css";
 
 export type FamilyWithServices = ServiceFamily & { services: Service[] };
 export type CategoryWithProducts = ProductCategory & { products: Product[] };
-
-const OFFER_KIND_LABEL: Record<Offer["kind"], string> = {
-  produit: "Produit",
-  service: "Service",
-  evenement: "Événement",
-};
 
 type Props = {
   page: Page;
@@ -39,7 +37,74 @@ type Props = {
   cartCount?: number;
   onOpenCart?: () => void;
   poweredBy?: boolean;
+  preview?: boolean; // préview éditeur : désactive les interactions réseau
 };
+
+// Élément du plan de rendu : les sections pleine largeur (promo, offres)
+// vivent seules ; les autres sont regroupées dans un wrapper .services.
+// Boutique + prestations adjacentes fusionnent dans le bloc catalogue
+// historique (un seul titre, produits en haut, réservations en bas).
+type PlanItem =
+  | { kind: "promo" }
+  | { kind: "offres"; section: PageSection }
+  | { kind: "group"; items: GroupItem[] };
+type GroupItem =
+  | { kind: "catalogue"; key: string }
+  | { kind: "section"; key: string; section: PageSection };
+
+function buildPlan(sections: PageSection[]): PlanItem[] {
+  const plan: PlanItem[] = [];
+  let group: GroupItem[] | null = null;
+  for (let i = 0; i < sections.length; i++) {
+    const section = sections[i];
+    if (section.type === "promo") {
+      group = null;
+      plan.push({ kind: "promo" });
+      continue;
+    }
+    if (section.type === "offres") {
+      group = null;
+      plan.push({ kind: "offres", section });
+      continue;
+    }
+    if (!group) {
+      group = [];
+      plan.push({ kind: "group", items: group });
+    }
+    const next = sections[i + 1];
+    const pair =
+      (section.type === "boutique" && next?.type === "prestations") ||
+      (section.type === "prestations" && next?.type === "boutique");
+    if (pair) {
+      group.push({ kind: "catalogue", key: "catalogue" });
+      i++;
+    } else {
+      group.push({ kind: "section", key: section.id, section });
+    }
+  }
+  return plan;
+}
+
+const MODE_KEY = "ww-vitrine-mode";
+const MODE_EVENT = "ww-vitrine-mode-change";
+
+function subscribeVisitorMode(callback: () => void) {
+  window.addEventListener(MODE_EVENT, callback);
+  window.addEventListener("storage", callback);
+  return () => {
+    window.removeEventListener(MODE_EVENT, callback);
+    window.removeEventListener("storage", callback);
+  };
+}
+
+function readVisitorMode(): "dark" | "light" | null {
+  try {
+    const saved = localStorage.getItem(MODE_KEY);
+    return saved === "dark" || saved === "light" ? saved : null;
+  } catch {
+    return null;
+  }
+}
 
 // Vitrine publique du commerçant, aux couleurs qu'il a choisies.
 // Utilisée en SSR sur /p/[slug] et en préview live dans l'éditeur.
@@ -54,11 +119,26 @@ export function VitrineView({
   cartCount = 0,
   onOpenCart,
   poweredBy = true,
+  preview = false,
 }: Props) {
-  const [openFamily, setOpenFamily] = useState<string | null>(
-    families[0]?.id ?? null
-  );
   const [legalOpen, setLegalOpen] = useState<string | null>(null);
+  // Mode sombre/clair choisi par le visiteur, persisté en localStorage.
+  // null = palette du thème (et snapshot SSR, appliqué jusqu'à l'hydratation).
+  const visitorMode = useSyncExternalStore(
+    subscribeVisitorMode,
+    readVisitorMode,
+    () => null
+  );
+  const darkTheme = ["studio", "luxe", "neon"].includes(page.theme);
+  const effectiveDark = visitorMode ? visitorMode === "dark" : darkTheme;
+  const toggleMode = () => {
+    try {
+      localStorage.setItem(MODE_KEY, effectiveDark ? "light" : "dark");
+      window.dispatchEvent(new Event(MODE_EVENT));
+    } catch {}
+  };
+  const useCustomSurfaces =
+    !visitorMode || (visitorMode === "dark") === darkTheme;
 
   const colors = {
     primary: page.colors.primary || "#d31212",
@@ -70,65 +150,123 @@ export function VitrineView({
 
   const socials = Object.entries(page.socials || {}).filter(([, v]) => v);
   const hasServices = families.length > 0;
-  const hasShop = productCategories.some((c) => c.products.length > 0);
   const activeOffers = offers.filter((o) => o.active);
-  const hasOffers = activeOffers.length > 0;
-  const primaryAnchor = hasOffers ? "#offres" : "#prestations";
+
+  const sections = resolveSections(page).filter((s) => s.enabled);
+  const plan = buildPlan(sections);
+  const offersVisible =
+    activeOffers.length > 0 && sections.some((s) => s.type === "offres");
+  const primaryAnchor = offersVisible ? "#offres" : "#prestations";
+  const lastGroupIndex = plan.reduce(
+    (acc, item, i) => (item.kind === "group" ? i : acc),
+    -1
+  );
+  const firstGroupIndex = plan.findIndex((item) => item.kind === "group");
+
+  const ctx: SectionContext = {
+    page,
+    families,
+    productCategories,
+    activeOffers,
+    accent: colors.primary,
+    fontCss: font.css,
+    preview,
+    onBook,
+    onAddToCart,
+  };
+
+  const address = (page.address || page.city) && (
+    <p className={styles.address}>
+      <MapPin aria-hidden="true" />{" "}
+      {[page.address, page.city].filter(Boolean).join(" · ")}
+    </p>
+  );
 
   return (
     <div
       className={styles.page}
       data-theme={page.theme || "editorial"}
+      data-mode={visitorMode ?? undefined}
       style={
         {
           fontFamily: font.css,
           "--client-accent": colors.primary,
           "--client-dark": colors.dark,
+          // Fond/cartes personnalisés — ignorés quand le visiteur force un
+          // mode opposé au thème (les variables inline gagneraient sur le CSS).
+          ...(page.colors.background && useCustomSurfaces
+            ? { "--store-bg": page.colors.background }
+            : {}),
+          ...(page.colors.card && useCustomSurfaces
+            ? { "--store-surface": page.colors.card }
+            : {}),
         } as React.CSSProperties
       }
     >
-      {/* Bandeau offre */}
-      {page.offer && (
-        <div
-          className={styles.offer}
-          style={{ backgroundColor: colors.primary }}
-        >
-          {page.offer}
-        </div>
+      {/* Bandeau promo au-dessus du hero (position historique) */}
+      {plan[0]?.kind === "promo" && (
+        <PromoBanner page={page} accent={colors.primary} />
       )}
 
-      {/* Hero */}
-      <header className={`${styles.hero} ${page.hero_url ? styles.heroWithImage : ""}`}>
-        {page.hero_url && (
+      {/* Hero — fixe, hors sections */}
+      <header
+        className={`${styles.hero} ${page.hero_url ? styles.heroWithImage : ""} ${
+          page.colors.heroGradient && !page.hero_video_url && !page.hero_url
+            ? styles.heroGradient
+            : ""
+        }`}
+      >
+        {page.hero_video_url ? (
           <>
-            <Image
-              src={page.hero_url}
-              alt=""
-              fill
-              className={styles.heroImage}
-              sizes="100vw"
-              priority
+            <video
+              className={styles.heroVideo}
+              src={page.hero_video_url}
+              poster={page.hero_url ?? undefined}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
             />
             <div className={styles.heroOverlay} />
           </>
+        ) : (
+          page.hero_url && (
+            <>
+              <Image
+                src={page.hero_url}
+                alt=""
+                fill
+                className={styles.heroImage}
+                sizes="100vw"
+                priority
+              />
+              <div className={styles.heroOverlay} />
+            </>
+          )
         )}
         <div className={styles.storeNav}>
           <span className={styles.storeNavName}>
             {page.logo_url ? (
-              <Image
-                src={page.logo_url}
-                alt=""
-                width={34}
-                height={34}
-              />
+              <Image src={page.logo_url} alt="" width={34} height={34} />
             ) : (
               <i>{(page.business_name || "M").charAt(0).toUpperCase()}</i>
             )}
             <b>{page.business_name || "Mon commerce"}</b>
           </span>
-          <a href={primaryAnchor}>
-            {hasOffers ? "Voir les offres" : hasServices ? "Réserver" : "Découvrir"}
-          </a>
+          <span className={styles.storeNavActions}>
+            <button
+              type="button"
+              className={styles.modeToggle}
+              onClick={toggleMode}
+              aria-label={effectiveDark ? "Passer en mode clair" : "Passer en mode sombre"}
+            >
+              {effectiveDark ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
+            </button>
+            <a href={primaryAnchor}>
+              {offersVisible ? "Voir les offres" : hasServices ? "Réserver" : "Découvrir"}
+            </a>
+          </span>
         </div>
         <div className={styles.heroInner}>
           {page.logo_url && (
@@ -145,13 +283,11 @@ export function VitrineView({
               {[page.job_title, page.city].filter(Boolean).join(" · ")}
             </p>
           )}
-          <h1>
-            {page.business_name || "Mon commerce"}
-          </h1>
+          <h1>{page.business_name || "Mon commerce"}</h1>
           {page.tagline && <p className={styles.tagline}>{page.tagline}</p>}
           <div className={styles.heroActions}>
             <a className={styles.heroCta} href={primaryAnchor}>
-              {hasOffers
+              {offersVisible
                 ? "Voir les offres"
                 : hasServices
                   ? "Voir les prestations"
@@ -166,266 +302,88 @@ export function VitrineView({
         </div>
       </header>
 
-      {/* Offres mises en avant */}
-      {hasOffers && (
-        <section className={styles.offers} id="offres">
-          <div className={styles.sectionHeading}>
-            <p>À ne pas manquer</p>
-            <h2>Mes offres</h2>
-            <span>Des offres à saisir maintenant.</span>
-          </div>
-          <div className={styles.offersGrid}>
-            {activeOffers.map((offer) => {
-              const promo =
-                offer.compare_at_cents != null &&
-                offer.compare_at_cents > offer.price_cents;
-              return (
-                <article key={offer.id} className={styles.offerCard}>
-                  {offer.image_url && (
-                    <div className={styles.offerImage}>
-                      <Image
-                        src={offer.image_url}
-                        alt={offer.title}
-                        fill
-                        className={styles.galleryImage}
-                        sizes="(max-width: 640px) 100vw, 33vw"
-                      />
-                    </div>
-                  )}
-                  <div className={styles.offerBody}>
-                    <span className={styles.offerKind}>
-                      <Tag aria-hidden="true" /> {OFFER_KIND_LABEL[offer.kind]}
-                    </span>
-                    <h3 className={styles.offerTitle}>{offer.title}</h3>
-                    {offer.description && (
-                      <p className={styles.offerDesc}>{offer.description}</p>
-                    )}
-                    <div className={styles.offerFoot}>
-                      <span className={styles.offerPrice}>
-                        {promo && (
-                          <s className={styles.offerCompare}>
-                            {formatPrice(offer.compare_at_cents!)}
-                          </s>
-                        )}
-                        {formatPrice(offer.price_cents)}
-                      </span>
-                      {onAddOffer && (
-                        <button
-                          type="button"
-                          onClick={() => onAddOffer(offer)}
-                          className={styles.addButton}
-                          style={{ backgroundColor: colors.primary }}
-                        >
-                          {offer.kind === "produit" ? "Commander" : "J'en profite"}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </article>
-              );
-            })}
-          </div>
-        </section>
+      {plan.map((item, planIndex) => {
+        if (item.kind === "promo") {
+          // Le bandeau de tête est déjà rendu au-dessus du hero.
+          if (planIndex === 0) return null;
+          return <PromoBanner key="promo" page={page} accent={colors.primary} />;
+        }
+        if (item.kind === "offres") {
+          const settings = item.section.settings as
+            | { title?: string; subtitle?: string }
+            | undefined;
+          return (
+            <OffersSection
+              key="offres"
+              offers={activeOffers}
+              accent={colors.primary}
+              onAddOffer={onAddOffer}
+              title={settings?.title}
+              subtitle={settings?.subtitle}
+            />
+          );
+        }
+        return (
+          <section
+            key={`group-${planIndex}`}
+            className={styles.services}
+            id={planIndex === firstGroupIndex ? "prestations" : undefined}
+          >
+            {item.items.map((entry, entryIndex) =>
+              entry.kind === "catalogue" ? (
+                <CatalogSection
+                  key={entry.key}
+                  mode="combined"
+                  families={families}
+                  productCategories={productCategories}
+                  accent={colors.primary}
+                  onBook={onBook}
+                  onAddToCart={onAddToCart}
+                  showEmpty={!offersVisible}
+                  first={entryIndex === 0}
+                />
+              ) : (
+                <SectionRenderer
+                  key={entry.key}
+                  section={entry.section}
+                  first={entryIndex === 0}
+                  ctx={ctx}
+                />
+              )
+            )}
+            {planIndex === lastGroupIndex && address}
+          </section>
+        );
+      })}
+      {lastGroupIndex === -1 && address && (
+        <section className={styles.services}>{address}</section>
       )}
 
-      {/* Prestations : produits (haut) puis réservations (bas) */}
-      <section className={styles.services} id="prestations">
-        {!hasServices && !hasShop && !hasOffers && (
-          <p className={styles.empty}>Le catalogue arrive bientôt.</p>
-        )}
-        {(hasServices || hasShop) && (
-        <div className={styles.sectionHeading}>
-          <p>Ce que je propose</p>
-          <h2>Mes prestations</h2>
-          <span>Produits à commander et rendez-vous à réserver.</span>
-        </div>
-        )}
-
-        {/* Produits */}
-        {hasShop && (
-          <div className={styles.contentSection} id="boutique">
-            {hasServices && <h3 className={styles.subHeading}>Produits</h3>}
-            {productCategories
-              .filter((c) => c.products.length > 0)
-              .map((category) => (
-                <div key={category.id} className={styles.shopCategory}>
-                  {productCategories.filter((c) => c.products.length > 0).length > 1 && (
-                    <h4 className={styles.shopCategoryName}>{category.name}</h4>
-                  )}
-                  <div className={styles.shopGrid}>
-                    {category.products.map((product) => (
-                      <article key={product.id} className={styles.product}>
-                        {product.image_url && (
-                          <div className={styles.productImage}>
-                            <Image
-                              src={product.image_url}
-                              alt={product.name}
-                              fill
-                              className={styles.galleryImage}
-                              sizes="(max-width: 640px) 50vw, 33vw"
-                            />
-                          </div>
-                        )}
-                        <div className={styles.productBody}>
-                          <p className={styles.productName}>{product.name}</p>
-                          {product.description && (
-                            <p className={styles.productDesc}>{product.description}</p>
-                          )}
-                          <div className={styles.productFoot}>
-                            <span className={styles.productPrice}>
-                              {formatPrice(product.price_cents)}
-                            </span>
-                            {product.track_stock && product.stock <= 0 ? (
-                              <span className={styles.soldOut}>Épuisé</span>
-                            ) : (
-                              onAddToCart && (
-                                <button
-                                  type="button"
-                                  onClick={() => onAddToCart(product)}
-                                  className={styles.addButton}
-                                  style={{ backgroundColor: colors.primary }}
-                                >
-                                  Ajouter
-                                </button>
-                              )
-                            )}
-                          </div>
-                        </div>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-              ))}
-          </div>
-        )}
-
-        {/* Réservations */}
-        {hasServices && (
-        <div className={hasShop ? styles.contentSection : undefined} id="reservations">
-          {hasShop && <h3 className={styles.subHeading}>Réservations</h3>}
-        <div className={styles.familyList}>
-          {families.map((family) => {
-            const open = openFamily === family.id;
-            return (
-              <div key={family.id} className={styles.family}>
-                <button
-                  type="button"
-                  onClick={() => setOpenFamily(open ? null : family.id)}
-                  className={styles.familyButton}
-                  aria-expanded={open}
-                >
-                  <span>
-                    {family.name}
-                  </span>
-                  <ChevronDown className={open ? styles.chevronOpen : ""} aria-hidden="true" />
-                </button>
-                {open && (
-                  <ul className={styles.serviceList}>
-                    {family.services.map((service) => (
-                      <li
-                        key={service.id}
-                        className={styles.service}
-                      >
-                        <div>
-                          <p>{service.name}</p>
-                          <p className={styles.duration}>
-                            <Clock3 aria-hidden="true" /> {formatDuration(service.duration_min)}
-                          </p>
-                        </div>
-                        <div className={styles.serviceAction}>
-                          <span>
-                            {service.price_cents === 0
-                              ? "Offert"
-                              : formatPrice(service.price_cents)}
-                          </span>
-                          {onBook && (
-                            <button
-                              type="button"
-                              onClick={() => onBook(service)}
-                              className={styles.bookButton}
-                              style={{ backgroundColor: colors.primary }}
-                            >
-                              Réserver
-                            </button>
-                          )}
-                        </div>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            );
-          })}
-        </div>
-        </div>
-        )}
-
-        {/* Galerie */}
-        {page.gallery.length > 0 && (
-          <div className={styles.contentSection}>
-            <div className={styles.sectionHeading}><p>En images</p><h2>Mon travail</h2><span>Quelques détails qui racontent mon univers.</span></div>
-            <div className={styles.gallery}>
-              {page.gallery.map((photo, i) => (
-                <figure key={i}>
-                  <Image
-                    src={photo.url}
-                    alt={photo.title || `Photo ${i + 1}`}
-                    fill
-                    className={styles.galleryImage}
-                    sizes="(max-width: 640px) 50vw, 33vw"
-                  />
-                  {photo.title && (
-                    <figcaption>
-                      {photo.title}
-                    </figcaption>
-                  )}
-                </figure>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Avis */}
-        {page.reviews.length > 0 && (
-          <div className={styles.contentSection}>
-            <div className={styles.sectionHeading}><p>Ils me font confiance</p><h2>Ce qu&apos;on dit de moi</h2><span>Des mots vrais, laissés par mes clients.</span></div>
-            <div className={styles.reviews}>
-              {page.reviews.map((review, i) => (
-                <blockquote
-                  key={i}
-                  className={styles.review}
-                >
-                  <p className={styles.stars}>
-                    ★★★★★
-                  </p>
-                  <p>« {review.text} »</p>
-                  <footer>{review.author}</footer>
-                </blockquote>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Horaires */}
-        {page.hours_text && (
-          <div className={styles.hours}>
-            <div className={styles.sectionHeading}><p>Quand venir</p><h2>Mes horaires</h2><span>Retrouve-moi au bon moment.</span></div>
-            <pre
-              className={styles.hoursText}
-              style={{ fontFamily: font.css }}
-            >
-              {page.hours_text}
-            </pre>
-          </div>
-        )}
-
-        {/* Adresse */}
-        {(page.address || page.city) && (
-          <p className={styles.address}>
-            <MapPin aria-hidden="true" /> {[page.address, page.city].filter(Boolean).join(" · ")}
-          </p>
-        )}
-      </section>
+      {/* Bouton flottant WhatsApp / appel */}
+      {page.floating_cta?.number && (
+        <a
+          className={styles.contactFab}
+          data-track={page.floating_cta.type === "whatsapp" ? "whatsapp" : "phone"}
+          href={
+            page.floating_cta.type === "whatsapp"
+              ? `https://wa.me/${page.floating_cta.number.replace(/[^0-9]/g, "")}`
+              : `tel:${page.floating_cta.number}`
+          }
+          target={page.floating_cta.type === "whatsapp" ? "_blank" : undefined}
+          rel="noreferrer"
+          aria-label={
+            page.floating_cta.type === "whatsapp"
+              ? "Écrire sur WhatsApp"
+              : "Appeler"
+          }
+        >
+          {page.floating_cta.type === "whatsapp" ? (
+            <MessageCircle aria-hidden="true" />
+          ) : (
+            <Phone aria-hidden="true" />
+          )}
+        </a>
+      )}
 
       {/* Panier flottant */}
       {onOpenCart && cartCount > 0 && (
@@ -442,10 +400,7 @@ export function VitrineView({
       )}
 
       {/* Footer */}
-      <footer
-        className={styles.footer}
-        style={{ backgroundColor: colors.dark }}
-      >
+      <footer className={styles.footer} style={{ backgroundColor: colors.dark }}>
         <p className={styles.footerKicker}>Restons en contact</p>
         <h2>{page.business_name || "Mon commerce"}</h2>
         {page.phone && (
@@ -498,10 +453,7 @@ export function VitrineView({
           role="dialog"
           aria-modal="true"
         >
-          <div
-            className={styles.modal}
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
               <h3>
                 {legalOpen === "mentions"
@@ -519,9 +471,7 @@ export function VitrineView({
                 ×
               </button>
             </div>
-            <pre>
-              {legal[legalOpen as keyof typeof legal]}
-            </pre>
+            <pre>{legal[legalOpen as keyof typeof legal]}</pre>
           </div>
         </div>
       )}

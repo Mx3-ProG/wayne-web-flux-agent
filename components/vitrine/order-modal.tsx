@@ -44,6 +44,7 @@ export function OrderModal({ pageId, items, accentColor, onSetQty, onClose, onDo
         firstName: String(form.get("first_name") ?? "").trim(),
         phone: String(form.get("phone") ?? "").trim(),
         email: String(form.get("email") ?? "").trim() || undefined,
+        address: String(form.get("address") ?? "").trim() || undefined,
         note: String(form.get("note") ?? "").trim() || undefined,
         items: items.map((it) =>
           it.kind === "offer"
@@ -170,6 +171,12 @@ export function OrderModal({ pageId, items, accentColor, onSetQty, onClose, onDo
               name="email"
               type="email"
               placeholder="Ton email (optionnel)"
+              className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5"
+            />
+            <input
+              name="address"
+              maxLength={240}
+              placeholder="Ton adresse (optionnel)"
               className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5"
             />
             <textarea

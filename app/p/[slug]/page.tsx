@@ -110,7 +110,9 @@ async function loadVitrine(slug: string) {
     (productCategoriesResult.data ?? []) as ProductCategory[]
   ).map((category) => ({
     ...category,
-    products: products.filter((product) => product.category_id === category.id),
+    products: products.filter(
+      (product) => product.category_id === category.id && product.kind !== "reservation"
+    ),
   }));
 
   const offers = (offersResult.data ?? []) as Offer[];
@@ -127,18 +129,24 @@ export async function generateMetadata({
   const data = await loadVitrine(slug);
   if (!data) return { title: "Page introuvable" };
   const { page } = data;
-  const title = [page.business_name, page.job_title, page.city]
+  // SEO personnalisé (pages.seo) avec fallback sur les champs de la vitrine.
+  const seo = page.seo ?? {};
+  const defaultTitle = [page.business_name, page.job_title, page.city]
     .filter(Boolean)
     .join(" · ");
+  const title = seo.title?.trim() || defaultTitle || page.slug;
+  const description =
+    seo.description?.trim() ||
+    page.tagline ||
+    `${page.business_name} — réservation en ligne${page.city ? ` à ${page.city}` : ""}.`;
+  const ogImage = seo.ogImageUrl || page.hero_url;
   return {
-    title: title || page.slug,
-    description:
-      page.tagline ||
-      `${page.business_name} — réservation en ligne${page.city ? ` à ${page.city}` : ""}.`,
+    title,
+    description,
     openGraph: {
       title,
-      description: page.tagline,
-      images: page.hero_url ? [page.hero_url] : undefined,
+      description,
+      images: ogImage ? [ogImage] : undefined,
     },
   };
 }

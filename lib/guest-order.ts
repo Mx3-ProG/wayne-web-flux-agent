@@ -9,10 +9,11 @@ export async function submitGuestOrder(params: {
   firstName: string;
   phone: string;
   email?: string;
+  address?: string;
   note?: string;
   items: CartItem[];
 }): Promise<{ order_id: string; total_cents: number }> {
-  const { pageId, firstName, phone, email, note, items } = params;
+  const { pageId, firstName, phone, email, address, note, items } = params;
   const supabase = createPublicClient();
 
   const { data, error } = await supabase.rpc("create_guest_order", {
@@ -20,6 +21,7 @@ export async function submitGuestOrder(params: {
     p_first_name: firstName,
     p_phone: phone,
     p_email: email ?? null,
+    p_address: address ?? null,
     p_note: note ?? "",
     p_items: items,
   });

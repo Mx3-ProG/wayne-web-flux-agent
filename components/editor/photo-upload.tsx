@@ -9,9 +9,18 @@ type Props = {
   label: string;
   onUploaded: (url: string) => void;
   multiple?: boolean;
+  accept?: string; // ex. "video/mp4,video/webm" — image/* par défaut
+  maxMb?: number;
 };
 
-export function PhotoUpload({ userId, label, onUploaded, multiple }: Props) {
+export function PhotoUpload({
+  userId,
+  label,
+  onUploaded,
+  multiple,
+  accept = "image/*",
+  maxMb = 5,
+}: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState("");
@@ -22,8 +31,8 @@ export function PhotoUpload({ userId, label, onUploaded, multiple }: Props) {
     setUploading(true);
     const supabase = createClient();
     for (const file of Array.from(files).slice(0, multiple ? 8 : 1)) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError("Photo trop lourde (5 Mo max).");
+      if (file.size > maxMb * 1024 * 1024) {
+        setError(`Fichier trop lourd (${maxMb} Mo max).`);
         continue;
       }
       const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
@@ -47,7 +56,7 @@ export function PhotoUpload({ userId, label, onUploaded, multiple }: Props) {
       <input
         ref={inputRef}
         type="file"
-        accept="image/*"
+        accept={accept}
         multiple={multiple}
         className="hidden"
         onChange={(e) => handleFiles(e.target.files)}

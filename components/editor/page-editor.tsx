@@ -8,21 +8,22 @@ import { FONTS, type VerticalKind } from "@/lib/verticals";
 import { VITRINE_THEMES } from "@/lib/vitrine-themes";
 import {
   savePageFields,
-  syncCatalog,
-  type CatalogFamily,
 } from "@/app/(app)/ma-page/actions";
+import { updateProduct } from "@/app/(app)/produits/actions";
 import {
   VitrineView,
   type CategoryWithProducts,
   type FamilyWithServices,
 } from "@/components/vitrine/vitrine-view";
+import { resolveSections } from "@/lib/sections";
 import { PhotoUpload } from "./photo-upload";
 import { PublishButton } from "./publish-button";
+import { SectionsPanel } from "./sections-panel";
 import { Input } from "@/components/ui/input";
-import { PriceInput } from "@/components/ui/price-input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
 import {
   Accordion,
   AccordionContent,
@@ -73,7 +74,8 @@ export function PageEditor({
   publish,
 }: Props) {
   const [page, setPage] = useState<Page>(initialPage);
-  const [catalog, setCatalog] = useState<EditableCatalog>(initialCatalog);
+  const [catalogProducts, setCatalogProducts] =
+    useState<CategoryWithProducts[]>(previewProducts);
   const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">("mobile");
   const [panelMode, setPanelMode] = useState<"edit" | "preview">("edit");
   const [activeSection, setActiveSection] = useState("identite");
@@ -83,9 +85,11 @@ export function PageEditor({
 
   const showServices = verticalKind !== "product";
   const showShop = verticalKind !== "service";
+  const productsByCategory = catalogProducts.filter(
+    (category) => category.products.length > 0
+  );
 
   const fieldsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const catalogTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const patch = useCallback((fields: Partial<Page>) => {
     setDirty(true);
@@ -99,40 +103,87 @@ export function PageEditor({
     }, 800);
   }, [initialPage.id]);
 
-  const patchCatalog = useCallback(
-    (next: EditableCatalog) => {
-      setCatalog(next);
-      if (catalogTimer.current) clearTimeout(catalogTimer.current);
-      catalogTimer.current = setTimeout(async () => {
-        setSaving(true);
-        const result = await syncCatalog(
-          initialPage.id,
-          next as CatalogFamily[]
-        );
-        setSaving(false);
-        if (result.error) toast.error(result.error);
-      }, 1200);
-    },
-    [initialPage.id]
-  );
+  function toggleCatalogItem(productId: string, checked: boolean) {
+    setSaving(true);
+    setCatalogProducts((prev) =>
+      prev.map((category) => ({
+        ...category,
+        products: category.products.map((product) =>
+          product.id === productId ? { ...product, active: checked } : product
+        ),
+      }))
+    );
+    updateProduct(productId, { active: checked }).then((result) => {
+      setSaving(false);
+      if (result.error) toast.error(result.error);
+    });
+  }
 
   useEffect(
     () => () => {
       if (fieldsTimer.current) clearTimeout(fieldsTimer.current);
-      if (catalogTimer.current) clearTimeout(catalogTimer.current);
     },
     []
   );
 
-  // Préview : reconstruit des familles avec des ids stables locaux
-  const previewFamilies: FamilyWithServices[] = catalog.map((f, fi) => ({
-    id: `preview-f${fi}`,
+  // Bandeau promo : nouveau format objet, fallback sur l'ancien texte `offer`.
+  const promo = page.promo ?? { text: page.offer ?? "" };
+  const patchPromo = (fields: Partial<NonNullable<Page["promo"]>>) => {
+    const next = { ...promo, ...fields };
+    if (!next.code?.trim()) delete next.code;
+    if (!next.endsAt) delete next.endsAt;
+    // `offer: ""` : on migre l'ancien bandeau texte vers `promo` dès la
+    // première édition, sinon il resterait affiché en fallback après effacement.
+    patch({
+      promo: next.text.trim() || next.code || next.endsAt ? next : null,
+      offer: "",
+    });
+  };
+
+  const visibleProductCategories: CategoryWithProducts[] = catalogProducts
+    .map((category) => ({
+      ...category,
+      products: category.products.filter(
+        (product) => product.active && product.kind !== "reservation"
+      ),
+    }))
+    .filter((category) => category.products.length > 0);
+
+  const reservationFamilies: FamilyWithServices[] = catalogProducts
+    .map((category, fi) => {
+      const services = category.products
+        .filter((product) => product.active && product.kind === "reservation")
+        .map((product, si) => ({
+          id: product.id,
+          product_id: product.id,
+          family_id: category.id,
+          page_id: page.id,
+          name: product.name,
+          duration_min: product.duration_min || 60,
+          price_cents: product.price_cents,
+          position: si,
+        }));
+      return {
+        id: category.id,
+        product_category_id: category.id,
+        page_id: page.id,
+        name: category.name,
+        position: fi,
+        services,
+      };
+    })
+    .filter((family) => family.services.length > 0);
+
+  const legacyFamilies: FamilyWithServices[] = initialCatalog.map((f, fi) => ({
+    id: `preview-legacy-f${fi}`,
+    product_category_id: null,
     page_id: page.id,
     name: f.name,
     position: fi,
     services: f.services.map((s, si) => ({
-      id: `preview-s${fi}-${si}`,
-      family_id: `preview-f${fi}`,
+      id: `preview-legacy-s${fi}-${si}`,
+      product_id: null,
+      family_id: `preview-legacy-f${fi}`,
       page_id: page.id,
       name: s.name,
       duration_min: s.duration_min,
@@ -140,6 +191,8 @@ export function PageEditor({
       position: si,
     })),
   }));
+  const previewFamilies =
+    reservationFamilies.length > 0 ? reservationFamilies : legacyFamilies;
 
   return (
     <>
@@ -194,6 +247,7 @@ export function PageEditor({
             ["style", "3", "Style"],
             [showServices ? "prestations" : "boutique", "4", showServices ? "Prestations" : "Produits"],
             ["contact", "5", "Contact"],
+            ["sections", "6", "Sections"],
           ].map(([value, number, label]) => (
             <button
               key={value}
@@ -306,6 +360,31 @@ export function PageEditor({
                 </div>
               </div>
               <div className="space-y-2">
+                <Label>Une vidéo d&apos;accueil (à la place de la photo)</Label>
+                <div className="flex items-center gap-3">
+                  <PhotoUpload
+                    userId={page.user_id}
+                    label="Choisir ma vidéo"
+                    accept="video/mp4,video/webm"
+                    maxMb={50}
+                    onUploaded={(url) => patch({ hero_video_url: url })}
+                  />
+                  {page.hero_video_url && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => patch({ hero_video_url: null })}
+                    >
+                      Retirer
+                    </Button>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Courte et sans son, c&apos;est elle qui tourne en haut de ta page.
+                  Ta photo sert d&apos;image d&apos;attente.
+                </p>
+              </div>
+              <div className="space-y-2">
                 <Label>Tes plus belles réalisations (galerie)</Label>
                 <PhotoUpload
                   userId={page.user_id}
@@ -342,111 +421,55 @@ export function PageEditor({
           {/* Prestations */}
           {showServices && (
           <AccordionItem value="prestations" className="border rounded-xl px-4">
-            <AccordionTrigger>Mes prestations — familles, prix, durées</AccordionTrigger>
+            <AccordionTrigger>Mes prestations — produits et réservations</AccordionTrigger>
             <AccordionContent className="space-y-4 pt-1">
-              {catalog.map((family, fi) => (
-                <div key={fi} className="rounded-lg border border-border p-3 space-y-3">
-                  <div className="flex items-center gap-2">
-                    <Input
-                      value={family.name}
-                      maxLength={60}
-                      className="font-medium"
-                      onChange={(e) => {
-                        const next = structuredClone(catalog);
-                        next[fi].name = e.target.value;
-                        patchCatalog(next);
-                      }}
-                    />
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() =>
-                        patchCatalog(catalog.filter((_, j) => j !== fi))
-                      }
-                    >
-                      Supprimer
-                    </Button>
-                  </div>
-                  {family.services.map((service, si) => (
-                    <div key={si} className={styles.serviceFields}>
-                      <Input
-                        value={service.name}
-                        maxLength={80}
-                        placeholder="Nom de la prestation"
-                        onChange={(e) => {
-                          const next = structuredClone(catalog);
-                          next[fi].services[si].name = e.target.value;
-                          patchCatalog(next);
-                        }}
-                      />
-                      <Input
-                        type="number"
-                        min={5}
-                        max={600}
-                        step={5}
-                        value={service.duration_min}
-                        title="Durée (minutes)"
-                        onChange={(e) => {
-                          const next = structuredClone(catalog);
-                          next[fi].services[si].duration_min =
-                            parseInt(e.target.value, 10) || 60;
-                          patchCatalog(next);
-                        }}
-                      />
-                      <PriceInput
-                        cents={service.price_cents}
-                        aria-label="Prix (€)"
-                        onCents={(c) => {
-                          const next = structuredClone(catalog);
-                          next[fi].services[si].price_cents = c;
-                          patchCatalog(next);
-                        }}
-                      />
-                      <button
-                        type="button"
-                        aria-label="Retirer la prestation"
-                        className="text-destructive text-sm px-1"
-                        onClick={() => {
-                          const next = structuredClone(catalog);
-                          next[fi].services.splice(si, 1);
-                          patchCatalog(next);
-                        }}
-                      >
-                        ×
-                      </button>
+              {productsByCategory.length > 0 ? (
+                productsByCategory.map((category) => (
+                  <div key={category.id} className="rounded-lg border border-border p-3 space-y-3">
+                    <div className="flex items-center justify-between gap-3">
+                      <p className="font-medium">{category.name}</p>
+                      <span className="text-xs text-muted-foreground">
+                        {category.products.length} produit{category.products.length > 1 ? "s" : ""}
+                      </span>
                     </div>
-                  ))}
-                  <p className="text-xs text-muted-foreground">
-                    Nom · durée (min) · prix (€)
+                    <div className={styles.productPicker}>
+                      {category.products.map((product) => {
+                        const checked = product.active;
+                        return (
+                          <label key={product.id} className={styles.productChoice}>
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={(e) =>
+                                toggleCatalogItem(product.id, e.target.checked)
+                              }
+                            />
+                            <span>
+                              <strong>{product.name}</strong>
+                              <small>
+                                {product.kind === "reservation"
+                                  ? `Réservation · ${product.duration_min || 60} min · `
+                                  : "Produit · "}
+                                {(product.price_cents / 100).toFixed(2).replace(".", ",")} €
+                              </small>
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-lg border border-border p-3 space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    Ajoute d&apos;abord tes produits ou tes réservations. Ils seront
+                    cochés automatiquement ici et visibles sur ta vitrine.
                   </p>
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => {
-                      const next = structuredClone(catalog);
-                      next[fi].services.push({
-                        name: "",
-                        duration_min: 60,
-                        price_cents: 5000,
-                      });
-                      patchCatalog(next);
-                    }}
-                  >
-                    + Ajouter une prestation
+                  <Button asChild variant="secondary" size="sm">
+                    <Link href="/produits">Gérer mes produits →</Link>
                   </Button>
                 </div>
-              ))}
-              <Button
-                variant="secondary"
-                onClick={() =>
-                  patchCatalog([
-                    ...catalog,
-                    { name: "Nouvelle famille", services: [] },
-                  ])
-                }
-              >
-                + Ajouter une famille
-              </Button>
+              )}
             </AccordionContent>
           </AccordionItem>
           )}
@@ -501,6 +524,69 @@ export function PageEditor({
                   </div>
                 )
               )}
+              <div className="space-y-3 rounded-lg border border-border p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <Label>Bouton flottant de contact</Label>
+                    <p className="text-xs text-muted-foreground">
+                      Un bouton toujours visible en bas de ta page pour t&apos;écrire
+                      ou t&apos;appeler.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={Boolean(page.floating_cta)}
+                    onCheckedChange={(on) =>
+                      patch({
+                        floating_cta: on
+                          ? { type: "whatsapp", number: page.phone || "" }
+                          : null,
+                      })
+                    }
+                  />
+                </div>
+                {page.floating_cta && (
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    <div className="space-y-2">
+                      <Label>Type</Label>
+                      <Select
+                        value={page.floating_cta.type}
+                        onValueChange={(type) =>
+                          patch({
+                            floating_cta: {
+                              ...page.floating_cta!,
+                              type: type as "whatsapp" | "phone",
+                            },
+                          })
+                        }
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="whatsapp">WhatsApp</SelectItem>
+                          <SelectItem value="phone">Appel direct</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Numéro</Label>
+                      <Input
+                        value={page.floating_cta.number}
+                        maxLength={20}
+                        placeholder="+33 6 12 34 56 78"
+                        onChange={(e) =>
+                          patch({
+                            floating_cta: {
+                              ...page.floating_cta!,
+                              number: e.target.value,
+                            },
+                          })
+                        }
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
               <div className="space-y-2">
                 <Label>Tes horaires affichés (facultatif, une ligne par jour)</Label>
                 <Textarea
@@ -531,7 +617,10 @@ export function PageEditor({
                       className={(page.theme || "editorial") === theme.id ? styles.themeActive : styles.themeChoice}
                     >
                       <span className={styles.themePreview}><i /><i /><i /></span>
-                      <strong>{theme.name}</strong>
+                      <strong>
+                        {theme.name}
+                        {theme.premium && <em className={styles.themePremium}>Premium</em>}
+                      </strong>
                       <small>{theme.description}</small>
                     </button>
                   ))}
@@ -561,6 +650,59 @@ export function PageEditor({
                 La principale colore tes boutons et tes prix. La foncée habille le
                 bas de ta page. Les textes s&apos;adaptent automatiquement pour rester lisibles.
               </p>
+              <div className="space-y-3 rounded-lg border border-border p-3">
+                <p className="text-sm font-medium">Couleurs avancées</p>
+                <div className={styles.colorGrid}>
+                  {(
+                    [
+                      ["background", "Fond de page", "#f1ede7"],
+                      ["card", "Cartes", "#e7e1da"],
+                    ] as const
+                  ).map(([key, label, fallback]) => (
+                    <div key={key} className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <Label>{label}</Label>
+                        {page.colors[key] && (
+                          <button
+                            type="button"
+                            className="text-xs text-muted-foreground underline underline-offset-2"
+                            onClick={() => {
+                              const rest = { ...page.colors };
+                              delete rest[key];
+                              patch({ colors: rest });
+                            }}
+                          >
+                            auto
+                          </button>
+                        )}
+                      </div>
+                      <input
+                        type="color"
+                        value={page.colors[key] ?? fallback}
+                        className="h-10 w-full rounded-lg border border-border bg-transparent cursor-pointer"
+                        onChange={(e) =>
+                          patch({ colors: { ...page.colors, [key]: e.target.value } })
+                        }
+                      />
+                    </div>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <Label>Dégradé en haut de page</Label>
+                    <p className="text-xs text-muted-foreground">
+                      Sans photo ni vidéo, le haut mélange ta couleur foncée et ta
+                      couleur principale.
+                    </p>
+                  </div>
+                  <Switch
+                    checked={page.colors.heroGradient ?? false}
+                    onCheckedChange={(heroGradient) =>
+                      patch({ colors: { ...page.colors, heroGradient } })
+                    }
+                  />
+                </div>
+              </div>
               <div className="space-y-2">
                 <Label>Ton style d&apos;écriture</Label>
                 <Select value={page.font} onValueChange={(font) => patch({ font })}>
@@ -576,6 +718,18 @@ export function PageEditor({
                   </SelectContent>
                 </Select>
               </div>
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* Sections de la page */}
+          <AccordionItem value="sections" className="border rounded-xl px-4">
+            <AccordionTrigger>Les sections de ma page — ordre et blocs</AccordionTrigger>
+            <AccordionContent className="pt-1">
+              <SectionsPanel
+                sections={resolveSections(page)}
+                userId={page.user_id}
+                onChange={(sections) => patch({ sections })}
+              />
             </AccordionContent>
           </AccordionItem>
 
@@ -637,16 +791,126 @@ export function PageEditor({
           {/* Offre */}
           <AccordionItem value="offre" className="border rounded-xl px-4">
             <AccordionTrigger>Une offre à mettre en avant</AccordionTrigger>
-            <AccordionContent className="space-y-2 pt-1">
-              <Input
-                value={page.offer}
-                maxLength={100}
-                placeholder="Ex : -20% pour toute première visite en janvier"
-                onChange={(e) => patch({ offer: e.target.value })}
-              />
+            <AccordionContent className="space-y-4 pt-1">
+              <div className="space-y-2">
+                <Label>Ton message</Label>
+                <Input
+                  value={promo.text}
+                  maxLength={100}
+                  placeholder="Ex : -20% pour toute première visite en janvier"
+                  onChange={(e) => patchPromo({ text: e.target.value })}
+                />
+                <p className="text-xs text-muted-foreground">
+                  S&apos;affiche en bandeau tout en haut de ta page. Facultatif.
+                </p>
+              </div>
+              <div className="grid sm:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label>Code promo (facultatif)</Label>
+                  <Input
+                    value={promo.code ?? ""}
+                    maxLength={24}
+                    placeholder="Ex : BIENVENUE20"
+                    onChange={(e) =>
+                      patchPromo({ code: e.target.value.toUpperCase() })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Fin de l&apos;offre (facultatif)</Label>
+                  <Input
+                    type="datetime-local"
+                    value={promo.endsAt ? promo.endsAt.slice(0, 16) : ""}
+                    onChange={(e) =>
+                      patchPromo({
+                        endsAt: e.target.value
+                          ? new Date(e.target.value).toISOString()
+                          : undefined,
+                      })
+                    }
+                  />
+                </div>
+              </div>
               <p className="text-xs text-muted-foreground">
-                S&apos;affiche en bandeau tout en haut de ta page. Facultatif.
+                Avec une date de fin, un compte à rebours s&apos;affiche et le
+                bandeau disparaît tout seul à l&apos;échéance. Le code se copie en
+                un clic.
               </p>
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* Référencement & visibilité */}
+          <AccordionItem value="seo" className="border rounded-xl px-4">
+            <AccordionTrigger>Référencement (SEO) & visibilité</AccordionTrigger>
+            <AccordionContent className="space-y-4 pt-1">
+              <div className="space-y-2">
+                <Label>
+                  Titre Google ({(page.seo?.title ?? "").length}/60)
+                </Label>
+                <Input
+                  value={page.seo?.title ?? ""}
+                  maxLength={60}
+                  placeholder="Ex : Barbier à Lyon 3 — Chez Marco"
+                  onChange={(e) =>
+                    patch({ seo: { ...page.seo, title: e.target.value } })
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>
+                  Description Google ({(page.seo?.description ?? "").length}/160)
+                </Label>
+                <Textarea
+                  value={page.seo?.description ?? ""}
+                  rows={3}
+                  className={styles.longText}
+                  maxLength={160}
+                  placeholder="La phrase qui donne envie de cliquer dans les résultats de recherche."
+                  onChange={(e) =>
+                    patch({ seo: { ...page.seo, description: e.target.value } })
+                  }
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Image de partage (réseaux, WhatsApp…)</Label>
+                <div className="flex items-center gap-3">
+                  <PhotoUpload
+                    userId={page.user_id}
+                    label={page.seo?.ogImageUrl ? "Changer l'image" : "Choisir une image"}
+                    onUploaded={(url) =>
+                      patch({ seo: { ...page.seo, ogImageUrl: url } })
+                    }
+                  />
+                  {page.seo?.ogImageUrl && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        const seo = { ...page.seo };
+                        delete seo.ogImageUrl;
+                        patch({ seo });
+                      }}
+                    >
+                      Retirer
+                    </Button>
+                  )}
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Par défaut, ta grande photo du haut de page est utilisée.
+                </p>
+              </div>
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
+                <div>
+                  <Label>Masquer « Créé avec Wayne Web Flux »</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Retire la signature en bas de ta page publique.
+                  </p>
+                </div>
+                <Switch
+                  checked={page.hide_branding ?? false}
+                  onCheckedChange={(hide_branding) => patch({ hide_branding })}
+                />
+              </div>
             </AccordionContent>
           </AccordionItem>
 
@@ -708,8 +972,9 @@ export function PageEditor({
             <VitrineView
               page={page}
               families={previewFamilies}
-              productCategories={previewProducts}
+              productCategories={visibleProductCategories}
               offers={previewOffers}
+              preview
             />
           </div>
         </div>

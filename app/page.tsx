@@ -105,7 +105,7 @@ export default function LandingPage() {
                   <Check aria-hidden="true" /> 100 crédits offerts
                 </span>
                 <span>
-                  <Check aria-hidden="true" /> Pensé en France
+                  <Check aria-hidden="true" /> Pensé par des développeurs
                 </span>
               </div>
             </div>
@@ -203,7 +203,7 @@ export default function LandingPage() {
             <div>
               <p>
                 Tu ne devrais pas avoir à devenir expert en référencement,
-                copywriting, réseaux sociaux et automatisation pour développer
+                programmation, fonction API et automatisation pour développer
                 ton activité.
               </p>
               <p>

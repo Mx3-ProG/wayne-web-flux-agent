@@ -9,6 +9,7 @@ import {
 } from "./vitrine-view";
 import { BookingModal } from "./booking-modal";
 import { OrderModal, type CartLine } from "./order-modal";
+import { VitrineTracker } from "./vitrine-tracker";
 
 type Props = {
   page: Page;
@@ -68,6 +69,8 @@ export function VitrinePublic({
 
   return (
     <>
+      {/* Tracking uniquement sur la vraie vitrine publique, jamais en préview. */}
+      <VitrineTracker slug={page.slug} pageId={page.id} />
       <VitrineView
         page={page}
         families={families}
@@ -78,6 +81,7 @@ export function VitrinePublic({
         onAddOffer={addOffer}
         cartCount={cartCount}
         onOpenCart={() => setCartOpen(true)}
+        poweredBy={!page.hide_branding}
       />
       {bookingService && (
         <BookingModal

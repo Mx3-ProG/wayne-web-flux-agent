@@ -37,6 +37,7 @@ export async function POST(
   const firstName = String(body.first_name ?? "").trim().slice(0, 60);
   const phone = String(body.phone ?? "").trim();
   const email = String(body.email ?? "").trim().slice(0, 120) || null;
+  const address = String(body.address ?? "").trim().slice(0, 240) || null;
   const note = String(body.note ?? "").trim().slice(0, 500);
   const rawItems = Array.isArray(body.items) ? (body.items as unknown[]) : [];
 
@@ -91,6 +92,7 @@ export async function POST(
     p_first_name: firstName,
     p_phone: phone,
     p_email: email,
+    p_address: address,
     p_note: note,
     p_items: rpcItems,
   });

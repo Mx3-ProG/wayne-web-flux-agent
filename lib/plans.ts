@@ -46,3 +46,23 @@ export function projectLimit(plan: Plan): number {
 export function canUseCustomDomain(plan: Plan): boolean {
   return PLAN_LIMITS[plan]?.customDomain ?? false;
 }
+
+// Personnalisation avancée de la vitrine (sections/blocs, thèmes premium,
+// retrait du branding…). Construite ouverte à tous : passer le flag à true au
+// déploiement pour la réserver aux formules payantes.
+const ADVANCED_CUSTOMIZATION_GATED = false;
+
+export function canUseAdvancedCustomization(plan: Plan): boolean {
+  if (!ADVANCED_CUSTOMIZATION_GATED) return true;
+  return plan !== "free";
+}
+
+export function canUsePremiumThemes(plan: Plan): boolean {
+  if (!ADVANCED_CUSTOMIZATION_GATED) return true;
+  return plan !== "free";
+}
+
+export function canHideBranding(plan: Plan): boolean {
+  if (!ADVANCED_CUSTOMIZATION_GATED) return true;
+  return plan !== "free";
+}

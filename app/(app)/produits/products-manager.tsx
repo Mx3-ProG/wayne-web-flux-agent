@@ -2,14 +2,14 @@
 
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
-import type { Product } from "@/lib/types";
+import type { Product, ProductKind } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
 import { PhotoUpload } from "@/components/editor/photo-upload";
 import { Input } from "@/components/ui/input";
 import { PriceInput } from "@/components/ui/price-input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { Boxes, Check, Plus, Trash2 } from "lucide-react";
+import { Boxes, CalendarClock, Check, Plus, Trash2 } from "lucide-react";
 import {
   addStock,
   createCategory,
@@ -27,7 +27,12 @@ type Category = { id: string; name: string };
 type Sale = { count: number; cents: number };
 type Sales = Record<string, Sale>;
 
-type ProductFields = { name: string; price_cents: number; description: string };
+type ProductFields = {
+  name: string;
+  price_cents: number;
+  description: string;
+  duration_min: number;
+};
 
 // ------------------------------------------------------------- carte produit
 // Champs texte NON contrôlés (refs) : on n'écrit en base qu'au clic sur
@@ -64,6 +69,7 @@ function ProductCard({
 }: CardProps) {
   const nameRef = useRef<HTMLInputElement>(null);
   const descRef = useRef<HTMLInputElement>(null);
+  const durationRef = useRef<HTMLInputElement>(null);
   const restockRef = useRef<HTMLInputElement>(null);
   const setRef = useRef<HTMLInputElement>(null);
   // Le prix est contrôlé localement (PriceInput) ; le composant est au niveau
@@ -77,6 +83,10 @@ function ProductCard({
       name: (nameRef.current?.value ?? "").trim().slice(0, 80) || "Produit",
       price_cents: priceCents,
       description: (descRef.current?.value ?? "").trim().slice(0, 400),
+      duration_min: Math.min(
+        600,
+        Math.max(5, Math.round(Number(durationRef.current?.value) || product.duration_min || 60))
+      ),
     };
     setSaving(true);
     await onSave(product.id, fields);
@@ -86,6 +96,7 @@ function ProductCard({
   }
 
   const out = product.track_stock && product.stock <= 0;
+  const isReservation = product.kind === "reservation";
 
   return (
     <div className={styles.card}>
@@ -103,8 +114,12 @@ function ProductCard({
             checked={product.active}
             onChange={(e) => onToggleActive(product.id, e.target.checked)}
           />
-          {product.active ? "En ligne" : "Masqué"}
+          {product.active ? "Affiché" : "Masqué"}
         </label>
+        <span className={styles.kindBadge}>
+          {isReservation ? <CalendarClock aria-hidden="true" /> : <Boxes aria-hidden="true" />}
+          {isReservation ? "Réservation" : "Produit"}
+        </span>
         <button
           type="button"
           className={styles.iconBtn}
@@ -115,29 +130,44 @@ function ProductCard({
         </button>
       </div>
 
-      <div className={styles.row2}>
+      <div className={isReservation ? styles.row3 : styles.row2}>
         <div className={styles.priceField}>
           <Label>Prix (€)</Label>
           <PriceInput cents={priceCents} onCents={setPriceCents} />
         </div>
+        {isReservation && (
+          <div className={styles.priceField}>
+            <Label>Durée (min)</Label>
+            <Input
+              ref={durationRef}
+              type="number"
+              min={5}
+              max={600}
+              step={5}
+              defaultValue={product.duration_min}
+            />
+          </div>
+        )}
         <div className={styles.descField}>
           <Label>Description</Label>
           <Input ref={descRef} defaultValue={product.description} maxLength={400} placeholder="Courte description" />
         </div>
       </div>
 
-      <div className={styles.photoRow}>
-        <PhotoUpload
-          userId={userId}
-          label={product.image_url ? "Changer la photo" : "Ajouter une photo"}
-          onUploaded={(url) => onImage(product.id, url)}
-        />
-        {product.image_url && (
-          <button type="button" className={styles.textBtn} onClick={() => onImage(product.id, null)}>
-            retirer la photo
-          </button>
-        )}
-      </div>
+      {!isReservation && (
+        <div className={styles.photoRow}>
+          <PhotoUpload
+            userId={userId}
+            label={product.image_url ? "Changer la photo" : "Ajouter une photo"}
+            onUploaded={(url) => onImage(product.id, url)}
+          />
+          {product.image_url && (
+            <button type="button" className={styles.textBtn} onClick={() => onImage(product.id, null)}>
+              retirer la photo
+            </button>
+          )}
+        </div>
+      )}
 
       <div className={styles.confirmRow}>
         <Button size="sm" onClick={confirm} disabled={saving}>
@@ -151,9 +181,12 @@ function ProductCard({
             "Confirmer mes choix"
           )}
         </Button>
-        <span className={styles.confirmHint}>Nom · prix · description</span>
+        <span className={styles.confirmHint}>
+          {isReservation ? "Nom · prix · durée · description" : "Nom · prix · description"}
+        </span>
       </div>
 
+      {!isReservation && (
       <div className={styles.stockZone}>
         {product.track_stock ? (
           <>
@@ -208,6 +241,7 @@ function ProductCard({
             : "Aucune vente"}
         </span>
       </div>
+      )}
     </div>
   );
 }
@@ -311,9 +345,9 @@ export function ProductsManager({ initialCategories, initialProducts, sales, use
       if (r.error) toast.error(r.error);
     });
   }
-  function addProductTo(categoryId: string | null) {
+  function addProductTo(categoryId: string | null, kind: ProductKind = "product") {
     startTransition(async () => {
-      const r = await createProduct(categoryId);
+      const r = await createProduct(categoryId, kind);
       if (r.error || !r.id) {
         toast.error(r.error ?? "Création impossible.");
         return;
@@ -324,9 +358,11 @@ export function ProductsManager({ initialCategories, initialProducts, sales, use
           id: r.id!,
           category_id: categoryId,
           page_id: r.pageId ?? "",
-          name: "Nouveau produit",
+          kind,
+          name: kind === "reservation" ? "Nouvelle réservation" : "Nouveau produit",
           description: "",
           price_cents: 0,
+          duration_min: 60,
           image_url: null,
           active: true,
           track_stock: false,
@@ -405,6 +441,9 @@ export function ProductsManager({ initialCategories, initialProducts, sales, use
             <Button variant="secondary" size="sm" onClick={() => addProductTo(category.id)} disabled={pending}>
               <Plus aria-hidden="true" /> Ajouter un produit
             </Button>
+            <Button variant="ghost" size="sm" onClick={() => addProductTo(category.id, "reservation")} disabled={pending}>
+              <CalendarClock aria-hidden="true" /> Ajouter une réservation
+            </Button>
           </section>
         );
       })}
@@ -428,6 +467,9 @@ export function ProductsManager({ initialCategories, initialProducts, sales, use
         </Button>
         <Button variant="ghost" onClick={() => addProductTo(null)} disabled={pending}>
           <Plus aria-hidden="true" /> Produit sans catégorie
+        </Button>
+        <Button variant="ghost" onClick={() => addProductTo(null, "reservation")} disabled={pending}>
+          <CalendarClock aria-hidden="true" /> Réservation sans catégorie
         </Button>
       </div>
     </div>

@@ -23,12 +23,31 @@ export type PageColors = {
   primary?: string;
   dark?: string;
   text?: string;
+  background?: string;
+  card?: string;
+  heroGradient?: boolean;
 };
 
-export type PageTheme = "editorial" | "studio" | "local" | "bold";
+export type PageTheme =
+  | "editorial"
+  | "studio"
+  | "local"
+  | "bold"
+  | "luxe"
+  | "minimal"
+  | "neon";
 
-export type Review = { author: string; text: string };
+// rating (1-5, défaut 5) et photoUrl optionnels : les avis historiques restent valides.
+export type Review = { author: string; text: string; rating?: number; photoUrl?: string };
 export type GalleryPhoto = { url: string; title?: string };
+
+// Bandeau promo. Remplace la colonne texte `offer` (lue en fallback si promo null).
+export type PagePromo = { text: string; code?: string; endsAt?: string };
+
+// Bouton flottant de contact sur la vitrine publique.
+export type FloatingCta = { type: "whatsapp" | "phone"; number: string };
+
+export type PageSeo = { title?: string; description?: string; ogImageUrl?: string };
 
 export type Page = {
   id: string;
@@ -52,6 +71,13 @@ export type Page = {
   offer: string;
   hours_text: string;
   legal: Record<string, string>;
+  // null = ordre historique des sections (voir lib/sections.ts).
+  sections: import("./sections").PageSection[] | null;
+  seo: PageSeo;
+  promo: PagePromo | null;
+  floating_cta: FloatingCta | null;
+  hero_video_url: string | null;
+  hide_branding: boolean;
   published: boolean;
   custom_domain: string | null;
   ical_token: string;
@@ -62,6 +88,9 @@ export type Page = {
 };
 
 // Champs de la vitrine éditables via le brouillon (pages.draft).
+// ⚠️ Tout ajout ici exige une mise à jour du UPDATE de publish_page
+// (dernière version : supabase/migrations/00013_advanced_customization.sql),
+// sinon le champ resterait en brouillon sans jamais être publié.
 export type PageDraftFields = Pick<
   Page,
   | "business_name"
@@ -81,6 +110,12 @@ export type PageDraftFields = Pick<
   | "offer"
   | "hours_text"
   | "legal"
+  | "sections"
+  | "seo"
+  | "promo"
+  | "floating_cta"
+  | "hero_video_url"
+  | "hide_branding"
 >;
 
 export type ServiceFamily = {
@@ -88,12 +123,14 @@ export type ServiceFamily = {
   page_id: string;
   name: string;
   position: number;
+  product_category_id: string | null;
 };
 
 export type Service = {
   id: string;
   family_id: string;
   page_id: string;
+  product_id: string | null;
   name: string;
   duration_min: number;
   price_cents: number;
@@ -140,13 +177,17 @@ export type ProductCategory = {
   position: number;
 };
 
+export type ProductKind = "product" | "reservation";
+
 export type Product = {
   id: string;
   category_id: string | null;
   page_id: string;
+  kind: ProductKind;
   name: string;
   description: string;
   price_cents: number;
+  duration_min: number;
   image_url: string | null;
   active: boolean;
   track_stock: boolean;
@@ -214,6 +255,7 @@ export type Order = {
   first_name: string;
   phone: string;
   email: string | null;
+  address: string | null;
   note: string;
   status: OrderStatus;
   total_cents: number;
@@ -250,9 +292,26 @@ export type Customer = {
   phone: string;
   first_name: string;
   email: string | null;
+  address: string | null;
   note: string;
   created_at: string;
 };
+
+// Abonné newsletter capturé sur la vitrine publique (table page_subscribers).
+export type PageSubscriber = {
+  id: string;
+  page_id: string;
+  email: string;
+  created_at: string;
+};
+
+// Événements de fréquentation de la vitrine (table page_events).
+export type PageEventKind =
+  | "view"
+  | "phone_click"
+  | "social_click"
+  | "whatsapp_click"
+  | "newsletter_signup";
 
 export type CreditEntry = {
   id: number;

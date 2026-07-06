@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getVertical } from "@/lib/verticals";
 import { defaultLegal } from "@/lib/legal";
 import { projectLimit } from "@/lib/plans";
+import { SECTION_LIMITS } from "@/lib/sections";
 import type { PageDraftFields, Plan } from "@/lib/types";
 
 function slugify(input: string): string {
@@ -154,6 +155,26 @@ export async function savePageFields(
   pageId: string,
   fields: Partial<PageDraftFields>
 ): Promise<{ error?: string }> {
+  // Le contenu des blocs vit dans le draft jsonb : on borne sa taille.
+  if (fields.sections) {
+    if (fields.sections.length > SECTION_LIMITS.maxSections) {
+      return { error: "Trop de sections sur la page." };
+    }
+    for (const section of fields.sections) {
+      const settings = (section.settings ?? {}) as Record<string, unknown>;
+      for (const value of Object.values(settings)) {
+        if (typeof value === "string" && value.length > SECTION_LIMITS.maxBodyLength) {
+          return { error: "Un des textes de section est trop long." };
+        }
+      }
+      if (
+        section.type === "faq" &&
+        section.settings.items.length > SECTION_LIMITS.maxFaqItems
+      ) {
+        return { error: "Trop de questions dans la FAQ." };
+      }
+    }
+  }
   const supabase = await createClient();
   const { error } = await supabase.rpc("merge_page_draft", {
     pid: pageId,
