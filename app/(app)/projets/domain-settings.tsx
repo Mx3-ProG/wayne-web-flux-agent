@@ -31,7 +31,7 @@ export function DomainSettings({
         </div>
         {!editable && (
           <span className={styles.soon}>
-            <Lock aria-hidden="true" /> Bientôt · forfait Plus
+            <Lock aria-hidden="true" /> Dès la formule Pro
           </span>
         )}
       </div>

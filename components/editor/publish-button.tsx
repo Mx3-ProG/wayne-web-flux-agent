@@ -33,6 +33,7 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion }: Props)
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [outOfCredits, setOutOfCredits] = useState(false);
+  const [trialOver, setTrialOver] = useState(false);
   const [pending, startTransition] = useTransition();
 
   const enough = balance >= PUBLISH_COST;
@@ -42,6 +43,10 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion }: Props)
       const result = await publishPage(pageId);
       if (result.error === "insufficient_credits") {
         setOutOfCredits(true);
+        return;
+      }
+      if (result.error === "subscription_required") {
+        setTrialOver(true);
         return;
       }
       if (result.error === "nothing_to_publish") {
@@ -67,7 +72,10 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion }: Props)
       open={open}
       onOpenChange={(next) => {
         setOpen(next);
-        if (!next) setOutOfCredits(false);
+        if (!next) {
+          setOutOfCredits(false);
+          setTrialOver(false);
+        }
       }}
     >
       <DialogTrigger asChild>
@@ -76,7 +84,26 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion }: Props)
         </Button>
       </DialogTrigger>
       <DialogContent>
-        {outOfCredits || !enough ? (
+        {trialOver ? (
+          <>
+            <DialogHeader>
+              <DialogTitle>Ton essai est terminé</DialogTitle>
+              <DialogDescription>
+                Tes 7 jours d&apos;essai FLUX sont passés. Ton site reste en
+                ligne et ton brouillon est bien conservé — choisis une formule
+                pour continuer à publier, générer et personnaliser.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="ghost">Plus tard</Button>
+              </DialogClose>
+              <Button asChild>
+                <Link href="/formules">Choisir ma formule FLUX</Link>
+              </Button>
+            </DialogFooter>
+          </>
+        ) : outOfCredits || !enough ? (
           <>
             <DialogHeader>
               <DialogTitle>Plus assez de crédits</DialogTitle>
@@ -87,8 +114,8 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion }: Props)
               </DialogDescription>
             </DialogHeader>
             <p className="text-sm text-muted-foreground">
-              Les formules FLUX rechargent de 500 à 5000 crédits par mois pour
-              continuer à faire vivre ton site.
+              Les formules FLUX rechargent de 100 à 3000 crédits par mois :
+              plus de crédits, c&apos;est plus de possibilités pour ton site.
             </p>
             <DialogFooter>
               <DialogClose asChild>

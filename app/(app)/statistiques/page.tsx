@@ -3,14 +3,8 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePage } from "@/lib/active-project";
 import type { PageEventKind, PageSubscriber } from "@/lib/types";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Activity, Download, LineChart } from "lucide-react";
+import styles from "./statistiques.module.css";
 
 export const metadata = { title: "Statistiques" };
 
@@ -112,103 +106,112 @@ export default async function StatistiquesPage() {
   ].join("\n");
   const csvHref = `data:text/csv;charset=utf-8,${encodeURIComponent(csv)}`;
 
+  const visits30 = countSince(events, "view", 30, now);
+
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-1">Tes statistiques</h1>
-        <p className="text-muted-foreground">
+    <div className={styles.statsPage}>
+      <header className={styles.hero}>
+        <div className={styles.heroGlow} aria-hidden="true" />
+        <span className={styles.overline}>
+          <Activity aria-hidden="true" />
+          Centre de données
+        </span>
+        <div className={styles.statMark} aria-hidden="true">
+          <LineChart />
+        </div>
+        <h1>
+          Ton tableau de <span>bord</span>
+        </h1>
+        <p>
           Ce qui se passe sur{" "}
-          <Link href={`/p/${page.slug}`} target="_blank" className="underline">
+          <Link href={`/p/${page.slug}`} target="_blank">
             ta vitrine
           </Link>{" "}
-          : visites, contacts et abonnés.
+          : visites, contacts et abonnés, en temps réel.
         </p>
-      </div>
+        <div className={styles.highlight}>
+          <Activity aria-hidden="true" />
+          <strong>{visits30}</strong>
+          <span>visite{visits30 > 1 ? "s" : ""} sur les 30 derniers jours</span>
+        </div>
+      </header>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+      <div className={styles.statGrid}>
         {cards.map((card) => (
-          <Card key={card.label}>
-            <CardContent className="pt-1">
-              <p className="text-3xl font-bold">{card.value}</p>
-              <p className="text-xs text-muted-foreground">{card.label}</p>
-            </CardContent>
-          </Card>
+          <div key={card.label} className={styles.statCard}>
+            <p className={styles.statValue}>{card.value}</p>
+            <p className={styles.statLabel}>{card.label}</p>
+          </div>
         ))}
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Visites des 14 derniers jours</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {events.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Pas encore de données : elles arrivent dès que ta vitrine reçoit
-              ses premières visites.
-            </p>
-          ) : (
-            <div className="flex items-end gap-1" style={{ height: 120 }}>
-              {days.map((day) => (
+      <section className={styles.chartCard}>
+        <p className={styles.cardTitle}>Visites des 14 derniers jours</p>
+        {events.length === 0 ? (
+          <p className={styles.emptyLine}>
+            Pas encore de données : elles arrivent dès que ta vitrine reçoit
+            ses premières visites.
+          </p>
+        ) : (
+          <div className={styles.chart}>
+            {days.map((day) => (
+              <div
+                key={day.label}
+                className={styles.chartCol}
+                title={`${day.label} : ${day.count} visite${day.count > 1 ? "s" : ""}`}
+              >
                 <div
-                  key={day.label}
-                  className="flex-1 flex flex-col items-center gap-1 min-w-0"
-                  title={`${day.label} : ${day.count} visite${day.count > 1 ? "s" : ""}`}
-                >
-                  <div
-                    className="w-full rounded-t bg-foreground/80"
-                    style={{
-                      height: `${Math.round((day.count / maxDay) * 96)}px`,
-                      minHeight: day.count > 0 ? 3 : 1,
-                      opacity: day.count > 0 ? 1 : 0.15,
-                    }}
-                  />
-                  <span className="text-[9px] text-muted-foreground truncate">
-                    {day.label}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                  className={day.count > 0 ? styles.bar : styles.barEmpty}
+                  style={{
+                    height: `${Math.round((day.count / maxDay) * 100)}px`,
+                    minHeight: day.count > 0 ? 4 : 2,
+                  }}
+                />
+                <span className={styles.barLabel}>{day.label}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
 
-      <Card>
-        <CardHeader className="flex flex-row items-start justify-between gap-3">
+      <section className={styles.subsCard}>
+        <div className={styles.subsHead}>
           <div>
-            <CardTitle>Tes abonnés newsletter</CardTitle>
-            <CardDescription>
+            <p className={styles.cardTitle}>Tes abonnés newsletter</p>
+            <p className={styles.cardHint}>
               Récoltés par le bloc « Newsletter » de ta vitrine.
-            </CardDescription>
+            </p>
           </div>
           {subscribers.length > 0 && (
-            <Button asChild variant="secondary" size="sm">
-              <a href={csvHref} download={`abonnes-${page.slug}.csv`}>
-                Exporter (CSV)
-              </a>
-            </Button>
+            <a
+              href={csvHref}
+              download={`abonnes-${page.slug}.csv`}
+              className={styles.csvButton}
+            >
+              <Download aria-hidden="true" />
+              Exporter (CSV)
+            </a>
           )}
-        </CardHeader>
-        <CardContent>
-          {subscribers.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Personne pour l&apos;instant. Ajoute le bloc « Newsletter » dans
-              l&apos;éditeur de ta vitrine (section « Sections de ma page ») pour
-              récolter des emails.
-            </p>
-          ) : (
-            <ul className="divide-y divide-border text-sm">
-              {subscribers.map((s) => (
-                <li key={s.id} className="flex justify-between gap-4 py-2">
-                  <span className="flex-1 truncate">{s.email}</span>
-                  <span className="text-muted-foreground">
-                    {new Date(s.created_at).toLocaleDateString("fr-FR")}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          )}
-        </CardContent>
-      </Card>
+        </div>
+        {subscribers.length === 0 ? (
+          <p className={styles.emptyLine}>
+            Personne pour l&apos;instant. Ajoute le bloc « Newsletter » dans
+            l&apos;éditeur de ta vitrine (section « Sections de ma page ») pour
+            récolter des emails.
+          </p>
+        ) : (
+          <div className={styles.subsList}>
+            {subscribers.map((s) => (
+              <div key={s.id} className={styles.subsRow}>
+                <span className={styles.subsEmail}>{s.email}</span>
+                <span className={styles.subsDate}>
+                  {new Date(s.created_at).toLocaleDateString("fr-FR")}
+                </span>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </div>
   );
 }

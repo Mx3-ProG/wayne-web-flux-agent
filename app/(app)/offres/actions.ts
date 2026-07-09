@@ -31,7 +31,7 @@ export async function createOffer(): Promise<{ error?: string; id?: string }> {
       .select("id", { count: "exact", head: true })
       .eq("page_id", pageId),
   ]);
-  const limit = offerLimit((profile?.plan as Plan) ?? "free");
+  const limit = offerLimit((profile?.plan as Plan) ?? "basique");
   if ((count ?? 0) >= limit) {
     return { error: "Limite d'offres atteinte pour ton forfait." };
   }
@@ -76,7 +76,7 @@ export async function createOfferFromTunnel(
     supabase.from("profiles").select("plan").eq("user_id", userId).single(),
     supabase.from("offers").select("id", { count: "exact", head: true }).eq("page_id", pageId),
   ]);
-  if ((count ?? 0) >= offerLimit((profile?.plan as Plan) ?? "free")) {
+  if ((count ?? 0) >= offerLimit((profile?.plan as Plan) ?? "basique")) {
     return { error: "Limite d'offres atteinte pour ton forfait." };
   }
 

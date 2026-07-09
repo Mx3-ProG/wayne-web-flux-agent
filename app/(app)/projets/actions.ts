@@ -9,7 +9,7 @@ import type { Plan } from "@/lib/types";
 const DOMAIN_RE = /^([a-z0-9-]+\.)+[a-z]{2,}$/;
 
 // Nom de domaine personnalisé — fonctionnel en local seulement (« à venir » en
-// prod), réservé au forfait Plus.
+// prod), réservé aux formules Pro et supérieures.
 export async function setCustomDomain(
   pageId: string,
   domain: string
@@ -28,8 +28,8 @@ export async function setCustomDomain(
     .select("plan")
     .eq("user_id", user.id)
     .single();
-  if (!canUseCustomDomain((profile?.plan as Plan) ?? "free")) {
-    return { error: "Réservé au forfait Plus." };
+  if (!canUseCustomDomain((profile?.plan as Plan) ?? "basique")) {
+    return { error: "Réservé aux formules Pro et supérieures." };
   }
 
   const value = domain.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");

@@ -1,11 +1,12 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { BadgePercent, Flame, HeartHandshake } from "lucide-react";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePage } from "@/lib/active-project";
 import type { Offer, Plan } from "@/lib/types";
 import { offerLimit } from "@/lib/plans";
 import { OffersManager } from "./offers-manager";
-import styles from "./offres.module.css";
+import styles from "./offres-redesign.module.css";
 
 export const metadata = { title: "Mes offres" };
 
@@ -43,18 +44,33 @@ export default async function OffresPage() {
     pageHasDraft = page.draft != null;
   }
 
-  const plan = (profile?.plan as Plan) ?? "free";
+  const plan = (profile?.plan as Plan) ?? "basique";
+  const activeOffers = offers.filter((offer) => offer.draft_status !== "deleted");
 
   return (
     <div className={styles.page}>
-      <p className={styles.eyebrow}>Ta vitrine</p>
-      <h1 className={styles.title}>Mes offres</h1>
-      <p className={styles.subtitle}>
-        Tes promos mises en avant en grand tout en haut de ta vitrine. Un client
-        clique, il commande, tu reçois la commande dans ton espace. Tes
-        changements partent en brouillon : publie une nouvelle version pour les
-        mettre en ligne.
-      </p>
+      <header className={styles.hero}>
+        <span className={styles.overline}>
+          <Flame aria-hidden="true" />
+          Vitrine de désir
+        </span>
+        <div className={styles.heroMark} aria-hidden="true">
+          <BadgePercent />
+        </div>
+        <h1>
+          Offres qui <span>vendent</span>
+        </h1>
+        <p>
+          Construis des offres claires, désirables et prêtes à convertir. Rouge,
+          rose, noir : chaque carte doit donner envie de cliquer, commander, puis
+          revenir.
+        </p>
+        <div className={styles.heroCount}>
+          <HeartHandshake aria-hidden="true" />
+          <strong>{activeOffers.length}</strong>
+          <span>offre{activeOffers.length > 1 ? "s" : ""} en vitrine</span>
+        </div>
+      </header>
 
       {!page ? (
         <div className={styles.empty}>

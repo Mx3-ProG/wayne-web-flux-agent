@@ -32,7 +32,7 @@ export default async function ProjetsPage() {
   ]);
 
   const projects = (pages ?? []) as Page[];
-  const plan = (profile?.plan as Plan) ?? "free";
+  const plan = (profile?.plan as Plan) ?? "basique";
   const limit = projectLimit(plan);
   const canCreate = projects.length < limit;
   const activeProject = projects.find((p) => p.id === activePageId) ?? projects[0];
@@ -105,14 +105,14 @@ export default async function ProjetsPage() {
             <Lock aria-hidden="true" />
             <strong>Plusieurs boutiques</strong>
             <p>
-              {plan === "free"
-                ? "Gère plusieurs boutiques (jusqu'à 3) avec le forfait Plus."
-                : "Tu as atteint la limite de projets de ton forfait."}
+              {plan === "basique"
+                ? "Gère plusieurs boutiques (jusqu'à 10) avec les formules supérieures."
+                : "Tu as atteint la limite de projets de ta formule."}
             </p>
-            {plan === "free" && (
-              <span className={styles.upsellCta}>
-                <Store aria-hidden="true" /> Passer au forfait Plus (bientôt)
-              </span>
+            {plan === "basique" && (
+              <Link href="/formules" className={styles.upsellCta}>
+                <Store aria-hidden="true" /> Découvrir les formules FLUX
+              </Link>
             )}
           </div>
         )}

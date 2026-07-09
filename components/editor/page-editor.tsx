@@ -37,7 +37,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import styles from "./page-editor.module.css";
+import { Crown, ExternalLink, Gem, Palette } from "lucide-react";
+import styles from "./page-editor-redesign.module.css";
 
 type EditableCatalog = {
   name: string;
@@ -204,40 +205,56 @@ export function PageEditor({
           Aperçu
         </button>
       </div>
-      <div className={styles.editor}>
-      <div className={`${styles.panel} ${panelMode === "preview" ? styles.panelHidden : ""} space-y-4`}>
-        <div className={styles.editorHeader}>
-          <div>
-            <p className={styles.editorKicker}>Créateur de vitrine</p>
-            <h1>Construis ta boutique, simplement.</h1>
-            <p>
-              Ouvre une étape, modifie, regarde le résultat. Tout s&apos;enregistre
-              en brouillon — ton site en ligne ne change qu&apos;à la publication.
-            </p>
+
+      <section className={styles.royalHero}>
+        <span className={styles.overline}>
+          <Crown aria-hidden="true" />
+          Atelier royal
+        </span>
+        <div className={styles.heroMark} aria-hidden="true">
+          <Gem />
+        </div>
+        <h1>
+          Façonne ta <span>marque</span>
+        </h1>
+        <p>
+          Ici, tu crées ta signature: ton nom, tes images, tes couleurs, tes
+          preuves et ton univers. Chaque section mérite ton attention, parce que
+          ta vitrine devient ton royaume.
+        </p>
+        <div className={styles.heroActions}>
+          <div className={styles.saveStatus} data-saving={saving}>
+            <span />
+            {saving
+              ? "Enregistrement du brouillon..."
+              : dirty
+                ? "Brouillon enregistré — modifications non publiées"
+                : "Ton site en ligne est à jour"}
           </div>
+          <PublishButton {...publish} hasDraft={dirty} />
           <Button asChild variant="secondary" className={styles.openPage}>
             <Link href={`/p/${page.slug}`} target="_blank">
-              Voir ma page ↗
+              Voir ma page <ExternalLink aria-hidden="true" />
             </Link>
           </Button>
         </div>
+      </section>
 
-        <div className={styles.saveStatus} data-saving={saving}>
-          <span />
-          {saving
-            ? "Enregistrement du brouillon…"
-            : dirty
-              ? "Brouillon enregistré — modifications non publiées"
-              : "Ton site en ligne est à jour"}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <PublishButton {...publish} hasDraft={dirty} />
-          {dirty && (
-            <p className="text-xs text-muted-foreground">
-              Tes clients voient encore l&apos;ancienne version.
+      <div className={styles.editor}>
+      <div className={`${styles.panel} ${panelMode === "preview" ? styles.panelHidden : ""} space-y-4`}>
+        <div className={styles.atelierHead}>
+          <div>
+            <p className={styles.editorKicker}>Créateur de vitrine</p>
+            <h2>Les pièces de ton royaume</h2>
+            <p>
+              Avance pièce par pièce. Chaque bloc a son rôle: poser ton identité,
+              montrer ton savoir-faire, rassurer, puis donner envie de te choisir.
             </p>
-          )}
+          </div>
+          <span>
+            <Palette aria-hidden="true" />
+            Brouillon vivant
+          </span>
         </div>
 
         <nav className={styles.stepNav} aria-label="Étapes de personnalisation">

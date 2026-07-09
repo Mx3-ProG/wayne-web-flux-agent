@@ -18,9 +18,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Lock, Sparkles, Trash2, Undo2 } from "lucide-react";
+import {
+  BadgePercent,
+  Lock,
+  Megaphone,
+  Plus,
+  Rocket,
+  Trash2,
+  Undo2,
+} from "lucide-react";
 import { createOffer, deleteOffer, restoreOffer, updateOffer } from "./actions";
-import styles from "./offres.module.css";
+import styles from "./offres-redesign.module.css";
 
 const KINDS: { value: OfferKind; label: string }[] = [
   { value: "produit", label: "Produit" },
@@ -152,36 +160,44 @@ export function OffersManager({
 
   return (
     <>
-      <div className={styles.counter}>
-        <b>{used}</b> / {limit} offre{limit > 1 ? "s" : ""} — formule {PLAN_LABEL[plan]}
-      </div>
+      <section className={styles.controlPanel}>
+        <div className={styles.counter}>
+          <span>Capacité commerciale</span>
+          <strong>
+            {used}<small> / {limit}</small>
+          </strong>
+          <p>Formule {PLAN_LABEL[plan]}</p>
+        </div>
 
-      <div className="flex flex-wrap items-center gap-3 mb-4">
-        <PublishButton
-          pageId={pageId}
-          balance={balance}
-          hasDraft={hasPending}
-          nextVersion={nextVersion}
-        />
-        {hasPending && (
-          <p className="text-xs text-muted-foreground">
-            Tes clients voient encore l&apos;ancienne version de ta vitrine.
+        <div className={styles.publishBlock}>
+          <PublishButton
+            pageId={pageId}
+            balance={balance}
+            hasDraft={hasPending}
+            nextVersion={nextVersion}
+          />
+          <p>
+            {hasPending
+              ? "Tes clients voient encore l'ancienne version de ta vitrine."
+              : "Ta vitrine est alignée avec tes offres actuelles."}
           </p>
-        )}
-      </div>
+        </div>
+      </section>
 
       <div className={styles.grid}>
         {offers.map((offer) =>
           offer.draft_status === "deleted" ? (
             <article
               key={offer.id}
-              className={styles.card}
-              style={{ opacity: 0.55 }}
+              className={`${styles.card} ${styles.deletedCard}`}
             >
               <div className={styles.cardHead}>
-                <strong className="flex-1 truncate">{offer.title}</strong>
+                <span className={styles.cardIcon}>
+                  <Trash2 aria-hidden="true" />
+                </span>
+                <strong className={styles.offerTitle}>{offer.title}</strong>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className={styles.deletedText}>
                 Sera supprimée à la prochaine publication. En attendant, elle
                 reste visible sur ta vitrine.
               </p>
@@ -192,11 +208,14 @@ export function OffersManager({
           ) : (
             <article key={offer.id} className={styles.card}>
               {statusBadge(offer) && (
-                <p className="text-xs text-muted-foreground -mb-1">
+                <p className={styles.status}>
                   {statusBadge(offer)}
                 </p>
               )}
               <div className={styles.cardHead}>
+                <span className={styles.cardIcon}>
+                  <BadgePercent aria-hidden="true" />
+                </span>
                 <Select
                   value={offer.kind}
                   onValueChange={(kind) => patch(offer.id, { kind: kind as OfferKind })}
@@ -230,12 +249,18 @@ export function OffersManager({
                 </button>
               </div>
 
+              <div className={styles.salesCue}>
+                <Megaphone aria-hidden="true" />
+                <span>Promesse visible en haut de vitrine</span>
+              </div>
+
               <div className={styles.field}>
                 <Label>Titre</Label>
                 <Input
                   value={offer.title}
                   maxLength={80}
                   placeholder="Ex : Pack révision hiver"
+                  className={styles.input}
                   onChange={(e) => patch(offer.id, { title: e.target.value })}
                 />
               </div>
@@ -247,6 +272,7 @@ export function OffersManager({
                   rows={2}
                   maxLength={300}
                   placeholder="Ce que comprend l'offre"
+                  className={styles.textarea}
                   onChange={(e) => patch(offer.id, { description: e.target.value })}
                 />
               </div>
@@ -257,6 +283,7 @@ export function OffersManager({
                   <PriceInput
                     cents={offer.price_cents}
                     placeholder="0"
+                    className={styles.input}
                     onCents={(c) => patch(offer.id, { price_cents: c })}
                   />
                 </div>
@@ -265,6 +292,7 @@ export function OffersManager({
                   <PriceInput
                     cents={offer.compare_at_cents ?? 0}
                     placeholder="—"
+                    className={styles.input}
                     onCents={(c) => patch(offer.id, { compare_at_cents: c === 0 ? null : c })}
                   />
                 </div>
@@ -300,18 +328,24 @@ export function OffersManager({
             onClick={add}
             disabled={pending}
           >
-            <Sparkles aria-hidden="true" />
-            <span>Nouvelle offre</span>
+            <span className={styles.addIcon}>
+              <Plus aria-hidden="true" />
+            </span>
+            <small>Nouvelle tentation</small>
+            <span>Créer une offre</span>
           </button>
         )}
 
-        {plan === "free" && (
+        {plan === "basique" && (
           <div className={styles.upsell}>
             <Lock aria-hidden="true" />
             <strong>Formules FLUX</strong>
-            <p>Jusqu&apos;à 30 offres en avant sur ta vitrine, des crédits chaque mois, et bien plus.</p>
+            <p>Jusqu&apos;à 30 offres en avant sur ta vitrine, plus de crédits chaque mois, plus de personnalisation.</p>
             <Button asChild variant="secondary" size="sm">
-              <a href="/formules">Découvrir les formules</a>
+              <a href="/formules">
+                <Rocket aria-hidden="true" />
+                Découvrir les formules
+              </a>
             </Button>
           </div>
         )}

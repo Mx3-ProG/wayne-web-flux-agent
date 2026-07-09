@@ -69,6 +69,10 @@ export async function POST(request: Request) {
     why: `tool:${tool.slug}`,
   });
   if (spendError) {
+    if (spendError.message.includes("subscription_required")) {
+      // Essai 7 jours expiré sans souscription : lecture seule.
+      return NextResponse.json({ error: "subscription_required" }, { status: 402 });
+    }
     if (spendError.message.includes("insufficient_credits")) {
       return NextResponse.json({ error: "insufficient_credits" }, { status: 402 });
     }

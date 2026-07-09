@@ -45,7 +45,12 @@ export function ToolRunner({ tool, balance }: Props) {
         body: JSON.stringify({ tool: tool.slug, inputs }),
       });
       if (res.status === 402) {
-        toast.error("Plus assez de crédits. Passe à une formule FLUX pour recharger.");
+        const body = await res.json().catch(() => null);
+        toast.error(
+          body?.error === "subscription_required"
+            ? "Ton essai FLUX est terminé. Choisis une formule pour continuer à générer."
+            : "Plus assez de crédits. Passe à une formule FLUX pour recharger."
+        );
         setRunning(false);
         return;
       }

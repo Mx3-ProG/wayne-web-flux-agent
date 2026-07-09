@@ -2,7 +2,14 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { TOOLS, PREFILL_COST } from "@/lib/tools-config";
-import { PLAN_LABEL, PLAN_LIMITS, PUBLISH_COST } from "@/lib/plans";
+import {
+  PLAN_LABEL,
+  PLAN_LIMITS,
+  PUBLISH_COST,
+  TRIAL_DAYS,
+  hasActiveAccess,
+  trialDaysLeft,
+} from "@/lib/plans";
 import type { CreditEntry, Plan, Profile } from "@/lib/types";
 import {
   Card,
@@ -58,20 +65,23 @@ export default async function CreditsPage() {
         .limit(50),
       supabase
         .from("profiles")
-        .select("plan")
+        .select("plan, trial_ends_at, subscribed_at")
         .eq("user_id", user.id)
-        .single<Pick<Profile, "plan">>(),
+        .single<Pick<Profile, "plan" | "trial_ends_at" | "subscribed_at">>(),
     ]);
 
-  const plan = (profile?.plan ?? "free") as Plan;
+  const plan = (profile?.plan ?? "basique") as Plan;
   const monthlyCredits = PLAN_LIMITS[plan].monthlyCredits;
   const entries = (ledger ?? []) as CreditEntry[];
+  const subscribed = Boolean(profile?.subscribed_at);
+  const trialActive = profile ? !subscribed && hasActiveAccess(profile) : false;
+  const daysLeft = profile ? trialDaysLeft(profile) : 0;
 
-  // Prochaine recharge : uniquement sur formule payante, ancrée sur le dernier
+  // Prochaine recharge : uniquement une fois souscrit, ancrée sur le dernier
   // topup de la formule courante.
   const lastTopup = entries.find((e) => e.reason === `topup:${plan}`);
   const nextRecharge =
-    monthlyCredits > 0 && lastTopup
+    subscribed && lastTopup
       ? new Date(
           new Date(lastTopup.created_at).getTime() + 30 * 86400_000
         ).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
@@ -101,15 +111,22 @@ export default async function CreditsPage() {
               <p className="text-sm text-muted-foreground">
                 Recharge : le {nextRecharge}
               </p>
+            ) : trialActive ? (
+              <p className="text-sm text-muted-foreground">
+                Essai FLUX : {daysLeft} jour{daysLeft > 1 ? "s" : ""} restant
+                {daysLeft > 1 ? "s" : ""}
+              </p>
             ) : (
               <p className="text-sm text-muted-foreground">
-                Formule {PLAN_LABEL[plan]}
+                {subscribed ? `Formule ${PLAN_LABEL[plan]}` : "Essai terminé"}
               </p>
             )}
           </div>
-          {monthlyCredits === 0 && (
+          {!subscribed && (
             <p className="text-sm text-muted-foreground">
-              Envie de recharger ?{" "}
+              {trialActive
+                ? "Envie de continuer après l'essai ? "
+                : "Pour recharger et réactiver publications et IA : "}
               <Link href="/formules" className="text-foreground underline">
                 Découvre les formules FLUX
               </Link>
@@ -126,9 +143,9 @@ export default async function CreditsPage() {
         <CardContent>
           <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside">
             <li>
-              <strong className="text-foreground">100 crédits offerts</strong> à
-              la création de ton compte, pour créer ton site et essayer les
-              outils.
+              <strong className="text-foreground">100 crédits offerts</strong>{" "}
+              pendant ton essai de {TRIAL_DAYS} jours, pour créer ton site et
+              tout tester.
             </li>
             <li>
               <strong className="text-foreground">1 crédit ≈ 1 €</strong> :
@@ -145,7 +162,7 @@ export default async function CreditsPage() {
               s&apos;ajoute aux recharges suivantes.
             </li>
             <li>
-              {monthlyCredits > 0 ? (
+              {subscribed ? (
                 <>
                   Ta formule {PLAN_LABEL[plan]} recharge{" "}
                   <strong className="text-foreground">
@@ -155,11 +172,12 @@ export default async function CreditsPage() {
                 </>
               ) : (
                 <>
-                  Besoin de plus ? Les{" "}
+                  Après l&apos;essai, les{" "}
                   <Link href="/formules" className="text-foreground underline">
                     formules FLUX
                   </Link>{" "}
-                  rechargent de 500 à 5000 crédits par mois.
+                  rechargent de 100 à 3000 crédits par mois — plus de crédits,
+                  plus de possibilités.
                 </>
               )}
             </li>

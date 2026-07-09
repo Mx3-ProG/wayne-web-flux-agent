@@ -1,7 +1,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { FLUX_PLANS, PLAN_LABEL, PLAN_LIMITS, projectLimit } from "@/lib/plans";
+import {
+  FLUX_PLANS,
+  PLAN_LABEL,
+  PLAN_LIMITS,
+  hasActiveAccess,
+  projectLimit,
+  trialDaysLeft,
+} from "@/lib/plans";
 import type { CreditEntry, Plan, Profile } from "@/lib/types";
 import { signOut } from "@/app/login/actions";
 import { DeleteAccountForm, ProfileForm } from "@/components/account/profile-settings";
@@ -49,11 +56,13 @@ export default async function ComptePage() {
   ]);
   if (!profile) redirect("/login");
 
-  const plan = (profile.plan ?? "free") as Plan;
-  // Recharge : uniquement sur formule payante, ancrée sur le dernier topup.
+  const plan = (profile.plan ?? "basique") as Plan;
+  const subscribed = Boolean(profile.subscribed_at);
+  const trialActive = !subscribed && hasActiveAccess(profile);
+  const daysLeft = trialDaysLeft(profile);
+  // Recharge : uniquement une fois souscrit, ancrée sur le dernier topup.
   const nextRecharge =
-    PLAN_LIMITS[plan].monthlyCredits > 0 &&
-    lastRecharge?.reason === `topup:${plan}`
+    subscribed && lastRecharge?.reason === `topup:${plan}`
       ? new Date(
           new Date(lastRecharge.created_at).getTime() + 30 * 86400_000
         ).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
@@ -113,7 +122,11 @@ export default async function ComptePage() {
             <small>
               {nextRecharge
                 ? `Prochaine recharge le ${nextRecharge}`
-                : "Recharge via les formules FLUX"}
+                : trialActive
+                  ? `Essai FLUX : ${daysLeft} jour${daysLeft > 1 ? "s" : ""} restant${daysLeft > 1 ? "s" : ""}`
+                  : subscribed
+                    ? "Recharge via ta formule FLUX"
+                    : "Essai terminé — choisis ta formule FLUX"}
             </small>
           </div>
           <Link href="/credits">Voir mon utilisation <ArrowRight aria-hidden="true" /></Link>
@@ -123,18 +136,18 @@ export default async function ComptePage() {
       <section id="formules" className={styles.section}>
         <div className={styles.sectionHeading}>
           <h2>Formules FLUX</h2>
-          <p>Ton offre actuelle et ce qu’elle te permet de faire. <Link href="/formules">Voir le détail des formules</Link></p>
+          <p>Plus de crédits, plus de possibilités : fonctionnalités, modifications, personnalisation. 7 jours d’essai offerts. <Link href="/formules">Voir le détail des formules</Link></p>
         </div>
         <div className={styles.plans}>
           {FLUX_PLANS.map((item) => (
-            <article className={item === plan ? styles.planActive : styles.plan} key={item}>
+            <article className={subscribed && item === plan ? styles.planActive : styles.plan} key={item}>
               <div className={styles.planTop}>
                 <span>{PLAN_LABEL[item]}</span>
-                {item === plan && <small>Formule actuelle</small>}
+                {subscribed && item === plan && <small>Formule actuelle</small>}
               </div>
-              <strong>{PLAN_LIMITS[item].priceEur === 0 ? "0 €" : `${PLAN_LIMITS[item].priceEur} €/mois`}</strong>
+              <strong>{`${PLAN_LIMITS[item].priceEur} €/mois`}</strong>
               <ul>
-                <li><Check aria-hidden="true" /> {PLAN_LIMITS[item].monthlyCredits > 0 ? `${PLAN_LIMITS[item].monthlyCredits} crédits/mois` : "100 crédits offerts"}</li>
+                <li><Check aria-hidden="true" /> {PLAN_LIMITS[item].monthlyCredits} crédits/mois</li>
                 <li><Check aria-hidden="true" /> {PLAN_LIMITS[item].projects} projet{PLAN_LIMITS[item].projects > 1 ? "s" : ""}</li>
                 <li><Check aria-hidden="true" /> {PLAN_LIMITS[item].offers} offres actives</li>
                 <li><Check aria-hidden="true" /> {PLAN_LIMITS[item].customDomain ? "Domaine personnalisé" : "Adresse FLUX incluse"}</li>

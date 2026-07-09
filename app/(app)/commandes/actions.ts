@@ -1,7 +1,9 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { sendOrderStatusEmail } from "@/lib/emails/order-emails";
 import type { OrderStatus } from "@/lib/types";
 
 type SupabaseServer = Awaited<ReturnType<typeof createClient>>;
@@ -76,9 +78,16 @@ export async function acceptOrder(orderId: string): Promise<void> {
     .select("status")
     .eq("id", orderId)
     .maybeSingle();
-  await setOrderStatus(orderId, "accepted", {
+  const { error } = await setOrderStatus(orderId, "accepted", {
     accepted_at: new Date().toISOString(),
   });
+  if (!error) {
+    after(() =>
+      sendOrderStatusEmail(orderId, "accepted").catch((e) =>
+        console.error("order: status email failed", e)
+      )
+    );
+  }
   if (order?.status === "pending") {
     await applyOrderStock(supabase, orderId, "sale");
     revalidatePath("/commandes");
@@ -99,7 +108,14 @@ export async function cancelOrder(orderId: string): Promise<void> {
     .eq("id", orderId)
     .maybeSingle();
   const wasDecremented = order?.status === "accepted" || order?.status === "fulfilled";
-  await setOrderStatus(orderId, "cancelled");
+  const { error } = await setOrderStatus(orderId, "cancelled");
+  if (!error) {
+    after(() =>
+      sendOrderStatusEmail(orderId, "cancelled").catch((e) =>
+        console.error("order: status email failed", e)
+      )
+    );
+  }
   if (wasDecremented) {
     await applyOrderStock(supabase, orderId, "cancel");
     revalidatePath("/commandes");

@@ -1,6 +1,6 @@
 // Types des lignes de la base (miroir de supabase/migrations/00001_schema.sql)
 
-export type Plan = "free" | "pro" | "business" | "entreprise";
+export type Plan = "basique" | "pro" | "business" | "entreprise";
 
 export type Profile = {
   user_id: string;
@@ -15,6 +15,10 @@ export type Profile = {
   onboarding_step: number;
   ical_token: string;
   plan: Plan;
+  // Essai 7 jours démarré à l'inscription ; souscription posée manuellement
+  // (admin) en attendant Stripe. Accès actif = essai en cours OU souscrit.
+  trial_ends_at: string;
+  subscribed_at: string | null;
   active_page_id: string | null;
   created_at: string;
 };

@@ -43,7 +43,7 @@ export async function createPage(input: {
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id),
   ]);
-  if ((pageCount ?? 0) >= projectLimit((profile?.plan as Plan) ?? "free")) {
+  if ((pageCount ?? 0) >= projectLimit((profile?.plan as Plan) ?? "basique")) {
     return { error: "Limite de projets atteinte pour ton forfait." };
   }
 
@@ -185,7 +185,11 @@ export async function savePageFields(
   return {};
 }
 
-export type PublishError = "insufficient_credits" | "nothing_to_publish" | "unknown";
+export type PublishError =
+  | "insufficient_credits"
+  | "nothing_to_publish"
+  | "subscription_required"
+  | "unknown";
 
 // Publie une nouvelle version du site : débit atomique de 5 crédits + merge
 // des brouillons (vitrine + offres) + snapshot dans page_versions, le tout
@@ -216,6 +220,9 @@ export async function publishPage(
     }
     if (error.message.includes("nothing_to_publish")) {
       return { error: "nothing_to_publish" };
+    }
+    if (error.message.includes("subscription_required")) {
+      return { error: "subscription_required" };
     }
     return { error: "unknown" };
   }

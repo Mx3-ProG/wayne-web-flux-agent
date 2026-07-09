@@ -7,6 +7,7 @@ import {
   BadgePercent,
   Boxes,
   CalendarDays,
+  ChartLine,
   ChevronRight,
   Coins,
   FolderOpen,
@@ -47,6 +48,7 @@ const GROUPS: { label: string; items: DrawerItem[] }[] = [
     items: [
       { href: "/produits", label: "Mes produits", icon: Boxes, badge: "stock" },
       { href: "/agenda", label: "Mon agenda", icon: CalendarDays },
+      { href: "/statistiques", label: "Mes statistiques", icon: ChartLine },
       { href: "/resultats", label: "Mes contenus", icon: FolderOpen },
       { href: "/installer", label: "Installer l’app", icon: Smartphone },
       { href: "/contexte/configurer", label: "FLUX – IA", icon: MessageSquareText, activeRoot: "/contexte" },

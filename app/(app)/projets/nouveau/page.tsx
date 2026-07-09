@@ -23,7 +23,7 @@ export default async function NouveauProjetPage() {
   ]);
 
   // Gate : au-delà de la limite du forfait, retour à l'espace projets.
-  if ((count ?? 0) >= projectLimit((profile?.plan as Plan) ?? "free")) {
+  if ((count ?? 0) >= projectLimit((profile?.plan as Plan) ?? "basique")) {
     redirect("/projets");
   }
 

@@ -1,5 +1,6 @@
-import { NextResponse } from "next/server";
+import { NextResponse, after } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { sendOrderCreatedEmails } from "@/lib/emails/order-emails";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { formatPrice } from "@/lib/types";
 
@@ -118,6 +119,24 @@ export async function POST(
     ref_id: orderId,
     title: "Nouvelle commande",
     body: `${firstName} · ${count} article${count > 1 ? "s" : ""} · ${formatPrice(total)}`,
+  });
+
+  // Emails (acheteur + vendeur) après la réponse : jamais bloquant.
+  after(async () => {
+    try {
+      await sendOrderCreatedEmails({
+        orderId,
+        pageId: page.id,
+        firstName,
+        phone,
+        buyerEmail: email,
+        address,
+        note,
+        totalCents: total,
+      });
+    } catch (e) {
+      console.error("order: email dispatch failed", e);
+    }
   });
 
   return NextResponse.json({ ok: true }, { status: 201 });
