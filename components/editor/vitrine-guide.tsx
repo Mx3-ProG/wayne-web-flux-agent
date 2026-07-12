@@ -18,7 +18,18 @@ import { toast } from "sonner";
 import type { Page } from "@/lib/types";
 import { FONTS } from "@/lib/verticals";
 import { VITRINE_THEMES } from "@/lib/vitrine-themes";
-import { savePageFields } from "@/app/(app)/ma-page/actions";
+import { VITRINE_ASSIST_COST } from "@/lib/plans";
+import { saveVitrineGuide } from "@/app/(app)/ma-page/actions";
+import { Button } from "@/components/ui/button";
+import { FluxBrand } from "@/components/flux-brand";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { PhotoUpload } from "./photo-upload";
 import { PublishButton } from "./publish-button";
 import type { PublishProps } from "./page-editor";
@@ -35,6 +46,11 @@ export function VitrineGuide({
   const [step, setStep] = useState(0);
   const [page, setPage] = useState(initialPage);
   const [pending, startTransition] = useTransition();
+  const [creditsDialog, setCreditsDialog] = useState<
+    "insufficient_credits" | "subscription_required" | null
+  >(null);
+  // L'assistant FLUX est payant ; l'éditeur complet reste gratuit.
+  const enough = publish.balance >= VITRINE_ASSIST_COST;
   const progress = Math.min(100, ((step + 1) / 6) * 100);
   const canContinue =
     step === 1
@@ -47,7 +63,7 @@ export function VitrineGuide({
 
   function save() {
     startTransition(async () => {
-      const result = await savePageFields(initialPage.id, {
+      const result = await saveVitrineGuide(initialPage.id, {
         business_name: page.business_name,
         job_title: page.job_title,
         tagline: page.tagline,
@@ -60,6 +76,13 @@ export function VitrineGuide({
         font: page.font,
         colors: page.colors,
       });
+      if (
+        result.error === "insufficient_credits" ||
+        result.error === "subscription_required"
+      ) {
+        setCreditsDialog(result.error);
+        return;
+      }
       if (result.error) {
         toast.error(result.error);
         return;
@@ -75,7 +98,7 @@ export function VitrineGuide({
   return (
     <div className={styles.tunnel}>
       <header className={styles.header}>
-        <Link href="/espace" className={styles.brand}>WAYNE<span>WEB</span><small>FLUX</small></Link>
+        <Link href="/espace" className={styles.brand}><FluxBrand /></Link>
         <div className={styles.progressMeta}>
           <span>Étape {Math.min(step + 1, 6)} sur 6</span>
           <div className={styles.progress}><i style={{ width: `${progress}%` }} /></div>
@@ -179,10 +202,12 @@ export function VitrineGuide({
               <article className={styles.reviewCard}><small>Positionnement</small><strong>{page.job_title} · {page.city}</strong></article>
               <article className={styles.reviewCard}><small>Ambiance</small><strong>{VITRINE_THEMES.find((theme) => theme.id === page.theme)?.name ?? "Éditorial"}</strong></article>
               <article className={styles.reviewCard}><small>Images</small><strong>{[page.logo_url, page.hero_url].filter(Boolean).length} sur 2 ajoutées</strong></article>
+              <article className={styles.reviewCard}><small>Coût de l&apos;assistant</small><strong>{VITRINE_ASSIST_COST} crédits · solde : {publish.balance} cr.</strong></article>
             </div>
+            {!enough && <p className={styles.subtitle}>Il te manque {VITRINE_ASSIST_COST - publish.balance} crédit{VITRINE_ASSIST_COST - publish.balance > 1 ? "s" : ""}. <Link href="/credits" style={{ textDecoration: "underline" }}>Recharge tes crédits</Link> — ou passe par l&apos;éditeur complet, gratuit.</p>}
             <div className={styles.confirm}>
               <button className={styles.back} type="button" onClick={() => setStep(4)}><ArrowLeft aria-hidden="true" /> Modifier</button>
-              <button className={styles.primary} type="button" disabled={pending} onClick={save}>{pending ? "Enregistrement…" : "Confirmer mes modifications"} <Store aria-hidden="true" /></button>
+              <button className={styles.primary} type="button" disabled={pending || !enough} onClick={save}>{pending ? "Enregistrement…" : `Confirmer mes modifications (${VITRINE_ASSIST_COST} cr.)`} <Store aria-hidden="true" /></button>
             </div>
           </Screen>
         )}
@@ -191,7 +216,7 @@ export function VitrineGuide({
           <Screen kicker="Publication" title={<>Ton brouillon est prêt. On le met <em>en ligne ?</em></>} subtitle="Ton site public affiche encore l’ancienne version. Publier une nouvelle version la remplace pour tes clients.">
             <VitrinePreview page={page} />
             <div className={styles.confirm}>
-              <PublishButton {...publish} hasDraft />
+              <PublishButton {...publish} hasDraft redirectTo="/ma-page?view=editor" />
               <Link href="/ma-page?view=editor" className={styles.back}>
                 Plus tard — aller à l’éditeur
               </Link>
@@ -206,6 +231,35 @@ export function VitrineGuide({
           <button className={styles.primary} type="button" disabled={!canContinue} onClick={() => setStep((current) => current + 1)}>Continuer <ArrowRight aria-hidden="true" /></button>
         </footer>
       )}
+
+      <Dialog open={creditsDialog !== null} onOpenChange={(next) => !next && setCreditsDialog(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {creditsDialog === "subscription_required"
+                ? "Ton essai est terminé"
+                : "Plus assez de crédits"}
+            </DialogTitle>
+            <DialogDescription>
+              {creditsDialog === "subscription_required"
+                ? "Tes 7 jours d'essai FLUX sont passés. Choisis une formule pour continuer à utiliser l'assistant."
+                : `L'assistant vitrine coûte ${VITRINE_ASSIST_COST} crédits. Recharge tes crédits, ou utilise l'éditeur complet (gratuit).`}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button asChild variant="ghost">
+              <Link href="/ma-page?view=editor">Éditeur complet</Link>
+            </Button>
+            <Button asChild>
+              <Link href={creditsDialog === "subscription_required" ? "/formules" : "/credits"}>
+                {creditsDialog === "subscription_required"
+                  ? "Choisir ma formule FLUX"
+                  : "Recharger mes crédits"}
+              </Link>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

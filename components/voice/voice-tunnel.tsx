@@ -11,6 +11,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { EMPTY_VOICE, VOICE_STEPS, type VoiceDraft } from "./voice-options";
+import { FluxBrand } from "@/components/flux-brand";
 import styles from "./voice-tunnel.module.css";
 
 export function VoiceTunnel({ initialVoice }: { initialVoice: VoiceDraft | null }) {
@@ -61,7 +62,7 @@ export function VoiceTunnel({ initialVoice }: { initialVoice: VoiceDraft | null 
     <div className={styles.tunnel}>
       <header className={styles.header}>
         <Link href="/contexte" className={styles.brand}>
-          WAYNE<span>WEB</span><small>FLUX</small>
+          <FluxBrand />
         </Link>
         {step >= 0 && (
           <div className={styles.progressMeta}>

@@ -18,25 +18,34 @@ import {
 } from "lucide-react";
 import styles from "@/app/(app)/app-shell.module.css";
 
-const DESKTOP_ITEMS = [
+type NavItem = {
+  href: string;
+  label: string;
+  icon: typeof LayoutDashboard;
+  // Racine utilisée pour l'état actif quand le lien pointe vers un tunnel
+  // (ex : Offres → /offres/configurer, actif sur tout /offres).
+  activeRoot?: string;
+};
+
+const DESKTOP_ITEMS: NavItem[] = [
   { href: "/espace", label: "Accueil", icon: LayoutDashboard },
   { href: "/projets", label: "Mes projets", icon: Layers },
   { href: "/ma-page", label: "Vitrine", icon: Store },
-  { href: "/offres", label: "Offres", icon: BadgePercent },
-  { href: "/produits", label: "Produits", icon: Boxes },
+  { href: "/offres/configurer", label: "Offres", icon: BadgePercent, activeRoot: "/offres" },
+  { href: "/produits/configurer", label: "Produits", icon: Boxes, activeRoot: "/produits" },
   { href: "/commandes", label: "Commandes", icon: ShoppingBag },
   { href: "/agenda", label: "Agenda", icon: CalendarDays },
   { href: "/statistiques", label: "Statistiques", icon: ChartLine },
   { href: "/resultats", label: "Contenus", icon: FolderOpen },
-  { href: "/contexte/configurer", label: "FLUX – IA", icon: MessageSquareText },
+  { href: "/contexte/configurer", label: "FLUX – IA", icon: MessageSquareText, activeRoot: "/contexte" },
   { href: "/installer", label: "Installer l’app", icon: Smartphone },
   { href: "/compte", label: "Profil", icon: UserRound },
 ];
 
-const MOBILE_ITEMS = [
+const MOBILE_ITEMS: NavItem[] = [
   { href: "/espace", label: "Accueil", icon: LayoutDashboard },
-  { href: "/produits", label: "Produits", icon: Boxes },
-  { href: "/offres", label: "Offres", icon: BadgePercent },
+  { href: "/statistiques", label: "Stats", icon: ChartLine },
+  { href: "/offres/configurer", label: "Offres", icon: BadgePercent, activeRoot: "/offres" },
   { href: "/commandes", label: "Commandes", icon: ShoppingBag },
 ];
 
@@ -57,8 +66,10 @@ export function AppNavigation({
       className={mobile ? styles.mobileNav : styles.sidebarNav}
       aria-label={mobile ? "Navigation mobile" : "Navigation principale"}
     >
-      {items.map(({ href, label, icon: Icon }) => {
-        const active = pathname === href || pathname.startsWith(`${href}/`);
+      {items.map(({ href, label, icon: Icon, activeRoot }) => {
+        const activePath = activeRoot ?? href;
+        const active =
+          pathname === activePath || pathname.startsWith(`${activePath}/`);
         const badge =
           href === "/commandes"
             ? pendingOrders

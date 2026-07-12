@@ -4,7 +4,8 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getVertical } from "@/lib/verticals";
 import { defaultLegal } from "@/lib/legal";
-import { projectLimit } from "@/lib/plans";
+import { projectLimit, VITRINE_ASSIST_COST } from "@/lib/plans";
+import { spendCredits, refundCredits } from "@/lib/credits";
 import { SECTION_LIMITS } from "@/lib/sections";
 import type { PageDraftFields, Plan } from "@/lib/types";
 
@@ -151,6 +152,8 @@ export async function createPage(input: {
 // Autosave des champs simples de la vitrine — dans le BROUILLON (pages.draft).
 // Le site public ne bouge pas tant que la version n'est pas publiée (5 cr.).
 // Merge jsonb côté SQL (merge_page_draft) pour éviter les races de l'autosave.
+// Gratuite : c'est le chemin de l'éditeur complet. L'assistant FLUX passe par
+// saveVitrineGuide (payante) ci-dessous.
 export async function savePageFields(
   pageId: string,
   fields: Partial<PageDraftFields>
@@ -182,6 +185,42 @@ export async function savePageFields(
   });
   if (error) return { error: "Enregistrement impossible." };
   revalidatePath("/ma-page");
+  return {};
+}
+
+// Confirmation finale de l'assistant vitrine FLUX : le passage guidé coûte
+// VITRINE_ASSIST_COST crédits (l'éditeur complet, lui, reste gratuit).
+// Débit avant la sauvegarde, refund si elle échoue.
+export async function saveVitrineGuide(
+  pageId: string,
+  fields: Partial<PageDraftFields>
+): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Non connecté." };
+
+  const { data: page } = await supabase
+    .from("pages")
+    .select("id")
+    .eq("id", pageId)
+    .eq("user_id", user.id)
+    .single();
+  if (!page) return { error: "Page introuvable." };
+
+  const { error: spendError } = await spendCredits(
+    user.id,
+    VITRINE_ASSIST_COST,
+    "vitrine:guide"
+  );
+  if (spendError) return { error: spendError };
+
+  const result = await savePageFields(pageId, fields);
+  if (result.error) {
+    await refundCredits(user.id, VITRINE_ASSIST_COST, "refund:vitrine");
+    return result;
+  }
   return {};
 }
 

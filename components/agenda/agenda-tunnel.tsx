@@ -18,6 +18,7 @@ import {
 import { toast } from "sonner";
 import { saveSchedules, type DaySetting } from "@/app/(app)/agenda/actions";
 import type { Schedule, TimeRange } from "@/lib/types";
+import { FluxBrand } from "@/components/flux-brand";
 import styles from "./agenda-tunnel.module.css";
 
 const DAYS = [
@@ -103,7 +104,7 @@ export function AgendaTunnel({ schedules }: { schedules: Schedule[] }) {
   return (
     <div className={styles.tunnel}>
       <header className={styles.header}>
-        <span className={styles.brand}>WAYNE<span>WEB</span><small>FLUX</small></span>
+        <FluxBrand className={styles.brand} />
         {step > 0 && (
           <div className={styles.progressMeta}>
             <span>Étape {step} sur 4</span>

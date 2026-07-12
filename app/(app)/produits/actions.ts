@@ -3,6 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePageId } from "@/lib/active-project";
+import {
+  CATEGORY_CREATE_COST,
+  PRODUCT_ADD_COST,
+  PRODUCT_CREATE_COST,
+  RESERVATION_ADD_COST,
+} from "@/lib/plans";
+import { spendCredits, refundCredits } from "@/lib/credits";
 import type { ProductKind } from "@/lib/types";
 
 type TunnelProduct = {
@@ -176,18 +183,52 @@ async function syncReservationService(productId: string) {
 
 export async function createCategory(): Promise<{ error?: string; id?: string; pageId?: string }> {
   const supabase = await createClient();
-  const pageId = await ownedPageId();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Non connecté." };
+  const pageId = await getActivePageId(supabase, user.id);
   if (!pageId) return { error: "Crée d'abord ta vitrine." };
+
   const { count } = await supabase
     .from("product_categories")
     .select("id", { count: "exact", head: true })
     .eq("page_id", pageId);
+
+  // La toute première catégorie du COMPTE est offerte (tous projets
+  // confondus) ; les suivantes coûtent CATEGORY_CREATE_COST crédits.
+  const { data: userPages } = await supabase
+    .from("pages")
+    .select("id")
+    .eq("user_id", user.id);
+  const pageIds = (userPages ?? []).map((p) => p.id);
+  const { count: accountCount } = pageIds.length
+    ? await supabase
+        .from("product_categories")
+        .select("id", { count: "exact", head: true })
+        .in("page_id", pageIds)
+    : { count: 0 };
+  const paid = (accountCount ?? 0) > 0;
+  if (paid) {
+    const { error: spendError } = await spendCredits(
+      user.id,
+      CATEGORY_CREATE_COST,
+      "category:create"
+    );
+    if (spendError) return { error: spendError };
+  }
+
   const { data, error } = await supabase
     .from("product_categories")
     .insert({ page_id: pageId, name: "Nouvelle catégorie", position: count ?? 0 })
     .select("id")
     .single();
-  if (error || !data) return { error: "Création impossible." };
+  if (error || !data) {
+    if (paid) {
+      await refundCredits(user.id, CATEGORY_CREATE_COST, "refund:category");
+    }
+    return { error: "Création impossible." };
+  }
   await revalidatePublicPage(pageId);
   revalidateAll();
   return { id: data.id, pageId };
@@ -263,8 +304,19 @@ export async function createProduct(
   kind: ProductKind = "product"
 ): Promise<{ error?: string; id?: string; pageId?: string }> {
   const supabase = await createClient();
-  const pageId = await ownedPageId();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Non connecté." };
+  const pageId = await getActivePageId(supabase, user.id);
   if (!pageId) return { error: "Crée d'abord ta vitrine." };
+
+  // Ajout unitaire : 5 cr pour un produit, 1 cr pour une réservation.
+  const cost = kind === "reservation" ? RESERVATION_ADD_COST : PRODUCT_ADD_COST;
+  const reason = kind === "reservation" ? "reservation:add" : "product:add";
+  const { error: spendError } = await spendCredits(user.id, cost, reason);
+  if (spendError) return { error: spendError };
+
   const { count } = await supabase
     .from("products")
     .select("id", { count: "exact", head: true })
@@ -282,7 +334,10 @@ export async function createProduct(
     })
     .select("id")
     .single();
-  if (error || !data) return { error: "Création impossible." };
+  if (error || !data) {
+    await refundCredits(user.id, cost, `refund:${reason.split(":")[0]}`);
+    return { error: "Création impossible." };
+  }
   if (kind === "reservation") await syncReservationService(data.id);
   await revalidatePublicPage(pageId);
   revalidateAll();
@@ -294,7 +349,11 @@ export async function createProductsFromTunnel(
   products: TunnelProduct[]
 ): Promise<{ error?: string }> {
   const supabase = await createClient();
-  const pageId = await ownedPageId();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "Non connecté." };
+  const pageId = await getActivePageId(supabase, user.id);
   if (!pageId) return { error: "Crée d'abord ta vitrine." };
 
   const cleanCategory = categoryName.trim().slice(0, 60);
@@ -317,6 +376,15 @@ export async function createProductsFromTunnel(
   if (!cleanCategory) return { error: "Donne un nom à ta catégorie." };
   if (cleanProducts.length === 0) return { error: "Ajoute au moins un produit." };
 
+  // Le passage du tunnel coûte un forfait de crédits (jusqu'à 8 produits).
+  // Débit AVANT les inserts, refund si la création échoue.
+  const { error: spendError } = await spendCredits(
+    user.id,
+    PRODUCT_CREATE_COST,
+    "product:create"
+  );
+  if (spendError) return { error: spendError };
+
   const [{ count: categoryCount }, { count: productCount }] = await Promise.all([
     supabase
       .from("product_categories")
@@ -337,7 +405,10 @@ export async function createProductsFromTunnel(
     })
     .select("id")
     .single();
-  if (categoryError || !category) return { error: "Création de la catégorie impossible." };
+  if (categoryError || !category) {
+    await refundCredits(user.id, PRODUCT_CREATE_COST, "refund:product");
+    return { error: "Création de la catégorie impossible." };
+  }
 
   const { error: productsError } = await supabase.from("products").insert(
     cleanProducts.map((product, index) => ({
@@ -350,6 +421,7 @@ export async function createProductsFromTunnel(
 
   if (productsError) {
     await supabase.from("product_categories").delete().eq("id", category.id);
+    await refundCredits(user.id, PRODUCT_CREATE_COST, "refund:product");
     return { error: "Création des produits impossible." };
   }
 

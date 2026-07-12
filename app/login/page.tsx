@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, LockKeyhole, Mail, Sparkles, User } from "lucide-react";
 import { signIn, signUp, type AuthState } from "./actions";
 import styles from "./login.module.css";
+import { FluxBrand } from "@/components/flux-brand";
 
 const initialState: AuthState = {};
 
@@ -15,7 +16,7 @@ export default function LoginPage() {
   return (
     <main className={styles.page}>
       <Link className={styles.back} href="/"><ArrowLeft aria-hidden="true" /> Accueil</Link>
-      <div className={styles.brand}>WAYNE<span>WEB</span><small>FLUX</small></div>
+      <FluxBrand className={styles.brand} priority />
 
       <section className={styles.layout}>
         <div className={styles.pitch}>

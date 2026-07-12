@@ -1,4 +1,5 @@
-// Formules FLUX — l'outil IA de Wayne-Web. 1 crédit ≈ 1 €.
+// Formules FLUX — l'outil IA de Wayne-Web. 1 crédit = 0,40 € (packs
+// dégressifs dans lib/credit-packs.ts).
 // Plus de palier gratuit : 4 formules payantes avec un essai de 7 jours
 // automatique à l'inscription (les 100 crédits de bienvenue servent de
 // carburant d'essai). Essai expiré sans souscription = lecture seule (le site
@@ -11,6 +12,16 @@ import type { Plan, Profile } from "@/lib/types";
 // Coût d'une publication de nouvelle version de la vitrine (miroir de la
 // valeur codée dans publish_page, migration 00013).
 export const PUBLISH_COST = 5;
+
+// Coûts en crédits des parcours FLUX (débit atomique via spend_credits).
+export const OFFER_CREATE_COST = 15; // création d'offre dans la limite du forfait
+export const OFFER_EXTRA_COST = 25; // création d'offre au-delà de la limite
+export const PRODUCT_CREATE_COST = 15; // passage du tunnel produits (jusqu'à 8 produits)
+export const CATEGORY_CREATE_COST = 15; // nouvelle catégorie (la 1re du compte est offerte)
+export const PRODUCT_ADD_COST = 5; // ajout d'un produit (gestionnaire /produits)
+export const RESERVATION_ADD_COST = 1; // ajout d'une réservation
+export const VITRINE_ASSIST_COST = 10; // assistant vitrine FLUX (confirmation finale)
+export const CONTEXT_CHANGE_COST = 5; // modification du contexte FLUX (1re création gratuite)
 
 // Durée de l'essai offert sur toutes les formules (miroir du default SQL de
 // profiles.trial_ends_at, migration 00013).

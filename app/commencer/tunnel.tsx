@@ -27,6 +27,7 @@ import {
 import { signUp, type AuthState } from "@/app/login/actions";
 import { VERTICALS, getVertical } from "@/lib/verticals";
 import styles from "./tunnel.module.css";
+import { FluxBrand } from "@/components/flux-brand";
 
 const initialState: AuthState = {};
 
@@ -60,11 +61,7 @@ type InstallPromptEvent = Event & {
 };
 
 function Brand() {
-  return (
-    <span className={styles.brand}>
-      WAYNE<span>WEB</span><small>FLUX</small>
-    </span>
-  );
+  return <FluxBrand className={styles.brand} />;
 }
 
 export function Tunnel() {

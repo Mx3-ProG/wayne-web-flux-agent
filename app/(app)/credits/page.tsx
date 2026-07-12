@@ -3,13 +3,22 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { TOOLS, PREFILL_COST } from "@/lib/tools-config";
 import {
+  CATEGORY_CREATE_COST,
+  CONTEXT_CHANGE_COST,
+  OFFER_CREATE_COST,
+  PRODUCT_ADD_COST,
+  RESERVATION_ADD_COST,
+  OFFER_EXTRA_COST,
   PLAN_LABEL,
   PLAN_LIMITS,
+  PRODUCT_CREATE_COST,
   PUBLISH_COST,
   TRIAL_DAYS,
+  VITRINE_ASSIST_COST,
   hasActiveAccess,
   trialDaysLeft,
 } from "@/lib/plans";
+import { getPack } from "@/lib/credit-packs";
 import type { CreditEntry, Plan, Profile } from "@/lib/types";
 import {
   Card,
@@ -18,6 +27,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { CreditPacks } from "./credit-packs";
 
 export const metadata = { title: "Mes crédits" };
 
@@ -25,6 +35,14 @@ const REASON_LABELS: Record<string, string> = {
   signup: "Crédits de bienvenue",
   monthly: "Ancienne recharge mensuelle",
   prefill: "Pré-remplissage IA",
+  "offer:create": "Création d'offre",
+  "offer:extra": "Création d'offre (au-delà de la formule)",
+  "product:create": "Création de produits (tunnel FLUX)",
+  "category:create": "Nouvelle catégorie de produits",
+  "product:add": "Ajout d'un produit",
+  "reservation:add": "Ajout d'une réservation",
+  "vitrine:guide": "Assistant vitrine FLUX",
+  "voice:update": "Changement de contexte FLUX",
 };
 
 function reasonLabel(reason: string): string {
@@ -33,7 +51,11 @@ function reasonLabel(reason: string): string {
     const tool = TOOLS.find((t) => t.slug === reason.slice(5));
     return tool?.name ?? reason.slice(5);
   }
-  if (reason.startsWith("refund:")) return "Remboursement (génération échouée)";
+  if (reason.startsWith("purchase:")) {
+    const pack = getPack(reason.slice(9));
+    return pack ? `Achat ${pack.label} (+${pack.credits} cr.)` : "Achat de crédits";
+  }
+  if (reason.startsWith("refund:")) return "Remboursement (action échouée)";
   if (reason.startsWith("topup:")) {
     const plan = reason.slice(6) as Plan;
     return `Recharge formule ${PLAN_LABEL[plan] ?? plan}`;
@@ -47,12 +69,19 @@ function reasonLabel(reason: string): string {
   return reason;
 }
 
-export default async function CreditsPage() {
+export default async function CreditsPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+
+  const params = await searchParams;
+  const achat = typeof params.achat === "string" ? params.achat : null;
 
   const [{ data: balance }, { data: ledger }, { data: profile }] =
     await Promise.all([
@@ -92,10 +121,23 @@ export default async function CreditsPage() {
       <div>
         <h1 className="text-3xl font-bold mb-1">Tes crédits</h1>
         <p className="text-muted-foreground">
-          Ton carburant de création. 1 crédit ≈ 1 € : chaque action a un coût
-          affiché avant de te lancer.
+          Ton carburant de création. 1 crédit = 0,40 € : chaque action a un
+          coût affiché avant de te lancer.
         </p>
       </div>
+
+      {achat === "succes" && (
+        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm">
+          <strong>Paiement reçu.</strong> Tes crédits arrivent d&apos;ici
+          quelques secondes — recharge la page si le solde n&apos;a pas encore
+          bougé.
+        </div>
+      )}
+      {achat === "annule" && (
+        <div className="rounded-xl border border-border bg-secondary/40 p-4 text-sm text-muted-foreground">
+          Paiement annulé — rien n&apos;a été débité.
+        </div>
+      )}
 
       <Card>
         <CardContent className="pt-1">
@@ -138,6 +180,29 @@ export default async function CreditsPage() {
 
       <Card>
         <CardHeader>
+          <CardTitle>Recharge tes crédits</CardTitle>
+          <CardDescription>
+            Paiement sécurisé par Stripe. Les crédits s&apos;ajoutent à ton
+            solde et ne se perdent jamais.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <CreditPacks />
+          {profile && !hasActiveAccess(profile) && (
+            <p className="mt-3 text-xs text-muted-foreground">
+              Ton essai est terminé : pour utiliser tes crédits (publier,
+              générer, créer), pense aussi à{" "}
+              <Link href="/formules" className="text-foreground underline">
+                choisir une formule FLUX
+              </Link>
+              .
+            </p>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
           <CardTitle>La règle, en clair</CardTitle>
         </CardHeader>
         <CardContent>
@@ -148,9 +213,9 @@ export default async function CreditsPage() {
               tout tester.
             </li>
             <li>
-              <strong className="text-foreground">1 crédit ≈ 1 €</strong> :
-              chaque création, publication ou génération consomme des
-              ressources réelles.
+              <strong className="text-foreground">1 crédit = 0,40 €</strong>{" "}
+              (dégressif sur les packs) : chaque création, publication ou
+              génération consomme des ressources réelles.
             </li>
             <li>
               Chaque action a un coût affiché{" "}
@@ -195,6 +260,37 @@ export default async function CreditsPage() {
               <span>Publication d&apos;une nouvelle version du site</span>
               <span className="font-medium">{PUBLISH_COST} cr.</span>
             </li>
+            <li className="flex justify-between py-2">
+              <span>Création d&apos;offre (tunnel ou gestionnaire)</span>
+              <span className="font-medium">
+                {OFFER_CREATE_COST} cr. · {OFFER_EXTRA_COST} cr. au-delà de la
+                formule
+              </span>
+            </li>
+            <li className="flex justify-between py-2">
+              <span>Création de produits via le tunnel FLUX</span>
+              <span className="font-medium">{PRODUCT_CREATE_COST} cr.</span>
+            </li>
+            <li className="flex justify-between py-2">
+              <span>Nouvelle catégorie de produits (1re du compte offerte)</span>
+              <span className="font-medium">{CATEGORY_CREATE_COST} cr.</span>
+            </li>
+            <li className="flex justify-between py-2">
+              <span>Ajout d&apos;un produit</span>
+              <span className="font-medium">{PRODUCT_ADD_COST} cr.</span>
+            </li>
+            <li className="flex justify-between py-2">
+              <span>Ajout d&apos;une réservation</span>
+              <span className="font-medium">{RESERVATION_ADD_COST} cr.</span>
+            </li>
+            <li className="flex justify-between py-2">
+              <span>Assistant vitrine FLUX (éditeur complet gratuit)</span>
+              <span className="font-medium">{VITRINE_ASSIST_COST} cr.</span>
+            </li>
+            <li className="flex justify-between py-2">
+              <span>Changement de contexte FLUX (1re création offerte)</span>
+              <span className="font-medium">{CONTEXT_CHANGE_COST} cr.</span>
+            </li>
             {TOOLS.map((tool) => (
               <li key={tool.slug} className="flex justify-between py-2">
                 <span>{tool.name}</span>
@@ -202,7 +298,7 @@ export default async function CreditsPage() {
               </li>
             ))}
             <li className="flex justify-between py-2">
-              <span>Pré-remplissage « Compléter avec l&apos;IA »</span>
+              <span>Pré-remplissage « Compléter avec l&apos;IA » (bientôt)</span>
               <span className="font-medium">{PREFILL_COST} cr.</span>
             </li>
           </ul>

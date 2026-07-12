@@ -23,6 +23,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import styles from "@/app/(app)/app-shell.module.css";
+import { FluxBrand } from "@/components/flux-brand";
 
 type DrawerItem = {
   href: string;
@@ -40,13 +41,13 @@ const GROUPS: { label: string; items: DrawerItem[] }[] = [
       { href: "/projets", label: "Mes projets", icon: Layers },
       { href: "/ma-page", label: "Ma vitrine", icon: Store },
       { href: "/commandes", label: "Mes commandes", icon: ShoppingBag, badge: "orders" },
-      { href: "/offres", label: "Mes offres", icon: BadgePercent },
+      { href: "/offres/configurer", label: "Mes offres", icon: BadgePercent, activeRoot: "/offres" },
     ],
   },
   {
     label: "Mon commerce",
     items: [
-      { href: "/produits", label: "Mes produits", icon: Boxes, badge: "stock" },
+      { href: "/produits/configurer", label: "Mes produits", icon: Boxes, badge: "stock", activeRoot: "/produits" },
       { href: "/agenda", label: "Mon agenda", icon: CalendarDays },
       { href: "/statistiques", label: "Mes statistiques", icon: ChartLine },
       { href: "/resultats", label: "Mes contenus", icon: FolderOpen },
@@ -128,8 +129,7 @@ export function MobileAppMenu({
         >
           <div className={styles.drawerHeader}>
             <Link href="/espace" className={styles.drawerBrand} onClick={() => setOpen(false)}>
-              <span className={styles.brandMark}>W</span>
-              <span className={styles.brandWords}>WAYNE<b>WEB</b><small>FLUX</small></span>
+              <FluxBrand />
             </Link>
             <button
               ref={closeButtonRef}
@@ -143,7 +143,7 @@ export function MobileAppMenu({
           </div>
 
           <div className={styles.drawerIdentity}>
-            <span className={styles.drawerAvatar}>W</span>
+            <FluxBrand className={styles.drawerAvatar} markOnly />
             <span>
               <strong>Mon espace</strong>
               <small>Wayne-Web Flux</small>

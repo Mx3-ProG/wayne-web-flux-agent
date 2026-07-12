@@ -6,6 +6,7 @@ import { useState, useTransition } from "react";
 import { Check, MessageSquareText, Pencil, Save, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import type { VoiceProfile } from "@/lib/types";
+import { CONTEXT_CHANGE_COST } from "@/lib/plans";
 import { saveVoiceProfile } from "@/app/(app)/contexte/actions";
 import { EMPTY_VOICE, type VoiceDraft } from "./voice-options";
 import styles from "./voice-form.module.css";
@@ -38,6 +39,8 @@ export function VoiceForm({
   const [draft] = useState<VoiceDraft>({ ...EMPTY_VOICE, ...initialVoice, ...preparedVoice });
   const [isPending, startTransition] = useTransition();
   const isReview = Boolean(preparedVoice);
+  // 1re création gratuite ; toute mise à jour du contexte coûte 5 cr.
+  const isUpdate = Boolean(initialVoice);
   const filled = SUMMARY.filter((item) => draft[item.key]).length;
   const profileCompletion = isReview
     ? Math.round((filled / SUMMARY.length) * 100)
@@ -46,6 +49,18 @@ export function VoiceForm({
   function save() {
     startTransition(async () => {
       const result = await saveVoiceProfile(draft);
+      if (result.error === "insufficient_credits") {
+        toast.error(
+          `Modifier ton contexte coûte ${CONTEXT_CHANGE_COST} crédits et ton solde est insuffisant. Recharge tes crédits depuis la page Crédits.`
+        );
+        return;
+      }
+      if (result.error === "subscription_required") {
+        toast.error(
+          "Ton essai FLUX est terminé. Choisis une formule pour continuer."
+        );
+        return;
+      }
       if (result.error) {
         toast.error(result.error);
         return;
@@ -111,11 +126,19 @@ export function VoiceForm({
         <div className={styles.saveBar}>
           <span>
             <strong>Tout te ressemble ?</strong>
-            <small>Tu pourras refaire ce questionnaire à tout moment.</small>
+            <small>
+              {isUpdate
+                ? `Mettre à jour ton contexte coûte ${CONTEXT_CHANGE_COST} cr.`
+                : "Tu pourras refaire ce questionnaire à tout moment."}
+            </small>
           </span>
           <button type="button" disabled={isPending} onClick={save}>
             <Save aria-hidden="true" />
-            {isPending ? "Enregistrement…" : "Enregistrer ma voix"}
+            {isPending
+              ? "Enregistrement…"
+              : isUpdate
+                ? `Enregistrer ma voix (${CONTEXT_CHANGE_COST} cr.)`
+                : "Enregistrer ma voix"}
           </button>
         </div>
       ) : (

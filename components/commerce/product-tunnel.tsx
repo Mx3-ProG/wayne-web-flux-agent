@@ -6,8 +6,19 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import { ArrowLeft, ArrowRight, Boxes, Check, PackagePlus, Plus, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { PRODUCT_CREATE_COST } from "@/lib/plans";
 import { PhotoUpload } from "@/components/editor/photo-upload";
+import { FluxBrand } from "@/components/flux-brand";
 import { PriceInput } from "@/components/ui/price-input";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { createProductsFromTunnel } from "@/app/(app)/produits/actions";
 import styles from "./setup-tunnel.module.css";
 
@@ -31,12 +42,16 @@ const emptyProduct = (): DraftProduct => ({
   active: true,
 });
 
-export function ProductTunnel({ userId }: { userId: string }) {
+export function ProductTunnel({ userId, balance }: { userId: string; balance: number }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [category, setCategory] = useState("");
   const [products, setProducts] = useState<DraftProduct[]>([emptyProduct()]);
   const [pending, startTransition] = useTransition();
+  const [creditsDialog, setCreditsDialog] = useState<
+    "insufficient_credits" | "subscription_required" | null
+  >(null);
+  const enough = balance >= PRODUCT_CREATE_COST;
   const progress = ((step + 1) / 8) * 100;
 
   function patch(index: number, fields: Partial<DraftProduct>) {
@@ -57,12 +72,21 @@ export function ProductTunnel({ userId }: { userId: string }) {
   function save() {
     startTransition(async () => {
       const result = await createProductsFromTunnel(category, products);
+      if (
+        result.error === "insufficient_credits" ||
+        result.error === "subscription_required"
+      ) {
+        setCreditsDialog(result.error);
+        return;
+      }
       if (result.error) {
         toast.error(result.error);
         return;
       }
-      toast.success("Ta catégorie et tes produits sont prêts.");
-      router.push("/produits");
+      // Enchaînement FLUX : après les produits, on configure les horaires.
+      // Les 15 cr débités ici couvrent les deux tunnels (l'agenda est inclus).
+      toast.success("Tes produits sont prêts. Dernière étape : tes horaires.");
+      router.push("/agenda");
       router.refresh();
     });
   }
@@ -70,7 +94,7 @@ export function ProductTunnel({ userId }: { userId: string }) {
   return (
     <div className={styles.tunnel}>
       <header className={styles.header}>
-        <Link href="/espace" className={styles.brand}>WAYNE<span>WEB</span><small>FLUX</small></Link>
+        <Link href="/espace" className={styles.brand}><FluxBrand /></Link>
         <div className={styles.progressMeta}>
           <span>Étape {step + 1} sur 8</span>
           <div className={styles.progress}><i style={{ width: `${progress}%` }} /></div>
@@ -155,16 +179,47 @@ export function ProductTunnel({ userId }: { userId: string }) {
         )}
         {step === 6 && <ToggleScreen kicker="La mise en ligne" title="Sont-ils prêts à être visibles ?" subtitle="Un produit masqué reste enregistré sans apparaître sur ta vitrine." products={products} field="active" patch={patch} yes="Mettre en ligne" no="Garder en brouillon" />}
         {step === 7 && (
-          <Screen kicker="Confirmation" title={<>Tout est prêt pour ta <em>boutique.</em></>} subtitle="Vérifie tes choix avant la création.">
+          <Screen kicker="Confirmation" title={<>Tout est prêt pour ta <em>boutique.</em></>} subtitle="Vérifie tes choix : après la création, Flux enchaîne sur tes horaires (inclus dans le prix).">
             <div className={styles.reviewGrid}>
               <article className={styles.reviewCard}><small>Catégorie</small><strong>{category}</strong></article>
               <article className={styles.reviewCard}><small>Produits</small><strong>{products.length} produit{products.length > 1 ? "s" : ""}</strong></article>
               {products.map((product, index) => <article className={styles.reviewCard} key={index}><small>{product.active ? "En ligne" : "Brouillon"}</small><strong>{product.name} · {(product.price_cents / 100).toLocaleString("fr-FR")} €{product.track_stock ? ` · ${product.stock} en stock` : ""}</strong></article>)}
+              <article className={styles.reviewCard}><small>Coût total (produits + agenda)</small><strong>{PRODUCT_CREATE_COST} crédits · solde : {balance} cr.</strong></article>
             </div>
-            <div className={styles.confirm}><button className={styles.back} type="button" onClick={() => setStep(6)}><ArrowLeft aria-hidden="true" /> Modifier</button><button className={styles.primary} type="button" disabled={pending} onClick={save}>{pending ? "Création…" : "Confirmer mes choix"} <Check aria-hidden="true" /></button></div>
+            {!enough && <p className={styles.subtitle}>Il te manque {PRODUCT_CREATE_COST - balance} crédit{PRODUCT_CREATE_COST - balance > 1 ? "s" : ""}. <Link href="/credits" style={{ textDecoration: "underline" }}>Recharge tes crédits</Link>.</p>}
+            <div className={styles.confirm}><button className={styles.back} type="button" onClick={() => setStep(6)}><ArrowLeft aria-hidden="true" /> Modifier</button><button className={styles.primary} type="button" disabled={pending || !enough} onClick={save}>{pending ? "Création…" : `Confirmer et régler mes horaires (${PRODUCT_CREATE_COST} cr.)`} <Check aria-hidden="true" /></button></div>
           </Screen>
         )}
       </main>
+
+      <Dialog open={creditsDialog !== null} onOpenChange={(next) => !next && setCreditsDialog(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {creditsDialog === "subscription_required"
+                ? "Ton essai est terminé"
+                : "Plus assez de crédits"}
+            </DialogTitle>
+            <DialogDescription>
+              {creditsDialog === "subscription_required"
+                ? "Tes 7 jours d'essai FLUX sont passés. Choisis une formule pour continuer à créer des produits."
+                : `Créer tes produits coûte ${PRODUCT_CREATE_COST} crédits. Recharge tes crédits pour finaliser — rien n'est perdu.`}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setCreditsDialog(null)}>
+              Plus tard
+            </Button>
+            <Button asChild>
+              <Link href={creditsDialog === "subscription_required" ? "/formules" : "/credits"}>
+                {creditsDialog === "subscription_required"
+                  ? "Choisir ma formule FLUX"
+                  : "Recharger mes crédits"}
+              </Link>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {step > 0 && step < 7 && <footer className={styles.controls}><button className={styles.back} type="button" onClick={() => setStep((current) => current - 1)}><ArrowLeft aria-hidden="true" /> Retour</button><button className={styles.primary} type="button" disabled={!canContinue} onClick={() => setStep((current) => current + 1)}>Continuer <ArrowRight aria-hidden="true" /></button></footer>}
     </div>

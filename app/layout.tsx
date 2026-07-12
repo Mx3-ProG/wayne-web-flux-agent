@@ -15,7 +15,7 @@ const fraunces = Fraunces({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://wayne-web-flux.vercel.app"
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.flux-wayne.com"
   ),
   title: {
     default: "Wayne Web Flux — Visibilité, leads et outils pour ton commerce",
@@ -31,9 +31,6 @@ export const metadata: Metadata = {
   },
   formatDetection: {
     telephone: false,
-  },
-  icons: {
-    apple: "/pwa-icon-192.png",
   },
   openGraph: {
     title: "Wayne Web Flux — Ton commerce, vu partout",

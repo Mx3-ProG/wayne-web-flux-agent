@@ -13,5 +13,7 @@ export default async function ConfigurerProduitsPage() {
   const pageId = await getActivePageId(supabase, user.id);
   if (!pageId) redirect("/ma-page");
 
-  return <ProductTunnel userId={user.id} />;
+  const { data: balance } = await supabase.rpc("credit_balance", { uid: user.id });
+
+  return <ProductTunnel userId={user.id} balance={balance ?? 0} />;
 }

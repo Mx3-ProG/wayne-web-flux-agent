@@ -1,9 +1,18 @@
 "use client";
 
+import Link from "next/link";
 import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import type { Offer, OfferKind, Plan } from "@/lib/types";
-import { PLAN_LABEL } from "@/lib/plans";
+import { OFFER_CREATE_COST, OFFER_EXTRA_COST, PLAN_LABEL } from "@/lib/plans";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { PhotoUpload } from "@/components/editor/photo-upload";
 import { PublishButton } from "@/components/editor/publish-button";
 import { Input } from "@/components/ui/input";
@@ -64,11 +73,16 @@ export function OffersManager({
     initialOffers.map((o) => ({ ...o, ...(o.draft ?? {}) }))
   );
   const [pending, startTransition] = useTransition();
+  const [creditsDialog, setCreditsDialog] = useState<
+    "insufficient_credits" | "subscription_required" | null
+  >(null);
   const timers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   const alive = offers.filter((o) => o.draft_status !== "deleted");
   const used = alive.length;
   const atLimit = used >= limit;
+  // Créer une offre coûte des crédits ; au-delà de la formule, tarif majoré.
+  const createCost = atLimit ? OFFER_EXTRA_COST : OFFER_CREATE_COST;
   const hasPending =
     pageHasDraft || offers.some((o) => o.draft != null || o.draft_status != null);
 
@@ -98,6 +112,13 @@ export function OffersManager({
   function add() {
     startTransition(async () => {
       const result = await createOffer();
+      if (
+        result.error === "insufficient_credits" ||
+        result.error === "subscription_required"
+      ) {
+        setCreditsDialog(result.error);
+        return;
+      }
       if (result.error || !result.id) {
         toast.error(result.error ?? "Création impossible.");
         return;
@@ -321,20 +342,18 @@ export function OffersManager({
           )
         )}
 
-        {!atLimit && (
-          <button
-            type="button"
-            className={styles.addCard}
-            onClick={add}
-            disabled={pending}
-          >
-            <span className={styles.addIcon}>
-              <Plus aria-hidden="true" />
-            </span>
-            <small>Nouvelle tentation</small>
-            <span>Créer une offre</span>
-          </button>
-        )}
+        <button
+          type="button"
+          className={styles.addCard}
+          onClick={add}
+          disabled={pending}
+        >
+          <span className={styles.addIcon}>
+            <Plus aria-hidden="true" />
+          </span>
+          <small>{atLimit ? "Au-delà de ta formule" : "Nouvelle tentation"}</small>
+          <span>Créer une offre · {createCost} cr.</span>
+        </button>
 
         {plan === "basique" && (
           <div className={styles.upsell}>
@@ -350,6 +369,44 @@ export function OffersManager({
           </div>
         )}
       </div>
+
+      <Dialog
+        open={creditsDialog !== null}
+        onOpenChange={(next) => !next && setCreditsDialog(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {creditsDialog === "subscription_required"
+                ? "Ton essai est terminé"
+                : "Plus assez de crédits"}
+            </DialogTitle>
+            <DialogDescription>
+              {creditsDialog === "subscription_required"
+                ? "Tes 7 jours d'essai FLUX sont passés. Choisis une formule pour continuer à créer des offres."
+                : `Créer une offre coûte ${createCost} crédits et il t'en reste ${balance}. Recharge tes crédits pour continuer.`}
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setCreditsDialog(null)}>
+              Plus tard
+            </Button>
+            <Button asChild>
+              <Link
+                href={
+                  creditsDialog === "subscription_required"
+                    ? "/formules"
+                    : "/credits"
+                }
+              >
+                {creditsDialog === "subscription_required"
+                  ? "Choisir ma formule FLUX"
+                  : "Recharger mes crédits"}
+              </Link>
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

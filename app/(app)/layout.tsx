@@ -9,6 +9,7 @@ import { MobileAppMenu } from "@/components/mobile-app-menu";
 import { AppBadgeSync } from "@/components/app-badge-sync";
 import { ProjectSwitcher } from "@/components/project-switcher";
 import { TrialBanner } from "@/components/trial-banner";
+import { FluxBrand } from "@/components/flux-brand";
 import type { Profile } from "@/lib/types";
 
 export default async function AppLayout({
@@ -70,8 +71,7 @@ export default async function AppLayout({
       <AppBadgeSync pendingOrders={pendingOrders ?? 0} />
       <aside className={styles.sidebar}>
         <Link href="/espace" className={styles.brand}>
-          <span className={styles.brandMark}>W</span>
-          <span className={styles.brandWords}>WAYNE<b>WEB</b><small>FLUX</small></span>
+          <FluxBrand />
         </Link>
         {projects.length > 0 && (
           <div className={styles.switcher}>
@@ -84,8 +84,7 @@ export default async function AppLayout({
       <header className={styles.header}>
         <div className={styles.headerInner}>
           <div className={styles.mobileBrand}>
-            <span className={styles.brandMark}>W</span>
-            <span>Wayne Web Flux</span>
+            <FluxBrand markOnly />
           </div>
           <div className={styles.actions}>
             <Link

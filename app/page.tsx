@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import styles from "./home.module.css";
 import { PillarGrid } from "@/components/landing/pillar-grid";
+import { FluxBrand } from "@/components/flux-brand";
 
 const TOOLS = [
   {
@@ -37,12 +38,7 @@ const TOOLS = [
 ];
 
 function Brand() {
-  return (
-    <span className={styles.brand}>
-      WAYNE<span>WEB</span>
-      <small>FLUX</small>
-    </span>
-  );
+  return <FluxBrand className={styles.brand} priority />;
 }
 
 export default function LandingPage() {
@@ -124,7 +120,7 @@ export default function LandingPage() {
               </div>
               <div className={styles.appWindow}>
                 <div className={styles.appTopbar}>
-                  <span className={styles.appLogo}>W</span>
+                  <FluxBrand className={styles.appLogo} markOnly />
                   <span>Mon espace</span>
                   <span className={styles.avatar}>MD</span>
                 </div>

@@ -4,6 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getActivePage } from "@/lib/active-project";
 import type { PageEventKind, PageSubscriber } from "@/lib/types";
 import { Activity, Download, LineChart } from "lucide-react";
+import { StatsTunnel } from "@/components/stats/stats-tunnel";
 import styles from "./statistiques.module.css";
 
 export const metadata = { title: "Statistiques" };
@@ -67,7 +68,11 @@ async function loadStats(supabase: SupabaseServer, pageId: string) {
   return { now, events, subscribers, days };
 }
 
-export default async function StatistiquesPage() {
+export default async function StatistiquesPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ view?: string | string[] }>;
+}) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -76,6 +81,14 @@ export default async function StatistiquesPage() {
 
   const page = await getActivePage(supabase, user.id);
   if (!page) redirect("/ma-page");
+
+  // Mini tunnel d'abord (partage du lien), tableau de bord sur ?view=stats.
+  const params = await searchParams;
+  if (params.view !== "stats") {
+    const siteUrl =
+      process.env.NEXT_PUBLIC_SITE_URL || "https://www.flux-wayne.com";
+    return <StatsTunnel pageUrl={`${siteUrl}/p/${page.slug}`} />;
+  }
 
   const { now, events, subscribers, days } = await loadStats(supabase, page.id);
 

@@ -4,6 +4,11 @@ import { useRef, useState, useTransition } from "react";
 import { toast } from "sonner";
 import type { Product, ProductKind } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
+import {
+  CATEGORY_CREATE_COST,
+  PRODUCT_ADD_COST,
+  RESERVATION_ADD_COST,
+} from "@/lib/plans";
 import { PhotoUpload } from "@/components/editor/photo-upload";
 import { Input } from "@/components/ui/input";
 import { PriceInput } from "@/components/ui/price-input";
@@ -289,12 +294,27 @@ type Props = {
   initialProducts: Product[];
   sales: Sales;
   userId: string;
+  // La 1re catégorie du compte (tous projets) est offerte.
+  firstCategoryFree: boolean;
 };
 
-export function ProductsManager({ initialCategories, initialProducts, sales, userId }: Props) {
+// Message clair quand le débit de crédits échoue.
+function creditsErrorMessage(error: string, cost: number): string | null {
+  if (error === "insufficient_credits") {
+    return `Cette action coûte ${cost} crédit${cost > 1 ? "s" : ""} et ton solde est insuffisant. Recharge tes crédits depuis la page Crédits.`;
+  }
+  if (error === "subscription_required") {
+    return "Ton essai FLUX est terminé. Choisis une formule pour continuer.";
+  }
+  return null;
+}
+
+export function ProductsManager({ initialCategories, initialProducts, sales, userId, firstCategoryFree }: Props) {
   const [categories, setCategories] = useState<Category[]>(initialCategories);
   const [products, setProducts] = useState<Product[]>(initialProducts);
+  const [categoryCreated, setCategoryCreated] = useState(false);
   const [pending, startTransition] = useTransition();
+  const categoryFree = firstCategoryFree && !categoryCreated;
 
   function patchLocal(id: string, fields: Partial<Product>) {
     setProducts((prev) => prev.map((p) => (p.id === id ? { ...p, ...fields } : p)));
@@ -310,9 +330,14 @@ export function ProductsManager({ initialCategories, initialProducts, sales, use
     startTransition(async () => {
       const r = await createCategory();
       if (r.error || !r.id) {
-        toast.error(r.error ?? "Création impossible.");
+        toast.error(
+          (r.error && creditsErrorMessage(r.error, CATEGORY_CREATE_COST)) ??
+            r.error ??
+            "Création impossible."
+        );
         return;
       }
+      setCategoryCreated(true);
       setCategories((prev) => [...prev, { id: r.id!, name: "Nouvelle catégorie" }]);
     });
   }
@@ -349,7 +374,12 @@ export function ProductsManager({ initialCategories, initialProducts, sales, use
     startTransition(async () => {
       const r = await createProduct(categoryId, kind);
       if (r.error || !r.id) {
-        toast.error(r.error ?? "Création impossible.");
+        const cost = kind === "reservation" ? RESERVATION_ADD_COST : PRODUCT_ADD_COST;
+        toast.error(
+          (r.error && creditsErrorMessage(r.error, cost)) ??
+            r.error ??
+            "Création impossible."
+        );
         return;
       }
       setProducts((prev) => [
@@ -439,10 +469,10 @@ export function ProductsManager({ initialCategories, initialProducts, sales, use
               ))}
             </div>
             <Button variant="secondary" size="sm" onClick={() => addProductTo(category.id)} disabled={pending}>
-              <Plus aria-hidden="true" /> Ajouter un produit
+              <Plus aria-hidden="true" /> Ajouter un produit · {PRODUCT_ADD_COST} cr.
             </Button>
             <Button variant="ghost" size="sm" onClick={() => addProductTo(category.id, "reservation")} disabled={pending}>
-              <CalendarClock aria-hidden="true" /> Ajouter une réservation
+              <CalendarClock aria-hidden="true" /> Ajouter une réservation · {RESERVATION_ADD_COST} cr.
             </Button>
           </section>
         );
@@ -463,13 +493,14 @@ export function ProductsManager({ initialCategories, initialProducts, sales, use
 
       <div className={styles.managerActions}>
         <Button variant="secondary" onClick={addCategory} disabled={pending}>
-          <Plus aria-hidden="true" /> Ajouter une catégorie
+          <Plus aria-hidden="true" /> Ajouter une catégorie ·{" "}
+          {categoryFree ? "offerte" : `${CATEGORY_CREATE_COST} cr.`}
         </Button>
         <Button variant="ghost" onClick={() => addProductTo(null)} disabled={pending}>
-          <Plus aria-hidden="true" /> Produit sans catégorie
+          <Plus aria-hidden="true" /> Produit sans catégorie · {PRODUCT_ADD_COST} cr.
         </Button>
         <Button variant="ghost" onClick={() => addProductTo(null, "reservation")} disabled={pending}>
-          <CalendarClock aria-hidden="true" /> Réservation sans catégorie
+          <CalendarClock aria-hidden="true" /> Réservation sans catégorie · {RESERVATION_ADD_COST} cr.
         </Button>
       </div>
     </div>

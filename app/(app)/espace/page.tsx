@@ -6,7 +6,6 @@ import type { Generation, VoiceProfile } from "@/lib/types";
 import { TOOLS } from "@/lib/tools-config";
 import { voiceCompletion } from "@/lib/voice";
 import { parisNow } from "@/lib/slots";
-import { Button } from "@/components/ui/button";
 import { CopyButton } from "@/components/copy-button";
 import { RevenueCounter } from "@/components/revenue-counter";
 import { completeJourneyStep } from "./actions";
@@ -108,9 +107,9 @@ export default async function EspacePage() {
   });
 
   const completion = voiceCompletion(voice, !!page);
-  const pageUrl = page
-    ? `${process.env.NEXT_PUBLIC_SITE_URL}/p/${page.slug}`
-    : null;
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.flux-wayne.com";
+  const pageUrl = page ? `${siteUrl}/p/${page.slug}#prestations` : null;
 
   const steps: Step[] = [
     {
@@ -129,26 +128,23 @@ export default async function EspacePage() {
       title: "Apprends-lui à parler comme toi",
       done: completion >= 70,
       content: (
-        <div className="space-y-3">
-          <p className="text-sm">
-            J&apos;écris comme toi à{" "}
-            <strong className="text-red-bright">{completion}%</strong>
+        <div className={styles.voiceBlock}>
+          <p className={styles.voiceScore}>
+            J&apos;écris comme toi à <strong>{completion}%</strong>
           </p>
-          <div className="h-1.5 rounded-full bg-secondary overflow-hidden max-w-xs">
-            <div
-              className="h-full rounded-full bg-primary"
-              style={{ width: `${completion}%` }}
-            />
+          <div className={styles.voiceMeter}>
+            <div style={{ width: `${completion}%` }} />
           </div>
-          <p className="text-sm text-muted-foreground">
+          <p className={styles.stepHint}>
             Plus tu lui en donnes, plus l&apos;IA écrit avec ta voix, ton ton,
             tes mots à toi.
           </p>
-          <Button asChild variant={completion >= 70 ? "secondary" : "default"} size="sm">
-            <Link href="/contexte">
+          <Link className={styles.journeyAction} href="/contexte">
+            <span>
               {completion >= 70 ? "Affiner encore" : "Faire connaissance (2 min)"}
-            </Link>
-          </Button>
+            </span>
+            <ArrowRight aria-hidden="true" />
+          </Link>
         </div>
       ),
     },
@@ -190,29 +186,23 @@ export default async function EspacePage() {
       title: "Crée ton premier contenu",
       done: generations.length > 0,
       content: (
-        <div className="space-y-3" id="outils">
-          <p className="text-sm text-muted-foreground">
+        <div className={styles.toolsBlock} id="outils">
+          <p className={styles.stepHint}>
             Choisis un outil. Le coût en crédits est affiché avant de lancer.
           </p>
-          <div className="grid sm:grid-cols-3 gap-2">
+          <div className={styles.toolGrid}>
             {TOOLS.map((tool) => (
               <Link
                 key={tool.slug}
                 href={`/outil/${tool.slug}`}
-                className="rounded-xl border border-border p-3 hover:border-primary/60 hover:bg-primary/5 transition-colors"
+                className={styles.toolCard}
               >
                 {tool.badge && (
-                  <span className="block text-[10px] uppercase tracking-wide text-red-bright mb-1">
-                    {tool.badge}
-                  </span>
+                  <span className={styles.toolBadge}>{tool.badge}</span>
                 )}
-                <span className="block font-medium text-sm mb-1">
-                  {tool.name}
-                </span>
-                <span className="block text-xs text-muted-foreground mb-2">
-                  {tool.tagline}
-                </span>
-                <span className="text-xs font-medium">{tool.cost} cr.</span>
+                <span className={styles.toolName}>{tool.name}</span>
+                <span className={styles.toolTagline}>{tool.tagline}</span>
+                <span className={styles.toolCost}>{tool.cost} cr.</span>
               </Link>
             ))}
           </div>
@@ -224,37 +214,23 @@ export default async function EspacePage() {
       title: "Regarde tes résultats",
       done: upcomingCount > 0 || (page?.journey_completed_steps ?? []).includes(7),
       content: (
-        <div className="grid sm:grid-cols-3 gap-3">
-          <div className="rounded-xl border border-border p-4">
-            <p className="text-2xl font-bold">{balance ?? 0}</p>
-            <p className="text-xs text-muted-foreground">crédits restants</p>
-            <Link
-              href="/credits"
-              className="text-xs underline underline-offset-4"
-            >
-              Voir mes crédits
-            </Link>
+        <div className={styles.resultGrid}>
+          <div className={styles.resultCard}>
+            <strong>{balance ?? 0}</strong>
+            <span>crédits restants</span>
+            <Link href="/credits">Voir mes crédits</Link>
           </div>
-          <div className="rounded-xl border border-border p-4">
-            <p className="text-2xl font-bold">{generations.length}</p>
-            <p className="text-xs text-muted-foreground">
+          <div className={styles.resultCard}>
+            <strong>{generations.length}</strong>
+            <span>
               création{generations.length > 1 ? "s" : ""} dans ton coffre
-            </p>
-            <Link
-              href="/resultats"
-              className="text-xs underline underline-offset-4"
-            >
-              Ouvrir mon coffre
-            </Link>
+            </span>
+            <Link href="/resultats">Ouvrir mon coffre</Link>
           </div>
-          <div className="rounded-xl border border-border p-4">
-            <p className="text-2xl font-bold">{upcomingCount}</p>
-            <p className="text-xs text-muted-foreground">
-              rendez-vous à venir
-            </p>
-            <Link href="/agenda" className="text-xs underline underline-offset-4">
-              Ouvrir mon agenda
-            </Link>
+          <div className={styles.resultCard}>
+            <strong>{upcomingCount}</strong>
+            <span>rendez-vous à venir</span>
+            <Link href="/agenda">Ouvrir mon agenda</Link>
           </div>
         </div>
       ),
@@ -264,23 +240,23 @@ export default async function EspacePage() {
       title: "Partage ton business partout",
       done: (page?.journey_completed_steps ?? []).includes(8),
       content: (
-        <div className="space-y-3">
-          <p className="text-sm text-muted-foreground">
+        <div className={styles.shareBlock}>
+          <p className={styles.stepHint}>
             Bio Instagram, statut WhatsApp, fiche Google : plus ton lien
             circule, plus ton agenda se remplit tout seul.
           </p>
           {pageUrl && (
-            <div className="flex flex-wrap gap-2">
+            <div className={styles.shareRow}>
               <CopyButton text={pageUrl} />
-              <Button asChild variant="secondary" size="sm">
-                <a
-                  href={`https://wa.me/?text=${encodeURIComponent(`Réserve ton rendez-vous en ligne : ${pageUrl}`)}`}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Partager sur WhatsApp
-                </a>
-              </Button>
+              <a
+                className={styles.journeyAction}
+                href={`https://wa.me/?text=${encodeURIComponent(`Réserve ton rendez-vous en ligne : ${pageUrl}`)}`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <span>Partager sur WhatsApp</span>
+                <ArrowRight aria-hidden="true" />
+              </a>
             </div>
           )}
         </div>

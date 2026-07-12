@@ -30,6 +30,16 @@ export default async function ProduitsPage() {
     );
   }
 
+  // La 1re catégorie du COMPTE est offerte : on compte sur tous les projets.
+  const { data: userPages } = await supabase
+    .from("pages")
+    .select("id")
+    .eq("user_id", user.id);
+  const { count: accountCategories } = await supabase
+    .from("product_categories")
+    .select("id", { count: "exact", head: true })
+    .in("page_id", (userPages ?? []).map((p) => p.id));
+
   const [{ data: cats }, { data: prods }, { data: soldItems }] = await Promise.all([
     supabase
       .from("product_categories")
@@ -84,6 +94,7 @@ export default async function ProduitsPage() {
         initialProducts={products}
         sales={sales}
         userId={user.id}
+        firstCategoryFree={(accountCategories ?? 0) === 0}
       />
     </div>
   );

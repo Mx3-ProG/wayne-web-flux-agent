@@ -24,12 +24,14 @@ type Props = {
   balance: number;
   hasDraft: boolean;
   nextVersion: number;
+  // Destination après publication réussie (ex : fin du tunnel FLUX → éditeur).
+  redirectTo?: string;
 };
 
 // Publier une nouvelle version du site : confirmation obligatoire, coût
 // affiché (5 crédits ≈ 5 €), débit atomique côté SQL (publish_page).
 // C'est la seule porte de sortie du brouillon vers la vitrine publique.
-export function PublishButton({ pageId, balance, hasDraft, nextVersion }: Props) {
+export function PublishButton({ pageId, balance, hasDraft, nextVersion, redirectTo }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [outOfCredits, setOutOfCredits] = useState(false);
@@ -52,6 +54,9 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion }: Props)
       if (result.error === "nothing_to_publish") {
         setOpen(false);
         toast.info("Rien à publier : ton site est déjà à jour.");
+        if (redirectTo) {
+          router.push(redirectTo);
+        }
         router.refresh();
         return;
       }
@@ -63,6 +68,9 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion }: Props)
       toast.success(
         `Version ${nextVersion} publiée ! Ton site est à jour. Solde : ${result.balance} cr.`
       );
+      if (redirectTo) {
+        router.push(redirectTo);
+      }
       router.refresh();
     });
   }
@@ -136,7 +144,7 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion }: Props)
               <DialogDescription>
                 Tes modifications passent en ligne, visibles par tes clients.
                 Chaque publication mobilise nos serveurs : elle coûte{" "}
-                {PUBLISH_COST} crédits (≈ {PUBLISH_COST} €).
+                {PUBLISH_COST} crédits.
               </DialogDescription>
             </DialogHeader>
             <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2 text-sm">

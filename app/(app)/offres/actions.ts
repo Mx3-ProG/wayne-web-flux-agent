@@ -3,7 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePageId } from "@/lib/active-project";
-import { offerLimit } from "@/lib/plans";
+import { OFFER_CREATE_COST, OFFER_EXTRA_COST, offerLimit } from "@/lib/plans";
+import { spendCredits, refundCredits, type CreditError } from "@/lib/credits";
 import type { OfferKind, Plan } from "@/lib/types";
 
 async function ownedPageId(): Promise<{ pageId?: string; error?: string; userId?: string }> {
@@ -18,8 +19,28 @@ async function ownedPageId(): Promise<{ pageId?: string; error?: string; userId?
   return { pageId, userId: user.id };
 }
 
-// Crée une offre vide — refuse au-delà de la limite du forfait.
-export async function createOffer(): Promise<{ error?: string; id?: string }> {
+export type CreateOfferError = CreditError | string;
+
+// Créer une offre coûte des crédits : 15 cr dans la limite du forfait,
+// 25 cr au-delà (plus de refus dur — la formule fixe le tarif, pas le mur).
+// Débit AVANT insert via spend_credits (verrou SQL), refund si l'insert échoue.
+async function debitOfferCreation(
+  userId: string,
+  count: number,
+  plan: Plan
+): Promise<{ error?: CreditError; cost: number }> {
+  const extra = count >= offerLimit(plan);
+  const cost = extra ? OFFER_EXTRA_COST : OFFER_CREATE_COST;
+  const { error } = await spendCredits(
+    userId,
+    cost,
+    extra ? "offer:extra" : "offer:create"
+  );
+  return { error, cost };
+}
+
+// Crée une offre vide (gestionnaire /offres).
+export async function createOffer(): Promise<{ error?: CreateOfferError; id?: string }> {
   const supabase = await createClient();
   const { pageId, userId, error } = await ownedPageId();
   if (error || !pageId || !userId) return { error };
@@ -31,10 +52,13 @@ export async function createOffer(): Promise<{ error?: string; id?: string }> {
       .select("id", { count: "exact", head: true })
       .eq("page_id", pageId),
   ]);
-  const limit = offerLimit((profile?.plan as Plan) ?? "basique");
-  if ((count ?? 0) >= limit) {
-    return { error: "Limite d'offres atteinte pour ton forfait." };
-  }
+  const plan = (profile?.plan as Plan) ?? "basique";
+  const { error: spendError, cost } = await debitOfferCreation(
+    userId,
+    count ?? 0,
+    plan
+  );
+  if (spendError) return { error: spendError };
 
   // Créée en brouillon (`new`) : invisible sur la vitrine publique tant
   // qu'une version du site n'est pas publiée.
@@ -48,7 +72,10 @@ export async function createOffer(): Promise<{ error?: string; id?: string }> {
     })
     .select("id")
     .single();
-  if (insertError || !offer) return { error: "Création impossible." };
+  if (insertError || !offer) {
+    await refundCredits(userId, cost, "refund:offer");
+    return { error: "Création impossible." };
+  }
 
   revalidatePath("/offres");
   revalidatePath("/ma-page");
@@ -67,7 +94,7 @@ type OfferFields = {
 
 export async function createOfferFromTunnel(
   fields: OfferFields
-): Promise<{ error?: string }> {
+): Promise<{ error?: CreateOfferError }> {
   const supabase = await createClient();
   const { pageId, userId, error } = await ownedPageId();
   if (error || !pageId || !userId) return { error };
@@ -76,9 +103,12 @@ export async function createOfferFromTunnel(
     supabase.from("profiles").select("plan").eq("user_id", userId).single(),
     supabase.from("offers").select("id", { count: "exact", head: true }).eq("page_id", pageId),
   ]);
-  if ((count ?? 0) >= offerLimit((profile?.plan as Plan) ?? "basique")) {
-    return { error: "Limite d'offres atteinte pour ton forfait." };
-  }
+  const { error: spendError, cost } = await debitOfferCreation(
+    userId,
+    count ?? 0,
+    (profile?.plan as Plan) ?? "basique"
+  );
+  if (spendError) return { error: spendError };
 
   // Comme toute création : en brouillon (`new`), publiée avec la prochaine
   // version du site.
@@ -97,7 +127,10 @@ export async function createOfferFromTunnel(
     active: Boolean(fields.active),
     position: count ?? 0,
   });
-  if (insertError) return { error: "Création de l'offre impossible." };
+  if (insertError) {
+    await refundCredits(userId, cost, "refund:offer");
+    return { error: "Création de l'offre impossible." };
+  }
 
   revalidatePath("/offres");
   revalidatePath("/ma-page");
