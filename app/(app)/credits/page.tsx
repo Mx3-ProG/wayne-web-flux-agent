@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
@@ -21,15 +22,20 @@ import {
 import { getPack } from "@/lib/credit-packs";
 import type { CreditEntry, Plan, Profile } from "@/lib/types";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Coins,
+  Gem,
+  Landmark,
+  LockKeyhole,
+  ShieldCheck,
+  Sparkles,
+  WalletCards,
+} from "lucide-react";
 import { CreditPacks } from "./credit-packs";
+import styles from "./credits.module.css";
 
 export const metadata = { title: "Mes crédits" };
+
+const CREDIT_LEVELS = [100, 250, 500, 1000, 1500, 3000, 5000, 10000] as const;
 
 const REASON_LABELS: Record<string, string> = {
   signup: "Crédits de bienvenue",
@@ -69,6 +75,24 @@ function reasonLabel(reason: string): string {
   return reason;
 }
 
+function creditRank(balance: number) {
+  const safeBalance = Math.max(0, balance);
+  const levelIndex = CREDIT_LEVELS.findIndex((target) => safeBalance <= target);
+  const index = levelIndex === -1 ? CREDIT_LEVELS.length - 1 : levelIndex;
+  const previous = index === 0 ? 0 : CREDIT_LEVELS[index - 1];
+  const target = CREDIT_LEVELS[index];
+  const progress = Math.min(
+    100,
+    Math.max(0, ((safeBalance - previous) / (target - previous)) * 100)
+  );
+
+  return {
+    level: index + 1,
+    target,
+    progress,
+  };
+}
+
 export default async function CreditsPage({
   searchParams,
 }: {
@@ -105,6 +129,11 @@ export default async function CreditsPage({
   const subscribed = Boolean(profile?.subscribed_at);
   const trialActive = profile ? !subscribed && hasActiveAccess(profile) : false;
   const daysLeft = profile ? trialDaysLeft(profile) : 0;
+  const currentBalance = balance ?? 0;
+  const rank = creditRank(currentBalance);
+  const progressStyle = {
+    "--credit-progress": `${rank.progress}%`,
+  } as CSSProperties;
 
   // Prochaine recharge : uniquement une fois souscrit, ancrée sur le dernier
   // topup de la formule courante.
@@ -117,109 +146,154 @@ export default async function CreditsPage({
       : null;
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold mb-1">Tes crédits</h1>
-        <p className="text-muted-foreground">
-          Ton carburant de création. 1 crédit = 0,40 € : chaque action a un
-          coût affiché avant de te lancer.
+    <div className={styles.page}>
+      <header className={styles.hero}>
+        <div className={styles.heroGlow} aria-hidden="true" />
+        <span className={styles.overline}>
+          <LockKeyhole aria-hidden="true" />
+          Réserve personnelle
+        </span>
+        <div className={styles.heroMark} aria-hidden="true">
+          <WalletCards />
+        </div>
+        <h1>
+          Ton capital <span>FLUX</span>
+        </h1>
+        <p>
+          Tes crédits sont ta réserve de création. Tu avances à ton rythme, avec
+          ton budget, et chaque dépense reste lisible avant de lancer une action.
         </p>
-      </div>
+        <div className={styles.heroTrust}>
+          <Gem aria-hidden="true" />
+          <strong>1 crédit = 0,40 €</strong>
+          <span>dégressif selon les packs</span>
+        </div>
+      </header>
 
       {achat === "succes" && (
-        <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm">
+        <div className={styles.success}>
           <strong>Paiement reçu.</strong> Tes crédits arrivent d&apos;ici
           quelques secondes — recharge la page si le solde n&apos;a pas encore
           bougé.
         </div>
       )}
       {achat === "annule" && (
-        <div className="rounded-xl border border-border bg-secondary/40 p-4 text-sm text-muted-foreground">
+        <div className={styles.notice}>
           Paiement annulé — rien n&apos;a été débité.
         </div>
       )}
 
-      <Card>
-        <CardContent className="pt-1">
-          <div className="flex items-end justify-between mb-1">
-            <p className="text-5xl font-bold">
-              {balance ?? 0}
-              <span className="text-base font-normal text-muted-foreground">
-                {" "}
-                crédits
-              </span>
-            </p>
+      <section className={styles.balanceVault}>
+        <div className={styles.balanceHead}>
+          <div>
+            <p className={styles.goldLabel}>Solde disponible</p>
+            <strong className={styles.balance}>
+              {currentBalance}
+              <span> crédits</span>
+            </strong>
+          </div>
+          <div className={styles.trialPill}>
             {nextRecharge ? (
-              <p className="text-sm text-muted-foreground">
-                Recharge : le {nextRecharge}
-              </p>
+              <>Recharge : le {nextRecharge}</>
             ) : trialActive ? (
-              <p className="text-sm text-muted-foreground">
+              <>
                 Essai FLUX : {daysLeft} jour{daysLeft > 1 ? "s" : ""} restant
                 {daysLeft > 1 ? "s" : ""}
-              </p>
+              </>
             ) : (
-              <p className="text-sm text-muted-foreground">
-                {subscribed ? `Formule ${PLAN_LABEL[plan]}` : "Essai terminé"}
-              </p>
+              <>{subscribed ? `Formule ${PLAN_LABEL[plan]}` : "Essai terminé"}</>
             )}
           </div>
-          {!subscribed && (
-            <p className="text-sm text-muted-foreground">
-              {trialActive
-                ? "Envie de continuer après l'essai ? "
-                : "Pour recharger et réactiver publications et IA : "}
-              <Link href="/formules" className="text-foreground underline">
-                Découvre les formules FLUX
-              </Link>
-              .
-            </p>
-          )}
-        </CardContent>
-      </Card>
+        </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Recharge tes crédits</CardTitle>
-          <CardDescription>
-            Paiement sécurisé par Stripe. Les crédits s&apos;ajoutent à ton
-            solde et ne se perdent jamais.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
+        <div className={styles.levelPanel}>
+          <div className={styles.levelTop}>
+            <span>Niveau {rank.level}/8</span>
+            <strong>{currentBalance} / {rank.target} cr.</strong>
+          </div>
+          <div className={styles.progressTrack} style={progressStyle}>
+            <span />
+          </div>
+          <ol className={styles.levels} aria-label="Niveaux de crédits">
+            {CREDIT_LEVELS.map((level, index) => (
+              <li
+                key={level}
+                data-current={rank.level === index + 1 ? "true" : undefined}
+                data-reached={currentBalance >= level ? "true" : undefined}
+              >
+                <span>{index + 1}</span>
+                <small>{level} cr.</small>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        {!subscribed && (
+          <p className={styles.formulaHint}>
+            {trialActive
+              ? "Envie de continuer après l'essai ? "
+              : "Pour recharger et réactiver publications et IA : "}
+            <Link href="/formules">Découvre les formules FLUX</Link>.
+          </p>
+        )}
+      </section>
+
+      <section className={styles.section}>
+        <div className={styles.sectionHead}>
+          <span>
+            <Coins aria-hidden="true" />
+            Recharge
+          </span>
+          <div>
+            <p className={styles.goldLabel}>Trésorerie créative</p>
+            <h2>Recharge tes crédits</h2>
+            <p>
+              Paiement sécurisé par Stripe. Les crédits s&apos;ajoutent à ton
+              solde et ne se perdent jamais.
+            </p>
+          </div>
+        </div>
+        <div className={styles.sectionBody}>
           <CreditPacks />
           {profile && !hasActiveAccess(profile) && (
-            <p className="mt-3 text-xs text-muted-foreground">
+            <p className={styles.smallNote}>
               Ton essai est terminé : pour utiliser tes crédits (publier,
               générer, créer), pense aussi à{" "}
-              <Link href="/formules" className="text-foreground underline">
+              <Link href="/formules">
                 choisir une formule FLUX
               </Link>
               .
             </p>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>La règle, en clair</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="space-y-2 text-sm text-muted-foreground list-disc list-inside">
+      <section className={styles.section}>
+        <div className={styles.sectionHead}>
+          <span>
+            <ShieldCheck aria-hidden="true" />
+            Confiance
+          </span>
+          <div>
+            <p className={styles.goldLabel}>Rythme et budget</p>
+            <h2>La règle, en clair</h2>
+          </div>
+        </div>
+        <div className={styles.sectionBody}>
+          <ul className={styles.ruleList}>
             <li>
-              <strong className="text-foreground">100 crédits offerts</strong>{" "}
+              <strong>100 crédits offerts</strong>{" "}
               pendant ton essai de {TRIAL_DAYS} jours, pour créer ton site et
               tout tester.
             </li>
             <li>
-              <strong className="text-foreground">1 crédit = 0,40 €</strong>{" "}
+              <strong>1 crédit = 0,40 €</strong>{" "}
               (dégressif sur les packs) : chaque création, publication ou
               génération consomme des ressources réelles.
             </li>
             <li>
               Chaque action a un coût affiché{" "}
-              <strong className="text-foreground">avant</strong> de lancer quoi
+              <strong>avant</strong> de lancer quoi
               que ce soit. Rien n&apos;est prélevé en douce.
             </li>
             <li>
@@ -230,7 +304,7 @@ export default async function CreditsPage({
               {subscribed ? (
                 <>
                   Ta formule {PLAN_LABEL[plan]} recharge{" "}
-                  <strong className="text-foreground">
+                  <strong>
                     +{monthlyCredits} crédits tous les 30 jours
                   </strong>
                   .
@@ -238,7 +312,7 @@ export default async function CreditsPage({
               ) : (
                 <>
                   Après l&apos;essai, les{" "}
-                  <Link href="/formules" className="text-foreground underline">
+                  <Link href="/formules">
                     formules FLUX
                   </Link>{" "}
                   rechargent de 100 à 3000 crédits par mois — plus de crédits,
@@ -247,90 +321,101 @@ export default async function CreditsPage({
               )}
             </li>
           </ul>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Ce que coûte chaque action</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ul className="divide-y divide-border text-sm">
-            <li className="flex justify-between py-2">
+      <section className={styles.section}>
+        <div className={styles.sectionHead}>
+          <span>
+            <Landmark aria-hidden="true" />
+            Barème
+          </span>
+          <div>
+            <p className={styles.goldLabel}>Transparence</p>
+            <h2>Ce que coûte chaque action</h2>
+          </div>
+        </div>
+        <div className={styles.sectionBody}>
+          <ul className={styles.costList}>
+            <li>
               <span>Publication d&apos;une nouvelle version du site</span>
-              <span className="font-medium">{PUBLISH_COST} cr.</span>
+              <strong>{PUBLISH_COST} cr.</strong>
             </li>
-            <li className="flex justify-between py-2">
+            <li>
               <span>Création d&apos;offre (tunnel ou gestionnaire)</span>
-              <span className="font-medium">
+              <strong>
                 {OFFER_CREATE_COST} cr. · {OFFER_EXTRA_COST} cr. au-delà de la
                 formule
-              </span>
+              </strong>
             </li>
-            <li className="flex justify-between py-2">
+            <li>
               <span>Création de produits via le tunnel FLUX</span>
-              <span className="font-medium">{PRODUCT_CREATE_COST} cr.</span>
+              <strong>{PRODUCT_CREATE_COST} cr.</strong>
             </li>
-            <li className="flex justify-between py-2">
+            <li>
               <span>Nouvelle catégorie de produits (1re du compte offerte)</span>
-              <span className="font-medium">{CATEGORY_CREATE_COST} cr.</span>
+              <strong>{CATEGORY_CREATE_COST} cr.</strong>
             </li>
-            <li className="flex justify-between py-2">
+            <li>
               <span>Ajout d&apos;un produit</span>
-              <span className="font-medium">{PRODUCT_ADD_COST} cr.</span>
+              <strong>{PRODUCT_ADD_COST} cr.</strong>
             </li>
-            <li className="flex justify-between py-2">
+            <li>
               <span>Ajout d&apos;une réservation</span>
-              <span className="font-medium">{RESERVATION_ADD_COST} cr.</span>
+              <strong>{RESERVATION_ADD_COST} cr.</strong>
             </li>
-            <li className="flex justify-between py-2">
+            <li>
               <span>Assistant vitrine FLUX (éditeur complet gratuit)</span>
-              <span className="font-medium">{VITRINE_ASSIST_COST} cr.</span>
+              <strong>{VITRINE_ASSIST_COST} cr.</strong>
             </li>
-            <li className="flex justify-between py-2">
+            <li>
               <span>Changement de contexte FLUX (1re création offerte)</span>
-              <span className="font-medium">{CONTEXT_CHANGE_COST} cr.</span>
+              <strong>{CONTEXT_CHANGE_COST} cr.</strong>
             </li>
             {TOOLS.map((tool) => (
-              <li key={tool.slug} className="flex justify-between py-2">
+              <li key={tool.slug}>
                 <span>{tool.name}</span>
-                <span className="font-medium">{tool.cost} cr.</span>
+                <strong>{tool.cost} cr.</strong>
               </li>
             ))}
-            <li className="flex justify-between py-2">
+            <li>
               <span>Pré-remplissage « Compléter avec l&apos;IA » (bientôt)</span>
-              <span className="font-medium">{PREFILL_COST} cr.</span>
+              <strong>{PREFILL_COST} cr.</strong>
             </li>
           </ul>
-        </CardContent>
-      </Card>
+        </div>
+      </section>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>L&apos;historique</CardTitle>
-          <CardDescription>Chaque mouvement, noir sur blanc.</CardDescription>
-        </CardHeader>
-        <CardContent>
+      <section className={styles.section}>
+        <div className={styles.sectionHead}>
+          <span>
+            <Sparkles aria-hidden="true" />
+            Grand livre
+          </span>
+          <div>
+            <p className={styles.goldLabel}>Historique</p>
+            <h2>Chaque mouvement, noir sur blanc</h2>
+          </div>
+        </div>
+        <div className={styles.sectionBody}>
           {entries.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Rien pour l&apos;instant.</p>
+            <p className={styles.emptyHistory}>Rien pour l&apos;instant.</p>
           ) : (
-            <ul className="divide-y divide-border text-sm">
+            <ul className={styles.historyList}>
               {entries
                 .filter((e) => e.delta !== 0)
                 .map((e) => (
-                  <li key={e.id} className="flex justify-between gap-4 py-2">
-                    <span className="text-muted-foreground">
+                  <li key={e.id}>
+                    <span>
                       {new Date(e.created_at).toLocaleDateString("fr-FR", {
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",
                       })}
                     </span>
-                    <span className="flex-1">{reasonLabel(e.reason)}</span>
+                    <strong>{reasonLabel(e.reason)}</strong>
                     <span
-                      className={
-                        e.delta > 0 ? "text-emerald-400" : "text-red-bright"
-                      }
+                      className={e.delta > 0 ? styles.positive : styles.negative}
                     >
                       {e.delta > 0 ? `+${e.delta}` : e.delta}
                     </span>
@@ -338,8 +423,8 @@ export default async function CreditsPage({
                 ))}
             </ul>
           )}
-        </CardContent>
-      </Card>
+        </div>
+      </section>
     </div>
   );
 }

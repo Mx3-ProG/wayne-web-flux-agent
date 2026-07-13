@@ -4,8 +4,8 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Coins } from "lucide-react";
 import { CREDIT_PACKS, packUnitPrice } from "@/lib/credit-packs";
-import { Button } from "@/components/ui/button";
 import { createCheckoutSession } from "./actions";
+import styles from "./credits.module.css";
 
 // Cartes d'achat de packs de crédits → Stripe Checkout.
 // Le crédit effectif est posé par le webhook, pas au retour de redirection.
@@ -27,45 +27,40 @@ export function CreditPacks() {
   }
 
   return (
-    <div className="grid gap-3 sm:grid-cols-3">
+    <div className={styles.packGrid}>
       {CREDIT_PACKS.map((pack) => (
         <article
           key={pack.id}
-          className={`relative flex flex-col gap-1 rounded-xl border p-4 ${
-            pack.featured
-              ? "border-red-bright/40 bg-red-bright/5"
-              : "border-border"
-          }`}
+          className={pack.featured ? styles.packFeatured : styles.pack}
         >
           {pack.discountLabel && (
-            <span className="absolute right-3 top-3 rounded-full bg-red-bright/10 px-2 py-0.5 text-[10px] font-bold text-red-bright">
+            <span className={styles.discount}>
               {pack.discountLabel}
             </span>
           )}
-          <p className="text-xs uppercase tracking-wide text-muted-foreground">
+          <p className={styles.packLabel}>
             {pack.label}
           </p>
-          <p className="text-3xl font-bold">
+          <p className={styles.packCredits}>
             {pack.credits}
-            <span className="text-sm font-normal text-muted-foreground"> cr.</span>
+            <span> cr.</span>
           </p>
-          <p className="text-sm">
+          <p className={styles.packPrice}>
             {(pack.priceCents / 100).toLocaleString("fr-FR")} €
-            <span className="text-xs text-muted-foreground">
+            <span>
               {" "}
               · {packUnitPrice(pack)} €/cr
             </span>
           </p>
-          <Button
-            className="mt-2"
-            variant={pack.featured ? "default" : "secondary"}
-            size="sm"
+          <button
+            type="button"
+            className={pack.featured ? styles.buyFeatured : styles.buyButton}
             disabled={pendingPack !== null}
             onClick={() => buy(pack.id)}
           >
             <Coins aria-hidden="true" />
             {pendingPack === pack.id ? "Redirection…" : "Acheter"}
-          </Button>
+          </button>
         </article>
       ))}
     </div>
