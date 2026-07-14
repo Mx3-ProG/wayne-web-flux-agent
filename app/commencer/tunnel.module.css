@@ -240,6 +240,7 @@
 .claim input { height: 54px; padding: 0 17px; border: 1px solid rgb(255 255 255 / 11%); border-radius: 13px; background: var(--surface); }
 .claim form .primary { width: 100%; margin-top: 6px; }
 .claim > small { display: block; margin-top: 15px; color: #5f5c61; font-size: 9px; }
+.claim > small a { color: #aaa5aa; text-decoration: underline; text-underline-offset: 2px; }
 .error, .success { padding: 10px 13px; border-radius: 10px; font-size: 11px; text-align: left; }
 .error { background: rgb(239 35 60 / 10%); color: #ff8999; }
 .success { background: rgb(62 184 121 / 10%); color: #77dfa8; }

@@ -45,6 +45,8 @@
 .create > p { margin-top: 15px; color: #716e73; font-size: 10px; text-align: center; }
 .tunnelLink { display: flex; min-height: 45px; margin-top: 12px; align-items: center; justify-content: center; gap: 8px; border: 1px solid rgb(255 99 120 / 25%); border-radius: 999px; color: #ff6378; font-size: 11px; text-decoration: none; }
 .create form { padding-top: 10px; border-top: 1px solid rgb(255 255 255 / 7%); }
+.terms { margin: 4px 0 0; color: #716e73; font-size: 9px; line-height: 1.5; text-align: center; }
+.terms a { color: #aaa5aa; text-decoration: underline; text-underline-offset: 2px; }
 .secondary { border: 1px solid rgb(255 255 255 / 12%); background: #17171a; color: #dedadd; }
 .forgot { justify-self: end; margin-top: -6px; color: #88858a; font-size: 11px; text-decoration: none; }
 .forgot:hover { color: #ff6378; }

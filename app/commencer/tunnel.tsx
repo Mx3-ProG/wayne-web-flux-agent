@@ -463,7 +463,7 @@ export function Tunnel() {
                 {!pending && <ArrowRight aria-hidden="true" />}
               </button>
             </form>
-            <small>En continuant, tu acceptes nos conditions d&apos;utilisation.</small>
+            <small>En créant ton espace, tu confirmes avoir lu et accepté nos <a href="/cgv" target="_blank" rel="noreferrer">conditions générales d&apos;utilisation</a>.</small>
           </div>
         )}
       </section>

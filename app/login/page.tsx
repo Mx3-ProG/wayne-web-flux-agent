@@ -67,6 +67,7 @@ export default function LoginPage() {
               <label><span>Mot de passe</span><div><LockKeyhole aria-hidden="true" /><input name="password" type="password" placeholder="8 caractères minimum" required minLength={8} autoComplete="new-password" /></div></label>
               {signupState.error && <p className={styles.error}>{signupState.error}</p>}
               {signupState.message && <p className={styles.success}>{signupState.message}</p>}
+              <p className={styles.terms}>En créant ton compte, tu confirmes avoir lu et accepté nos <Link href="/cgv" target="_blank">conditions générales d’utilisation</Link>.</p>
               <button className={styles.secondary} type="submit" disabled={signupPending}>
                 {signupPending ? "Création…" : "Créer mon compte sans configuration"}
               </button>

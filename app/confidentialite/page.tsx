@@ -13,5 +13,6 @@ export default function PrivacyPage() {
     <section><h2>Transferts</h2><p>Certains prestataires peuvent traiter des données hors de l’Espace économique européen avec les garanties contractuelles prévues par la réglementation applicable.</p></section>
     <section><h2>Vos droits</h2><p>Vous pouvez demander l’accès, la rectification, l’effacement, la limitation ou la portabilité de vos données, et vous opposer à certains traitements, en écrivant à <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>. Vous pouvez également saisir la CNIL.</p></section>
     <section><h2>Sécurité</h2><p>Nous appliquons des mesures techniques et organisationnelles proportionnées, notamment le contrôle d’accès, la séparation des secrets, la vérification des notifications Stripe et des restrictions d’accès en base.</p></section>
+    <section><h2>Cookies et choix</h2><p>Les cookies strictement nécessaires assurent la connexion, la sécurité et le fonctionnement du service. Avec votre accord, des cookies optionnels peuvent mesurer l’audience, personnaliser l’expérience ou évaluer nos campagnes de notoriété. Vous pouvez refuser ces cookies ou choisir chaque catégorie depuis la bannière. Votre choix peut être modifié à tout moment en supprimant les préférences du site dans votre navigateur.</p></section>
   </LegalPage>;
 }
