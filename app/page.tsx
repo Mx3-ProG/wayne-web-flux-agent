@@ -211,6 +211,38 @@ export default function LandingPage() {
           </div>
         </section>
 
+        <section className={styles.liveShowcase} aria-labelledby="live-showcase-title">
+          <div className={styles.liveShowcaseIntro}>
+            <p className={styles.sectionIndex}>FLUX / EN DIRECT</p>
+            <h2 id="live-showcase-title">
+              FLUX au travail<br />quand tu <em>encaisses.</em>
+            </h2>
+            <p>
+              Une vraie vitrine créée pour une maison de leasing automobile.
+              Elle vit sur sa propre page, comme celle que tes clients verront.
+            </p>
+          </div>
+
+          <div className={styles.liveBrowser}>
+            <div className={styles.liveBrowserBar}>
+              <div aria-hidden="true"><i /><i /><i /></div>
+              <span>maison-veyra.flux.page</span>
+              <Link href="/demo/automobile-luxe" target="_blank">
+                Ouvrir <ArrowRight aria-hidden="true" />
+              </Link>
+            </div>
+            <div className={styles.liveViewport}>
+              <iframe
+                src="/demo/automobile-luxe"
+                title="Preview live du site Maison Veyra créé avec Flux"
+                loading="lazy"
+                sandbox="allow-same-origin"
+              />
+              <span className={styles.liveBadge}><i /> En direct</span>
+            </div>
+          </div>
+        </section>
+
         <section className={styles.pillars}>
           <div className={styles.sectionHeading}>
             <div>
@@ -327,6 +359,26 @@ export default function LandingPage() {
           <span>© 2026 Wayne Web</span>
         </div>
       </footer>
+
+      <aside className={styles.mobileStickyCta} aria-label="Accès rapide à Flux">
+        <Link
+          className={styles.mobileStickyMain}
+          href="/commencer"
+          aria-label="Faire travailler Flux et créer mon profil"
+        >
+          <span className={styles.mobileStickyShine} aria-hidden="true" />
+          <span
+            className={styles.mobileStickyLabel}
+            data-text="Faire travailler FLUX"
+          >
+            Faire travailler <strong>FLUX</strong>
+          </span>
+          <ArrowRight aria-hidden="true" />
+        </Link>
+        <Link className={styles.mobileStickyLogin} href="/login">
+          Connexion
+        </Link>
+      </aside>
     </div>
   );
 }

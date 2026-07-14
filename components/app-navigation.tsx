@@ -45,8 +45,8 @@ const DESKTOP_ITEMS: NavItem[] = [
 const MOBILE_ITEMS: NavItem[] = [
   { href: "/espace", label: "Accueil", icon: LayoutDashboard },
   { href: "/statistiques", label: "Stats", icon: ChartLine },
-  { href: "/offres/configurer", label: "Offres", icon: BadgePercent, activeRoot: "/offres" },
   { href: "/commandes", label: "Commandes", icon: ShoppingBag },
+  { href: "/offres/configurer", label: "Offres", icon: BadgePercent, activeRoot: "/offres" },
 ];
 
 export function AppNavigation({
