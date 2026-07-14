@@ -236,6 +236,18 @@
   }
 }
 
+/* Safari iOS zoome automatiquement au focus si le texte d'un champ fait
+   moins de 16 px. On conserve le repositionnement natif et le zoom manuel,
+   mais on empêche ce changement d'échelle involontaire. */
+@media (max-width: 1024px) {
+  input,
+  textarea,
+  select,
+  [contenteditable="true"] {
+    font-size: max(16px, 1em) !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after {

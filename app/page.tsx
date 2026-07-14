@@ -19,6 +19,7 @@ import {
 import styles from "./home.module.css";
 import { PillarGrid } from "@/components/landing/pillar-grid";
 import { ScrollingAcquireCta } from "@/components/landing/scrolling-acquire-cta";
+import { LiveSitePreview } from "@/components/landing/live-site-preview";
 import { FluxBrand } from "@/components/flux-brand";
 
 const TOOLS = [
@@ -273,24 +274,7 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className={styles.liveBrowser}>
-            <div className={styles.liveBrowserBar}>
-              <div aria-hidden="true"><i /><i /><i /></div>
-              <span>maison-veyra.flux.page</span>
-              <Link href="/demo/automobile-luxe" target="_blank">
-                Ouvrir <ArrowRight aria-hidden="true" />
-              </Link>
-            </div>
-            <div className={styles.liveViewport}>
-              <iframe
-                src="/demo/automobile-luxe"
-                title="Preview live du site Maison Veyra créé avec Flux"
-                loading="lazy"
-                sandbox="allow-same-origin"
-              />
-              <span className={styles.liveBadge}><i /> En direct</span>
-            </div>
-          </div>
+          <LiveSitePreview />
         </section>
 
         <section className={styles.pillars}>
