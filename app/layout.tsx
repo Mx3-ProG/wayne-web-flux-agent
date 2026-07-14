@@ -3,6 +3,7 @@ import { Fraunces, Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { CookieConsent } from "@/components/cookie-consent";
 import { FluxLoader } from "@/components/flux-loader";
+import { ServiceWorkerRegistration } from "@/components/service-worker-registration";
 import "./globals.css";
 
 const inter = Inter({
@@ -59,6 +60,7 @@ export default function RootLayout({
     <html lang="fr" data-scroll-behavior="smooth" className={`${inter.variable} ${fraunces.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
         <FluxLoader />
+        <ServiceWorkerRegistration />
         {children}
         <CookieConsent />
         <Toaster />

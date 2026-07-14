@@ -380,7 +380,7 @@ export default async function CreditsPage({
               </li>
             ))}
             <li>
-              <span>Pré-remplissage « Compléter avec l&apos;IA » (bientôt)</span>
+              <span>Pré-remplissage IA de la vitrine (formules &amp; packs)</span>
               <strong>{PREFILL_COST} cr.</strong>
             </li>
           </ul>

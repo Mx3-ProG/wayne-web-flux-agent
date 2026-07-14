@@ -19,7 +19,9 @@ import type { Page } from "@/lib/types";
 import { FONTS } from "@/lib/verticals";
 import { VITRINE_THEMES } from "@/lib/vitrine-themes";
 import { VITRINE_ASSIST_COST } from "@/lib/plans";
+import { PREFILL_COST } from "@/lib/tools-config";
 import { saveVitrineGuide } from "@/app/(app)/ma-page/actions";
+import { fluxPrefill } from "@/app/(app)/ma-page/flux-actions";
 import { Button } from "@/components/ui/button";
 import { FluxBrand } from "@/components/flux-brand";
 import {
@@ -47,7 +49,7 @@ export function VitrineGuide({
   const [page, setPage] = useState(initialPage);
   const [pending, startTransition] = useTransition();
   const [creditsDialog, setCreditsDialog] = useState<
-    "insufficient_credits" | "subscription_required" | null
+    "insufficient_credits" | "subscription_required" | "flux_requires_payment" | null
   >(null);
   // L'assistant FLUX est payant ; l'éditeur complet reste gratuit.
   const enough = publish.balance >= VITRINE_ASSIST_COST;
@@ -59,6 +61,27 @@ export function VitrineGuide({
 
   function patch(fields: Partial<Page>) {
     setPage((current) => ({ ...current, ...fields }));
+  }
+
+  function prefill() {
+    startTransition(async () => {
+      const result = await fluxPrefill(initialPage.id);
+      if (
+        result.error === "flux_requires_payment" ||
+        result.error === "insufficient_credits" ||
+        result.error === "subscription_required"
+      ) {
+        setCreditsDialog(result.error);
+        return;
+      }
+      if (result.error) {
+        toast.error("La génération a échoué — tes crédits n'ont pas été débités.");
+        return;
+      }
+      toast.success("FLUX a pré-rempli ton brouillon. Relis, puis publie.");
+      router.push("/ma-page?view=editor");
+      router.refresh();
+    });
   }
 
   function save() {
@@ -116,8 +139,17 @@ export function VitrineGuide({
               Flux reprend tes informations actuelles et t’accompagne étape par
               étape. Rien ne change avant ta confirmation finale.
             </p>
-            <button className={styles.primary} type="button" onClick={() => setStep(1)}>
-              Modifier avec Flux <ArrowRight aria-hidden="true" />
+            <button
+              className={styles.primary}
+              type="button"
+              disabled={pending}
+              onClick={prefill}
+            >
+              {pending ? "FLUX travaille…" : `FLUX pré-remplit ma vitrine (${PREFILL_COST} cr.)`}
+              <ArrowRight aria-hidden="true" />
+            </button>
+            <button className={styles.directEditor} type="button" onClick={() => setStep(1)}>
+              Ou modifier étape par étape <ArrowRight aria-hidden="true" />
             </button>
             <Link href="/ma-page?view=editor" className={styles.directEditor}>
               Aller directement à l’éditeur <ExternalLink aria-hidden="true" />
@@ -238,12 +270,16 @@ export function VitrineGuide({
             <DialogTitle>
               {creditsDialog === "subscription_required"
                 ? "Ton essai est terminé"
-                : "Plus assez de crédits"}
+                : creditsDialog === "flux_requires_payment"
+                  ? "FLUX est prête à travailler pour toi"
+                  : "Plus assez de crédits"}
             </DialogTitle>
             <DialogDescription>
               {creditsDialog === "subscription_required"
                 ? "Tes 7 jours d'essai FLUX sont passés. Choisis une formule pour continuer à utiliser l'assistant."
-                : `L'assistant vitrine coûte ${VITRINE_ASSIST_COST} crédits. Recharge tes crédits, ou utilise l'éditeur complet (gratuit).`}
+                : creditsDialog === "flux_requires_payment"
+                  ? "FLUX crée et améliore ta vitrine à ta place — réservé aux formules et aux packs de crédits. L'éditeur complet reste gratuit."
+                  : `L'assistant vitrine coûte ${VITRINE_ASSIST_COST} crédits. Recharge tes crédits, ou utilise l'éditeur complet (gratuit).`}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -251,8 +287,16 @@ export function VitrineGuide({
               <Link href="/ma-page?view=editor">Éditeur complet</Link>
             </Button>
             <Button asChild>
-              <Link href={creditsDialog === "subscription_required" ? "/formules" : "/credits"}>
-                {creditsDialog === "subscription_required"
+              <Link
+                href={
+                  creditsDialog === "subscription_required" ||
+                  creditsDialog === "flux_requires_payment"
+                    ? "/formules"
+                    : "/credits"
+                }
+              >
+                {creditsDialog === "subscription_required" ||
+                creditsDialog === "flux_requires_payment"
                   ? "Choisir ma formule FLUX"
                   : "Recharger mes crédits"}
               </Link>

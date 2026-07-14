@@ -6,6 +6,7 @@ import { ArrowLeft, ArrowRight, Check, LockKeyhole, Mail, Sparkles, User } from 
 import { signIn, signUp, type AuthState } from "./actions";
 import styles from "./login.module.css";
 import { FluxBrand } from "@/components/flux-brand";
+import { FluxRouteLoader } from "@/components/flux-route-loader";
 
 const initialState: AuthState = {};
 
@@ -15,6 +16,7 @@ export default function LoginPage() {
 
   return (
     <main className={styles.page}>
+      {(loginPending || signupPending) && <FluxRouteLoader />}
       <Link className={styles.back} href="/"><ArrowLeft aria-hidden="true" /> Accueil</Link>
       <FluxBrand className={styles.brand} priority />
 

@@ -1,0 +1,23 @@
+.loader {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: #070708;
+}
+.loader::before { content: ""; position: absolute; width: min(72vw, 540px); aspect-ratio: 1; border-radius: 50%; background: rgb(239 35 60 / 8%); filter: blur(100px); }
+.lockup { position: relative; display: grid; justify-items: center; }
+.word { display: flex; color: #f7f5f2; font-family: var(--font-inter), sans-serif; font-size: clamp(4.4rem, 14vw, 8.5rem); font-weight: 900; letter-spacing: -.095em; line-height: .85; }
+.word span { display: inline-block; opacity: 0; filter: blur(8px); transform: translateX(110px); animation: arrive 520ms cubic-bezier(.16, 1, .3, 1) forwards; }
+.word span:first-child { color: var(--ww-red); animation-delay: 40ms; }
+.word span:nth-child(2) { animation-delay: 180ms; }
+.word span:nth-child(3) { animation-delay: 320ms; }
+.word span:nth-child(4) { animation-delay: 460ms; }
+.mark { width: clamp(48px, 8vw, 70px); height: auto; margin-top: 34px; opacity: 0; transform: translateY(10px) scale(.9); animation: reveal 420ms cubic-bezier(.16, 1, .3, 1) 760ms forwards, breathe 1.8s ease-in-out 1.2s infinite; }
+@keyframes arrive { to { opacity: 1; filter: blur(0); transform: translateX(0); } }
+@keyframes reveal { to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes breathe { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .65; transform: scale(.96); } }
+@media (prefers-reduced-motion: reduce) { .word span, .mark { opacity: 1; filter: none; transform: none; animation: none; } }
+
