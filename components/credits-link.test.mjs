@@ -17,7 +17,13 @@ test("CreditsLink resolves its CSS module with every animation class", async () 
     "link",
     "coinScene",
     "coinSceneBurst",
-    "coinIcon",
+    "coinStack",
+    "coin",
+    "coinBack",
+    "coinMiddle",
+    "coinFront",
+    "coinMark",
+    "spark",
     "coinParticle",
     "coinParticleOne",
     "coinParticleTwo",
@@ -28,4 +34,16 @@ test("CreditsLink resolves its CSS module with every animation class", async () 
   for (const className of requiredClasses) {
     assert.match(css, new RegExp(`\\.${className}(?:[\\s:{,.]|$)`));
   }
+
+  assert.match(component, /data-credit-coins/);
+});
+
+test("the mobile shell never hides the credit coin scene", async () => {
+  const shellCssUrl = new URL("../app/(app)/app-shell.module.css", import.meta.url);
+  const shellCss = await readFile(shellCssUrl, "utf8");
+
+  assert.doesNotMatch(
+    shellCss,
+    /\.credits\s*>\s*span:first-child\s*\{[^}]*display\s*:\s*none/s,
+  );
 });

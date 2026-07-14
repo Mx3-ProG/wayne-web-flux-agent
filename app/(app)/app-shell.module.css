@@ -395,9 +395,6 @@
 
 @media (max-width: 440px) {
   .credits { padding: 0 10px; }
-  /* Masque toute la scène de pièces (icône + halo animé + particules),
-     pas seulement le svg, sinon le halo pulsant reste orphelin. */
-  .credits > span:first-child { display: none; }
   .menuTrigger { width: 44px; padding: 0; justify-content: center; border-radius: 14px; }
   .menuTrigger span { display: none; }
 }

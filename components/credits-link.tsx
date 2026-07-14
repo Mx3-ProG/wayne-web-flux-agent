@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { Coins } from "lucide-react";
 import { useState } from "react";
 import styles from "./credits-link.module.css";
 
@@ -23,10 +22,19 @@ export function CreditsLink({
     >
       <span
         key={burst}
+        data-credit-coins
         className={`${styles.coinScene} ${burst > 0 ? styles.coinSceneBurst : ""}`}
         aria-hidden="true"
       >
-        <Coins className={styles.coinIcon} />
+        <span className={styles.coinStack}>
+          <i className={`${styles.coin} ${styles.coinBack}`} />
+          <i className={`${styles.coin} ${styles.coinMiddle}`} />
+          <i className={`${styles.coin} ${styles.coinFront}`}>
+            <b className={styles.coinMark} />
+          </i>
+        </span>
+        <i className={`${styles.spark} ${styles.sparkOne}`} />
+        <i className={`${styles.spark} ${styles.sparkTwo}`} />
         <i className={`${styles.coinParticle} ${styles.coinParticleOne}`} />
         <i className={`${styles.coinParticle} ${styles.coinParticleTwo}`} />
         <i className={`${styles.coinParticle} ${styles.coinParticleThree}`} />
