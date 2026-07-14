@@ -111,7 +111,7 @@ export default function LandingPage() {
             <Link className={styles.loginLink} href="/login">
               Connexion
             </Link>
-            <Link className={styles.navCta} href="/commencer">
+            <Link className={`flux-button-smooth ${styles.navCta}`} href="/commencer">
               Tester gratuitement
             </Link>
           </div>
@@ -138,7 +138,7 @@ export default function LandingPage() {
                 ton activité, réunis dans un seul espace.
               </p>
               <div className={styles.heroActions}>
-                <Link className={styles.primaryCta} href="/commencer">
+                <Link className={`flux-button-smooth ${styles.primaryCta}`} href="/commencer">
                   Booster mon commerce
                   <ArrowRight aria-hidden="true" />
                 </Link>
@@ -292,7 +292,7 @@ export default function LandingPage() {
           </div>
           <PillarGrid />
           <div className={styles.pillarsCtaWrap}>
-            <Link className={styles.askFluxCta} href="/commencer">
+            <Link className={`flux-button-smooth ${styles.askFluxCta}`} href="/commencer">
               <span className={styles.askFluxFill} aria-hidden="true" />
               <span className={styles.askFluxText}>
                 Demande à{" "}
@@ -357,7 +357,7 @@ export default function LandingPage() {
                   <div className={styles.toolAccordionBody}>
                     <p>{tool.text}</p>
                     <em>{tool.result}</em>
-                    <Link className={styles.toolAccordionCta} href="/commencer">
+                    <Link className={`flux-button-smooth ${styles.toolAccordionCta}`} href="/commencer">
                       Demande à <strong>FLUX</strong>
                       <ArrowRight aria-hidden="true" />
                     </Link>
@@ -365,7 +365,7 @@ export default function LandingPage() {
                 </details>
               );
             })}
-            <Link className={`${styles.askFluxCta} ${styles.mobileAcquireCta}`} href="/commencer">
+            <Link className={`flux-button-smooth ${styles.askFluxCta} ${styles.mobileAcquireCta}`} href="/commencer">
               <span className={styles.askFluxFill} aria-hidden="true" />
               <span className={styles.askFluxText}>
                 Acquérir{" "}
@@ -425,7 +425,7 @@ export default function LandingPage() {
             Crée ta vitrine, active tes outils et transforme ta présence en
             ligne en véritable moteur de croissance.
           </p>
-          <Link className={`${styles.primaryCta} ${styles.ctaFloat}`} href="/commencer">
+          <Link className={`flux-button-smooth ${styles.primaryCta} ${styles.ctaFloat}`} href="/commencer">
             Commencer gratuitement
             <ArrowRight aria-hidden="true" />
           </Link>

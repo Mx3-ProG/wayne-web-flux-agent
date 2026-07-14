@@ -41,6 +41,19 @@ import {
 } from "@/components/ui/select";
 import { Crown, ExternalLink, Gem, Palette } from "lucide-react";
 import styles from "./page-editor-redesign.module.css";
+import {
+  DESIGN_KITS,
+  DESIGN_SLOTS,
+  VOICE_ARCHETYPES,
+  componentsForSlot,
+  type DesignSlot,
+} from "@/lib/vitrine-design";
+
+const DESIGN_SLOT_LABELS: Record<DesignSlot, string> = {
+  button: "Boutons", navigation: "Navigation", header: "En-tête", footer: "Pied de page",
+  section: "Sections", category: "Catégories", product: "Fiches produit", cart: "Panier",
+  order: "Commande", booking: "Réservation", legal: "Pages légales", checkout: "Futur checkout",
+};
 
 type EditableCatalog = {
   name: string;
@@ -86,6 +99,7 @@ export function PageEditor({
   const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">("mobile");
   const [panelMode, setPanelMode] = useState<"edit" | "preview">("edit");
   const [activeSection, setActiveSection] = useState("identite");
+  const [designAdvanced, setDesignAdvanced] = useState(false);
   const [saving, setSaving] = useState(false);
   // Modif locale non publiée : dès qu'on touche un champ, il y a un brouillon.
   const [dirty, setDirty] = useState(publish.hasDraft);
@@ -643,7 +657,10 @@ export function PageEditor({
                     <button
                       key={theme.id}
                       type="button"
-                      onClick={() => patch({ theme: theme.id })}
+                      onClick={() => patch({
+                        theme: theme.id,
+                        design: { kitId: theme.id, components: page.design?.components, voiceArchetypeId: page.design?.voiceArchetypeId },
+                      })}
                       data-theme={theme.id}
                       className={(page.theme || "editorial") === theme.id ? styles.themeActive : styles.themeChoice}
                     >
@@ -656,6 +673,59 @@ export function PageEditor({
                     </button>
                   ))}
                 </div>
+              </div>
+              <div className="space-y-3 rounded-lg border border-border p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-sm font-medium">Bibliothèque de design FLUX</p>
+                    <p className="text-xs text-muted-foreground">Choisis un kit cohérent ou laisse FLUX partir de ton ambiance.</p>
+                  </div>
+                  <Button type="button" variant="secondary" size="sm" onClick={() => setDesignAdvanced((value) => !value)}>
+                    {designAdvanced ? "Mode simple" : "Personnaliser"}
+                  </Button>
+                </div>
+                <Select
+                  value={page.design?.kitId ?? "auto"}
+                  onValueChange={(kitId) => {
+                    if (kitId === "auto") return patch({ design: null });
+                    const kit = DESIGN_KITS.find((entry) => entry.id === kitId)!;
+                    patch({ theme: kit.legacyTheme, design: { kitId } });
+                  }}
+                >
+                  <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="auto">Laisser FLUX choisir depuis l’ambiance</SelectItem>
+                    {DESIGN_KITS.map((kit) => <SelectItem key={kit.id} value={kit.id}>{kit.name}{kit.premium ? " · Premium" : ""}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+                {designAdvanced && (
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    {DESIGN_SLOTS.map((slot) => {
+                      const kitId = page.design?.kitId ?? page.theme ?? "editorial";
+                      const kit = DESIGN_KITS.find((entry) => entry.id === kitId) ?? DESIGN_KITS[0];
+                      const value = page.design?.components?.[slot] ?? kit.components[slot];
+                      return (
+                        <div key={slot} className="space-y-1.5">
+                          <Label>{DESIGN_SLOT_LABELS[slot]}</Label>
+                          <Select value={value} onValueChange={(id) => patch({ design: { kitId, voiceArchetypeId: page.design?.voiceArchetypeId, components: { ...page.design?.components, [slot]: id } } })}>
+                            <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                            <SelectContent>{componentsForSlot(slot, kitId).map((entry) => <SelectItem key={entry.id} value={entry.id}>{entry.name}</SelectItem>)}</SelectContent>
+                          </Select>
+                        </div>
+                      );
+                    })}
+                    <div className="space-y-1.5 sm:col-span-2">
+                      <Label>Voix éditoriale</Label>
+                      <Select
+                        value={page.design?.voiceArchetypeId ?? (DESIGN_KITS.find((entry) => entry.id === (page.design?.kitId ?? page.theme)) ?? DESIGN_KITS[0]).voiceArchetypeId}
+                        onValueChange={(voiceArchetypeId) => patch({ design: { kitId: page.design?.kitId ?? page.theme ?? "editorial", components: page.design?.components, voiceArchetypeId } })}
+                      >
+                        <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                        <SelectContent>{VOICE_ARCHETYPES.map((voice) => <SelectItem key={voice.id} value={voice.id}>{voice.name}</SelectItem>)}</SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className={styles.colorGrid}>
                 {(

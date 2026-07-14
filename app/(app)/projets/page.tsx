@@ -110,7 +110,7 @@ export default async function ProjetsPage() {
                 : "Tu as atteint la limite de projets de ta formule."}
             </p>
             {plan === "basique" && (
-              <Link href="/formules" className={styles.upsellCta}>
+              <Link href="/formules" className={`flux-button-smooth ${styles.upsellCta}`}>
                 <Store aria-hidden="true" /> Découvrir les formules FLUX
               </Link>
             )}

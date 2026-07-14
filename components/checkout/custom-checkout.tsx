@@ -59,7 +59,7 @@ function PaymentForm({ product }: { product: CheckoutProduct }) {
         <span>J’accepte les <Link href="/cgv" target="_blank">conditions générales</Link> et reconnais {product.kind === "subscription" ? "le renouvellement mensuel jusqu’à résiliation" : "l’achat immédiat du pack de crédits"}.</span>
       </label>
       {message && <p className={styles.formError} role="alert">{message}</p>}
-      <button className={styles.payButton} disabled={submitting || !state.checkout.canConfirm} type="submit">
+      <button className={`flux-button-smooth ${styles.payButton}`} disabled={submitting || !state.checkout.canConfirm} type="submit">
         <LockKeyhole aria-hidden="true" />
         {submitting ? "Confirmation…" : `Payer ${product.price}${product.cadence ?? ""}`}
       </button>

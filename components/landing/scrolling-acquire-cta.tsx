@@ -62,7 +62,7 @@ export function ScrollingAcquireCta() {
 
   return (
     <div ref={wrapperRef} className={styles.desktopAcquireWrap} style={followStyle}>
-      <Link className={styles.askFluxCta} href="/commencer">
+      <Link className={`flux-button-smooth ${styles.askFluxCta}`} href="/commencer">
         <span className={styles.askFluxFill} aria-hidden="true" />
         <span className={styles.askFluxText}>
           Acquérir{" "}

@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { anthropic, GENERATION_MODEL, FLUX_MAX_TOKENS } from "@/lib/claude";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { spendCredits, refundCredits } from "@/lib/credits";
-import { requirePaidFlux } from "@/lib/flux/access";
+import { checkFluxAccess } from "@/lib/flux/access";
 import { fluxIdentity, businessContext, learningsContext } from "@/lib/flux/persona";
 import { applyFluxPatch } from "@/lib/flux/apply";
 import { buildGeneratedSection } from "@/lib/flux/guardrails";
@@ -20,9 +20,11 @@ import { resolveSections, SECTION_LIMITS } from "@/lib/sections";
 import { PREFILL_COST } from "@/lib/tools-config";
 import { SITE_GENERATE_COST } from "@/lib/plans";
 import type { PageColors, PageDraftFields, PageSeo, Service, VoiceProfile } from "@/lib/types";
+import { DESIGN_KIT_BY_ID, registryContext } from "@/lib/vitrine-design/registry";
 
 export type FluxPrefillError =
   | "flux_requires_payment"
+  | "flux_trial_exhausted"
   | "insufficient_credits"
   | "subscription_required"
   | "too_many_requests"
@@ -30,8 +32,9 @@ export type FluxPrefillError =
   | "generation_failed"
   | "unknown";
 
-// Pré-remplissage IA de la vitrine (PREFILL_COST crédits). Réservé aux comptes
-// payants (requirePaidFlux). Débit AVANT génération, remboursement si l'appel
+// Pré-remplissage IA de la vitrine (PREFILL_COST crédits). Accès via
+// checkFluxAccess : payant (illimité) ou essai (plafonné à FLUX_TRIAL_MAX_USES
+// générations pour tester). Débit AVANT génération, remboursement si l'appel
 // échoue — même pattern que saveVitrineGuide. FLUX écrit dans le BROUILLON :
 // l'utilisateur relit puis publie lui-même.
 //
@@ -54,9 +57,10 @@ export async function fluxPrefill(
     .single();
   if (!page) return { error: "unknown" };
 
-  // Verrou payant : l'IA n'aide pas les comptes en essai gratuit.
-  const access = await requirePaidFlux(user.id);
-  if (access.error) return { error: access.error };
+  // Accès FLUX : payant (illimité) ou essai (plafonné à 2 générations). Sinon
+  // bloqué (essai expiré ou quota d'essai atteint).
+  const access = await checkFluxAccess(user.id);
+  if (!access.ok) return { error: access.reason };
 
   if (!rateLimit(`flux-prefill:${user.id}`, 3, 300_000)) {
     return { error: "too_many_requests" };
@@ -92,6 +96,7 @@ export async function fluxPrefill(
       fluxIdentity(),
       ...businessContext({ page, services, voice }),
       ...(await learningsContext(page.vertical)),
+      registryContext(),
       "Ta mission : pré-remplir la vitrine de ce commerçant à partir de son métier, sa ville et ses prestations. Écris des contenus concrets, directs, sans jargon marketing ni phrase creuse, directement utilisables. N'invente NI prix NI avis clients. Reste fidèle à son métier et à sa voix.",
     ].join("\n\n");
 
@@ -174,6 +179,7 @@ export async function fluxPrefill(
 
 export type FluxSiteError =
   | "flux_requires_payment"
+  | "flux_trial_exhausted"
   | "insufficient_credits"
   | "subscription_required"
   | "too_many_requests"
@@ -185,8 +191,8 @@ export type FluxSiteError =
 // Génération complète de la vitrine par brief (SITE_GENERATE_COST crédits).
 // FLUX part du template métier et du brief pour écrire toute la vitrine : textes,
 // SEO, ambiance (thème + couleurs) et 2 à 5 sections. Écrit dans le BROUILLON
-// (jamais en live) ; l'utilisateur relit puis publie lui-même. Réservé aux
-// comptes payants. Débit avant génération, remboursement si échec.
+// (jamais en live) ; l'utilisateur relit puis publie lui-même. Accès payant ou
+// essai plafonné (checkFluxAccess). Débit avant génération, remboursement si échec.
 export async function fluxGenerateSite(
   pageId: string,
   brief: string
@@ -208,8 +214,8 @@ export async function fluxGenerateSite(
     .single();
   if (!page) return { error: "unknown" };
 
-  const access = await requirePaidFlux(user.id);
-  if (access.error) return { error: access.error };
+  const access = await checkFluxAccess(user.id);
+  if (!access.ok) return { error: access.reason };
 
   if (!rateLimit(`flux-site:${user.id}`, 3, 600_000)) {
     return { error: "too_many_requests" };
@@ -290,7 +296,8 @@ export async function fluxGenerateSite(
     const fields: Partial<PageDraftFields> = {
       tagline: out.tagline,
       seo: { ...seo, title: out.seo.title, description: out.seo.description },
-      theme: out.theme,
+      theme: DESIGN_KIT_BY_ID.get(out.design.kitId)?.legacyTheme ?? out.theme,
+      design: out.design,
       colors: { ...(page.colors as PageColors), primary: out.colors.primary, dark: out.colors.dark },
     };
 

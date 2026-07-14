@@ -229,7 +229,7 @@ function OrderCard({ order, history }: { order: OrderWithItems; history: ClientH
           <div className={styles.actions}>
             {order.status === "pending" && (
               <form action={acceptOrder.bind(null, order.id)}>
-                <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
+                <button type="submit" className={`flux-button-smooth ${styles.btn} ${styles.btnPrimary}`}>
                   <ShieldCheck aria-hidden="true" />
                   Accepter
                 </button>
@@ -237,7 +237,7 @@ function OrderCard({ order, history }: { order: OrderWithItems; history: ClientH
             )}
             {order.status === "accepted" && (
               <form action={fulfillOrder.bind(null, order.id)}>
-                <button type="submit" className={`${styles.btn} ${styles.btnPrimary}`}>
+                <button type="submit" className={`flux-button-smooth ${styles.btn} ${styles.btnPrimary}`}>
                   <Banknote aria-hidden="true" />
                   Marquer comme terminée
                 </button>

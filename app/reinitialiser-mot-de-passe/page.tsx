@@ -59,7 +59,7 @@ export default function ResetPasswordPage() {
             </div>
           </label>
           {state.error && <p className={styles.error}>{state.error}</p>}
-          <button className={styles.primary} type="submit" disabled={pending}>
+          <button className={`flux-button-smooth ${styles.primary}`} type="submit" disabled={pending}>
             {pending ? "Enregistrement…" : "Mettre à jour"}
             {!pending && <ArrowRight aria-hidden="true" />}
           </button>

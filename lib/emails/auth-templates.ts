@@ -21,7 +21,7 @@ function note(text: string): string {
 
 export type AuthEmail = { subject: string; html: string };
 
-export function confirmationEmail(): AuthEmail {
+export function confirmationEmail(confirmationUrl = CONFIRMATION_URL): AuthEmail {
   return {
     subject: "Confirmez votre adresse — FLUX",
     html: baseLayout({
@@ -29,7 +29,7 @@ export function confirmationEmail(): AuthEmail {
       preheader: "Activez votre compte FLUX",
       bodyHtml: `
         <p>Bienvenue sur FLUX ! Cliquez sur le bouton ci-dessous pour confirmer votre adresse email et activer votre compte.</p>
-        ${emailButton("Confirmer mon adresse", CONFIRMATION_URL)}
+        ${emailButton("Confirmer mon adresse", confirmationUrl)}
         ${note("Si vous n’êtes pas à l’origine de cette inscription, ignorez simplement cet email.")}`,
     }),
   };

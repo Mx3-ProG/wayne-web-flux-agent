@@ -17,7 +17,7 @@ export function ErrorScreen() {
       <div className={styles.actions}>
         <button
           type="button"
-          className={styles.primary}
+          className={`flux-button-smooth ${styles.primary}`}
           onClick={() => window.location.reload()}
         >
           <RefreshCw aria-hidden="true" /> Recharger la page

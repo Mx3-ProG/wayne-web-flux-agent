@@ -86,7 +86,7 @@ export function VoiceTunnel({ initialVoice }: { initialVoice: VoiceDraft | null 
               Aucun texte à rédiger. Choisis simplement ce qui te ressemble,
               Flux compose ta voix et prépare une communication cohérente.
             </p>
-            <button type="button" className={styles.primary} onClick={() => setStep(0)}>
+            <button type="button" className={`flux-button-smooth ${styles.primary}`} onClick={() => setStep(0)}>
               Créer ma voix <ArrowRight aria-hidden="true" />
             </button>
             <small>7 choix · moins de 2 minutes · modifiable à tout moment</small>
@@ -127,7 +127,7 @@ export function VoiceTunnel({ initialVoice }: { initialVoice: VoiceDraft | null 
           <button type="button" onClick={() => setStep((value) => value - 1)}>
             <ArrowLeft aria-hidden="true" /> Retour
           </button>
-          <button type="button" className={styles.primary} disabled={!canContinue} onClick={next}>
+          <button type="button" className={`flux-button-smooth ${styles.primary}`} disabled={!canContinue} onClick={next}>
             {step === VOICE_STEPS.length - 1 ? "Voir mon résumé" : "Continuer"}
             <ArrowRight aria-hidden="true" />
           </button>

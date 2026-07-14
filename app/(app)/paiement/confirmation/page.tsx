@@ -62,7 +62,7 @@ export default async function PaymentConfirmation({ searchParams }: {
           <div><dt>Référence</dt><dd>{session.id.slice(-12)}</dd></div>
         </dl>
         <div className={styles.actions}>
-          <Link href={isCredits ? "/credits" : "/compte/facturation"} className={styles.primary}>
+          <Link href={isCredits ? "/credits" : "/compte/facturation"} className={`flux-button-smooth ${styles.primary}`}>
             {isCredits ? "Voir mes crédits" : "Voir ma facturation"}
           </Link>
           <Link href="/espace">Retour à mon espace</Link>

@@ -159,6 +159,67 @@
 }
 
 @layer components {
+  /* Identité des actions principales FLUX. La classe reste explicite afin
+     de ne pas transformer les contrôles techniques (fermeture, toggle,
+     icône seule) en boutons d'appel à l'action. */
+  .flux-button-smooth {
+    --flux-button-accent: var(--ww-red);
+    border-color: rgb(255 255 255 / 12%) !important;
+    background-color: var(--flux-button-accent) !important;
+    background-image: linear-gradient(#fff, #fff) !important;
+    background-position: left center !important;
+    background-repeat: no-repeat !important;
+    background-size: 0 100% !important;
+    color: #fff !important;
+    box-shadow: 0 12px 30px rgb(239 35 60 / 18%);
+    transition:
+      transform 180ms ease,
+      background-size 500ms cubic-bezier(.2, .75, .2, 1),
+      border-color 450ms ease,
+      box-shadow 350ms ease,
+      color 450ms ease !important;
+  }
+  .flux-button-smooth:hover:not(:disabled) {
+    transform: translateY(-2px);
+    border-color: #fff !important;
+    background-size: 100% 100% !important;
+    color: var(--flux-button-accent) !important;
+    box-shadow: 0 16px 40px rgb(255 255 255 / 12%);
+  }
+  .flux-button-smooth-secondary {
+    --flux-button-accent: var(--ww-surface-strong);
+    box-shadow: inset 0 1px rgb(255 255 255 / 7%);
+  }
+  .flux-button-smooth-gold {
+    --flux-button-accent: #d8a73b;
+    box-shadow: 0 12px 32px rgb(216 167 59 / 24%);
+  }
+  [data-design-button="button-smooth-flux"] [data-vitrine-action] {
+    border: 1px solid rgb(255 255 255 / 35%) !important;
+    background-color: var(--flux-button-accent) !important;
+    background-image: linear-gradient(#fff, #fff) !important;
+    background-position: left center !important;
+    background-repeat: no-repeat !important;
+    background-size: 0 100% !important;
+    color: #fff !important;
+    transition: background-size 500ms cubic-bezier(.2,.75,.2,1), color 450ms ease, transform 180ms ease !important;
+  }
+  [data-design-button="button-smooth-flux"] [data-vitrine-action]:hover:not(:disabled) {
+    background-size: 100% 100% !important;
+    color: var(--flux-button-accent) !important;
+    transform: translateY(-2px);
+  }
+  [data-design-button="button-square"] [data-vitrine-action] { border-radius: 10px !important; }
+  [data-design-button="button-outline-luxe"] [data-vitrine-action] {
+    border: 1px solid var(--flux-button-accent) !important;
+    background: transparent !important;
+    color: var(--flux-button-accent) !important;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+  .flux-button-smooth:active:not(:disabled) {
+    transform: translateY(0) scale(.975);
+  }
   [data-slot="card"] {
     overflow: hidden;
     border: 1px solid var(--ww-line);
@@ -212,6 +273,21 @@
   }
   [data-slot="tabs-trigger"] {
     min-height: 38px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flux-button-smooth {
+    transition: none !important;
+  }
+  .flux-button-smooth:hover:not(:disabled) {
+    transform: none;
+  }
+  [data-design-button="button-smooth-flux"] [data-vitrine-action] {
+    transition: none !important;
+  }
+  [data-design-button="button-smooth-flux"] [data-vitrine-action]:hover:not(:disabled) {
+    transform: none;
   }
 }
 

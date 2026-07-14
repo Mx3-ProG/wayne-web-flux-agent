@@ -192,7 +192,7 @@ export function Tunnel() {
               Réponds à quelques questions. Flux prépare ton espace, tes outils
               et les fondations de ta visibilité.
             </p>
-            <button className={styles.primary} type="button" onClick={next}>
+            <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={next}>
               C&apos;est parti <ArrowRight aria-hidden="true" />
             </button>
             <small>7 jours d’essai offerts · 2 minutes · Sans carte bancaire</small>
@@ -382,7 +382,7 @@ export function Tunnel() {
                 <span><Sparkles aria-hidden="true" /><strong>À ton image</strong><small>{tone}</small></span>
               </div>
             </div>
-            <button className={styles.primary} type="button" onClick={next}>
+            <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={next}>
               Garder cette configuration <ArrowRight aria-hidden="true" />
             </button>
           </div>
@@ -407,11 +407,11 @@ export function Tunnel() {
               </article>
             </div>
             {installPrompt && (
-              <button className={styles.installNow} type="button" onClick={installApp}>
+              <button className={`flux-button-smooth ${styles.installNow}`} type="button" onClick={installApp}>
                 Installer maintenant
               </button>
             )}
-            <button className={styles.primary} type="button" onClick={next}>
+            <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={next}>
               Continuer <ArrowRight aria-hidden="true" />
             </button>
           </div>
@@ -427,7 +427,7 @@ export function Tunnel() {
               <span><Check aria-hidden="true" /> Outils de contenu et de conversion</span>
               <span><Check aria-hidden="true" /> 100 crédits offerts au démarrage</span>
             </div>
-            <button className={styles.primary} type="button" onClick={next}>
+            <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={next}>
               Créer mon accès <ArrowRight aria-hidden="true" />
             </button>
           </div>
@@ -458,7 +458,7 @@ export function Tunnel() {
               <label><span>Choisis un mot de passe</span><input name="password" type="password" required minLength={8} placeholder="8 caractères minimum" autoComplete="new-password" /></label>
               {authState.error && <p className={styles.error}>{authState.error}</p>}
               {authState.message && <p className={styles.success}>{authState.message}</p>}
-              <button className={styles.primary} type="submit" disabled={pending}>
+              <button className={`flux-button-smooth ${styles.primary}`} type="submit" disabled={pending}>
                 {pending ? "Création de ton espace…" : "Créer mon espace gratuitement"}
                 {!pending && <ArrowRight aria-hidden="true" />}
               </button>
@@ -471,7 +471,7 @@ export function Tunnel() {
       {step > 0 && step < 9 && (
         <footer className={styles.controls}>
           <button type="button" onClick={back}><ArrowLeft aria-hidden="true" /> Retour</button>
-          <button className={styles.primary} type="button" onClick={next} disabled={!canContinue}>
+          <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={next} disabled={!canContinue}>
             Continuer <ArrowRight aria-hidden="true" />
           </button>
         </footer>

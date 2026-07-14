@@ -9,11 +9,11 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground shadow-[0_12px_30px_rgb(239_35_60_/_18%)] hover:bg-[#ff2c47]",
+        default: "flux-button-smooth bg-primary text-primary-foreground",
         outline:
           "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         secondary:
-          "border-white/8 bg-secondary/90 text-secondary-foreground shadow-[inset_0_1px_rgb(255_255_255_/_5%)] hover:bg-[color-mix(in_oklch,var(--secondary),var(--foreground)_7%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
+          "flux-button-smooth flux-button-smooth-secondary border-white/8 bg-secondary/90 text-secondary-foreground shadow-[inset_0_1px_rgb(255_255_255_/_5%)] aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
         ghost:
           "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
         destructive:

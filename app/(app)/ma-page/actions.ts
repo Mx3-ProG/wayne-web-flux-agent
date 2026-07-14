@@ -10,6 +10,7 @@ import { validateSections } from "@/lib/sections";
 import { slugify } from "@/lib/slug";
 import type { PageDraftFields, Plan } from "@/lib/types";
 import { enforceKarlMada, KARLMADA_BLOCK_MESSAGE } from "@/lib/karlmada";
+import { designConfigError } from "@/lib/vitrine-design/resolver";
 
 // Crée la vitrine initiale : slug unique, prestations pré-remplies selon le
 // métier, horaires par défaut (mar-sam 9h-19h), textes légaux générés.
@@ -174,6 +175,10 @@ export async function savePageFields(
     if (nav.items.some((item) => item.label.length > 40 || item.target.length > 300)) {
       return { error: "Un des liens du menu est trop long." };
     }
+  }
+  if (fields.design) {
+    const designError = designConfigError(fields.design);
+    if (designError) return { error: designError };
   }
   const supabase = await createClient();
   const { error } = await supabase.rpc("merge_page_draft", {

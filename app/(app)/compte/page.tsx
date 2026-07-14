@@ -99,7 +99,7 @@ export default async function ComptePage() {
               : "Ton forfait a atteint sa limite de projets. Tu peux gérer tes vitrines existantes."}
           </p>
         </div>
-        <Link href={canCreateProject ? "/projets/nouveau" : "/projets"} className={styles.primaryAction}>
+        <Link href={canCreateProject ? "/projets/nouveau" : "/projets"} className={`flux-button-smooth ${styles.primaryAction}`}>
           {canCreateProject ? "Lancer le tunnel" : "Voir mes projets"}
           <ArrowRight aria-hidden="true" />
         </Link>

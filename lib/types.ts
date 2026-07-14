@@ -54,6 +54,8 @@ export type PageTypography = {
   headingFont?: string;
 };
 
+export type PageDesign = import("./vitrine-design/types").VitrineDesignConfig;
+
 // rating (1-5, défaut 5) et photoUrl optionnels : les avis historiques restent valides.
 export type Review = { author: string; text: string; rating?: number; photoUrl?: string };
 export type GalleryPhoto = { url: string; title?: string };
@@ -118,6 +120,8 @@ export type Page = {
   navigation: PageNavigation | null;
   scroll_top: boolean;
   typography: PageTypography;
+  // Registre de conception composable. Absent = kit dérivé de `theme`.
+  design: PageDesign | null;
   published: boolean;
   custom_domain: string | null;
   ical_token: string;
@@ -159,6 +163,7 @@ export type PageDraftFields = Pick<
   | "navigation"
   | "scroll_top"
   | "typography"
+  | "design"
 >;
 
 // Sous-page d'un projet (table site_pages, migration 00021). La page

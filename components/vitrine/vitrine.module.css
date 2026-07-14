@@ -160,6 +160,55 @@
 .tagline { max-width: 610px; margin-top: 24px; color: rgb(255 255 255 / 74%); font-size: clamp(14px, 1.7cqi, 18px); line-height: 1.65; }
 .heroActions { display: flex; margin-top: 34px; align-items: center; gap: 20px; flex-wrap: wrap; }
 .heroCta, .bookButton { display: inline-flex; min-height: 48px; padding: 0 20px; align-items: center; gap: 9px; border: 0; border-radius: 999px; background: var(--client-accent); color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; }
+.page[data-design-button="button-smooth-flux"] .heroCta,
+.page[data-design-button="button-smooth-flux"] .bookButton,
+.page[data-design-button="button-smooth-flux"] .addButton,
+.page[data-design-button="button-smooth-flux"] .newsletterForm button {
+  border: 1px solid color-mix(in srgb, #fff 25%, transparent);
+  background-color: var(--client-accent);
+  background-image: linear-gradient(#fff, #fff);
+  background-position: left center;
+  background-repeat: no-repeat;
+  background-size: 0 100%;
+  transition: background-size .5s cubic-bezier(.2,.75,.2,1), color .45s ease, border-color .45s ease, transform .2s ease;
+}
+.page[data-design-button="button-smooth-flux"] .heroCta:hover,
+.page[data-design-button="button-smooth-flux"] .bookButton:hover,
+.page[data-design-button="button-smooth-flux"] .addButton:hover,
+.page[data-design-button="button-smooth-flux"] .newsletterForm button:hover {
+  border-color: #fff;
+  background-size: 100% 100%;
+  color: var(--client-accent);
+  transform: translateY(-2px);
+}
+.page[data-design-button="button-square"] .heroCta,
+.page[data-design-button="button-square"] .bookButton,
+.page[data-design-button="button-square"] .addButton,
+.page[data-design-button="button-square"] .newsletterForm button { border-radius: 10px; box-shadow: none; }
+.page[data-design-button="button-outline-luxe"] .heroCta,
+.page[data-design-button="button-outline-luxe"] .bookButton,
+.page[data-design-button="button-outline-luxe"] .addButton,
+.page[data-design-button="button-outline-luxe"] .newsletterForm button { border: 1px solid color-mix(in srgb, #fff 45%, var(--client-accent)); background: transparent; color: inherit; letter-spacing: .07em; text-transform: uppercase; box-shadow: none; }
+.page[data-design-button="button-outline-luxe"] .bookButton,
+.page[data-design-button="button-outline-luxe"] .addButton,
+.page[data-design-button="button-outline-luxe"] .newsletterForm button { color: var(--client-accent); }
+
+.page[data-design-navigation="navigation-minimal"] .storeNav { border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
+.page[data-design-navigation="navigation-prestige"] .storeNav { border-width: 0 0 1px; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
+.page[data-design-header="header-centered"] .heroInner { max-width: 880px; text-align: center; }
+.page[data-design-header="header-centered"] .logo,
+.page[data-design-header="header-centered"] .hero h1,
+.page[data-design-header="header-centered"] .tagline { margin-inline: auto; }
+.page[data-design-header="header-centered"] .heroActions { justify-content: center; }
+.page[data-design-header="header-impact"] .hero h1 { max-width: 950px; font-family: var(--font-inter), sans-serif; font-weight: 820; letter-spacing: -.075em; text-transform: uppercase; }
+.page[data-design-footer="footer-prestige"] .footer { border-top: 1px solid rgb(197 164 109 / 30%); }
+.page[data-design-section="section-flat"] .family,
+.page[data-design-section="section-flat"] .review,
+.page[data-design-section="section-flat"] .product,
+.page[data-design-product="product-minimal"] .product { border-radius: 10px; box-shadow: none; }
+.page[data-design-section="section-glow"] .family,
+.page[data-design-section="section-glow"] .review,
+.page[data-design-section="section-glow"] .product { box-shadow: 0 0 0 1px color-mix(in srgb, var(--client-accent) 16%, transparent), 0 14px 44px color-mix(in srgb, var(--client-accent) 12%, transparent); }
 .heroCta svg { width: 15px; }
 .online { display: flex; align-items: center; gap: 8px; color: rgb(255 255 255 / 65%); font-size: 11px; }
 .online > span { width: 7px; height: 7px; border-radius: 50%; background: #5bd594; box-shadow: 0 0 10px #5bd594; }
@@ -486,6 +535,17 @@
 .page[data-heading-font="1"] h1,
 .page[data-heading-font="1"] h2,
 .page[data-heading-font="1"] h3 { font-family: var(--client-heading-font) !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  .page[data-design-button="button-smooth-flux"] .heroCta,
+  .page[data-design-button="button-smooth-flux"] .bookButton,
+  .page[data-design-button="button-smooth-flux"] .addButton,
+  .page[data-design-button="button-smooth-flux"] .newsletterForm button { transition: none; }
+  .page[data-design-button="button-smooth-flux"] .heroCta:hover,
+  .page[data-design-button="button-smooth-flux"] .bookButton:hover,
+  .page[data-design-button="button-smooth-flux"] .addButton:hover,
+  .page[data-design-button="button-smooth-flux"] .newsletterForm button:hover { transform: none; }
+}
 
 /* Thème « Prestige » — showroom sombre champagne/ivoire, porté de la maquette
    demo/automobile-luxe : hero plein écran très contrasté, titres Fraunces

@@ -125,7 +125,7 @@ export function AgendaTunnel({ schedules }: { schedules: Schedule[] }) {
               tes clients pourront réserver depuis ta vitrine.
             </p>
             <div className={styles.introActions}>
-              <button type="button" className={styles.primary} onClick={() => setStep(1)}>
+              <button type="button" className={`flux-button-smooth ${styles.primary}`} onClick={() => setStep(1)}>
                 Créer mes horaires <ArrowRight aria-hidden="true" />
               </button>
               <Link href="/agenda?view=agenda" className={styles.agendaShortcut}>
@@ -245,7 +245,7 @@ export function AgendaTunnel({ schedules }: { schedules: Schedule[] }) {
                 );
               })}
             </div>
-            <button type="button" className={styles.primary} disabled={isPending} onClick={save}>
+            <button type="button" className={`flux-button-smooth ${styles.primary}`} disabled={isPending} onClick={save}>
               <Save aria-hidden="true" />
               {isPending ? "Création de ton agenda…" : "Enregistrer et ouvrir mon agenda"}
             </button>
@@ -260,7 +260,7 @@ export function AgendaTunnel({ schedules }: { schedules: Schedule[] }) {
           </button>
           <button
             type="button"
-            className={styles.primary}
+            className={`flux-button-smooth ${styles.primary}`}
             disabled={!canContinue}
             onClick={() => setStep((current) => current + 1)}
           >

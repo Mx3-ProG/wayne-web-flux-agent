@@ -109,7 +109,7 @@ export function ProductTunnel({ userId, balance }: { userId: string; balance: nu
             <p className={styles.kicker}>Création produit FLUX</p>
             <h1>Transforme ton savoir-faire en produits <em>prêts à vendre.</em></h1>
             <p>Une catégorie, un ou plusieurs produits, puis Flux organise tout dans ta vitrine.</p>
-            <button className={styles.primary} type="button" onClick={() => setStep(1)}>Créer mes produits <ArrowRight aria-hidden="true" /></button>
+            <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={() => setStep(1)}>Créer mes produits <ArrowRight aria-hidden="true" /></button>
           </section>
         )}
 
@@ -187,7 +187,7 @@ export function ProductTunnel({ userId, balance }: { userId: string; balance: nu
               <article className={styles.reviewCard}><small>Coût total (produits + agenda)</small><strong>{PRODUCT_CREATE_COST} crédits · solde : {balance} cr.</strong></article>
             </div>
             {!enough && <p className={styles.subtitle}>Il te manque {PRODUCT_CREATE_COST - balance} crédit{PRODUCT_CREATE_COST - balance > 1 ? "s" : ""}. <Link href="/credits" style={{ textDecoration: "underline" }}>Recharge tes crédits</Link>.</p>}
-            <div className={styles.confirm}><button className={styles.back} type="button" onClick={() => setStep(6)}><ArrowLeft aria-hidden="true" /> Modifier</button><button className={styles.primary} type="button" disabled={pending || !enough} onClick={save}>{pending ? "Création…" : `Confirmer et régler mes horaires (${PRODUCT_CREATE_COST} cr.)`} <Check aria-hidden="true" /></button></div>
+            <div className={styles.confirm}><button className={styles.back} type="button" onClick={() => setStep(6)}><ArrowLeft aria-hidden="true" /> Modifier</button><button className={`flux-button-smooth ${styles.primary}`} type="button" disabled={pending || !enough} onClick={save}>{pending ? "Création…" : `Confirmer et régler mes horaires (${PRODUCT_CREATE_COST} cr.)`} <Check aria-hidden="true" /></button></div>
           </Screen>
         )}
       </main>
@@ -221,7 +221,7 @@ export function ProductTunnel({ userId, balance }: { userId: string; balance: nu
         </DialogContent>
       </Dialog>
 
-      {step > 0 && step < 7 && <footer className={styles.controls}><button className={styles.back} type="button" onClick={() => setStep((current) => current - 1)}><ArrowLeft aria-hidden="true" /> Retour</button><button className={styles.primary} type="button" disabled={!canContinue} onClick={() => setStep((current) => current + 1)}>Continuer <ArrowRight aria-hidden="true" /></button></footer>}
+      {step > 0 && step < 7 && <footer className={styles.controls}><button className={styles.back} type="button" onClick={() => setStep((current) => current - 1)}><ArrowLeft aria-hidden="true" /> Retour</button><button className={`flux-button-smooth ${styles.primary}`} type="button" disabled={!canContinue} onClick={() => setStep((current) => current + 1)}>Continuer <ArrowRight aria-hidden="true" /></button></footer>}
     </div>
   );
 }

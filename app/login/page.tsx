@@ -51,7 +51,7 @@ export default function LoginPage() {
             </label>
             <Link className={styles.forgot} href="/mot-de-passe-oublie">Mot de passe oublié ?</Link>
             {loginState.error && <p className={styles.error}>{loginState.error}</p>}
-            <button className={styles.primary} type="submit" disabled={loginPending}>
+            <button className={`flux-button-smooth ${styles.primary}`} type="submit" disabled={loginPending}>
               {loginPending ? "Connexion…" : "Entrer dans mon espace"}
               {!loginPending && <ArrowRight aria-hidden="true" />}
             </button>

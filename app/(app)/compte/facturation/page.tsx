@@ -52,9 +52,9 @@ export default async function BillingPage({ searchParams }: {
           </dl>
         )}
         {profile?.stripe_customer_id ? (
-          <form action={openBillingPortal}><button type="submit">Gérer l’abonnement et les factures</button></form>
+          <form action={openBillingPortal}><button className="flux-button-smooth" type="submit">Gérer l’abonnement et les factures</button></form>
         ) : (
-          <Link className={styles.button} href="/formules">Choisir une formule</Link>
+          <Link className={`flux-button-smooth ${styles.button}`} href="/formules">Choisir une formule</Link>
         )}
         <p className={styles.help}>Le portail sécurisé Stripe permet de modifier le moyen de paiement, télécharger les factures, changer de formule ou résilier.</p>
       </section>

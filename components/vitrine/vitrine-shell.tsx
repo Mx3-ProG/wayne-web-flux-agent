@@ -14,6 +14,7 @@ import { MessageCircle, Phone, ShoppingBag, Sparkles } from "lucide-react";
 import { isDarkTheme, useVisitorMode } from "./visitor-mode";
 import { ScrollTopButton } from "./scroll-top-button";
 import styles from "./vitrine.module.css";
+import { resolveVitrineDesign } from "@/lib/vitrine-design/resolver";
 
 type Props = {
   page: Page;
@@ -31,6 +32,7 @@ export function VitrineShell({
   children,
 }: Props) {
   const [legalOpen, setLegalOpen] = useState<string | null>(null);
+  const design = resolveVitrineDesign(page.theme || "editorial", page.design);
   const { visitorMode, useCustomSurfaces } = useVisitorMode(isDarkTheme(page.theme));
 
   const colors = {
@@ -57,6 +59,19 @@ export function VitrineShell({
     <div
       className={styles.page}
       data-theme={page.theme || "editorial"}
+      data-design-kit={design.kit.id}
+      data-design-button={design.components.button.renderId}
+      data-design-navigation={design.components.navigation.renderId}
+      data-design-header={design.components.header.renderId}
+      data-design-footer={design.components.footer.renderId}
+      data-design-section={design.components.section.renderId}
+      data-design-category={design.components.category.renderId}
+      data-design-product={design.components.product.renderId}
+      data-design-cart={design.components.cart.renderId}
+      data-design-order={design.components.order.renderId}
+      data-design-booking={design.components.booking.renderId}
+      data-design-legal={design.components.legal.renderId}
+      data-design-checkout={design.components.checkout.renderId}
       data-mode={visitorMode ?? undefined}
       data-heading-scale={headingScale ? typography.headingScale : undefined}
       data-heading-font={headingFont ? "1" : undefined}

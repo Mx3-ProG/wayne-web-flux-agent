@@ -26,7 +26,7 @@ export default function PricingPage() {
       <header className={styles.header}>
         <Link href="/" aria-label="Wayne Web Flux, accueil"><FluxBrand priority /></Link>
         <nav><Link href="/">Accueil</Link><Link href="/pricing" aria-current="page">Tarifs</Link><Link href="/login">Connexion</Link></nav>
-        <Link className={styles.headerCta} href="/commencer">Essayer gratuitement</Link>
+        <Link className={`flux-button-smooth ${styles.headerCta}`} href="/commencer">Essayer gratuitement</Link>
       </header>
 
       <main>
@@ -64,7 +64,7 @@ export default function PricingPage() {
                     <li><Check /> {limits.subpages} sous-pages par vitrine</li>
                     {FEATURES[plan].map((feature) => <li key={feature}><Check /> {feature}</li>)}
                   </ul>
-                  <Link className={styles.planCta} href={`/checkout/formule/${plan}`}>
+                  <Link className={`flux-button-smooth ${styles.planCta}`} href={`/checkout/formule/${plan}`}>
                     Choisir {PLAN_LABEL[plan]} <ArrowRight aria-hidden="true" />
                   </Link>
                 </article>
@@ -86,7 +86,7 @@ export default function PricingPage() {
                 <div className={styles.packName}><p>{pack.label}</p>{pack.discountLabel && <small>{pack.discountLabel}</small>}</div>
                 <strong>{pack.credits}<span> crédits</span></strong>
                 <p>{(pack.priceCents / 100).toLocaleString("fr-FR")} € <small>· {packUnitPrice(pack)} € / crédit</small></p>
-                <Link href={`/checkout/credits/${pack.id}`}>Acheter ce pack <ArrowRight /></Link>
+                <Link className="flux-button-smooth" href={`/checkout/credits/${pack.id}`}>Acheter ce pack <ArrowRight /></Link>
               </article>
             ))}
           </div>
@@ -105,4 +105,3 @@ export default function PricingPage() {
     </div>
   );
 }
-

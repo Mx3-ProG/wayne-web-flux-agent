@@ -10,6 +10,8 @@ type Props = {
   slug: string;
   service: Service;
   accentColor: string;
+  designId?: string;
+  buttonDesignId?: string;
   onClose: () => void;
 };
 
@@ -22,7 +24,7 @@ function formatDay(isoDate: string): string {
 }
 
 // Réservation en 3 étapes : jour → heure → coordonnées. Sans compte client.
-export function BookingModal({ slug, service, accentColor, onClose }: Props) {
+export function BookingModal({ slug, service, accentColor, designId, buttonDesignId, onClose }: Props) {
   const [step, setStep] = useState<"day" | "time" | "form" | "done">("day");
   const [days, setDays] = useState<DayAvailability[] | null>(null);
   const [slots, setSlots] = useState<string[] | null>(null);
@@ -78,6 +80,9 @@ export function BookingModal({ slug, service, accentColor, onClose }: Props) {
 
   return (
     <div
+      data-design-booking={designId}
+      data-design-button={buttonDesignId}
+      style={{ "--flux-button-accent": accentColor } as React.CSSProperties}
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 p-3 backdrop-blur-md sm:items-center sm:p-4"
       onClick={onClose}
       role="dialog"
@@ -200,6 +205,7 @@ export function BookingModal({ slug, service, accentColor, onClose }: Props) {
               Pour recevoir la confirmation de votre rendez-vous.
             </p>
             <button
+              data-vitrine-action
               type="submit"
               disabled={submitting}
               className="w-full rounded-xl px-4 py-3 font-medium text-white disabled:opacity-60"
@@ -219,6 +225,7 @@ export function BookingModal({ slug, service, accentColor, onClose }: Props) {
               <br />À très vite.
             </p>
             <button
+              data-vitrine-action
               type="button"
               onClick={onClose}
               className="mt-5 rounded-xl px-5 py-2.5 font-medium text-white"

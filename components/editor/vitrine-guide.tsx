@@ -49,7 +49,11 @@ export function VitrineGuide({
   const [page, setPage] = useState(initialPage);
   const [pending, startTransition] = useTransition();
   const [creditsDialog, setCreditsDialog] = useState<
-    "insufficient_credits" | "subscription_required" | "flux_requires_payment" | null
+    | "insufficient_credits"
+    | "subscription_required"
+    | "flux_requires_payment"
+    | "flux_trial_exhausted"
+    | null
   >(null);
   const [brief, setBrief] = useState("");
   // L'assistant FLUX est payant ; l'éditeur complet reste gratuit.
@@ -69,6 +73,7 @@ export function VitrineGuide({
       const result = await fluxPrefill(initialPage.id);
       if (
         result.error === "flux_requires_payment" ||
+        result.error === "flux_trial_exhausted" ||
         result.error === "insufficient_credits" ||
         result.error === "subscription_required"
       ) {
@@ -98,6 +103,7 @@ export function VitrineGuide({
       const result = await fluxGenerateSite(initialPage.id, brief);
       if (
         result.error === "flux_requires_payment" ||
+        result.error === "flux_trial_exhausted" ||
         result.error === "insufficient_credits" ||
         result.error === "subscription_required"
       ) {
@@ -184,7 +190,7 @@ export function VitrineGuide({
               placeholder="Décris ton commerce en quelques phrases : ce que tu proposes, ton style, ce qui te distingue… FLUX s'occupe du reste."
             />
             <button
-              className={styles.primary}
+              className={`flux-button-smooth ${styles.primary}`}
               type="button"
               disabled={pending}
               onClick={generateSite}
@@ -292,7 +298,7 @@ export function VitrineGuide({
             {!enough && <p className={styles.subtitle}>Il te manque {VITRINE_ASSIST_COST - publish.balance} crédit{VITRINE_ASSIST_COST - publish.balance > 1 ? "s" : ""}. <Link href="/credits" style={{ textDecoration: "underline" }}>Recharge tes crédits</Link> — ou passe par l&apos;éditeur complet, gratuit.</p>}
             <div className={styles.confirm}>
               <button className={styles.back} type="button" onClick={() => setStep(4)}><ArrowLeft aria-hidden="true" /> Modifier</button>
-              <button className={styles.primary} type="button" disabled={pending || !enough} onClick={save}>{pending ? "Enregistrement…" : `Confirmer mes modifications (${VITRINE_ASSIST_COST} cr.)`} <Store aria-hidden="true" /></button>
+              <button className={`flux-button-smooth ${styles.primary}`} type="button" disabled={pending || !enough} onClick={save}>{pending ? "Enregistrement…" : `Confirmer mes modifications (${VITRINE_ASSIST_COST} cr.)`} <Store aria-hidden="true" /></button>
             </div>
           </Screen>
         )}
@@ -313,7 +319,7 @@ export function VitrineGuide({
       {step > 0 && step < 5 && (
         <footer className={styles.controls}>
           <button className={styles.back} type="button" onClick={() => setStep((current) => current - 1)}><ArrowLeft aria-hidden="true" /> Retour</button>
-          <button className={styles.primary} type="button" disabled={!canContinue} onClick={() => setStep((current) => current + 1)}>Continuer <ArrowRight aria-hidden="true" /></button>
+          <button className={`flux-button-smooth ${styles.primary}`} type="button" disabled={!canContinue} onClick={() => setStep((current) => current + 1)}>Continuer <ArrowRight aria-hidden="true" /></button>
         </footer>
       )}
 
@@ -323,33 +329,39 @@ export function VitrineGuide({
             <DialogTitle>
               {creditsDialog === "subscription_required"
                 ? "Ton essai est terminé"
-                : creditsDialog === "flux_requires_payment"
-                  ? "FLUX est prête à travailler pour toi"
-                  : "Plus assez de crédits"}
+                : creditsDialog === "flux_trial_exhausted"
+                  ? "Tu as testé FLUX — la suite avec une formule"
+                  : creditsDialog === "flux_requires_payment"
+                    ? "FLUX est prête à travailler pour toi"
+                    : "Plus assez de crédits"}
             </DialogTitle>
             <DialogDescription>
               {creditsDialog === "subscription_required"
                 ? "Tes 7 jours d'essai FLUX sont passés. Choisis une formule pour continuer à utiliser l'assistant."
-                : creditsDialog === "flux_requires_payment"
-                  ? "FLUX crée et améliore ta vitrine à ta place — réservé aux formules et aux packs de crédits. L'éditeur complet reste gratuit."
-                  : `L'assistant vitrine coûte ${VITRINE_ASSIST_COST} crédits. Recharge tes crédits, ou utilise l'éditeur complet (gratuit).`}
+                : creditsDialog === "flux_trial_exhausted"
+                  ? "Tu as utilisé tes 2 générations FLUX offertes pendant l'essai. Continue avec une formule — ou pars des templates déjà en place dans l'éditeur complet (gratuit)."
+                  : creditsDialog === "flux_requires_payment"
+                    ? "FLUX crée et améliore ta vitrine à ta place. Pars des templates déjà en place dans l'éditeur complet (gratuit), ou débloque FLUX avec une formule ou un pack de crédits."
+                    : `L'assistant vitrine coûte ${VITRINE_ASSIST_COST} crédits. Recharge tes crédits, ou utilise l'éditeur complet (gratuit).`}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button asChild variant="ghost">
-              <Link href="/ma-page?view=editor">Éditeur complet</Link>
+              <Link href="/ma-page?view=editor">Partir d&apos;un template</Link>
             </Button>
             <Button asChild>
               <Link
                 href={
                   creditsDialog === "subscription_required" ||
-                  creditsDialog === "flux_requires_payment"
+                  creditsDialog === "flux_requires_payment" ||
+                  creditsDialog === "flux_trial_exhausted"
                     ? "/formules"
                     : "/credits"
                 }
               >
                 {creditsDialog === "subscription_required" ||
-                creditsDialog === "flux_requires_payment"
+                creditsDialog === "flux_requires_payment" ||
+                creditsDialog === "flux_trial_exhausted"
                   ? "Choisir ma formule FLUX"
                   : "Recharger mes crédits"}
               </Link>

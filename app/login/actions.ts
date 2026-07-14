@@ -7,6 +7,8 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createPage } from "@/app/(app)/ma-page/actions";
 import { saveVoiceProfile } from "@/app/(app)/contexte/actions";
 import { getActivePage } from "@/lib/active-project";
+import { sendEmailWithResult } from "@/lib/emails/send";
+import { confirmationEmail } from "@/lib/emails/auth-templates";
 
 export type AuthState = { error?: string; message?: string };
 
@@ -212,43 +214,71 @@ export async function signUp(
   if (password.length < 8)
     return { error: "Le mot de passe doit faire au moins 8 caractères." };
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
+  const metadata = {
+    name,
+    vertical,
+    business_name: businessName,
+    job_title: jobTitle,
+    city,
+    tone,
+    goal,
+    category_name: categoryName,
+    product_name: productName,
+    product_price_cents: productPriceCents,
+    track_stock: trackStock,
+    product_stock: productStock,
+    available_days: availableDays,
+    opening_time: openingTime,
+    closing_time: closingTime,
+  };
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!siteUrl) {
+    console.error("auth: NEXT_PUBLIC_SITE_URL absent");
+    return { error: "Impossible de créer le compte. Réessaie plus tard." };
+  }
+
+  // Supabase limite son SMTP par défaut aux membres de l'équipe du projet.
+  // generateLink conserve la vérification d'adresse, puis Resend livre l'email
+  // à tous les utilisateurs via le domaine déjà configuré par l'application.
+  const admin = createAdminClient();
+  const { data, error } = await admin.auth.admin.generateLink({
+    type: "signup",
     email,
     password,
-    options: {
-      data: {
-        name,
-        vertical,
-        business_name: businessName,
-        job_title: jobTitle,
-        city,
-        tone,
-        goal,
-        category_name: categoryName,
-        product_name: productName,
-        product_price_cents: productPriceCents,
-        track_stock: trackStock,
-        product_stock: productStock,
-        available_days: availableDays,
-        opening_time: openingTime,
-        closing_time: closingTime,
-      },
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/login`,
-    },
+    options: { data: metadata, redirectTo: `${siteUrl}/login` },
   });
   if (error) {
-    if (error.message.includes("already registered"))
+    console.error("auth: signup link generation failed", {
+      code: error.code,
+      status: error.status,
+    });
+    if (/already|registered|exists/i.test(error.message))
       return { error: "Un compte existe déjà avec cet email." };
     return { error: "Impossible de créer le compte. Réessaie." };
   }
 
-  // Si la confirmation email est désactivée, une session existe déjà.
-  if (data.session) {
-    await initializeTunnel(data.user?.user_metadata);
-    revalidatePath("/", "layout");
-    redirect("/espace");
+  const confirmation = confirmationEmail(data.properties.action_link);
+  const sent = await sendEmailWithResult({
+    to: email,
+    subject: confirmation.subject,
+    html: confirmation.html,
+  });
+  if (!sent) {
+    // generateLink crée l'utilisateur avant l'envoi. On annule pour permettre
+    // une nouvelle tentative avec la même adresse après un incident d'email.
+    const { error: cleanupError } = await admin.auth.admin.deleteUser(data.user.id);
+    if (cleanupError) {
+      console.error("auth: signup rollback failed", {
+        userId: data.user.id,
+        code: cleanupError.code,
+      });
+    }
+    return {
+      error:
+        "Le compte n’a pas pu être confirmé par email. Vérifie l’adresse et réessaie.",
+    };
   }
+
   return {
     message:
       "Ta configuration est prête. Clique sur le lien reçu par email pour activer ton espace.",

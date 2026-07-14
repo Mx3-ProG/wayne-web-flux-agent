@@ -11,6 +11,7 @@ import { VitrineSubpage } from "./vitrine-subpage";
 import { BookingModal } from "./booking-modal";
 import { OrderModal, type CartLine } from "./order-modal";
 import { VitrineTracker } from "./vitrine-tracker";
+import { resolveVitrineDesign } from "@/lib/vitrine-design/resolver";
 
 type Props = {
   page: Page;
@@ -35,6 +36,7 @@ export function VitrinePublic({
   const [cart, setCart] = useState<Record<string, CartLine>>({});
   const [cartOpen, setCartOpen] = useState(false);
   const accent = page.colors.primary || "#d31212";
+  const design = resolveVitrineDesign(page.theme || "editorial", page.design);
 
   function keyOf(kind: CartLine["kind"], id: string) {
     return `${kind}:${id}`;
@@ -107,6 +109,8 @@ export function VitrinePublic({
           slug={page.slug}
           service={bookingService}
           accentColor={accent}
+          designId={design.components.booking.renderId}
+          buttonDesignId={design.components.button.renderId}
           onClose={() => setBookingService(null)}
         />
       )}
@@ -115,6 +119,8 @@ export function VitrinePublic({
           pageId={page.id}
           items={lines}
           accentColor={accent}
+          designId={design.components.order.renderId}
+          buttonDesignId={design.components.button.renderId}
           onSetQty={setQty}
           onClose={() => setCartOpen(false)}
           onDone={() => setCart({})}

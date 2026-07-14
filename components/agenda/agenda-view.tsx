@@ -167,7 +167,7 @@ export function AgendaView({
               : `${upcoming.length} rendez-vous à venir. Tout est prêt pour accueillir tes clients.`}
           </p>
         </div>
-        <Link href={`/p/${page.slug}`} target="_blank" className={styles.heroAction}>
+        <Link href={`/p/${page.slug}`} target="_blank" className={`flux-button-smooth ${styles.heroAction}`}>
           Voir ma vitrine <ArrowUpRight aria-hidden="true" />
         </Link>
       </section>

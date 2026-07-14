@@ -34,7 +34,7 @@ export function CreditPacks() {
           </p>
           <Link
             href={`/checkout/credits/${pack.id}`}
-            className={pack.featured ? styles.buyFeatured : styles.buyButton}
+            className={`flux-button-smooth flux-button-smooth-gold ${pack.featured ? styles.buyFeatured : styles.buyButton}`}
           >
             <Coins aria-hidden="true" />
             Acheter

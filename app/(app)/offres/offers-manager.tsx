@@ -344,7 +344,7 @@ export function OffersManager({
 
         <button
           type="button"
-          className={styles.addCard}
+          className={`flux-button-smooth ${styles.addCard}`}
           onClick={add}
           disabled={pending}
         >

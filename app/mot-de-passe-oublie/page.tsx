@@ -48,7 +48,7 @@ export default function ForgotPasswordPage() {
           </label>
           {state.error && <p className={styles.error}>{state.error}</p>}
           {state.message && <p className={styles.success}>{state.message}</p>}
-          <button className={styles.primary} type="submit" disabled={pending}>
+          <button className={`flux-button-smooth ${styles.primary}`} type="submit" disabled={pending}>
             {pending ? "Envoi…" : "Envoyer le lien"}
             {!pending && <ArrowRight aria-hidden="true" />}
           </button>

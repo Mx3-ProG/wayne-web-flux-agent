@@ -11,7 +11,7 @@ export function MarketingFooter() {
         <div className={styles.brandColumn}>
           <Link href="/" aria-label="Wayne Web Flux, accueil"><FluxBrand /></Link>
           <p>La présence digitale qui travaille vraiment pour ton commerce.</p>
-          <Link className={styles.cta} href="/commencer">
+          <Link className={`flux-button-smooth ${styles.cta}`} href="/commencer">
             Essayer FLUX gratuitement <ArrowUpRight aria-hidden="true" />
           </Link>
         </div>

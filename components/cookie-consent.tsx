@@ -157,7 +157,7 @@ export function CookieConsent() {
         </div>
 
         <div className={styles.actions}>
-          <button className={styles.accept} type="button" onClick={() => save({ analytics: true, personalization: true, marketing: true })}>
+          <button className={`flux-button-smooth ${styles.accept}`} type="button" onClick={() => save({ analytics: true, personalization: true, marketing: true })}>
             Tout accepter <Check aria-hidden="true" />
           </button>
           {customizing ? (

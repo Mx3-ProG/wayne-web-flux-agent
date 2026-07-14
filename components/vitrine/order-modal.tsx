@@ -18,13 +18,15 @@ type Props = {
   pageId: string;
   items: CartLine[];
   accentColor: string;
+  designId?: string;
+  buttonDesignId?: string;
   onSetQty: (kind: CartLine["kind"], id: string, quantity: number) => void;
   onClose: () => void;
   onDone: () => void;
 };
 
 // Commande sans paiement : panier → coordonnées → confirmation. Sans compte.
-export function OrderModal({ pageId, items, accentColor, onSetQty, onClose, onDone }: Props) {
+export function OrderModal({ pageId, items, accentColor, designId, buttonDesignId, onSetQty, onClose, onDone }: Props) {
   const [step, setStep] = useState<"cart" | "form" | "done">("cart");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -63,6 +65,9 @@ export function OrderModal({ pageId, items, accentColor, onSetQty, onClose, onDo
 
   return (
     <div
+      data-design-order={designId}
+      data-design-button={buttonDesignId}
+      style={{ "--flux-button-accent": accentColor } as React.CSSProperties}
       className="fixed inset-0 z-50 flex items-end justify-center bg-black/75 p-3 backdrop-blur-md sm:items-center sm:p-4"
       onClick={onClose}
       role="dialog"
@@ -131,6 +136,7 @@ export function OrderModal({ pageId, items, accentColor, onSetQty, onClose, onDo
               <p className="text-sm opacity-60">Ton panier est vide.</p>
             ) : (
               <button
+                data-vitrine-action
                 type="button"
                 onClick={() => setStep("form")}
                 className="w-full rounded-xl px-4 py-3 font-medium text-white"
@@ -190,6 +196,7 @@ export function OrderModal({ pageId, items, accentColor, onSetQty, onClose, onDo
               Le commerçant te recontacte pour confirmer et convenir du paiement.
             </p>
             <button
+              data-vitrine-action
               type="submit"
               disabled={submitting}
               className="w-full rounded-xl px-4 py-3 font-medium text-white disabled:opacity-60"
@@ -210,6 +217,7 @@ export function OrderModal({ pageId, items, accentColor, onSetQty, onClose, onDo
               Le commerçant va te recontacter très vite.
             </p>
             <button
+              data-vitrine-action
               type="button"
               onClick={() => {
                 onDone();

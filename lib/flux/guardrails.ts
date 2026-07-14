@@ -3,6 +3,7 @@ import "server-only";
 import { createBlockSection, validateSections, type BlockSectionType, type PageSection } from "@/lib/sections";
 import { FluxWritableFieldsSchema, type FluxGeneratedSection } from "@/lib/flux/schemas";
 import type { PageDraftFields } from "@/lib/types";
+import { designConfigError } from "@/lib/vitrine-design/resolver";
 
 // Un patch FLUX = des champs simples de la vitrine + éventuellement une liste
 // complète de sections déjà résolue (natives + blocs). Jamais de médias.
@@ -26,6 +27,10 @@ export function validateDraftPatch(patch: FluxDraftPatch): ValidateResult {
     const parsed = FluxWritableFieldsSchema.safeParse(patch.fields);
     if (!parsed.success) {
       return { ok: false, error: "Champs générés invalides." };
+    }
+    if (parsed.data.design) {
+      const designError = designConfigError(parsed.data.design);
+      if (designError) return { ok: false, error: designError };
     }
     // parsed.data ne contient que les clés autorisées (Zod strippe le reste).
     Object.assign(out, parsed.data);

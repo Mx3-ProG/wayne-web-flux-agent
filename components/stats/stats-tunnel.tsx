@@ -43,7 +43,7 @@ export function StatsTunnel({ pageUrl }: { pageUrl: string }) {
             </div>
             <div className={styles.confirm}>
               <CopyButton text={pageUrl} label="Copier mon lien" />
-              <button className={styles.primary} type="button" onClick={() => setStep(1)}>
+              <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={() => setStep(1)}>
                 Continuer <ArrowRight aria-hidden="true" />
               </button>
             </div>
@@ -64,7 +64,7 @@ export function StatsTunnel({ pageUrl }: { pageUrl: string }) {
               <button className={styles.back} type="button" onClick={() => setStep(0)}>
                 <ArrowLeft aria-hidden="true" /> Retour
               </button>
-              <Link href="/statistiques?view=stats" className={styles.primary} style={{ textDecoration: "none" }}>
+              <Link href="/statistiques?view=stats" className={`flux-button-smooth ${styles.primary}`} style={{ textDecoration: "none" }}>
                 <ChartLine aria-hidden="true" style={{ width: 16 }} /> Voir mes statistiques
               </Link>
             </div>

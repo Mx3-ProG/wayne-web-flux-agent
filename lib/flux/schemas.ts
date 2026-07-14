@@ -10,21 +10,15 @@
 
 import { z } from "zod";
 import type { PageTheme } from "@/lib/types";
+import { DESIGN_COMPONENTS, DESIGN_KITS, VOICE_ARCHETYPES } from "@/lib/vitrine-design/registry";
 
 const HexColor = z
   .string()
   .regex(/^#[0-9a-fA-F]{6}$/, "couleur hexadécimale à 6 chiffres attendue");
 
-export const PAGE_THEMES = [
-  "editorial",
-  "studio",
-  "local",
-  "bold",
-  "luxe",
-  "minimal",
-  "neon",
-  "prestige",
-] as const satisfies readonly PageTheme[];
+const enumValues = <T extends string>(values: T[]) => values as [T, ...T[]];
+
+export const PAGE_THEMES = DESIGN_KITS.map((kit) => kit.legacyTheme) satisfies PageTheme[];
 
 export const FluxColorsSchema = z.object({
   primary: HexColor.optional(),
@@ -51,6 +45,27 @@ export const FluxTypographySchema = z.object({
   headingFont: z.string().max(40).optional(),
 });
 
+const componentIds = (slot: string) => enumValues(DESIGN_COMPONENTS.filter((entry) => entry.slot === slot).map((entry) => entry.id));
+
+export const FluxDesignSchema = z.object({
+  kitId: z.enum(enumValues(DESIGN_KITS.map((kit) => kit.id))),
+  components: z.object({
+    button: z.enum(componentIds("button")).optional(),
+    navigation: z.enum(componentIds("navigation")).optional(),
+    header: z.enum(componentIds("header")).optional(),
+    footer: z.enum(componentIds("footer")).optional(),
+    section: z.enum(componentIds("section")).optional(),
+    category: z.enum(componentIds("category")).optional(),
+    product: z.enum(componentIds("product")).optional(),
+    cart: z.enum(componentIds("cart")).optional(),
+    order: z.enum(componentIds("order")).optional(),
+    booking: z.enum(componentIds("booking")).optional(),
+    legal: z.enum(componentIds("legal")).optional(),
+    checkout: z.enum(componentIds("checkout")).optional(),
+  }).optional(),
+  voiceArchetypeId: z.enum(enumValues(VOICE_ARCHETYPES.map((voice) => voice.id))).optional(),
+});
+
 // Champs simples de la vitrine que FLUX peut proposer (patch partiel).
 export const FluxWritableFieldsSchema = z.object({
   business_name: z.string().max(60).optional(),
@@ -61,10 +76,11 @@ export const FluxWritableFieldsSchema = z.object({
   offer: z.string().max(200).optional(),
   promo: FluxPromoSchema.nullable().optional(),
   seo: FluxSeoSchema.optional(),
-  theme: z.enum(PAGE_THEMES).optional(),
+  theme: z.enum(enumValues(PAGE_THEMES)).optional(),
   font: z.string().max(40).optional(),
   colors: FluxColorsSchema.optional(),
   typography: FluxTypographySchema.optional(),
+  design: FluxDesignSchema.optional(),
 });
 export type FluxWritableFields = z.infer<typeof FluxWritableFieldsSchema>;
 
@@ -122,11 +138,12 @@ export const FluxSiteOutputSchema = z.object({
     title: z.string().max(70),
     description: z.string().max(200),
   }),
-  theme: z.enum(PAGE_THEMES),
+  theme: z.enum(enumValues(PAGE_THEMES)),
   colors: z.object({
     primary: HexColor,
     dark: HexColor,
   }),
+  design: FluxDesignSchema,
   sections: z.array(FluxGeneratedSectionSchema).min(2).max(5),
 });
 export type FluxSiteOutput = z.infer<typeof FluxSiteOutputSchema>;

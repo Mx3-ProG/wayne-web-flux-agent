@@ -277,7 +277,7 @@ export default async function EspacePage() {
           <h1>{profile?.name ? `Bonjour ${profile.name}` : "Bonjour"}</h1>
           <p>Voici ce qui fait avancer ton commerce aujourd&apos;hui.</p>
         </div>
-        <Link className={styles.heroAction} href="/outil/posts">
+        <Link className={`flux-button-smooth ${styles.heroAction}`} href="/outil/posts">
           Créer un contenu <ArrowRight aria-hidden="true" />
         </Link>
       </section>
@@ -310,12 +310,12 @@ export default async function EspacePage() {
         )}
 
         <div className={styles.storefrontActions}>
-          <Link className={styles.storefrontPrimary} href="/ma-page">
+          <Link className={`flux-button-smooth ${styles.storefrontPrimary}`} href="/ma-page">
             <Pencil aria-hidden="true" />
             {page ? "Modifier ma vitrine" : "Créer ma vitrine"}
           </Link>
           {page && (
-            <Link className={styles.storefrontSecondary} href={`/p/${page.slug}`} target="_blank">
+            <Link className={`flux-button-smooth flux-button-smooth-secondary ${styles.storefrontSecondary}`} href={`/p/${page.slug}`} target="_blank">
               Voir ma vitrine <ExternalLink aria-hidden="true" />
             </Link>
           )}
@@ -383,7 +383,7 @@ export default async function EspacePage() {
               </a>
               {(nextStep.n === 7 || nextStep.n === 8) && (
                 <form action={completeJourneyStep.bind(null, nextStep.n)}>
-                  <button type="submit">
+                  <button className="flux-button-smooth" type="submit">
                     <Check aria-hidden="true" />
                     Valider
                   </button>

@@ -64,7 +64,7 @@ export function InstallAppGuide() {
           </small>
         </span>
         {installPrompt && !installed && (
-          <button type="button" className={styles.installButton} onClick={install}>
+          <button type="button" className={`flux-button-smooth ${styles.installButton}`} onClick={install}>
             Installer maintenant
           </button>
         )}

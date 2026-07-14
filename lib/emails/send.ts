@@ -26,19 +26,19 @@ export type SendEmailInput = {
   replyTo?: string | null;
 };
 
-export async function sendEmail(input: SendEmailInput): Promise<void> {
+export async function sendEmailWithResult(input: SendEmailInput): Promise<boolean> {
   const client = getResend();
   if (!client) {
     console.warn("email: RESEND_API_KEY absent, envoi ignoré", {
       subject: input.subject,
     });
-    return;
+    return false;
   }
 
   const to = cleanHeader(input.to);
   if (!EMAIL_RE.test(to)) {
     console.warn("email: destinataire invalide, envoi ignoré");
-    return;
+    return false;
   }
   const replyTo = input.replyTo ? cleanHeader(input.replyTo) : null;
 
@@ -54,8 +54,17 @@ export async function sendEmail(input: SendEmailInput): Promise<void> {
       html: input.html,
       ...(replyTo && EMAIL_RE.test(replyTo) ? { replyTo } : {}),
     });
-    if (error) console.error("email: send failed", { error, to });
+    if (error) {
+      console.error("email: send failed", { error, to });
+      return false;
+    }
+    return true;
   } catch (e) {
     console.error("email: send threw", e);
+    return false;
   }
+}
+
+export async function sendEmail(input: SendEmailInput): Promise<void> {
+  await sendEmailWithResult(input);
 }
