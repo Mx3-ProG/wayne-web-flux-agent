@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Fraunces, Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { CookieConsent } from "@/components/cookie-consent";
+import { FluxLoader } from "@/components/flux-loader";
 import "./globals.css";
 
 const inter = Inter({
@@ -57,6 +58,7 @@ export default function RootLayout({
   return (
     <html lang="fr" data-scroll-behavior="smooth" className={`${inter.variable} ${fraunces.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
+        <FluxLoader />
         {children}
         <CookieConsent />
         <Toaster />

@@ -104,14 +104,7 @@ export function CookieConsent() {
     setPreferences((current) => ({ ...current, [key]: !current[key] }));
   }
 
-  if (!ready) return null;
-  if (!visible) {
-    return (
-      <button className={styles.reopen} type="button" onClick={() => setVisible(true)} aria-label="Gérer mes préférences de cookies">
-        <Cookie aria-hidden="true" /> <span>Cookies</span>
-      </button>
-    );
-  }
+  if (!ready || !visible) return null;
 
   return (
     <div className={styles.backdrop} role="presentation">

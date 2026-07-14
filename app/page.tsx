@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { MarketingFooter } from "@/components/marketing-footer";
 import {
   ArrowRight,
   BarChart3,
@@ -103,6 +104,7 @@ export default function LandingPage() {
           <nav aria-label="Navigation principale">
             <a href="#solution">La solution</a>
             <a href="#outils">Les outils</a>
+            <Link href="/pricing">Tarifs</Link>
             <a href="#histoire">Notre histoire</a>
           </nav>
           <div className={styles.navActions}>
@@ -431,18 +433,7 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className={styles.footer}>
-        <Brand />
-        <p>Le digital qui fait avancer ton commerce.</p>
-        <div>
-          <Link href="/login">Connexion</Link>
-          <a href="https://www.wayne-web.com/faq">FAQ</a>
-          <Link href="/mentions-legales">Mentions légales</Link>
-          <Link href="/cgv">CGV</Link>
-          <Link href="/confidentialite">Confidentialité</Link>
-          <span>© 2026 Wayne Web</span>
-        </div>
-      </footer>
+      <MarketingFooter />
 
       <aside className={styles.mobileStickyCta} aria-label="Accès rapide à Flux">
         <Link

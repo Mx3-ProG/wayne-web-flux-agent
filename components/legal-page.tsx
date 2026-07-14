@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FluxBrand } from "@/components/flux-brand";
+import { CookiePreferencesLink } from "@/components/cookie-preferences-link";
 import styles from "./legal-page.module.css";
 
 export function LegalPage({ title, updated = "14 juillet 2026", children }: {
@@ -20,6 +21,7 @@ export function LegalPage({ title, updated = "14 juillet 2026", children }: {
         <Link href="/mentions-legales">Mentions légales</Link>
         <Link href="/cgv">Conditions générales</Link>
         <Link href="/confidentialite">Confidentialité</Link>
+        <CookiePreferencesLink />
       </footer>
     </div>
   );

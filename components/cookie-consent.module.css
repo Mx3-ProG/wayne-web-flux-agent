@@ -9,28 +9,6 @@
   backdrop-filter: blur(4px);
 }
 
-.reopen {
-  position: fixed;
-  left: max(12px, env(safe-area-inset-left));
-  bottom: max(12px, env(safe-area-inset-bottom));
-  z-index: 900;
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  min-height: 40px !important;
-  padding: 8px 12px;
-  border: 1px solid var(--ww-line-strong);
-  border-radius: 999px;
-  color: var(--ww-muted);
-  background: var(--ww-glass-strong);
-  box-shadow: 0 8px 30px rgb(0 0 0 / 30%);
-  backdrop-filter: blur(18px) saturate(150%);
-  font-size: .75rem;
-  font-weight: 700;
-}
-.reopen:hover { color: var(--ww-text); border-color: rgb(255 255 255 / 24%); }
-.reopen svg { width: 15px; }
-
 .panel {
   width: min(1160px, 100%);
   margin: 0 auto;
