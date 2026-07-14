@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
-import type { Offer, Page } from "@/lib/types";
+import type { Offer, Page, SitePage } from "@/lib/types";
 import { FONTS, type VerticalKind } from "@/lib/verticals";
 import { VITRINE_THEMES } from "@/lib/vitrine-themes";
 import {
@@ -19,6 +19,8 @@ import { resolveSections } from "@/lib/sections";
 import { PhotoUpload } from "./photo-upload";
 import { PublishButton } from "./publish-button";
 import { SectionsPanel } from "./sections-panel";
+import { PagesBar } from "./pages-bar";
+import { NavigationPanel } from "./navigation-panel";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -59,6 +61,8 @@ type Props = {
   previewOffers: Offer[];
   verticalKind: VerticalKind;
   publish: PublishProps;
+  sitePages?: SitePage[];
+  subpageLimit?: number;
 };
 
 // Éditeur de vitrine : tout s'enregistre tout seul (autosave débouncé) dans le
@@ -73,6 +77,8 @@ export function PageEditor({
   previewOffers,
   verticalKind,
   publish,
+  sitePages = [],
+  subpageLimit = 0,
 }: Props) {
   const [page, setPage] = useState<Page>(initialPage);
   const [catalogProducts, setCatalogProducts] =
@@ -242,6 +248,14 @@ export function PageEditor({
 
       <div className={styles.editor}>
       <div className={`${styles.panel} ${panelMode === "preview" ? styles.panelHidden : ""} space-y-4`}>
+        {subpageLimit > 0 && (
+          <PagesBar
+            pageId={page.id}
+            sitePages={sitePages}
+            activeSitePageId={null}
+            limit={subpageLimit}
+          />
+        )}
         <div className={styles.atelierHead}>
           <div>
             <p className={styles.editorKicker}>Créateur de vitrine</p>
@@ -735,6 +749,67 @@ export function PageEditor({
                   </SelectContent>
                 </Select>
               </div>
+              <div className="space-y-3 rounded-lg border border-border p-3">
+                <p className="text-sm font-medium">Typographie des titres</p>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label>Police des titres</Label>
+                    <Select
+                      value={page.typography?.headingFont ?? "same"}
+                      onValueChange={(headingFont) =>
+                        patch({
+                          typography: {
+                            ...page.typography,
+                            headingFont:
+                              headingFont === "same" ? undefined : headingFont,
+                          },
+                        })
+                      }
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="same">
+                          Comme le reste de la page
+                        </SelectItem>
+                        {FONTS.map((f) => (
+                          <SelectItem key={f.id} value={f.id}>
+                            {f.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Taille des titres</Label>
+                    <Select
+                      value={page.typography?.headingScale ?? "m"}
+                      onValueChange={(headingScale) =>
+                        patch({
+                          typography: {
+                            ...page.typography,
+                            headingScale:
+                              headingScale === "m"
+                                ? undefined
+                                : (headingScale as "s" | "l" | "xl"),
+                          },
+                        })
+                      }
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="s">Discrets</SelectItem>
+                        <SelectItem value="m">Normaux</SelectItem>
+                        <SelectItem value="l">Grands</SelectItem>
+                        <SelectItem value="xl">Spectaculaires</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </div>
             </AccordionContent>
           </AccordionItem>
 
@@ -747,6 +822,14 @@ export function PageEditor({
                 userId={page.user_id}
                 onChange={(sections) => patch({ sections })}
               />
+            </AccordionContent>
+          </AccordionItem>
+
+          {/* Menu de navigation & boutons */}
+          <AccordionItem value="menu" className="border rounded-xl px-4">
+            <AccordionTrigger>Le menu de navigation & boutons</AccordionTrigger>
+            <AccordionContent className="pt-1">
+              <NavigationPanel page={page} sitePages={sitePages} patch={patch} />
             </AccordionContent>
           </AccordionItem>
 

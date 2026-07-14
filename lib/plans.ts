@@ -30,16 +30,17 @@ export const TRIAL_DAYS = 7;
 type PlanLimits = {
   offers: number;
   projects: number;
+  subpages: number; // sous-pages par projet (table site_pages)
   customDomain: boolean;
   monthlyCredits: number;
   priceEur: number; // €/mois
 };
 
 export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
-  basique: { offers: 2, projects: 1, customDomain: false, monthlyCredits: 20, priceEur: 9 },
-  pro: { offers: 5, projects: 2, customDomain: false, monthlyCredits: 100, priceEur: 29 },
-  business: { offers: 12, projects: 5, customDomain: true, monthlyCredits: 300, priceEur: 69 },
-  entreprise: { offers: 20, projects: 10, customDomain: true, monthlyCredits: 500, priceEur: 89 },
+  basique: { offers: 2, projects: 1, subpages: 2, customDomain: false, monthlyCredits: 20, priceEur: 9 },
+  pro: { offers: 5, projects: 2, subpages: 5, customDomain: false, monthlyCredits: 100, priceEur: 29 },
+  business: { offers: 12, projects: 5, subpages: 12, customDomain: true, monthlyCredits: 300, priceEur: 69 },
+  entreprise: { offers: 20, projects: 10, subpages: 20, customDomain: true, monthlyCredits: 500, priceEur: 89 },
 };
 
 export const PLAN_LABEL: Record<Plan, string> = {
@@ -92,6 +93,10 @@ export function offerLimit(plan: Plan): number {
 
 export function projectLimit(plan: Plan): number {
   return PLAN_LIMITS[plan]?.projects ?? PLAN_LIMITS.basique.projects;
+}
+
+export function subpageLimit(plan: Plan): number {
+  return PLAN_LIMITS[plan]?.subpages ?? PLAN_LIMITS.basique.subpages;
 }
 
 export function canUseCustomDomain(plan: Plan): boolean {

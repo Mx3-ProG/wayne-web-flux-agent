@@ -3,16 +3,20 @@ import { createClient } from "@/lib/supabase/server";
 import type {
   Offer,
   Page,
+  Plan,
   Product,
   ProductCategory,
   Service,
   ServiceFamily,
+  SitePage,
 } from "@/lib/types";
 import { getVertical } from "@/lib/verticals";
 import { getActivePage } from "@/lib/active-project";
+import { subpageLimit } from "@/lib/plans";
 import type { CategoryWithProducts } from "@/components/vitrine/vitrine-view";
 import { CreatePageWizard } from "@/components/editor/create-page-wizard";
 import { PageEditor } from "@/components/editor/page-editor";
+import { SubpageEditor } from "@/components/editor/subpage-editor";
 import { VitrineGuide } from "@/components/editor/vitrine-guide";
 
 export const metadata = { title: "Ma vitrine" };
@@ -20,7 +24,7 @@ export const metadata = { title: "Ma vitrine" };
 export default async function MaPagePage({
   searchParams,
 }: {
-  searchParams: Promise<{ view?: string | string[] }>;
+  searchParams: Promise<{ view?: string | string[]; p?: string | string[] }>;
 }) {
   const supabase = await createClient();
   const {
@@ -36,23 +40,40 @@ export default async function MaPagePage({
   // attente (pages.draft). La vitrine publique, elle, ne lit que les colonnes.
   const page: Page = { ...rawPage, ...(rawPage.draft ?? {}) };
 
-  const [{ data: balance }, { data: lastVersion }, { count: pendingOffers }] =
-    await Promise.all([
-      supabase.rpc("credit_balance", { uid: user.id }),
-      supabase
-        .from("page_versions")
-        .select("version")
-        .eq("page_id", page.id)
-        .order("version", { ascending: false })
-        .limit(1)
-        .maybeSingle<{ version: number }>(),
-      supabase
-        .from("offers")
-        .select("id", { count: "exact", head: true })
-        .eq("page_id", page.id)
-        .or("draft.not.is.null,draft_status.not.is.null"),
-    ]);
-  const hasDraft = rawPage.draft != null || (pendingOffers ?? 0) > 0;
+  const [
+    { data: balance },
+    { data: lastVersion },
+    { count: pendingOffers },
+    { data: rawSitePages },
+    { data: profile },
+  ] = await Promise.all([
+    supabase.rpc("credit_balance", { uid: user.id }),
+    supabase
+      .from("page_versions")
+      .select("version")
+      .eq("page_id", page.id)
+      .order("version", { ascending: false })
+      .limit(1)
+      .maybeSingle<{ version: number }>(),
+    supabase
+      .from("offers")
+      .select("id", { count: "exact", head: true })
+      .eq("page_id", page.id)
+      .or("draft.not.is.null,draft_status.not.is.null"),
+    supabase
+      .from("site_pages")
+      .select("*")
+      .eq("page_id", page.id)
+      .order("position"),
+    supabase.from("profiles").select("plan").eq("user_id", user.id).single(),
+  ]);
+  const sitePages = (rawSitePages ?? []) as SitePage[];
+  const pendingSitePages = sitePages.some(
+    (sp) => sp.draft != null || sp.draft_status != null
+  );
+  const hasDraft =
+    rawPage.draft != null || (pendingOffers ?? 0) > 0 || pendingSitePages;
+  const maxSubpages = subpageLimit((profile?.plan as Plan) ?? "basique");
   const publishProps = {
     pageId: page.id,
     balance: balance ?? 0,
@@ -114,6 +135,34 @@ export default async function MaPagePage({
     .filter((o) => o.draft_status !== "deleted")
     .map((o) => ({ ...o, ...(o.draft ?? {}) }));
 
+  // ?p=<sitePageId> : édition d'une sous-page plutôt que de l'accueil.
+  const requestedSitePageId = Array.isArray(params.p) ? params.p[0] : params.p;
+  const activeSitePage = requestedSitePageId
+    ? sitePages.find((sp) => sp.id === requestedSitePageId)
+    : undefined;
+
+  if (activeSitePage) {
+    // Preview des sections natives d'une sous-page : mêmes données que la home.
+    const previewFamilies = ((families ?? []) as ServiceFamily[]).map((f) => ({
+      ...f,
+      services: ((services ?? []) as Service[]).filter(
+        (s) => s.family_id === f.id
+      ),
+    }));
+    return (
+      <SubpageEditor
+        page={page}
+        sitePage={activeSitePage}
+        sitePages={sitePages}
+        subpageLimit={maxSubpages}
+        previewFamilies={previewFamilies}
+        previewProducts={previewProducts}
+        previewOffers={previewOffers}
+        publish={publishProps}
+      />
+    );
+  }
+
   return (
     <PageEditor
       initialPage={page}
@@ -122,6 +171,8 @@ export default async function MaPagePage({
       previewOffers={previewOffers}
       verticalKind={getVertical(page.vertical).kind}
       publish={publishProps}
+      sitePages={sitePages}
+      subpageLimit={maxSubpages}
     />
   );
 }

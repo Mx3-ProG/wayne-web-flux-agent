@@ -1,18 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import type { Offer, Page, Product, Service } from "@/lib/types";
+import type { Offer, Page, Product, Service, SitePage } from "@/lib/types";
 import {
   VitrineView,
   type CategoryWithProducts,
   type FamilyWithServices,
 } from "./vitrine-view";
+import { VitrineSubpage } from "./vitrine-subpage";
 import { BookingModal } from "./booking-modal";
 import { OrderModal, type CartLine } from "./order-modal";
 import { VitrineTracker } from "./vitrine-tracker";
 
 type Props = {
   page: Page;
+  sitePage?: SitePage; // présent = rendu d'une sous-page (/p/slug/…)
   families: FamilyWithServices[];
   productCategories: CategoryWithProducts[];
   offers: Offer[];
@@ -23,6 +25,7 @@ type Props = {
 // « Ajouter » (produit) et « Commander » (offre) → panier mixte + commande.
 export function VitrinePublic({
   page,
+  sitePage,
   families,
   productCategories,
   offers,
@@ -71,18 +74,34 @@ export function VitrinePublic({
     <>
       {/* Tracking uniquement sur la vraie vitrine publique, jamais en préview. */}
       <VitrineTracker slug={page.slug} pageId={page.id} />
-      <VitrineView
-        page={page}
-        families={families}
-        productCategories={productCategories}
-        offers={offers}
-        onBook={bookingEnabled ? setBookingService : undefined}
-        onAddToCart={addProduct}
-        onAddOffer={addOffer}
-        cartCount={cartCount}
-        onOpenCart={() => setCartOpen(true)}
-        poweredBy={!page.hide_branding}
-      />
+      {sitePage ? (
+        <VitrineSubpage
+          page={page}
+          sitePage={sitePage}
+          families={families}
+          productCategories={productCategories}
+          offers={offers}
+          onBook={bookingEnabled ? setBookingService : undefined}
+          onAddToCart={addProduct}
+          onAddOffer={addOffer}
+          cartCount={cartCount}
+          onOpenCart={() => setCartOpen(true)}
+          poweredBy={!page.hide_branding}
+        />
+      ) : (
+        <VitrineView
+          page={page}
+          families={families}
+          productCategories={productCategories}
+          offers={offers}
+          onBook={bookingEnabled ? setBookingService : undefined}
+          onAddToCart={addProduct}
+          onAddOffer={addOffer}
+          cartCount={cartCount}
+          onOpenCart={() => setCartOpen(true)}
+          poweredBy={!page.hide_branding}
+        />
+      )}
       {bookingService && (
         <BookingModal
           slug={page.slug}

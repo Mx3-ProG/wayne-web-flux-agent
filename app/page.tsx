@@ -2,30 +2,66 @@ import Link from "next/link";
 import {
   ArrowRight,
   BarChart3,
+  CalendarDays,
   CalendarCheck2,
   Check,
+  ChevronDown,
+  Coins,
+  Database,
+  Globe2,
   MessageCircleMore,
+  PhoneCall,
   Search,
+  ShoppingBag,
   Sparkles,
   Star,
 } from "lucide-react";
 import styles from "./home.module.css";
 import { PillarGrid } from "@/components/landing/pillar-grid";
+import { ScrollingAcquireCta } from "@/components/landing/scrolling-acquire-cta";
 import { FluxBrand } from "@/components/flux-brand";
 
 const TOOLS = [
+    {
+    icon: Globe2,
+    label: "Site & SEO",
+    title: "Bâtis ton site et personnalise-le sans limite",
+    text: "FLUX génère en quelques secondes une vitrine rapide, pensée pour Google et parfaitement adaptée à Safari.",
+    result: "En ligne en quelques secondes",
+  },
+  {
+    icon: PhoneCall,
+    label: "Relation client",
+    title: "Rappelle tes clients depuis la plateforme",
+    text: "Retrouve le bon contact et lance ton appel en un clic, sans changer d’outil ni perdre le fil.",
+    result: "Un clic pour rappeler",
+  },
+  {
+    icon: CalendarDays,
+    label: "Rendez-vous",
+    title: "Donne rendez-vous à tes clients",
+    text: "Propose tes disponibilités, organise tes événements et laisse tes clients réserver au bon moment.",
+    result: "Un cercle qui grandi même quand tu es au fourneau",
+  },
   {
     icon: Sparkles,
     label: "Contenu",
     title: "Des publications qui te ressemblent",
-    text: "Une idée devient un post, un reel ou un carrousel prêt à publier.",
+    text: "Une idée devient un post, un reel ou un carrousel prêt à publier grâce à FLUX - demande lui.",
     result: "2 h gagnées",
+  },
+  {
+    icon: ShoppingBag,
+    label: "Ventes",
+    title: "Vends tes produits et services en direct",
+    text: "Crée ton catalogue, présente tes offres et transforme ta vitrine en véritable canal de vente.",
+    result: "Ton activité encaisse",
   },
   {
     icon: MessageCircleMore,
     label: "Conversion",
     title: "Chaque message peut devenir une vente",
-    text: "Réponds aux demandes, relance les indécis et demande des avis sans chercher tes mots.",
+    text: "Réponds aux demandes, relance les indécis et demande des avis sans chercher tes mots, en un clic.",
     result: "3 réponses prêtes",
   },
   {
@@ -34,6 +70,20 @@ const TOOLS = [
     title: "Google comprend enfin ton activité",
     text: "Description, services et contenus locaux structurés pour attirer les bonnes recherches.",
     result: "Visibilité renforcée",
+  },
+  {
+    icon: Database,
+    label: "Données",
+    title: "Récolte les signaux précieux avant la vente",
+    text: "Centralise les demandes, les intentions et les informations utiles pour mieux convertir chaque prospect.",
+    result: "Des prospects qualifiés",
+  },
+  {
+    icon: Coins,
+    label: "Crédits",
+    title: "Avance à ton rythme, sans abonnement forcé",
+    text: "Utilise les outils selon tes besoins et démarre avec 100 crédits offerts dès ton inscription.",
+    result: "100 crédits offerts",
   },
 ];
 
@@ -255,9 +305,21 @@ export default function LandingPage() {
             </p>
           </div>
           <PillarGrid />
+          <div className={styles.pillarsCtaWrap}>
+            <Link className={styles.askFluxCta} href="/commencer">
+              <span className={styles.askFluxFill} aria-hidden="true" />
+              <span className={styles.askFluxText}>
+                Demande à{" "}
+                <strong className={styles.askFluxGlitch} data-text="FLUX">
+                  FLUX
+                </strong>
+              </span>
+              <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
         </section>
 
-        <section className={styles.toolsSection} id="outils">
+        <section className={styles.toolsSection} id="outils" data-tools-section>
           <div className={styles.toolsIntro}>
             <p className={styles.sectionIndex}>03 / DANS TON ESPACE</p>
             <h2>
@@ -269,6 +331,7 @@ export default function LandingPage() {
               Chaque fonction part d&apos;un problème réel rencontré par nos
               clients. Quelques réponses, un résultat directement exploitable.
             </p>
+            <ScrollingAcquireCta />
           </div>
           <div className={styles.toolsList}>
             {TOOLS.map((tool) => {
@@ -287,6 +350,43 @@ export default function LandingPage() {
                 </article>
               );
             })}
+          </div>
+          <div className={styles.toolsAccordion}>
+            {TOOLS.map((tool, index) => {
+              const Icon = tool.icon;
+              return (
+                <details key={tool.title} name="flux-tools" open={index === 0}>
+                  <summary>
+                    <span className={styles.toolAccordionSummary}>
+                      <span className={styles.toolAccordionIcon}>
+                        <Icon aria-hidden="true" />
+                      </span>
+                      <span className={styles.toolAccordionHeading}>
+                        <small>{tool.label}</small>
+                        <strong>{tool.title}</strong>
+                      </span>
+                      <ChevronDown aria-hidden="true" />
+                    </span>
+                  </summary>
+                  <div className={styles.toolAccordionBody}>
+                    <p>{tool.text}</p>
+                    <em>{tool.result}</em>
+                    <Link className={styles.toolAccordionCta} href="/commencer">
+                      Demande à <strong>FLUX</strong>
+                      <ArrowRight aria-hidden="true" />
+                    </Link>
+                  </div>
+                </details>
+              );
+            })}
+            <Link className={`${styles.askFluxCta} ${styles.mobileAcquireCta}`} href="/commencer">
+              <span className={styles.askFluxFill} aria-hidden="true" />
+              <span className={styles.askFluxText}>
+                Acquérir{" "}
+                <strong className={styles.askFluxGlitch} data-text="FLUX">FLUX</strong>
+              </span>
+              <ArrowRight aria-hidden="true" />
+            </Link>
           </div>
         </section>
 

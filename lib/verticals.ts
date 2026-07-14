@@ -352,6 +352,14 @@ export const FONTS: { id: string; label: string; css: string }[] = [
   { id: "cormorant", label: "Cormorant Garamond — luxe, sophistiquée", css: "'Cormorant Garamond', serif" },
   { id: "quicksand", label: "Quicksand — ronde, douce", css: "'Quicksand', sans-serif" },
   { id: "poppins", label: "Poppins — moderne, douce", css: "'Poppins', sans-serif" },
+  { id: "space-grotesk", label: "Space Grotesk — tech, affirmée", css: "'Space Grotesk', sans-serif" },
+  { id: "sora", label: "Sora — contemporaine, nette", css: "'Sora', sans-serif" },
+  { id: "manrope", label: "Manrope — sobre, lisible", css: "'Manrope', sans-serif" },
+  { id: "libre-baskerville", label: "Libre Baskerville — classique, littéraire", css: "'Libre Baskerville', serif" },
+  { id: "dm-serif", label: "DM Serif Display — affichée, éditoriale", css: "'DM Serif Display', serif" },
+  { id: "marcellus", label: "Marcellus — antique, prestigieuse", css: "'Marcellus', serif" },
+  { id: "josefin", label: "Josefin Sans — géométrique, rétro-chic", css: "'Josefin Sans', sans-serif" },
+  { id: "bebas", label: "Bebas Neue — capitale, percutante", css: "'Bebas Neue', sans-serif" },
 ];
 
 export function getFont(id: string) {
@@ -360,4 +368,4 @@ export function getFont(id: string) {
 
 // URL Google Fonts pour la vitrine publique (chargée dynamiquement selon la police choisie)
 export const GOOGLE_FONTS_URL =
-  "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@400;500;600;700&family=Lora:wght@400;500;600&family=Cormorant+Garamond:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap";
+  "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@400;500;600;700&family=Lora:wght@400;500;600&family=Cormorant+Garamond:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Sora:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=Libre+Baskerville:wght@400;700&family=DM+Serif+Display&family=Marcellus&family=Josefin+Sans:wght@400;500;600;700&family=Bebas+Neue&display=swap";

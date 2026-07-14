@@ -35,7 +35,34 @@ export type SectionType = NativeSectionType | BlockSectionType;
 
 export type FaqItem = { question: string; answer: string };
 
-type SectionBase = { id: string; enabled: boolean };
+// Apparence d'une section (transverse à tous les types, natives comprises).
+// Une section avec un fond devient pleine largeur au rendu (section-shell).
+export type SectionBackground =
+  | { kind: "color"; color: string }
+  | { kind: "gradient"; from: string; to: string; angle?: number }
+  | { kind: "image"; url: string; overlay?: number } // overlay 0–0.8
+  | { kind: "video"; url: string; posterUrl?: string; overlay?: number };
+
+export type SectionStyle = {
+  background?: SectionBackground;
+  spacing?: "compact" | "normal" | "large";
+  width?: "narrow" | "normal" | "full";
+  align?: "left" | "center";
+};
+
+// Une section « stylée » sort du groupe .services au rendu.
+export function hasSectionStyle(section: PageSection): boolean {
+  const style = section.style;
+  if (!style) return false;
+  return Boolean(
+    style.background ||
+      (style.spacing && style.spacing !== "normal") ||
+      (style.width && style.width !== "normal") ||
+      (style.align && style.align !== "left")
+  );
+}
+
+type SectionBase = { id: string; enabled: boolean; style?: SectionStyle };
 
 export type NativeSection = SectionBase & {
   type: NativeSectionType;
@@ -163,3 +190,55 @@ export const SECTION_LIMITS = {
   maxTitleLength: 120,
   maxFaqItems: 10,
 } as const;
+
+// Validation serveur d'une liste de sections (savePageFields et
+// saveSitePageFields). Retourne un message d'erreur, ou null si valide.
+export function validateSections(sections: PageSection[]): string | null {
+  if (sections.length > SECTION_LIMITS.maxSections) {
+    return "Trop de sections sur la page.";
+  }
+  let videoBackgrounds = 0;
+  for (const section of sections) {
+    const settings = (section.settings ?? {}) as Record<string, unknown>;
+    for (const value of Object.values(settings)) {
+      if (typeof value === "string" && value.length > SECTION_LIMITS.maxBodyLength) {
+        return "Un des textes de section est trop long.";
+      }
+    }
+    if (
+      section.type === "faq" &&
+      section.settings.items.length > SECTION_LIMITS.maxFaqItems
+    ) {
+      return "Trop de questions dans la FAQ.";
+    }
+    const bg = section.style?.background;
+    if (bg) {
+      if (bg.kind === "video") videoBackgrounds++;
+      if ("overlay" in bg && bg.overlay !== undefined) {
+        if (typeof bg.overlay !== "number" || bg.overlay < 0 || bg.overlay > 0.8) {
+          return "Voile de fond invalide.";
+        }
+      }
+      // Les médias de fond doivent venir du Storage de l'app (bucket public).
+      if (
+        (bg.kind === "image" || bg.kind === "video") &&
+        !isAppStorageUrl(bg.url)
+      ) {
+        return "L'image ou la vidéo de fond doit être importée depuis l'éditeur.";
+      }
+      if (bg.kind === "video" && bg.posterUrl && !isAppStorageUrl(bg.posterUrl)) {
+        return "L'image d'attente doit être importée depuis l'éditeur.";
+      }
+    }
+  }
+  if (videoBackgrounds > 1) {
+    return "Une seule vidéo de fond par page (pour garder ta page rapide).";
+  }
+  return null;
+}
+
+function isAppStorageUrl(url: string): boolean {
+  const base = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  if (!base) return true; // env absente (tests) : on ne bloque pas
+  return url.startsWith(`${base}/storage/v1/object/public/page-photos/`);
+}

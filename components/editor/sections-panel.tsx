@@ -2,23 +2,53 @@
 
 import { useState } from "react";
 import {
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  closestCenter,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  arrayMove,
+  sortableKeyboardCoordinates,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import {
   ADDABLE_SECTION_TYPES,
+  NATIVE_SECTION_TYPES,
   SECTION_LIMITS,
   SECTION_META,
   createBlockSection,
   isNativeSection,
   type BlockSectionType,
+  type NativeSectionType,
   type PageSection,
+  type SectionType,
 } from "@/lib/sections";
 import { SectionSettings } from "./section-settings";
+import { SectionStyleSettings } from "./section-style-settings";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { ChevronDown, ChevronUp, Settings2, Trash2 } from "lucide-react";
+import {
+  Copy,
+  GripVertical,
+  Paintbrush,
+  Settings2,
+  Trash2,
+} from "lucide-react";
 
 type Props = {
   sections: PageSection[]; // liste résolue (jamais null)
   userId: string;
   onChange: (sections: PageSection[]) => void;
+  // Sous-page : les sections natives y sont facultatives — supprimables et
+  // ré-ajoutables (sur la home elles sont fixes, seulement masquables).
+  subpage?: boolean;
 };
 
 function sectionLabel(section: PageSection): string {
@@ -28,21 +58,43 @@ function sectionLabel(section: PageSection): string {
   return settings.title?.trim() ? `${meta.label} — ${settings.title}` : meta.label;
 }
 
-// Panneau « Sections de ma page » : réordonner (▲/▼), activer/désactiver,
-// régler et supprimer les blocs, en ajouter de nouveaux. Chaque mutation
-// écrit la liste complète dans le brouillon via onChange.
-// L'API (onChange sur liste complète + move(from,to)) est prête pour brancher
-// un drag & drop (@dnd-kit) plus tard sans refonte.
-export function SectionsPanel({ sections, userId, onChange }: Props) {
+function newSectionId(type: string): string {
+  return typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : `${type}-${Date.now()}-${Math.round(Math.random() * 1e6)}`;
+}
+
+// Panneau « Sections de ma page » : réordonner par glisser-déposer (poignée,
+// clavier supporté via @dnd-kit), activer/désactiver, régler l'apparence et le
+// contenu, dupliquer et supprimer les blocs, en ajouter de nouveaux. Chaque
+// mutation écrit la liste complète dans le brouillon via onChange.
+export function SectionsPanel({ sections, userId, onChange, subpage = false }: Props) {
   const [openSettings, setOpenSettings] = useState<string | null>(null);
+  const [openStyle, setOpenStyle] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
 
-  const move = (from: number, to: number) => {
-    if (to < 0 || to >= sections.length) return;
-    const next = [...sections];
-    const [item] = next.splice(from, 1);
-    next.splice(to, 0, item);
-    onChange(next);
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
+  );
+
+  // Types proposés à l'ajout : les blocs de contenu, plus (en sous-page) les
+  // sections natives absentes de la liste.
+  const presentTypes = new Set(sections.map((s) => s.type));
+  const addableTypes: SectionType[] = [
+    ...ADDABLE_SECTION_TYPES,
+    ...(subpage
+      ? NATIVE_SECTION_TYPES.filter((t) => !presentTypes.has(t))
+      : []),
+  ];
+
+  const onDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+    const from = sections.findIndex((s) => s.id === active.id);
+    const to = sections.findIndex((s) => s.id === over.id);
+    if (from < 0 || to < 0) return;
+    onChange(arrayMove(sections, from, to));
   };
 
   const update = (id: string, section: PageSection) => {
@@ -52,104 +104,90 @@ export function SectionsPanel({ sections, userId, onChange }: Props) {
   const remove = (id: string) => {
     onChange(sections.filter((s) => s.id !== id));
     if (openSettings === id) setOpenSettings(null);
+    if (openStyle === id) setOpenStyle(null);
   };
 
-  const add = (type: BlockSectionType) => {
-    const block = createBlockSection(type);
+  const duplicate = (id: string) => {
+    if (sections.length >= SECTION_LIMITS.maxSections) return;
+    const index = sections.findIndex((s) => s.id === id);
+    const original = sections[index];
+    if (!original || isNativeSection(original)) return;
+    const clone = structuredClone(original);
+    clone.id = newSectionId(clone.type);
+    const next = [...sections];
+    next.splice(index + 1, 0, clone);
+    onChange(next);
+    setOpenSettings(clone.id);
+    setOpenStyle(null);
+  };
+
+  const add = (type: SectionType) => {
+    if ((NATIVE_SECTION_TYPES as string[]).includes(type)) {
+      const native: PageSection = {
+        id: type,
+        type: type as NativeSectionType,
+        enabled: true,
+      };
+      onChange([...sections, native]);
+      setAdding(false);
+      return;
+    }
+    const block = createBlockSection(type as BlockSectionType);
     onChange([...sections, block]);
     setAdding(false);
     setOpenSettings(block.id);
   };
 
+  const atLimit = sections.length >= SECTION_LIMITS.maxSections;
+
   return (
     <div className="space-y-3">
       <p className="text-sm text-muted-foreground">
-        Choisis l&apos;ordre des sections de ta page, masque celles que tu ne veux
-        pas, et ajoute tes propres blocs.
+        Fais glisser les sections pour choisir leur ordre, masque celles que tu
+        ne veux pas, et ajoute tes propres blocs.
       </p>
-      <ul className="space-y-2">
-        {sections.map((section, i) => {
-          const native = isNativeSection(section);
-          const settingsOpen = openSettings === section.id;
-          return (
-            <li key={section.id} className="rounded-lg border border-border">
-              <div className="flex items-center gap-2 p-2">
-                <div className="flex flex-col">
-                  <button
-                    type="button"
-                    aria-label="Monter la section"
-                    disabled={i === 0}
-                    className="text-muted-foreground disabled:opacity-30"
-                    onClick={() => move(i, i - 1)}
-                  >
-                    <ChevronUp className="size-4" />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label="Descendre la section"
-                    disabled={i === sections.length - 1}
-                    className="text-muted-foreground disabled:opacity-30"
-                    onClick={() => move(i, i + 1)}
-                  >
-                    <ChevronDown className="size-4" />
-                  </button>
-                </div>
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium">
-                    {sectionLabel(section)}
-                  </p>
-                  <p className="truncate text-xs text-muted-foreground">
-                    {SECTION_META[section.type].description}
-                  </p>
-                </div>
-                {!native && (
-                  <>
-                    <button
-                      type="button"
-                      aria-label="Réglages du bloc"
-                      className={`p-1 ${settingsOpen ? "text-foreground" : "text-muted-foreground"}`}
-                      onClick={() =>
-                        setOpenSettings(settingsOpen ? null : section.id)
-                      }
-                    >
-                      <Settings2 className="size-4" />
-                    </button>
-                    <button
-                      type="button"
-                      aria-label="Supprimer le bloc"
-                      className="p-1 text-destructive"
-                      onClick={() => remove(section.id)}
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
-                  </>
-                )}
-                <Switch
-                  checked={section.enabled}
-                  aria-label={`Afficher « ${sectionLabel(section)} »`}
-                  onCheckedChange={(enabled) =>
-                    update(section.id, { ...section, enabled } as PageSection)
-                  }
-                />
-              </div>
-              {!native && settingsOpen && (
-                <div className="border-t border-border p-3">
-                  <SectionSettings
-                    section={section}
-                    userId={userId}
-                    onChange={(next) => update(section.id, next)}
-                  />
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={onDragEnd}
+      >
+        <SortableContext
+          items={sections.map((s) => s.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          <ul className="space-y-2">
+            {sections.map((section) => (
+              <SortableSectionRow
+                key={section.id}
+                section={section}
+                subpage={subpage}
+                atLimit={atLimit}
+                settingsOpen={openSettings === section.id}
+                styleOpen={openStyle === section.id}
+                onToggleSettings={() => {
+                  setOpenSettings(
+                    openSettings === section.id ? null : section.id
+                  );
+                  setOpenStyle(null);
+                }}
+                onToggleStyle={() => {
+                  setOpenStyle(openStyle === section.id ? null : section.id);
+                  setOpenSettings(null);
+                }}
+                onUpdate={(next) => update(section.id, next)}
+                onDuplicate={() => duplicate(section.id)}
+                onRemove={() => remove(section.id)}
+                userId={userId}
+              />
+            ))}
+          </ul>
+        </SortableContext>
+      </DndContext>
       {adding ? (
         <div className="rounded-lg border border-border p-3 space-y-2">
           <p className="text-sm font-medium">Quel bloc veux-tu ajouter ?</p>
           <div className="grid grid-cols-2 gap-2">
-            {ADDABLE_SECTION_TYPES.map((type) => (
+            {addableTypes.map((type) => (
               <button
                 key={type}
                 type="button"
@@ -171,12 +209,143 @@ export function SectionsPanel({ sections, userId, onChange }: Props) {
         <Button
           variant="secondary"
           size="sm"
-          disabled={sections.length >= SECTION_LIMITS.maxSections}
+          disabled={atLimit}
           onClick={() => setAdding(true)}
         >
           + Ajouter un bloc
         </Button>
       )}
     </div>
+  );
+}
+
+function SortableSectionRow({
+  section,
+  subpage,
+  atLimit,
+  settingsOpen,
+  styleOpen,
+  onToggleSettings,
+  onToggleStyle,
+  onUpdate,
+  onDuplicate,
+  onRemove,
+  userId,
+}: {
+  section: PageSection;
+  subpage: boolean;
+  atLimit: boolean;
+  settingsOpen: boolean;
+  styleOpen: boolean;
+  onToggleSettings: () => void;
+  onToggleStyle: () => void;
+  onUpdate: (section: PageSection) => void;
+  onDuplicate: () => void;
+  onRemove: () => void;
+  userId: string;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: section.id });
+  const native = isNativeSection(section);
+
+  return (
+    <li
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+      }}
+      className={`rounded-lg border border-border bg-background ${
+        isDragging ? "z-10 opacity-80 shadow-lg" : ""
+      }`}
+    >
+      <div className="flex items-center gap-2 p-2">
+        <button
+          type="button"
+          aria-label={`Déplacer « ${sectionLabel(section)} »`}
+          className="cursor-grab touch-none p-1 text-muted-foreground active:cursor-grabbing"
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="size-4" />
+        </button>
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-medium">{sectionLabel(section)}</p>
+          <p className="truncate text-xs text-muted-foreground">
+            {SECTION_META[section.type].description}
+          </p>
+        </div>
+        {!native && (
+          <>
+            <button
+              type="button"
+              aria-label="Réglages du bloc"
+              className={`p-1 ${settingsOpen ? "text-foreground" : "text-muted-foreground"}`}
+              onClick={onToggleSettings}
+            >
+              <Settings2 className="size-4" />
+            </button>
+            <button
+              type="button"
+              aria-label="Dupliquer le bloc"
+              className="p-1 text-muted-foreground disabled:opacity-30"
+              disabled={atLimit}
+              onClick={onDuplicate}
+            >
+              <Copy className="size-4" />
+            </button>
+          </>
+        )}
+        <button
+          type="button"
+          aria-label="Apparence de la section"
+          className={`p-1 ${styleOpen || section.style ? "text-foreground" : "text-muted-foreground"}`}
+          onClick={onToggleStyle}
+        >
+          <Paintbrush className="size-4" />
+        </button>
+        {(!native || subpage) && (
+          <button
+            type="button"
+            aria-label="Supprimer le bloc"
+            className="p-1 text-destructive"
+            onClick={onRemove}
+          >
+            <Trash2 className="size-4" />
+          </button>
+        )}
+        <Switch
+          checked={section.enabled}
+          aria-label={`Afficher « ${sectionLabel(section)} »`}
+          onCheckedChange={(enabled) =>
+            onUpdate({ ...section, enabled } as PageSection)
+          }
+        />
+      </div>
+      {!native && settingsOpen && (
+        <div className="border-t border-border p-3">
+          <SectionSettings
+            section={section}
+            userId={userId}
+            onChange={onUpdate}
+          />
+        </div>
+      )}
+      {styleOpen && (
+        <div className="border-t border-border p-3">
+          <SectionStyleSettings
+            style={section.style}
+            userId={userId}
+            onChange={(style) => onUpdate({ ...section, style } as PageSection)}
+          />
+        </div>
+      )}
+    </li>
   );
 }

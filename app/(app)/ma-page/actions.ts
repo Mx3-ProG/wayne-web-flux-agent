@@ -6,18 +6,9 @@ import { getVertical } from "@/lib/verticals";
 import { defaultLegal } from "@/lib/legal";
 import { projectLimit, VITRINE_ASSIST_COST } from "@/lib/plans";
 import { spendCredits, refundCredits } from "@/lib/credits";
-import { SECTION_LIMITS } from "@/lib/sections";
+import { validateSections } from "@/lib/sections";
+import { slugify } from "@/lib/slug";
 import type { PageDraftFields, Plan } from "@/lib/types";
-
-function slugify(input: string): string {
-  return input
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "")
-    .slice(0, 32);
-}
 
 // Crée la vitrine initiale : slug unique, prestations pré-remplies selon le
 // métier, horaires par défaut (mar-sam 9h-19h), textes légaux générés.
@@ -160,22 +151,16 @@ export async function savePageFields(
 ): Promise<{ error?: string }> {
   // Le contenu des blocs vit dans le draft jsonb : on borne sa taille.
   if (fields.sections) {
-    if (fields.sections.length > SECTION_LIMITS.maxSections) {
-      return { error: "Trop de sections sur la page." };
+    const sectionsError = validateSections(fields.sections);
+    if (sectionsError) return { error: sectionsError };
+  }
+  if (fields.navigation) {
+    const nav = fields.navigation;
+    if (nav.items.length > 8) {
+      return { error: "8 liens maximum dans le menu." };
     }
-    for (const section of fields.sections) {
-      const settings = (section.settings ?? {}) as Record<string, unknown>;
-      for (const value of Object.values(settings)) {
-        if (typeof value === "string" && value.length > SECTION_LIMITS.maxBodyLength) {
-          return { error: "Un des textes de section est trop long." };
-        }
-      }
-      if (
-        section.type === "faq" &&
-        section.settings.items.length > SECTION_LIMITS.maxFaqItems
-      ) {
-        return { error: "Trop de questions dans la FAQ." };
-      }
+    if (nav.items.some((item) => item.label.length > 40 || item.target.length > 300)) {
+      return { error: "Un des liens du menu est trop long." };
     }
   }
   const supabase = await createClient();
@@ -228,6 +213,7 @@ export type PublishError =
   | "insufficient_credits"
   | "nothing_to_publish"
   | "subscription_required"
+  | "path_taken"
   | "unknown";
 
 // Publie une nouvelle version du site : débit atomique de 5 crédits + merge
@@ -263,12 +249,16 @@ export async function publishPage(
     if (error.message.includes("subscription_required")) {
       return { error: "subscription_required" };
     }
+    if (error.message.includes("path_taken")) {
+      return { error: "path_taken" };
+    }
     return { error: "unknown" };
   }
 
   revalidatePath("/ma-page");
   revalidatePath("/offres");
-  revalidatePath(`/p/${page.slug}`);
+  // "layout" : invalide la home ET toutes les sous-pages /p/slug/*.
+  revalidatePath(`/p/${page.slug}`, "layout");
   return { balance: balance ?? undefined };
 }
 

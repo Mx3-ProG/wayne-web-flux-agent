@@ -44,7 +44,15 @@ export type PageTheme =
   | "bold"
   | "luxe"
   | "minimal"
-  | "neon";
+  | "neon"
+  | "prestige";
+
+// Typographie fine : échelle des titres et police de titres distincte du
+// corps (id de lib/verticals FONTS). Vide = rendu historique.
+export type PageTypography = {
+  headingScale?: "s" | "m" | "l" | "xl";
+  headingFont?: string;
+};
 
 // rating (1-5, défaut 5) et photoUrl optionnels : les avis historiques restent valides.
 export type Review = { author: string; text: string; rating?: number; photoUrl?: string };
@@ -57,6 +65,26 @@ export type PagePromo = { text: string; code?: string; endsAt?: string };
 export type FloatingCta = { type: "whatsapp" | "phone"; number: string };
 
 export type PageSeo = { title?: string; description?: string; ogImageUrl?: string };
+
+// Lien du menu de navigation configurable.
+//   page     → target = path de la sous-page ('' = accueil)
+//   anchor   → target = '#offres', '#prestations', '#s-<sectionId>'…
+//   external → target = URL complète
+export type NavItem = {
+  id: string;
+  label: string;
+  kind: "page" | "anchor" | "external";
+  target: string;
+};
+
+// Header public configurable (pages.navigation). null = header historique.
+export type PageNavigation = {
+  items: NavItem[];
+  sticky?: boolean;
+  transparent?: boolean;
+  showLogo?: boolean;
+  cta?: { label: string; target: string } | null;
+};
 
 export type Page = {
   id: string;
@@ -87,6 +115,9 @@ export type Page = {
   floating_cta: FloatingCta | null;
   hero_video_url: string | null;
   hide_branding: boolean;
+  navigation: PageNavigation | null;
+  scroll_top: boolean;
+  typography: PageTypography;
   published: boolean;
   custom_domain: string | null;
   ical_token: string;
@@ -98,7 +129,7 @@ export type Page = {
 
 // Champs de la vitrine éditables via le brouillon (pages.draft).
 // ⚠️ Tout ajout ici exige une mise à jour du UPDATE de publish_page
-// (dernière version : supabase/migrations/00013_advanced_customization.sql),
+// (dernière version : supabase/migrations/00023_themes_typography.sql),
 // sinon le champ resterait en brouillon sans jamais être publié.
 export type PageDraftFields = Pick<
   Page,
@@ -125,6 +156,39 @@ export type PageDraftFields = Pick<
   | "floating_cta"
   | "hero_video_url"
   | "hide_branding"
+  | "navigation"
+  | "scroll_top"
+  | "typography"
+>;
+
+// Sous-page d'un projet (table site_pages, migration 00021). La page
+// d'accueil reste dans `pages` ; les sous-pages (/p/slug/a-propos…) sont
+// composées avec le même système de sections. Même workflow brouillon que
+// les offres : draft + draft_status ('new' = jamais publiée, invisible en
+// public ; 'deleted' = suppression différée à la prochaine publication).
+export type SitePage = {
+  id: string;
+  page_id: string;
+  path: string;
+  title: string;
+  subtitle: string;
+  hero_url: string | null;
+  seo: PageSeo;
+  sections: import("./sections").PageSection[] | null;
+  position: number;
+  draft: Partial<SitePageDraftFields> | null;
+  draft_status: "new" | "deleted" | null;
+  published: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+// Champs d'une sous-page éditables via le brouillon (site_pages.draft).
+// ⚠️ Tout ajout ici exige une mise à jour du UPDATE site_pages de publish_page
+// (dernière version : supabase/migrations/00023_themes_typography.sql).
+export type SitePageDraftFields = Pick<
+  SitePage,
+  "path" | "title" | "subtitle" | "hero_url" | "seo" | "sections"
 >;
 
 export type ServiceFamily = {

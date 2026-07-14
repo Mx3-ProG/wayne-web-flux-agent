@@ -31,15 +31,39 @@ export default async function sitemap({
   const supabase = createPublicClient();
   const { data } = await supabase
     .from("pages")
-    .select("slug, updated_at")
+    .select("id, slug, updated_at")
     .eq("published", true)
     .order("id")
     .range(shard * PAGE_SIZE, shard * PAGE_SIZE + PAGE_SIZE - 1);
 
-  return (data ?? []).map((page) => ({
+  const pages = data ?? [];
+  const entries: MetadataRoute.Sitemap = pages.map((page) => ({
     url: `${base}/p/${page.slug}`,
     lastModified: page.updated_at ? new Date(page.updated_at) : new Date(),
     changeFrequency: "weekly",
     priority: 0.8,
   }));
+
+  // Sous-pages publiées des vitrines de cette tranche (la policy publique
+  // exclut déjà les brouillons jamais publiés).
+  if (pages.length > 0) {
+    const slugById = new Map(pages.map((p) => [p.id, p.slug]));
+    const { data: sitePages } = await supabase
+      .from("site_pages")
+      .select("page_id, path, updated_at")
+      .eq("published", true)
+      .in("page_id", pages.map((p) => p.id));
+    for (const sp of sitePages ?? []) {
+      const slug = slugById.get(sp.page_id);
+      if (!slug) continue;
+      entries.push({
+        url: `${base}/p/${slug}/${sp.path}`,
+        lastModified: sp.updated_at ? new Date(sp.updated_at) : new Date(),
+        changeFrequency: "weekly",
+        priority: 0.6,
+      });
+    }
+  }
+
+  return entries;
 }
