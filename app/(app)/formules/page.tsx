@@ -168,7 +168,7 @@ export default async function FormulesPage({ searchParams }: {
               {isCurrent ? (
                 <span className={styles.cta}>Ta formule</span>
               ) : (
-                <Link className={`flux-button-smooth ${styles.cta}`} href={`/checkout/formule/${item}`}>
+                <Link className={`flux-button-smooth flux-button-smooth-gold ${styles.cta}`} href={`/checkout/formule/${item}`}>
                     Choisir {PLAN_LABEL[item]}
                     <ArrowRight aria-hidden="true" />
                 </Link>

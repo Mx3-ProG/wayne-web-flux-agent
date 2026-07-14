@@ -30,3 +30,8 @@ test("credit pack actions use the gold Smooth FLUX accent", async () => {
   assert.match(packs, /flux-button-smooth flux-button-smooth-gold/);
   assert.match(globals, /\.flux-button-smooth-gold\s*\{[^}]*--flux-button-accent:\s*#d8a73b/s);
 });
+
+test("subscription plan actions use the gold Smooth FLUX accent", async () => {
+  const plans = await readFile(new URL("../../app/(app)/formules/page.tsx", import.meta.url), "utf8");
+  assert.match(plans, /flux-button-smooth flux-button-smooth-gold[^\n]+styles\.cta/);
+});
