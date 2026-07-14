@@ -21,6 +21,7 @@ export const CATEGORY_CREATE_COST = 15; // nouvelle catégorie (la 1re du compte
 export const PRODUCT_ADD_COST = 5; // ajout d'un produit (gestionnaire /produits)
 export const RESERVATION_ADD_COST = 1; // ajout d'une réservation
 export const VITRINE_ASSIST_COST = 10; // assistant vitrine FLUX (confirmation finale)
+export const SITE_GENERATE_COST = 50; // génération complète de la vitrine par brief (FLUX)
 export const CONTEXT_CHANGE_COST = 5; // modification du contexte FLUX (1re création gratuite)
 
 // Durée de l'essai offert sur toutes les formules (miroir du default SQL de

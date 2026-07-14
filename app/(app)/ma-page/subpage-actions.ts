@@ -12,6 +12,7 @@ import { validateSections } from "@/lib/sections";
 import { getPageTemplate } from "@/lib/page-templates";
 import { slugify } from "@/lib/slug";
 import type { Plan, SitePage, SitePageDraftFields } from "@/lib/types";
+import { enforceKarlMada } from "@/lib/karlmada";
 
 const MAX_PATH_LENGTH = 48;
 const MAX_TITLE_LENGTH = 80;
@@ -44,6 +45,13 @@ export async function createSitePage(
 ): Promise<{ error?: string; sitePage?: SitePage }> {
   const { supabase, user, page } = await ownedPage(pageId);
   if (!user || !page) return { error: "Page introuvable." };
+
+  const moderation = await enforceKarlMada(input, {
+    userId: user.id,
+    pageId,
+    surface: "site-page:create",
+  });
+  if (moderation.error) return moderation;
 
   const [{ data: profile }, { data: existing }] = await Promise.all([
     supabase.from("profiles").select("plan").eq("user_id", user.id).single(),
@@ -115,6 +123,17 @@ export async function saveSitePageFields(
   }
 
   const supabase = await createClient();
+  const { data: moderationPage } = await supabase
+    .from("site_pages")
+    .select("page_id")
+    .eq("id", sitePageId)
+    .maybeSingle();
+  if (!moderationPage) return { error: "Page introuvable." };
+  const moderation = await enforceKarlMada(fields, {
+    pageId: moderationPage.page_id,
+    surface: "site-page:save",
+  });
+  if (moderation.error) return moderation;
 
   if (fields.path !== undefined) {
     const { data: row } = await supabase

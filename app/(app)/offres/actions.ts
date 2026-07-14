@@ -6,6 +6,7 @@ import { getActivePageId } from "@/lib/active-project";
 import { OFFER_CREATE_COST, OFFER_EXTRA_COST, offerLimit } from "@/lib/plans";
 import { spendCredits, refundCredits, type CreditError } from "@/lib/credits";
 import type { OfferKind, Plan } from "@/lib/types";
+import { enforceKarlMada } from "@/lib/karlmada";
 
 async function ownedPageId(): Promise<{ pageId?: string; error?: string; userId?: string }> {
   const supabase = await createClient();
@@ -110,6 +111,13 @@ export async function createOfferFromTunnel(
   );
   if (spendError) return { error: spendError };
 
+  const moderation = await enforceKarlMada(fields, {
+    userId,
+    pageId,
+    surface: "offer:create",
+  });
+  if (moderation.error) return moderation;
+
   // Comme toute création : en brouillon (`new`), publiée avec la prochaine
   // version du site.
   const { error: insertError } = await supabase.from("offers").insert({
@@ -145,10 +153,16 @@ export async function updateOffer(
   // RLS "own offers" garantit que seule une offre du user est lisible/modifiable.
   const { data: offer } = await supabase
     .from("offers")
-    .select("draft_status")
+    .select("draft_status, page_id")
     .eq("id", offerId)
     .single();
   if (!offer) return { error: "Offre introuvable." };
+
+  const moderation = await enforceKarlMada(fields, {
+    pageId: offer.page_id,
+    surface: "offer:update",
+  });
+  if (moderation.error) return moderation;
 
   if (offer.draft_status === "new") {
     // Jamais publiée (invisible en public) : on écrit directement les colonnes.

@@ -5,13 +5,13 @@ import { getActivePage } from "@/lib/active-project";
 import { anthropic, buildPrompt, GENERATION_MODEL } from "@/lib/claude";
 import { getTool } from "@/lib/tools-config";
 import { rateLimit } from "@/lib/rate-limit";
+import { enforceKarlMada, KARLMADA_BLOCK_MESSAGE } from "@/lib/karlmada";
 import type { Service, VoiceProfile } from "@/lib/types";
 
 export const maxDuration = 120;
 
-// Génération IA : débit atomique des crédits (spend_credits), streaming du
-// résultat, sauvegarde dans le coffre-fort. Remboursement si l'API échoue
-// avant d'avoir produit quoi que ce soit.
+// Génération IA : débit atomique des crédits, validation KarlMada de la sortie
+// complète avant exposition au navigateur, puis sauvegarde dans le coffre-fort.
 export async function POST(request: Request) {
   const supabase = await createClient();
   const {
@@ -79,6 +79,17 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "spend_failed" }, { status: 500 });
   }
 
+  // KarlMada intervient après le débit : une tentative interdite consomme les
+  // crédits de l'outil et n'est jamais remboursée.
+  const moderation = await enforceKarlMada(inputs, {
+    userId: user.id,
+    pageId: page?.id,
+    surface: `ai-tool:${tool.slug}`,
+  });
+  if (moderation.error) {
+    return NextResponse.json({ error: "content_blocked", message: moderation.error }, { status: 422 });
+  }
+
   const { system, user: userPrompt } = buildPrompt({
     tool,
     inputs,
@@ -105,9 +116,19 @@ export async function POST(request: Request) {
             event.delta.type === "text_delta"
           ) {
             fullText += event.delta.text;
-            controller.enqueue(encoder.encode(event.delta.text));
           }
         }
+        const outputModeration = await enforceKarlMada(fullText, {
+          userId: user.id,
+          pageId: page?.id,
+          surface: `ai-tool:${tool.slug}:output`,
+        });
+        if (outputModeration.error) {
+          controller.enqueue(encoder.encode(KARLMADA_BLOCK_MESSAGE));
+          controller.close();
+          return;
+        }
+
         // Coffre-fort : le résultat reste accessible pour toujours.
         await admin.from("generations").insert({
           user_id: user.id,
@@ -117,10 +138,11 @@ export async function POST(request: Request) {
           output: fullText,
           credits_spent: tool.cost,
         });
+        controller.enqueue(encoder.encode(fullText));
         controller.close();
       } catch (err) {
         if (!fullText) {
-          // Rien n'a été produit : on rembourse.
+          // Rien d'utilisable n'a été produit : on rembourse.
           await admin.from("credit_ledger").insert({
             user_id: user.id,
             delta: tool.cost,

@@ -9,20 +9,24 @@ import { requirePaidFlux } from "@/lib/flux/access";
 import { fluxIdentity, businessContext, learningsContext } from "@/lib/flux/persona";
 import { applyFluxPatch } from "@/lib/flux/apply";
 import { buildGeneratedSection } from "@/lib/flux/guardrails";
+import { enforceKarlMada, KARLMADA_AI_POLICY } from "@/lib/karlmada";
 import {
   FluxPrefillOutputSchema,
+  FluxSiteOutputSchema,
   toAnthropicSchema,
 } from "@/lib/flux/schemas";
 import { rateLimit } from "@/lib/rate-limit";
 import { resolveSections, SECTION_LIMITS } from "@/lib/sections";
 import { PREFILL_COST } from "@/lib/tools-config";
-import type { PageDraftFields, Service, VoiceProfile } from "@/lib/types";
+import { SITE_GENERATE_COST } from "@/lib/plans";
+import type { PageColors, PageDraftFields, PageSeo, Service, VoiceProfile } from "@/lib/types";
 
 export type FluxPrefillError =
   | "flux_requires_payment"
   | "insufficient_credits"
   | "subscription_required"
   | "too_many_requests"
+  | "content_blocked"
   | "generation_failed"
   | "unknown";
 
@@ -77,7 +81,14 @@ export async function fluxPrefill(
     const voice = v ?? null;
     const services = (s ?? []) as Service[];
 
+    const contextModeration = await enforceKarlMada(
+      { page, services, voice },
+      { userId: user.id, pageId, surface: "flux-prefill:input" }
+    );
+    if (contextModeration.error) return { error: "content_blocked" };
+
     const system = [
+      KARLMADA_AI_POLICY,
       fluxIdentity(),
       ...businessContext({ page, services, voice }),
       ...(await learningsContext(page.vertical)),
@@ -109,6 +120,12 @@ export async function fluxPrefill(
     const parsed = FluxPrefillOutputSchema.safeParse(JSON.parse(raw.text));
     if (!parsed.success) throw new Error("invalid_output");
     const out = parsed.data;
+    const generatedModeration = await enforceKarlMada(out, {
+      userId: user.id,
+      pageId,
+      surface: "flux-prefill:output",
+    });
+    if (generatedModeration.error) return { error: "content_blocked" };
 
     // Patch non destructif : uniquement les champs vides.
     const fields: Partial<PageDraftFields> = {};
@@ -151,6 +168,155 @@ export async function fluxPrefill(
   } catch {
     // Rien d'utilisable produit : on rembourse.
     await refundCredits(user.id, PREFILL_COST, "refund:flux-prefill");
+    return { error: "generation_failed" };
+  }
+}
+
+export type FluxSiteError =
+  | "flux_requires_payment"
+  | "insufficient_credits"
+  | "subscription_required"
+  | "too_many_requests"
+  | "empty_brief"
+  | "content_blocked"
+  | "generation_failed"
+  | "unknown";
+
+// Génération complète de la vitrine par brief (SITE_GENERATE_COST crédits).
+// FLUX part du template métier et du brief pour écrire toute la vitrine : textes,
+// SEO, ambiance (thème + couleurs) et 2 à 5 sections. Écrit dans le BROUILLON
+// (jamais en live) ; l'utilisateur relit puis publie lui-même. Réservé aux
+// comptes payants. Débit avant génération, remboursement si échec.
+export async function fluxGenerateSite(
+  pageId: string,
+  brief: string
+): Promise<{ error?: FluxSiteError }> {
+  const cleanBrief = brief.trim().slice(0, 1500);
+  if (!cleanBrief) return { error: "empty_brief" };
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "unknown" };
+
+  const { data: page } = await supabase
+    .from("pages")
+    .select("*")
+    .eq("id", pageId)
+    .eq("user_id", user.id)
+    .single();
+  if (!page) return { error: "unknown" };
+
+  const access = await requirePaidFlux(user.id);
+  if (access.error) return { error: access.error };
+
+  if (!rateLimit(`flux-site:${user.id}`, 3, 600_000)) {
+    return { error: "too_many_requests" };
+  }
+
+  // Modération du brief AVANT tout débit : on ne facture jamais un contenu bloqué.
+  const briefModeration = await enforceKarlMada(cleanBrief, {
+    userId: user.id,
+    pageId,
+    surface: "flux-site:brief",
+  });
+  if (briefModeration.error) return { error: "content_blocked" };
+
+  const spend = await spendCredits(user.id, SITE_GENERATE_COST, "flux:site");
+  if (spend.error === "subscription_required") return { error: "subscription_required" };
+  if (spend.error === "insufficient_credits") return { error: "insufficient_credits" };
+  if (spend.error) return { error: "unknown" };
+
+  try {
+    const [{ data: v }, { data: s }] = await Promise.all([
+      supabase
+        .from("voice_profiles")
+        .select("*")
+        .eq("page_id", page.id)
+        .maybeSingle<VoiceProfile>(),
+      supabase.from("services").select("*").eq("page_id", page.id).order("position"),
+    ]);
+    const voice = v ?? null;
+    const services = (s ?? []) as Service[];
+
+    const system = [
+      KARLMADA_AI_POLICY,
+      fluxIdentity(),
+      ...businessContext({ page, services, voice }),
+      ...(await learningsContext(page.vertical)),
+      "Ta mission : créer TOUTE la vitrine de ce commerçant à partir de son brief et de son métier. Pars du template de son métier et améliore-le : accroche, SEO, ambiance (thème + couleurs cohérentes), et 2 à 5 sections de contenu (à propos, texte, FAQ). Concret, direct, sans jargon marketing. N'invente NI prix NI avis clients. Reste fidèle à son métier et à sa voix.",
+    ].join("\n\n");
+
+    const message = await anthropic.messages.stream({
+      model: GENERATION_MODEL,
+      max_tokens: FLUX_MAX_TOKENS.site,
+      thinking: { type: "disabled" },
+      system,
+      messages: [
+        {
+          role: "user",
+          content: `Voici mon commerce, en mes mots :\n${cleanBrief}\n\nCrée-moi la vitrine complète.`,
+        },
+      ],
+      output_config: {
+        format: {
+          type: "json_schema",
+          schema: toAnthropicSchema(FluxSiteOutputSchema),
+        },
+      },
+    });
+    const final = await message.finalMessage();
+
+    const raw = final.content.find((b) => b.type === "text");
+    if (!raw || raw.type !== "text") throw new Error("no_output");
+    const parsed = FluxSiteOutputSchema.safeParse(JSON.parse(raw.text));
+    if (!parsed.success) throw new Error("invalid_output");
+    const out = parsed.data;
+
+    const moderation = await enforceKarlMada(out, {
+      userId: user.id,
+      pageId,
+      surface: "flux-site:output",
+    });
+    if (moderation.error) {
+      await refundCredits(user.id, SITE_GENERATE_COST, "refund:flux-site");
+      return { error: "content_blocked" };
+    }
+
+    // Génération complète (intention explicite « crée toute ma vitrine ») :
+    // on applique accroche, SEO, ambiance et sections. Tout va au brouillon.
+    const seo = (page.seo ?? {}) as PageSeo;
+    const fields: Partial<PageDraftFields> = {
+      tagline: out.tagline,
+      seo: { ...seo, title: out.seo.title, description: out.seo.description },
+      theme: out.theme,
+      colors: { ...(page.colors as PageColors), primary: out.colors.primary, dark: out.colors.dark },
+    };
+
+    const existing = resolveSections(page);
+    const additions = out.sections.map(buildGeneratedSection);
+    const room = SECTION_LIMITS.maxSections - existing.length;
+    const sections =
+      room > 0 ? [...existing, ...additions.slice(0, room)] : existing;
+
+    const applied = await applyFluxPatch(supabase, pageId, { fields, sections });
+    if (applied.error) throw new Error(applied.error);
+
+    const admin = createAdminClient();
+    await admin.from("generations").insert({
+      user_id: user.id,
+      page_id: page.id,
+      tool_slug: "flux-site",
+      inputs: { brief: cleanBrief },
+      output: raw.text,
+      credits_spent: SITE_GENERATE_COST,
+    });
+
+    revalidatePath("/ma-page");
+    return {};
+  } catch {
+    await refundCredits(user.id, SITE_GENERATE_COST, "refund:flux-site");
     return { error: "generation_failed" };
   }
 }

@@ -79,7 +79,7 @@ export default async function AppLayout({
           </div>
         )}
         <AppNavigation pendingOrders={pendingOrders} lowStock={lowStock} />
-        <p className={styles.sidebarHint}>Ton commerce.<br />Un seul espace.</p>
+        <p className={styles.sidebarHint}>Ton commerce.<br />Un seul espace.<br /><small>KarlMada protège FLUX des contenus illicites.</small></p>
       </aside>
       <header className={styles.header}>
         <div className={styles.headerInner}>

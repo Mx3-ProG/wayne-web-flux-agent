@@ -15,6 +15,7 @@
 .column p { margin-bottom: 7px; color: var(--ww-text); font-size: .72rem; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
 .column a, .column button { min-height: 30px; padding: 0; border: 0; color: var(--ww-muted); background: transparent; font: inherit; font-size: .78rem; text-align: left; text-decoration: none; cursor: pointer; transition: color 180ms ease; }
 .column a:hover, .column button:hover { color: #fff; }
+.safety { position: relative; margin: 44px 0 -36px; padding: 12px 16px; border: 1px solid rgb(239 35 60 / 20%); border-radius: 12px; color: var(--ww-muted); background: rgb(239 35 60 / 5%); font-size: .72rem; line-height: 1.5; text-align: center; }
 .bottom { position: relative; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 24px; margin-top: 64px; padding-top: 24px; border-top: 1px solid var(--ww-line); color: var(--ww-dim); font-size: .68rem; }
 .status { display: inline-flex; align-items: center; gap: 8px; }
 .status i { width: 7px; height: 7px; border-radius: 50%; background: var(--ww-success); box-shadow: 0 0 12px rgb(86 211 155 / 60%); }

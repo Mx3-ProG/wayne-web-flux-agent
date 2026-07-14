@@ -66,21 +66,23 @@ export function FluxLoader() {
       aria-hidden="true"
     >
       <div className={styles.lockup}>
-        <div className={styles.word}>
+        <div className={styles.word} data-text="FLUX">
           <span className={styles.f}>F</span>
           <span className={styles.l}>L</span>
           <span className={styles.u}>U</span>
           <span className={styles.x}>X</span>
         </div>
-        <Image
-          className={styles.mark}
-          src="/flux-symbol-light.png"
-          width={887}
-          height={590}
-          sizes="72px"
-          alt=""
-          priority
-        />
+        <span className={styles.markOrbit}>
+          <Image
+            className={styles.mark}
+            src="/flux-symbol-light.png"
+            width={887}
+            height={590}
+            sizes="72px"
+            alt=""
+            priority
+          />
+        </span>
       </div>
     </div>
   );

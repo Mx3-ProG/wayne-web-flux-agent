@@ -60,6 +60,10 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion, redirect
         router.refresh();
         return;
       }
+      if (result.error === "content_blocked") {
+        toast.error("Les messages de haines ou les contenus explicit sont interdit et amendé sur FLUX, veuillez respectez votre environnement et celui des autres. 3 Infractions contre nos conditions d'utilisations le compte est supprimé.");
+        return;
+      }
       if (result.error) {
         toast.error("Publication impossible. Réessaie dans un instant.");
         return;

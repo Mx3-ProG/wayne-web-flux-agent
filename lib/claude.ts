@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import type { Page, Service, VoiceProfile } from "@/lib/types";
 import type { Tool } from "@/lib/tools-config";
 import { businessContext } from "@/lib/flux/persona";
+import { KARLMADA_AI_POLICY } from "@/lib/karlmada";
 
 export const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -30,6 +31,7 @@ export function buildPrompt(options: {
   const { tool, inputs, page, services, voice } = options;
 
   const parts: string[] = [
+    KARLMADA_AI_POLICY,
     "Tu écris des contenus marketing en français pour un commerçant indépendant. Tu écris À SA PLACE, en son nom (première personne).",
     ...businessContext({ page, services, voice }),
     "Règles : concret, direct, zéro jargon marketing, zéro phrase creuse. Le contenu doit être directement utilisable, sans retouche. Réponds en Markdown léger (titres ##, listes), sans préambule ni commentaire final.",

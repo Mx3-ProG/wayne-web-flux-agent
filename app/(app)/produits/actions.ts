@@ -11,6 +11,7 @@ import {
 } from "@/lib/plans";
 import { spendCredits, refundCredits } from "@/lib/credits";
 import type { ProductKind } from "@/lib/types";
+import { enforceKarlMada } from "@/lib/karlmada";
 
 type TunnelProduct = {
   name: string;
@@ -246,6 +247,12 @@ export async function updateCategory(
     .maybeSingle();
   if (!current) return { error: "Catégorie introuvable." };
 
+  const moderation = await enforceKarlMada(name, {
+    pageId: current.page_id,
+    surface: "product-category:update",
+  });
+  if (moderation.error) return moderation;
+
   const nextName = name.trim().slice(0, 60);
   const { error } = await supabase
     .from("product_categories")
@@ -385,6 +392,12 @@ export async function createProductsFromTunnel(
   );
   if (spendError) return { error: spendError };
 
+  const moderation = await enforceKarlMada(
+    { category: cleanCategory, products: cleanProducts },
+    { userId: user.id, pageId, surface: "products:create" }
+  );
+  if (moderation.error) return moderation;
+
   const [{ count: categoryCount }, { count: productCount }] = await Promise.all([
     supabase
       .from("product_categories")
@@ -452,6 +465,12 @@ export async function updateProduct(
     .eq("id", productId)
     .maybeSingle();
   if (!current) return { error: "Produit introuvable." };
+
+  const moderation = await enforceKarlMada(fields, {
+    pageId: current.page_id,
+    surface: "product:update",
+  });
+  if (moderation.error) return moderation;
 
   const { error } = await supabase.from("products").update(fields).eq("id", productId);
   if (error) return { error: "Enregistrement impossible." };

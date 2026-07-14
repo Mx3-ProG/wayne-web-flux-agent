@@ -18,10 +18,10 @@ import { toast } from "sonner";
 import type { Page } from "@/lib/types";
 import { FONTS } from "@/lib/verticals";
 import { VITRINE_THEMES } from "@/lib/vitrine-themes";
-import { VITRINE_ASSIST_COST } from "@/lib/plans";
+import { VITRINE_ASSIST_COST, SITE_GENERATE_COST } from "@/lib/plans";
 import { PREFILL_COST } from "@/lib/tools-config";
 import { saveVitrineGuide } from "@/app/(app)/ma-page/actions";
-import { fluxPrefill } from "@/app/(app)/ma-page/flux-actions";
+import { fluxPrefill, fluxGenerateSite } from "@/app/(app)/ma-page/flux-actions";
 import { Button } from "@/components/ui/button";
 import { FluxBrand } from "@/components/flux-brand";
 import {
@@ -51,6 +51,7 @@ export function VitrineGuide({
   const [creditsDialog, setCreditsDialog] = useState<
     "insufficient_credits" | "subscription_required" | "flux_requires_payment" | null
   >(null);
+  const [brief, setBrief] = useState("");
   // L'assistant FLUX est payant ; l'éditeur complet reste gratuit.
   const enough = publish.balance >= VITRINE_ASSIST_COST;
   const progress = Math.min(100, ((step + 1) / 6) * 100);
@@ -75,10 +76,45 @@ export function VitrineGuide({
         return;
       }
       if (result.error) {
-        toast.error("La génération a échoué — tes crédits n'ont pas été débités.");
+        toast.error(
+          result.error === "content_blocked"
+            ? "Les messages de haines ou les contenus explicit sont interdit et amendé sur FLUX, veuillez respectez votre environnement et celui des autres. 3 Infractions contre nos conditions d'utilisations le compte est supprimé."
+            : "La génération a échoué — tes crédits n'ont pas été débités."
+        );
         return;
       }
       toast.success("FLUX a pré-rempli ton brouillon. Relis, puis publie.");
+      router.push("/ma-page?view=editor");
+      router.refresh();
+    });
+  }
+
+  function generateSite() {
+    if (!brief.trim()) {
+      toast.error("Décris ton commerce en quelques mots d'abord.");
+      return;
+    }
+    startTransition(async () => {
+      const result = await fluxGenerateSite(initialPage.id, brief);
+      if (
+        result.error === "flux_requires_payment" ||
+        result.error === "insufficient_credits" ||
+        result.error === "subscription_required"
+      ) {
+        setCreditsDialog(result.error);
+        return;
+      }
+      if (result.error) {
+        toast.error(
+          result.error === "content_blocked"
+            ? "Les messages de haines ou les contenus explicit sont interdit et amendé sur FLUX, veuillez respectez votre environnement et celui des autres. 3 Infractions contre nos conditions d'utilisations le compte est supprimé."
+            : result.error === "empty_brief"
+              ? "Décris ton commerce en quelques mots d'abord."
+              : "La génération a échoué — tes crédits n'ont pas été débités."
+        );
+        return;
+      }
+      toast.success("FLUX a créé ta vitrine. Relis ton brouillon, puis publie.");
       router.push("/ma-page?view=editor");
       router.refresh();
     });
@@ -139,13 +175,30 @@ export function VitrineGuide({
               Flux reprend tes informations actuelles et t’accompagne étape par
               étape. Rien ne change avant ta confirmation finale.
             </p>
+            <textarea
+              className={styles.input}
+              style={{ minHeight: 96, resize: "vertical", marginBottom: 12 }}
+              maxLength={1500}
+              value={brief}
+              onChange={(event) => setBrief(event.target.value)}
+              placeholder="Décris ton commerce en quelques phrases : ce que tu proposes, ton style, ce qui te distingue… FLUX s'occupe du reste."
+            />
             <button
               className={styles.primary}
               type="button"
               disabled={pending}
+              onClick={generateSite}
+            >
+              {pending ? "FLUX crée ta vitrine…" : `FLUX crée toute ma vitrine (${SITE_GENERATE_COST} cr.)`}
+              <ArrowRight aria-hidden="true" />
+            </button>
+            <button
+              className={styles.directEditor}
+              type="button"
+              disabled={pending}
               onClick={prefill}
             >
-              {pending ? "FLUX travaille…" : `FLUX pré-remplit ma vitrine (${PREFILL_COST} cr.)`}
+              {pending ? "FLUX travaille…" : `Juste pré-remplir les textes (${PREFILL_COST} cr.)`}
               <ArrowRight aria-hidden="true" />
             </button>
             <button className={styles.directEditor} type="button" onClick={() => setStep(1)}>

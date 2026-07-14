@@ -112,6 +112,25 @@ export const FluxPrefillOutputSchema = z.object({
 });
 export type FluxPrefillOutput = z.infer<typeof FluxPrefillOutputSchema>;
 
+// Sortie structurée de la génération complète par brief (Phase 2). FLUX crée
+// toute la vitrine à partir du template métier + du brief : textes, SEO,
+// ambiance (thème + couleurs) et 2 à 5 sections de contenu. Écrit dans le
+// brouillon ; l'utilisateur relit puis publie.
+export const FluxSiteOutputSchema = z.object({
+  tagline: z.string().max(160),
+  seo: z.object({
+    title: z.string().max(70),
+    description: z.string().max(200),
+  }),
+  theme: z.enum(PAGE_THEMES),
+  colors: z.object({
+    primary: HexColor,
+    dark: HexColor,
+  }),
+  sections: z.array(FluxGeneratedSectionSchema).min(2).max(5),
+});
+export type FluxSiteOutput = z.infer<typeof FluxSiteOutputSchema>;
+
 // Convertit un schéma Zod en JSON Schema pour l'API Anthropic
 // (output_config.format ou input_schema d'un tool).
 export function toAnthropicSchema(schema: z.ZodType): Record<string, unknown> {

@@ -40,6 +40,11 @@ export function MarketingFooter() {
         </nav>
       </div>
 
+      <p className={styles.safety}>
+        Infrastructure protégée par KarlMada · Tolérance zéro pour les contenus adultes,
+        drogues, armes, fraudes et activités illicites.
+      </p>
+
       <div className={styles.bottom}>
         <span>© 2026 Wayne Web. Tous droits réservés.</span>
         <span className={styles.status}><i /> Services opérationnels</span>

@@ -55,7 +55,12 @@ export function ToolRunner({ tool, balance }: Props) {
         return;
       }
       if (!res.ok || !res.body) {
-        toast.error("La génération a échoué. Tes crédits n'ont pas été perdus.");
+        const body = await res.json().catch(() => null);
+        toast.error(
+          body?.error === "content_blocked" && body?.message
+            ? body.message
+            : "La génération a échoué."
+        );
         setRunning(false);
         return;
       }

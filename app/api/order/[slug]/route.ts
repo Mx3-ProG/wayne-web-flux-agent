@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { sendOrderCreatedEmails } from "@/lib/emails/order-emails";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { formatPrice } from "@/lib/types";
+import { enforceKarlMada } from "@/lib/karlmada";
 
 const PHONE_RE = /^[+0-9 ().-]{6,20}$/;
 
@@ -66,12 +67,15 @@ export async function POST(
 
   const supabase = createAdminClient();
 
-  const { data: page, error: pageError } = await supabase
+  const pageLookup = supabase
     .from("pages")
     .select("id, user_id, published")
-    .eq("slug", slug)
-    .eq("published", true)
-    .single();
+    .eq("published", true);
+  const isPageId = /^[0-9a-f]{8}-[0-9a-f-]{27}$/i.test(slug);
+  const { data: page, error: pageError } = await (isPageId
+    ? pageLookup.eq("id", slug)
+    : pageLookup.eq("slug", slug)
+  ).single();
   if (pageError || !page) {
     console.error("order: page lookup failed", { slug, error: pageError });
     return NextResponse.json({ error: "not_found" }, { status: 404 });
@@ -87,6 +91,27 @@ export async function POST(
       quantity,
     })),
   ];
+
+  const [{ data: orderedProducts }, { data: orderedOffers }] = await Promise.all([
+    wantedProducts.size
+      ? supabase.from("products").select("id, name, description").eq("page_id", page.id).in("id", [...wantedProducts.keys()])
+      : Promise.resolve({ data: [] }),
+    wantedOffers.size
+      ? supabase.from("offers").select("id, title, description").eq("page_id", page.id).in("id", [...wantedOffers.keys()])
+      : Promise.resolve({ data: [] }),
+  ]);
+  const customerModeration = await enforceKarlMada(
+    { firstName, address, note },
+    { surface: "order:customer-input" }
+  );
+  const catalogModeration = await enforceKarlMada(
+    { products: orderedProducts, offers: orderedOffers },
+    { userId: page.user_id, pageId: page.id, surface: "order:create" }
+  );
+  const moderationError = customerModeration.error ?? catalogModeration.error;
+  if (moderationError) {
+    return NextResponse.json({ error: "content_blocked", message: moderationError }, { status: 422 });
+  }
 
   const { data: rpcData, error: rpcError } = await supabase.rpc("create_guest_order", {
     p_page_id: page.id,
@@ -139,5 +164,5 @@ export async function POST(
     }
   });
 
-  return NextResponse.json({ ok: true }, { status: 201 });
+  return NextResponse.json({ ok: true, order_id: orderId, total_cents: total }, { status: 201 });
 }

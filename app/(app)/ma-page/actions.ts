@@ -4,11 +4,12 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getVertical } from "@/lib/verticals";
 import { defaultLegal } from "@/lib/legal";
-import { projectLimit, VITRINE_ASSIST_COST } from "@/lib/plans";
+import { projectLimit, PUBLISH_COST, VITRINE_ASSIST_COST } from "@/lib/plans";
 import { spendCredits, refundCredits } from "@/lib/credits";
 import { validateSections } from "@/lib/sections";
 import { slugify } from "@/lib/slug";
 import type { PageDraftFields, Plan } from "@/lib/types";
+import { enforceKarlMada, KARLMADA_BLOCK_MESSAGE } from "@/lib/karlmada";
 
 // Crée la vitrine initiale : slug unique, prestations pré-remplies selon le
 // métier, horaires par défaut (mar-sam 9h-19h), textes légaux générés.
@@ -23,6 +24,12 @@ export async function createPage(input: {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "Non connecté." };
+
+  const moderation = await enforceKarlMada(input, {
+    userId: user.id,
+    surface: "page:create",
+  });
+  if (moderation.error) return moderation;
 
   const businessName = input.businessName.trim().slice(0, 60);
   if (!businessName) return { error: "Donne un nom à ta vitrine." };
@@ -149,6 +156,11 @@ export async function savePageFields(
   pageId: string,
   fields: Partial<PageDraftFields>
 ): Promise<{ error?: string }> {
+  const moderation = await enforceKarlMada(fields, {
+    pageId,
+    surface: "page-draft:save",
+  });
+  if (moderation.error) return moderation;
   // Le contenu des blocs vit dans le draft jsonb : on borne sa taille.
   if (fields.sections) {
     const sectionsError = validateSections(fields.sections);
@@ -203,7 +215,9 @@ export async function saveVitrineGuide(
 
   const result = await savePageFields(pageId, fields);
   if (result.error) {
-    await refundCredits(user.id, VITRINE_ASSIST_COST, "refund:vitrine");
+    if (result.error !== KARLMADA_BLOCK_MESSAGE) {
+      await refundCredits(user.id, VITRINE_ASSIST_COST, "refund:vitrine");
+    }
     return result;
   }
   return {};
@@ -214,6 +228,7 @@ export type PublishError =
   | "nothing_to_publish"
   | "subscription_required"
   | "path_taken"
+  | "content_blocked"
   | "unknown";
 
 // Publie une nouvelle version du site : débit atomique de 5 crédits + merge
@@ -235,6 +250,27 @@ export async function publishPage(
     .eq("user_id", user.id)
     .single();
   if (!page) return { error: "unknown" };
+
+  // Dernier verrou : on rescane l'intégralité du contenu publiable, y compris
+  // les anciens brouillons créés avant KarlMada.
+  const [{ data: fullPage }, { data: products }, { data: offers }, { data: services }, { data: sitePages }] =
+    await Promise.all([
+      supabase.from("pages").select("business_name, job_title, tagline, city, draft, legal, sections, seo, promo, reviews").eq("id", pageId).single(),
+      supabase.from("products").select("name, description").eq("page_id", pageId),
+      supabase.from("offers").select("title, description, draft, draft_status").eq("page_id", pageId),
+      supabase.from("services").select("name").eq("page_id", pageId),
+      supabase.from("site_pages").select("title, subtitle, draft, sections, seo, draft_status").eq("page_id", pageId),
+    ]);
+  const moderation = await enforceKarlMada(
+    { page: fullPage, products, offers, services, sitePages },
+    { userId: user.id, pageId, surface: "page:publish" }
+  );
+  if (moderation.error) {
+    // La tentative de publication interdite est facturée, sans appliquer le
+    // brouillon. Une absence de solde n'annule pas l'infraction KarlMada.
+    await spendCredits(user.id, PUBLISH_COST, "karlmada:publish-blocked");
+    return { error: "content_blocked" };
+  }
 
   const { data: balance, error } = await supabase.rpc("publish_page", {
     pid: pageId,
@@ -278,6 +314,13 @@ export async function syncCatalog(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "Non connecté." };
+
+  const moderation = await enforceKarlMada(families, {
+    userId: user.id,
+    pageId,
+    surface: "catalog:services-sync",
+  });
+  if (moderation.error) return moderation;
 
   const { data: page } = await supabase
     .from("pages")
@@ -343,6 +386,13 @@ export async function syncProducts(
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return { error: "Non connecté." };
+
+  const moderation = await enforceKarlMada(categories, {
+    userId: user.id,
+    pageId,
+    surface: "catalog:products-sync",
+  });
+  if (moderation.error) return moderation;
 
   const { data: page } = await supabase
     .from("pages")
