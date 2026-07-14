@@ -47,6 +47,7 @@ export default function LoginPage() {
               <span>Mot de passe</span>
               <div><LockKeyhole aria-hidden="true" /><input name="password" type="password" placeholder="••••••••" required autoComplete="current-password" /></div>
             </label>
+            <Link className={styles.forgot} href="/mot-de-passe-oublie">Mot de passe oublié ?</Link>
             {loginState.error && <p className={styles.error}>{loginState.error}</p>}
             <button className={styles.primary} type="submit" disabled={loginPending}>
               {loginPending ? "Connexion…" : "Entrer dans mon espace"}

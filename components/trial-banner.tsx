@@ -4,14 +4,14 @@ import { hasActiveAccess, trialDaysLeft } from "@/lib/plans";
 import type { Profile } from "@/lib/types";
 
 type Props = {
-  profile: Pick<Profile, "trial_ends_at" | "subscribed_at">;
+  profile: Pick<Profile, "trial_ends_at" | "subscription_status">;
 };
 
 // Bandeau d'état de l'essai FLUX, affiché sous le header de l'app.
 // Souscrit → rien. Essai en cours → compte à rebours. Essai expiré → lecture
 // seule (les actions à crédits sont bloquées côté SQL), CTA vers /formules.
 export function TrialBanner({ profile }: Props) {
-  if (profile.subscribed_at) return null;
+  if (["active", "trialing", "past_due"].includes(profile.subscription_status ?? "")) return null;
 
   const active = hasActiveAccess(profile);
   const days = trialDaysLeft(profile);

@@ -28,6 +28,14 @@ export function emailButton(label: string, href: string): string {
   </td></tr></table>`;
 }
 
+// Bloc de code à usage unique (OTP) : grand, espacé, sélectionnable. Utilisé
+// par les emails qui transmettent un code plutôt qu'un lien (reauthentication).
+export function emailCode(code: string): string {
+  return `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0;"><tr><td style="border:1px solid ${LINE};border-radius:12px;background:${CANVAS};padding:18px 28px;">
+    <span style="font-family:${SANS};font-size:30px;font-weight:700;letter-spacing:8px;color:${TEXT};">${escapeHtml(code)}</span>
+  </td></tr></table>`;
+}
+
 export function baseLayout(opts: {
   title: string;
   preheader?: string;

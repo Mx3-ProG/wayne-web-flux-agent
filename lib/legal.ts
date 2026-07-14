@@ -8,11 +8,11 @@ export function defaultLegal(businessName: string) {
 
 Éditeur du site :
 ${name}
-Statut : [À COMPLÉTER : micro-entreprise / EI / société]
-SIRET : [À COMPLÉTER]
-Adresse : [À COMPLÉTER]
-E-mail : [À COMPLÉTER]
-Téléphone : [À COMPLÉTER]
+Statut : SAS
+SIRET :
+Adresse : 1b rue guy pépin
+E-mail : contact@flux-wayne.com
+Téléphone : +33 7 63 57 28 64
 
 Hébergement :
 Ce site est hébergé par l'hébergeur choisi par l'éditeur.
@@ -36,11 +36,11 @@ Le paiement s'effectue [À COMPLÉTER : sur place, en espèces / carte] à l'iss
 5. Responsabilité
 Le client s'engage à signaler toute information utile (allergie, contre-indication, contrainte technique) avant la prestation.
 
-Éditeur : ${name} — SIRET : [À COMPLÉTER]`,
+Éditeur : ${name} — SIRET : `,
     confidentialite: `POLITIQUE DE CONFIDENTIALITÉ
 
 Responsable du traitement :
-${name} — [À COMPLÉTER : e-mail]
+${name} — contact@flux-wayne.com
 
 Données collectées :
 Lors d'une réservation, sont collectés : prénom, téléphone et/ou e-mail. Ces données servent uniquement à gérer le rendez-vous.

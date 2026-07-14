@@ -3,6 +3,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { getPack } from "@/lib/credit-packs";
 import { getStripe } from "@/lib/stripe";
+import type { Profile } from "@/lib/types";
 
 // Crée une session Stripe Checkout pour un pack de crédits.
 // Les crédits sont ajoutés par le webhook (checkout.session.completed),
@@ -30,9 +31,27 @@ export async function createCheckoutSession(
   const site = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.flux-wayne.com";
 
   try {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("stripe_customer_id")
+      .eq("user_id", user.id)
+      .single<Pick<Profile, "stripe_customer_id">>();
+    let customerId = profile?.stripe_customer_id ?? null;
+    if (!customerId) {
+      const customer = await stripe.customers.create({
+        email: user.email,
+        metadata: { user_id: user.id },
+      });
+      customerId = customer.id;
+      await supabase
+        .from("profiles")
+        .update({ stripe_customer_id: customerId })
+        .eq("user_id", user.id);
+    }
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      payment_method_types: ["card"],
+      customer: customerId,
+      client_reference_id: user.id,
       line_items: [
         {
           quantity: 1,
@@ -45,9 +64,12 @@ export async function createCheckoutSession(
           },
         },
       ],
-      metadata: { user_id: user.id, pack_id: pack.id },
-      customer_email: user.email ?? undefined,
-      success_url: `${site}/credits?achat=succes`,
+      metadata: { user_id: user.id, pack_id: pack.id, kind: "credits" },
+      billing_address_collection: "required",
+      automatic_tax: { enabled: process.env.STRIPE_AUTOMATIC_TAX === "true" },
+      tax_id_collection: { enabled: true },
+      consent_collection: { terms_of_service: "required" },
+      success_url: `${site}/paiement/confirmation?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${site}/credits?achat=annule`,
     });
     if (!session.url) return { error: "Paiement indisponible. Réessaie." };

@@ -66,6 +66,10 @@ function reasonLabel(reason: string): string {
     const plan = reason.slice(6) as Plan;
     return `Recharge formule ${PLAN_LABEL[plan] ?? plan}`;
   }
+  if (reason.startsWith("invoice:")) {
+    const plan = reason.split(":topup:")[1] as Plan | undefined;
+    return plan ? `Recharge formule ${PLAN_LABEL[plan] ?? plan}` : "Recharge mensuelle";
+  }
   if (reason.startsWith("publish:")) {
     const version = reason.split(":v")[1];
     return version
@@ -118,15 +122,15 @@ export default async function CreditsPage({
         .limit(50),
       supabase
         .from("profiles")
-        .select("plan, trial_ends_at, subscribed_at")
+        .select("plan, trial_ends_at, subscribed_at, subscription_status, current_period_end")
         .eq("user_id", user.id)
-        .single<Pick<Profile, "plan" | "trial_ends_at" | "subscribed_at">>(),
+        .single<Pick<Profile, "plan" | "trial_ends_at" | "subscribed_at" | "subscription_status" | "current_period_end">>(),
     ]);
 
   const plan = (profile?.plan ?? "basique") as Plan;
   const monthlyCredits = PLAN_LIMITS[plan].monthlyCredits;
   const entries = (ledger ?? []) as CreditEntry[];
-  const subscribed = Boolean(profile?.subscribed_at);
+  const subscribed = ["active", "trialing", "past_due"].includes(profile?.subscription_status ?? "");
   const trialActive = profile ? !subscribed && hasActiveAccess(profile) : false;
   const daysLeft = profile ? trialDaysLeft(profile) : 0;
   const currentBalance = balance ?? 0;
@@ -137,12 +141,9 @@ export default async function CreditsPage({
 
   // Prochaine recharge : uniquement une fois souscrit, ancrée sur le dernier
   // topup de la formule courante.
-  const lastTopup = entries.find((e) => e.reason === `topup:${plan}`);
   const nextRecharge =
-    subscribed && lastTopup
-      ? new Date(
-          new Date(lastTopup.created_at).getTime() + 30 * 86400_000
-        ).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
+    subscribed && profile?.current_period_end
+      ? new Date(profile.current_period_end).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
       : null;
 
   return (
@@ -305,7 +306,7 @@ export default async function CreditsPage({
                 <>
                   Ta formule {PLAN_LABEL[plan]} recharge{" "}
                   <strong>
-                    +{monthlyCredits} crédits tous les 30 jours
+                    +{monthlyCredits} crédits à chaque facture mensuelle payée
                   </strong>
                   .
                 </>

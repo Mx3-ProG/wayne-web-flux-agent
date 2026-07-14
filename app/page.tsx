@@ -321,6 +321,9 @@ export default function LandingPage() {
         <div>
           <Link href="/login">Connexion</Link>
           <a href="https://www.wayne-web.com/faq">FAQ</a>
+          <Link href="/mentions-legales">Mentions légales</Link>
+          <Link href="/cgv">CGV</Link>
+          <Link href="/confidentialite">Confidentialité</Link>
           <span>© 2026 Wayne Web</span>
         </div>
       </footer>

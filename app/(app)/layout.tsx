@@ -2,7 +2,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePageId } from "@/lib/active-project";
-import { Coins } from "lucide-react";
 import styles from "./app-shell.module.css";
 import { AppNavigation } from "@/components/app-navigation";
 import { MobileAppMenu } from "@/components/mobile-app-menu";
@@ -10,6 +9,7 @@ import { AppBadgeSync } from "@/components/app-badge-sync";
 import { ProjectSwitcher } from "@/components/project-switcher";
 import { TrialBanner } from "@/components/trial-banner";
 import { FluxBrand } from "@/components/flux-brand";
+import { CreditsLink } from "@/components/credits-link";
 import type { Profile } from "@/lib/types";
 
 export default async function AppLayout({
@@ -29,9 +29,9 @@ export default async function AppLayout({
     supabase.rpc("apply_plan_topup", { uid: user.id }),
     supabase
       .from("profiles")
-      .select("trial_ends_at, subscribed_at")
+      .select("trial_ends_at, subscription_status")
       .eq("user_id", user.id)
-      .single<Pick<Profile, "trial_ends_at" | "subscribed_at">>(),
+      .single<Pick<Profile, "trial_ends_at" | "subscription_status">>(),
   ]);
 
   // Projet actif + liste des projets (pour le switcher).
@@ -87,12 +87,7 @@ export default async function AppLayout({
             <FluxBrand markOnly />
           </div>
           <div className={styles.actions}>
-            <Link
-              href="/credits"
-              className={styles.credits}
-            >
-              <Coins aria-hidden="true" /> {balance ?? 0}
-            </Link>
+            <CreditsLink balance={balance ?? 0} className={styles.credits} />
             <MobileAppMenu
               balance={balance ?? 0}
               pendingOrders={pendingOrders}

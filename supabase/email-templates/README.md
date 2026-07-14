@@ -1,8 +1,17 @@
 # Emails FLUX — configuration manuelle
 
-Les templates HTML de ce dossier sont la source de vérité versionnée des
-emails d'authentification Supabase. Les emails transactionnels (commandes)
-sont envoyés par le code via Resend (`lib/emails/`).
+Les templates HTML de ce dossier sont **générés** à partir du layout partagé
+`lib/emails/layout.ts` (même source de vérité de design que les emails Resend).
+**Ne pas les éditer à la main** : modifier `lib/emails/auth-templates.ts` (le
+contenu) ou `lib/emails/layout.ts` (le design), puis régénérer :
+
+```
+npx tsx scripts/generate-auth-emails.ts
+```
+
+Les liens sont des placeholders Go (`{{ .ConfirmationURL }}`, `{{ .SiteURL }}`)
+remplacés par Supabase à l'envoi. Les emails transactionnels (commandes) sont,
+eux, envoyés directement par le code via Resend (`lib/emails/`).
 
 ## 1. Resend — domaine expéditeur
 
@@ -45,6 +54,8 @@ Supabase dashboard → **Authentication → Email Templates**, coller le HTML :
 - *Confirm signup* → `confirmation.html`
 - *Magic Link* → `magic-link.html`
 - *Reset Password* → `recovery.html`
+- *Change Email Address* → `email-change.html`
+- *Reauthentication* → `reauthentication.html`
 
 Les variables `{{ .ConfirmationURL }}` et `{{ .SiteURL }}` sont remplacées
 par Supabase à l'envoi.

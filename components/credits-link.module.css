@@ -1,0 +1,124 @@
+.link {
+  position: relative;
+  isolation: isolate;
+  border-color: rgb(247 188 45 / 34%);
+  background:
+    radial-gradient(circle at 30% 20%, rgb(255 224 120 / 10%), transparent 58%),
+    rgb(247 188 45 / 7%);
+  color: #ffd45f;
+  box-shadow: inset 0 1px rgb(255 234 164 / 6%);
+  transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+}
+
+.link:hover {
+  border-color: rgb(255 211 92 / 52%);
+  background: rgb(247 188 45 / 11%);
+  box-shadow: 0 8px 24px rgb(247 188 45 / 8%), inset 0 1px rgb(255 239 188 / 10%);
+}
+
+.coinScene {
+  position: relative;
+  display: inline-grid;
+  width: 21px;
+  height: 21px;
+  flex: 0 0 21px;
+  place-items: center;
+}
+
+.coinScene::after {
+  position: absolute;
+  z-index: -1;
+  width: 31px;
+  height: 31px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgb(255 220 100 / 42%), rgb(247 188 45 / 10%) 45%, transparent 72%);
+  content: "";
+  filter: blur(2px);
+  opacity: 0;
+  animation: coin-light 1s ease-in-out infinite;
+}
+
+.coinIcon {
+  width: 19px;
+  height: 19px;
+  color: #ffd45f;
+  filter: drop-shadow(0 0 3px rgb(255 207 66 / 22%));
+}
+
+.coinParticle {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  display: block;
+  width: 7px;
+  height: 7px;
+  border: 1.5px solid #ffe58d;
+  border-radius: 50%;
+  background: #e9a916;
+  box-shadow: inset 0 0 0 1px rgb(255 236 154 / 35%), 0 0 7px rgb(255 201 42 / 42%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.coinSceneBurst .coinIcon {
+  animation: coin-pop .58s cubic-bezier(.2, .8, .2, 1) both;
+}
+
+.coinSceneBurst .coinParticleOne {
+  animation: coin-scatter-one .58s cubic-bezier(.16, .8, .3, 1) both;
+}
+
+.coinSceneBurst .coinParticleTwo {
+  animation: coin-scatter-two .58s cubic-bezier(.16, .8, .3, 1) both;
+}
+
+.coinSceneBurst .coinParticleThree {
+  animation: coin-scatter-three .58s cubic-bezier(.16, .8, .3, 1) both;
+}
+
+.balance {
+  color: #ffdc74;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 12px rgb(255 199 44 / 12%);
+}
+
+@keyframes coin-light {
+  0%, 62%, 100% { opacity: 0; transform: scale(.72); }
+  76% { opacity: .78; transform: scale(1); }
+  88% { opacity: 0; transform: scale(1.14); }
+}
+
+@keyframes coin-pop {
+  0% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+  36% { opacity: 1; transform: translateY(-4px) rotate(-18deg) scale(1.08); }
+  58% { opacity: 0; transform: translateY(5px) rotate(32deg) scale(.18); }
+  82% { opacity: 0; transform: translateY(0) rotate(0deg) scale(.35); }
+  100% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+}
+
+@keyframes coin-scatter-one {
+  0%, 12% { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(.6); }
+  22% { opacity: 1; }
+  72% { opacity: 0; transform: translate(-13px, -12px) rotate(-110deg) scale(1); }
+  100% { opacity: 0; transform: translate(-16px, -15px) rotate(-150deg) scale(.5); }
+}
+
+@keyframes coin-scatter-two {
+  0%, 12% { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(.6); }
+  22% { opacity: 1; }
+  72% { opacity: 0; transform: translate(14px, -8px) rotate(125deg) scale(.92); }
+  100% { opacity: 0; transform: translate(18px, -10px) rotate(170deg) scale(.45); }
+}
+
+@keyframes coin-scatter-three {
+  0%, 12% { opacity: 0; transform: translate(0, 0) rotate(0deg) scale(.55); }
+  22% { opacity: 1; }
+  72% { opacity: 0; transform: translate(5px, 14px) rotate(95deg) scale(.82); }
+  100% { opacity: 0; transform: translate(7px, 18px) rotate(140deg) scale(.4); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .coinScene::after,
+  .coinSceneBurst .coinIcon,
+  .coinSceneBurst .coinParticle { animation: none; }
+}

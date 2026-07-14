@@ -5,6 +5,7 @@ import {
   buyerOrderAccepted,
   buyerOrderCancelled,
   buyerOrderConfirmation,
+  buyerOrderReady,
   sellerNewOrder,
   type OrderEmailItem,
 } from "./templates";
@@ -106,7 +107,7 @@ export async function sendOrderCreatedEmails(args: {
 
 export async function sendOrderStatusEmail(
   orderId: string,
-  status: "accepted" | "cancelled"
+  status: "accepted" | "cancelled" | "ready"
 ): Promise<void> {
   const supabase = createAdminClient();
   const { data: order } = await supabase
@@ -136,7 +137,11 @@ export async function sendOrderStatusEmail(
     orderId,
   };
   const tpl =
-    status === "accepted" ? buyerOrderAccepted(data) : buyerOrderCancelled(data);
+    status === "accepted"
+      ? buyerOrderAccepted(data)
+      : status === "ready"
+        ? buyerOrderReady(data)
+        : buyerOrderCancelled(data);
   await sendEmail({
     to: order.email,
     subject: tpl.subject,

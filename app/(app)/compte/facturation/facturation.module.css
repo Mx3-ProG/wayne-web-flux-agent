@@ -1,0 +1,18 @@
+.page { max-width: 920px; margin: 0 auto; padding: 42px 24px 90px; color: #f7f5f2; }
+.page header p { color: #ff6378; font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.page header h1 { margin-top: 8px; font-family: var(--font-fraunces), serif; font-size: clamp(42px, 7vw, 68px); font-weight: 550; }
+.page header span { display: block; margin-top: 12px; color: #aaa7a8; }
+.card { margin-top: 36px; padding: 32px; border: 1px solid rgb(255 255 255 / 10%); border-radius: 24px; background: #111114; }
+.card small { color: #88858a; text-transform: uppercase; letter-spacing: .12em; }
+.card h2 { margin-top: 7px; font-size: 26px; }
+.status, .warning { display: inline-flex; margin-top: 18px; padding: 7px 11px; border-radius: 999px; background: rgb(86 211 155 / 12%); color: #77dca9; font-size: 12px; font-weight: 700; }
+.warning { background: rgb(255 190 92 / 12%); color: #f4bd68; }
+.card dl { display: grid; margin: 28px 0; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.card dl div { padding: 17px; border-radius: 14px; background: rgb(255 255 255 / 4%); }
+.card dt { color: #858187; font-size: 11px; }
+.card dd { margin-top: 7px; font-weight: 700; }
+.button, .card button { display: inline-flex; min-height: 48px; padding: 0 20px; align-items: center; justify-content: center; border: 0; border-radius: 999px; background: #ef233c; color: white; cursor: pointer; font: inherit; font-size: 13px; font-weight: 750; text-decoration: none; }
+.help { margin-top: 17px; color: #77747a; font-size: 12px; line-height: 1.6; }
+.back { display: inline-block; margin-top: 25px; color: #aaa7a8; text-decoration: none; }
+.notice { margin-top: 24px; padding: 13px 16px; border-radius: 12px; background: rgb(255 190 92 / 10%); color: #f4bd68; }
+@media (max-width: 700px) { .card dl { grid-template-columns: 1fr; } .card { padding: 23px; } }

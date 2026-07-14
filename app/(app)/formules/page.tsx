@@ -11,14 +11,23 @@ import {
   trialDaysLeft,
 } from "@/lib/plans";
 import type { Plan, Profile } from "@/lib/types";
-import { Check } from "lucide-react";
+import {
+  ArrowRight,
+  Check,
+  Crown,
+  Gem,
+  LockKeyhole,
+  Sparkles,
+  WalletCards,
+} from "lucide-react";
 import styles from "./formules.module.css";
+import { subscribeToPlan } from "./actions";
 
 export const metadata = { title: "Formules FLUX" };
 
 // Fonctionnalités marketing par palier (en plus des limites chiffrées).
 const PLAN_FEATURES: Record<Plan, string[]> = {
-  basique: ["Personnalisation de base", "Outils IA inclus"],
+  basique: ["Personnalisation de base", "Outils FLUX inclus"],
   pro: [
     "Personnalisation avancée (sections, blocs)",
     "Thèmes premium",
@@ -38,11 +47,11 @@ const PLAN_FEATURES: Record<Plan, string[]> = {
   ],
 };
 
-// Pricing des formules FLUX — l'outil IA de Wayne-Web. Essai de 7 jours offert
-// sur toutes les formules à l'inscription. Pas encore de paiement en ligne
-// (Stripe viendra plus tard) : les CTA restent « bientôt disponible » et la
-// souscription se pose manuellement côté admin.
-export default async function FormulesPage() {
+// Pricing des formules FLUX. Les CTA créent une session Stripe Checkout côté
+// serveur; l'activation effective reste exclusivement pilotée par les webhooks.
+export default async function FormulesPage({ searchParams }: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const supabase = await createClient();
   const {
     data: { user },
@@ -51,33 +60,63 @@ export default async function FormulesPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("plan, trial_ends_at, subscribed_at")
+    .select("plan, trial_ends_at, subscribed_at, subscription_status")
     .eq("user_id", user.id)
-    .single<Pick<Profile, "plan" | "trial_ends_at" | "subscribed_at">>();
+    .single<Pick<Profile, "plan" | "trial_ends_at" | "subscribed_at" | "subscription_status">>();
+  const params = await searchParams;
+  const payment = typeof params.paiement === "string" ? params.paiement : null;
   const plan = (profile?.plan ?? "basique") as Plan;
-  const subscribed = Boolean(profile?.subscribed_at);
+  const subscribed = ["active", "trialing", "past_due"].includes(profile?.subscription_status ?? "");
   const trialActive = profile ? !subscribed && hasActiveAccess(profile) : false;
   const daysLeft = profile ? trialDaysLeft(profile) : 0;
 
   return (
     <div className={styles.page}>
-      <p className={styles.eyebrow}>FLUX, l&apos;outil IA de Wayne-Web</p>
-      <h1 className={styles.title}>Les formules FLUX</h1>
-      <p className={styles.subtitle}>
-        Tes crédits, c&apos;est ta liberté de création : plus de crédits, c&apos;est
-        plus de fonctionnalités, plus de modifications, plus de
-        personnalisation. {TRIAL_DAYS} jours d&apos;essai
-        offerts sur toutes les formules.
+      <header className={styles.hero}>
+        <div className={styles.heroGlow} aria-hidden="true" />
+        <span className={styles.overline}>
+          <LockKeyhole aria-hidden="true" />
+          Salon privé FLUX
+        </span>
+        <div className={styles.heroMark} aria-hidden="true">
+          <Crown />
+        </div>
+        <h1>
+          Choisis ton <span>rang</span>
+        </h1>
+        <p>
+          Une formule fixe ton rythme de création : plus de crédits, plus de
+          vitrines, plus d&apos;offres et plus de liberté pour construire une
+          présence qui mérite l&apos;attention.
+        </p>
+        <div className={styles.heroFacts}>
+          <span>
+            <Sparkles aria-hidden="true" />
+            {TRIAL_DAYS} jours offerts
+          </span>
+          <span>
+            <Gem aria-hidden="true" />
+            Crédits mensuels inclus
+          </span>
+          <span>
+            <WalletCards aria-hidden="true" />
+            Sans prélèvement surprise
+          </span>
+        </div>
         {trialActive && (
-          <>
-            {" "}
-            <strong>
-              Ton essai est en cours : encore {daysLeft} jour
-              {daysLeft > 1 ? "s" : ""}.
-            </strong>
-          </>
+          <strong className={styles.trialStatus}>
+            Ton essai est en cours : encore {daysLeft} jour
+            {daysLeft > 1 ? "s" : ""}.
+          </strong>
         )}
-      </p>
+      </header>
+
+      {payment === "annule" && (
+        <div className={styles.checkoutNotice}>Paiement annulé — rien n&apos;a été débité.</div>
+      )}
+      {payment && payment !== "annule" && (
+        <div className={styles.checkoutNotice}>Le paiement est momentanément indisponible. Réessaie ou contacte-nous.</div>
+      )}
 
       <div className={styles.grid}>
         {FLUX_PLANS.map((item) => {
@@ -104,6 +143,7 @@ export default async function FormulesPage() {
               <p className={styles.credits}>
                 {limits.monthlyCredits} crédits chaque mois
               </p>
+              <div className={styles.planDivider} />
               <ul className={styles.features}>
                 <li>
                   <Check aria-hidden="true" /> {limits.projects} vitrine
@@ -129,9 +169,13 @@ export default async function FormulesPage() {
               {isCurrent ? (
                 <span className={styles.cta}>Ta formule</span>
               ) : (
-                <span className={styles.cta} title="Paiement en ligne bientôt disponible">
-                  Bientôt disponible — essai {TRIAL_DAYS} j offert
-                </span>
+                <form action={subscribeToPlan}>
+                  <input type="hidden" name="plan" value={item} />
+                  <button className={styles.cta} type="submit">
+                    Choisir {PLAN_LABEL[item]}
+                    <ArrowRight aria-hidden="true" />
+                  </button>
+                </form>
               )}
             </article>
           );
@@ -139,13 +183,21 @@ export default async function FormulesPage() {
       </div>
 
       <div className={styles.note}>
-        <strong>Comment marchent les crédits ?</strong> Chaque action qui
-        mobilise nos serveurs consomme des crédits : publier une nouvelle
-        version de ton site ({PUBLISH_COST} cr.), générer du contenu avec
-        l&apos;IA, pré-remplir ta vitrine. Plus ta formule monte, plus tu peux
-        modifier, publier et personnaliser. Le détail des coûts est sur{" "}
-        <Link href="/credits">ta page crédits</Link> — rien n&apos;est prélevé
-        sans confirmation.
+        <span className={styles.noteIcon}>
+          <WalletCards aria-hidden="true" />
+        </span>
+        <div>
+          <p className={styles.noteKicker}>Crédits et liberté</p>
+          <h2>Comment marchent les crédits ?</h2>
+          <p>
+            Chaque action qui mobilise nos serveurs consomme des crédits :
+            publier une nouvelle version de ton site ({PUBLISH_COST} cr.),
+            générer du contenu avec l&apos;IA, pré-remplir ta vitrine. Plus ta
+            formule monte, plus tu peux modifier, publier et personnaliser. Le
+            détail des coûts est sur <Link href="/credits">ta page crédits</Link>{" "}
+            — rien n&apos;est prélevé sans confirmation.
+          </p>
+        </div>
       </div>
     </div>
   );

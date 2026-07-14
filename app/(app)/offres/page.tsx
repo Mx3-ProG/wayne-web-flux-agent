@@ -8,7 +8,7 @@ import { offerLimit } from "@/lib/plans";
 import { OffersManager } from "./offers-manager";
 import styles from "./offres-redesign.module.css";
 
-export const metadata = { title: "Mes offres" };
+export const metadata = { title: "Mes offres" }
 
 export default async function OffresPage() {
   const supabase = await createClient();

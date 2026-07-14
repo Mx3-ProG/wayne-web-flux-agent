@@ -9,15 +9,20 @@ import {
   projectLimit,
   trialDaysLeft,
 } from "@/lib/plans";
-import type { CreditEntry, Plan, Profile } from "@/lib/types";
+import type { Plan, Profile } from "@/lib/types";
 import { signOut } from "@/app/login/actions";
 import { DeleteAccountForm, ProfileForm } from "@/components/account/profile-settings";
 import { PasswordForm } from "@/components/account/password-form";
+import {
+  EmailChangeForm,
+  InviteFriendForm,
+} from "@/components/account/email-invite-forms";
 import {
   ArrowRight,
   Check,
   Coins,
   FileText,
+  Gift,
   Rocket,
   ShieldAlert,
   UserRound,
@@ -33,22 +38,9 @@ export default async function ComptePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [
-    { data: profile },
-    { data: balance },
-    { data: lastRecharge },
-    { count: projectCount },
-  ] = await Promise.all([
+  const [{ data: profile }, { data: balance }, { count: projectCount }] = await Promise.all([
     supabase.from("profiles").select("*").eq("user_id", user.id).single<Profile>(),
     supabase.rpc("apply_plan_topup", { uid: user.id }),
-    supabase
-      .from("credit_ledger")
-      .select("created_at, reason")
-      .eq("user_id", user.id)
-      .like("reason", "topup:%")
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle<Pick<CreditEntry, "created_at" | "reason">>(),
     supabase
       .from("pages")
       .select("id", { count: "exact", head: true })
@@ -57,15 +49,13 @@ export default async function ComptePage() {
   if (!profile) redirect("/login");
 
   const plan = (profile.plan ?? "basique") as Plan;
-  const subscribed = Boolean(profile.subscribed_at);
+  const subscribed = ["active", "trialing", "past_due"].includes(profile.subscription_status ?? "");
   const trialActive = !subscribed && hasActiveAccess(profile);
   const daysLeft = trialDaysLeft(profile);
-  // Recharge : uniquement une fois souscrit, ancrée sur le dernier topup.
+  // Échéance Stripe réelle (un mois civil n'est pas toujours égal à 30 jours).
   const nextRecharge =
-    subscribed && lastRecharge?.reason === `topup:${plan}`
-      ? new Date(
-          new Date(lastRecharge.created_at).getTime() + 30 * 86400_000
-        ).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
+    subscribed && profile.current_period_end
+      ? new Date(profile.current_period_end).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
       : null;
   const canCreateProject = (projectCount ?? 0) < projectLimit(plan);
 
@@ -83,9 +73,11 @@ export default async function ComptePage() {
       <nav className={styles.anchorNav} aria-label="Sections du profil">
         <a href="#informations">Informations</a>
         <a href="#aventure">Commencer l’aventure</a>
+        <a href="#inviter">Inviter un ami</a>
         <a href="#credits">Crédits</a>
         <a href="#formules">Formules</a>
         <a href="#licence">Licence</a>
+        <Link href="/compte/facturation">Facturation</Link>
       </nav>
 
       <section id="informations" className={styles.section}>
@@ -111,6 +103,15 @@ export default async function ComptePage() {
           {canCreateProject ? "Lancer le tunnel" : "Voir mes projets"}
           <ArrowRight aria-hidden="true" />
         </Link>
+      </section>
+
+      <section id="inviter" className={styles.section}>
+        <div className={styles.sectionHeading}>
+          <span className={styles.sectionIcon}><Gift aria-hidden="true" /></span>
+          <h2>Inviter un ami</h2>
+          <p>Fais découvrir FLUX à un commerçant que tu connais : il reçoit une invitation et 7 jours d’essai offerts.</p>
+        </div>
+        <InviteFriendForm />
       </section>
 
       <section id="credits" className={styles.section}>
@@ -175,9 +176,10 @@ export default async function ComptePage() {
         <div className={styles.securityGrid}>
           <div>
             <h2>Sécurité</h2>
-            <p>Modifie ton mot de passe ou ferme ta session sur cet appareil.</p>
+            <p>Modifie ton mot de passe, ton adresse email ou ferme ta session sur cet appareil.</p>
           </div>
           <PasswordForm />
+          <EmailChangeForm currentEmail={user.email ?? profile.email ?? ""} />
           <form action={signOut}>
             <button type="submit" className={styles.secondaryAction}>Se déconnecter</button>
           </form>

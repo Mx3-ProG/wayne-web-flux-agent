@@ -123,6 +123,77 @@ export function buyerOrderAccepted(d: StatusEmailData): {
   };
 }
 
+// --- Emails de compte / sécurité (envoyés par le code via Resend) ---
+
+// Notification post-changement de mot de passe. Rôle anti-fraude : si l'utilisateur
+// n'est pas à l'origine du changement, il doit réagir immédiatement.
+export function passwordChangedSecurity(d: { firstName: string }): {
+  subject: string;
+  html: string;
+} {
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+  const body = `
+    <p>Bonjour ${escapeHtml(d.firstName)},</p>
+    <p>Le mot de passe de votre compte FLUX vient d’être <strong>modifié</strong>. Si vous êtes à l’origine de ce changement, aucune action n’est nécessaire.</p>
+    <p style="color:${MUTED};font-size:13px;">Vous ne reconnaissez pas cette action ? Réinitialisez immédiatement votre mot de passe et vérifiez la sécurité de votre boîte mail.</p>
+    ${emailButton("Sécuriser mon compte", `${siteUrl}/mot-de-passe-oublie`)}`;
+  return {
+    subject: "Votre mot de passe FLUX a été modifié",
+    html: baseLayout({
+      title: "Mot de passe modifié",
+      preheader: "Confirmation de sécurité — votre mot de passe a changé",
+      bodyHtml: body,
+    }),
+  };
+}
+
+// Invitation d'un ami (partage simple, sans suivi). Met en avant le gain de temps.
+export function friendInvite(d: { fromName: string; signupUrl: string }): {
+  subject: string;
+  html: string;
+} {
+  const from = escapeHtml(d.fromName);
+  const body = `
+    <p><strong>${from}</strong> vous invite à découvrir <strong>FLUX</strong>.</p>
+    <p>FLUX réunit au même endroit votre vitrine en ligne, vos commandes, vos rendez-vous et vos contenus. Fini les dizaines d’outils éparpillés : une seule connexion, tout votre commerce sous les yeux.</p>
+    <p style="color:${MUTED};font-size:14px;">Ce que ${from} y a gagné :</p>
+    <ul style="margin:8px 0 4px;padding-left:20px;color:${TEXT};font-size:14px;line-height:1.7;">
+      <li>Des heures économisées chaque semaine sur la gestion</li>
+      <li>Une vitrine pro en ligne en quelques minutes</li>
+      <li>Ses commandes et son chiffre d’affaires suivis en un coup d’œil</li>
+    </ul>
+    ${emailButton("Créer ma vitrine en 2 minutes", d.signupUrl)}
+    <p style="color:${MUTED};font-size:13px;">7 jours d’essai offerts, sans engagement.</p>`;
+  return {
+    subject: `${d.fromName} vous invite à essayer FLUX`,
+    html: baseLayout({
+      title: "Reprenez la main sur votre commerce",
+      preheader: `${d.fromName} pense que FLUX peut vous faire gagner un temps précieux`,
+      bodyHtml: body,
+      footerNote:
+        "Vous recevez cet email car un utilisateur de FLUX vous a invité. Aucune action n’est requise si cela ne vous intéresse pas.",
+    }),
+  };
+}
+
+export function buyerOrderReady(d: StatusEmailData): {
+  subject: string;
+  html: string;
+} {
+  const body = `
+    <p>Bonjour ${escapeHtml(d.firstName)},</p>
+    <p>Votre commande <strong>#${escapeHtml(shortId(d.orderId))}</strong> chez <strong>${escapeHtml(d.shopName)}</strong> est <strong>prête</strong> ! Vous pouvez venir la récupérer.</p>
+    <p style="color:${MUTED};font-size:13px;">Le vendeur vous précisera les modalités de retrait si nécessaire.</p>`;
+  return {
+    subject: `Votre commande est prête ✓ — ${d.shopName}`,
+    html: baseLayout({
+      title: "Commande prête",
+      preheader: `Commande #${shortId(d.orderId)} prête à être récupérée`,
+      bodyHtml: body,
+    }),
+  };
+}
+
 export function buyerOrderCancelled(d: StatusEmailData): {
   subject: string;
   html: string;

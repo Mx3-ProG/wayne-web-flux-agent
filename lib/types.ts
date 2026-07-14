@@ -15,10 +15,15 @@ export type Profile = {
   onboarding_step: number;
   ical_token: string;
   plan: Plan;
-  // Essai 7 jours démarré à l'inscription ; souscription posée manuellement
-  // (admin) en attendant Stripe. Accès actif = essai en cours OU souscrit.
+  // Essai applicatif sans carte, puis cycle de facturation piloté par Stripe.
   trial_ends_at: string;
   subscribed_at: string | null;
+  stripe_customer_id: string | null;
+  stripe_subscription_id: string | null;
+  stripe_price_id: string | null;
+  subscription_status: string | null;
+  current_period_end: string | null;
+  cancel_at_period_end: boolean;
   active_page_id: string | null;
   created_at: string;
 };

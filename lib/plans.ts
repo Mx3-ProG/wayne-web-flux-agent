@@ -4,8 +4,8 @@
 // automatique à l'inscription (les 100 crédits de bienvenue servent de
 // carburant d'essai). Essai expiré sans souscription = lecture seule (le site
 // reste en ligne, les actions à crédits sont bloquées côté SQL).
-// Pas de Stripe pour l'instant : la souscription se pose manuellement
-// (UPDATE profiles SET subscribed_at = now(), plan = ...).
+// Stripe est l'autorité de facturation. Les valeurs ci-dessous sont l'autorité
+// produit côté application et doivent correspondre aux Prices récurrents Stripe.
 
 import type { Plan, Profile } from "@/lib/types";
 
@@ -36,10 +36,10 @@ type PlanLimits = {
 };
 
 export const PLAN_LIMITS: Record<Plan, PlanLimits> = {
-  basique: { offers: 2, projects: 1, customDomain: false, monthlyCredits: 100, priceEur: 9 },
-  pro: { offers: 5, projects: 3, customDomain: true, monthlyCredits: 500, priceEur: 29 },
-  business: { offers: 12, projects: 5, customDomain: true, monthlyCredits: 1500, priceEur: 69 },
-  entreprise: { offers: 30, projects: 10, customDomain: true, monthlyCredits: 3000, priceEur: 89 },
+  basique: { offers: 2, projects: 1, customDomain: false, monthlyCredits: 20, priceEur: 9 },
+  pro: { offers: 5, projects: 2, customDomain: false, monthlyCredits: 100, priceEur: 29 },
+  business: { offers: 12, projects: 5, customDomain: true, monthlyCredits: 300, priceEur: 69 },
+  entreprise: { offers: 20, projects: 10, customDomain: true, monthlyCredits: 500, priceEur: 89 },
 };
 
 export const PLAN_LABEL: Record<Plan, string> = {
@@ -52,13 +52,30 @@ export const PLAN_LABEL: Record<Plan, string> = {
 // Ordre d'affichage sur la page pricing (/formules).
 export const FLUX_PLANS: Plan[] = ["basique", "pro", "business", "entreprise"];
 
+const PLAN_PRICE_ENV: Record<Plan, string> = {
+  basique: "STRIPE_PRICE_BASIQUE",
+  pro: "STRIPE_PRICE_PRO",
+  business: "STRIPE_PRICE_BUSINESS",
+  entreprise: "STRIPE_PRICE_ENTREPRISE",
+};
+
+export function stripePriceId(plan: Plan): string | null {
+  return process.env[PLAN_PRICE_ENV[plan]] || null;
+}
+
+export function planFromStripePrice(priceId: string): Plan | null {
+  return FLUX_PLANS.find((plan) => stripePriceId(plan) === priceId) ?? null;
+}
+
 // Accès actif = essai en cours ou souscription posée. Miroir TS de la
 // fonction SQL has_active_access (qui reste la seule autorité pour bloquer
 // les débits) — celui-ci ne sert qu'à l'affichage.
 export function hasActiveAccess(
-  profile: Pick<Profile, "trial_ends_at" | "subscribed_at">
+  profile: Pick<Profile, "trial_ends_at" | "subscription_status">
 ): boolean {
-  if (profile.subscribed_at) return true;
+  if (["active", "trialing", "past_due"].includes(profile.subscription_status ?? "")) {
+    return true;
+  }
   return new Date(profile.trial_ends_at).getTime() > Date.now();
 }
 

@@ -96,7 +96,14 @@ export async function acceptOrder(orderId: string): Promise<void> {
 }
 
 export async function fulfillOrder(orderId: string): Promise<void> {
-  await setOrderStatus(orderId, "fulfilled");
+  const { error } = await setOrderStatus(orderId, "fulfilled");
+  if (!error) {
+    after(() =>
+      sendOrderStatusEmail(orderId, "ready").catch((e) =>
+        console.error("order: status email failed", e)
+      )
+    );
+  }
 }
 
 // Restaure le stock si la commande avait déjà été acceptée (stock décrémenté).

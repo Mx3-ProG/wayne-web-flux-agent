@@ -134,15 +134,15 @@
   padding: 0 14px;
   align-items: center;
   gap: 7px;
-  border: 1px solid rgb(255 99 120 / 24%);
+  border: 1px solid rgb(247 188 45 / 34%);
   border-radius: 999px;
-  background: rgb(239 35 60 / 9%);
-  color: var(--ww-red-soft);
+  background: rgb(247 188 45 / 7%);
+  color: #ffd45f;
   font-size: 12px;
   font-weight: 750;
   text-decoration: none;
 }
-.credits svg { width: 15px; }
+.credits svg { width: 19px; height: 19px; }
 .menuTrigger { display: none; }
 
 .drawerLayer {
@@ -311,9 +311,9 @@
   text-decoration: none;
 }
 .drawerCreditLink {
-  border: 1px solid rgb(255 99 120 / 23%);
-  background: rgb(239 35 60 / 8%);
-  color: var(--ww-red-soft);
+  border: 1px solid rgb(247 188 45 / 28%);
+  background: rgb(247 188 45 / 7%);
+  color: #ffd45f;
 }
 .drawerCreditLink svg, .drawerAccountLink svg { width: 18px; }
 .drawerCreditLink svg:last-child { width: 15px; margin-left: auto; }

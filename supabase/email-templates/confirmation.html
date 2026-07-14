@@ -2,29 +2,34 @@
 <html lang="fr">
 <head>
 <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="dark">
+<meta name="supported-color-schemes" content="dark">
 <title>Confirmez votre adresse</title>
 </head>
 <body style="margin:0;padding:0;background:#070708;">
+<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">Activez votre compte FLUX</div>
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#070708;">
 <tr><td align="center" style="padding:32px 16px;">
   <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
     <tr><td style="padding:0 8px 20px;">
-      <span style="font-family:Georgia,'Times New Roman',serif;font-size:26px;font-weight:700;letter-spacing:1px;color:#f7f5f2;">FLUX<span style="color:#ef233c;">.</span></span>
+      <span style="font-family:Georgia, 'Times New Roman', serif;font-size:26px;font-weight:700;letter-spacing:1px;color:#f7f5f2;">FLUX<span style="color:#ef233c;">.</span></span>
     </td></tr>
     <tr><td style="background:#121216;border:1px solid rgba(255,255,255,0.10);border-radius:16px;padding:32px 28px;">
-      <h1 style="margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-size:22px;font-weight:700;color:#f7f5f2;">Confirmez votre adresse</h1>
-      <div style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:15px;line-height:1.6;color:#f7f5f2;">
+      <h1 style="margin:0 0 16px;font-family:Georgia, 'Times New Roman', serif;font-size:22px;font-weight:700;color:#f7f5f2;">Confirmez votre adresse</h1>
+      <div style="font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;font-size:15px;line-height:1.6;color:#f7f5f2;">
+        
         <p>Bienvenue sur FLUX ! Cliquez sur le bouton ci-dessous pour confirmer votre adresse email et activer votre compte.</p>
         <table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0;"><tr><td style="border-radius:10px;background:#ef233c;">
-          <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:13px 28px;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:10px;">Confirmer mon adresse</a>
-        </td></tr></table>
-        <p style="color:#a8a4aa;font-size:13px;">Si vous n'êtes pas à l'origine de cette inscription, ignorez simplement cet email.</p>
+    <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:13px 28px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:10px;">Confirmer mon adresse</a>
+  </td></tr></table>
+        <p style="color:#a8a4aa;font-size:13px;">Si vous n’êtes pas à l’origine de cette inscription, ignorez simplement cet email.</p>
       </div>
     </td></tr>
     <tr><td style="padding:20px 8px 0;">
-      <p style="margin:0;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;font-size:12px;line-height:1.6;color:#a8a4aa;">
-        Email envoyé automatiquement par <a href="{{ .SiteURL }}" style="color:#a8a4aa;text-decoration:underline;">FLUX</a>.
+      <p style="margin:0;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;font-size:12px;line-height:1.6;color:#a8a4aa;">
+        Email transactionnel envoyé automatiquement, merci de ne pas y répondre.<br>
+        <a href="{{ .SiteURL }}" style="color:#a8a4aa;text-decoration:underline;">FLUX</a> — votre vitrine, vos commandes, votre chiffre d'affaires.
       </p>
     </td></tr>
   </table>
