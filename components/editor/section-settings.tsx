@@ -18,12 +18,13 @@ import {
 type Props = {
   section: BlockSection;
   userId: string;
+  pageAddress: string;
   onChange: (section: BlockSection) => void;
 };
 
 // Mini-formulaire de réglages d'un bloc de contenu. Chaque modification
 // remonte la section complète (autosavée via patch({ sections })).
-export function SectionSettings({ section, userId, onChange }: Props) {
+export function SectionSettings({ section, userId, pageAddress, onChange }: Props) {
   const set = (settings: BlockSection["settings"]) =>
     onChange({ ...section, settings } as BlockSection);
 
@@ -261,17 +262,54 @@ export function SectionSettings({ section, userId, onChange }: Props) {
 
     case "carte":
       return (
-        <div className="space-y-2">
-          <Label>Lieu affiché sur la carte</Label>
-          <Input
-            value={section.settings.query ?? ""}
-            maxLength={160}
-            placeholder="Par défaut : ton adresse et ta ville"
-            onChange={(e) => set({ query: e.target.value })}
-          />
-          <p className="text-xs text-muted-foreground">
-            Laisse vide pour utiliser l&apos;adresse renseignée dans « Identité ».
+        <div className="space-y-2 rounded-lg border border-border p-3">
+          <Label>Adresse affichée sur Google Maps</Label>
+          <p className="text-sm font-medium">
+            {pageAddress.trim() || "Aucune adresse renseignée"}
           </p>
+          <p className="text-xs text-muted-foreground">
+            {pageAddress.trim()
+              ? "La carte reste automatiquement reliée à l'adresse renseignée dans « Identité »."
+              : "Renseigne ton adresse dans « Identité » pour activer cette section."}
+          </p>
+        </div>
+      );
+
+    case "google_business":
+      return (
+        <div className="space-y-3">
+          <div className="space-y-2">
+            <Label>Lien de ta fiche Google Business Profile</Label>
+            <Input
+              type="url"
+              value={section.settings.url}
+              maxLength={500}
+              placeholder="https://g.page/r/… ou https://maps.app.goo.gl/…"
+              onChange={(e) => set({ ...section.settings, url: e.target.value })}
+            />
+            <p className="text-xs text-muted-foreground">
+              Dans Google Business Profile, choisis « Demander des avis » puis colle le lien ici.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <Label>Titre (facultatif)</Label>
+            <Input
+              value={section.settings.title ?? ""}
+              maxLength={SECTION_LIMITS.maxTitleLength}
+              placeholder="Ton avis compte pour nous"
+              onChange={(e) => set({ ...section.settings, title: e.target.value })}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label>Message (facultatif)</Label>
+            <Textarea
+              value={section.settings.description ?? ""}
+              rows={3}
+              maxLength={300}
+              placeholder="Découvre nos avis ou partage ton expérience en quelques secondes."
+              onChange={(e) => set({ ...section.settings, description: e.target.value })}
+            />
+          </div>
         </div>
       );
 

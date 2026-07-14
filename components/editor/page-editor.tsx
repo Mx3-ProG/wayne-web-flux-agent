@@ -820,6 +820,7 @@ export function PageEditor({
               <SectionsPanel
                 sections={resolveSections(page)}
                 userId={page.user_id}
+                pageAddress={page.address}
                 onChange={(sections) => patch({ sections })}
               />
             </AccordionContent>

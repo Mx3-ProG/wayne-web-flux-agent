@@ -28,6 +28,7 @@ export type BlockSectionType =
   | "a_propos"
   | "avant_apres"
   | "carte"
+  | "google_business"
   | "newsletter"
   | "video";
 
@@ -85,6 +86,10 @@ export type BlockSection =
       settings: { beforeUrl: string | null; afterUrl: string | null; caption?: string };
     })
   | (SectionBase & { type: "carte"; settings: { query?: string } })
+  | (SectionBase & {
+      type: "google_business";
+      settings: { url: string; title?: string; description?: string };
+    })
   | (SectionBase & { type: "newsletter"; settings: { title?: string; description?: string } })
   | (SectionBase & { type: "video"; settings: { url: string } });
 
@@ -142,7 +147,8 @@ export const SECTION_META: Record<
   faq: { label: "FAQ", description: "Questions / réponses dépliables.", addable: true },
   a_propos: { label: "À propos", description: "Ton histoire, avec une photo.", addable: true },
   avant_apres: { label: "Avant / après", description: "Deux photos comparées au curseur.", addable: true },
-  carte: { label: "Carte", description: "Ta position sur Google Maps.", addable: true },
+  carte: { label: "Google Maps affiché", description: "La carte reliée à l'adresse de ton commerce.", addable: true },
+  google_business: { label: "Google Business Profile", description: "Ta fiche Google et un accès rapide aux avis.", addable: true },
   newsletter: { label: "Newsletter", description: "Capture les emails de tes visiteurs.", addable: true },
   video: { label: "Vidéo", description: "Une vidéo YouTube, Vimeo ou un fichier.", addable: true },
 };
@@ -175,6 +181,8 @@ export function createBlockSection(type: BlockSectionType): BlockSection {
       return { id, type, enabled: true, settings: { beforeUrl: null, afterUrl: null } };
     case "carte":
       return { id, type, enabled: true, settings: {} };
+    case "google_business":
+      return { id, type, enabled: true, settings: { url: "" } };
     case "newsletter":
       return { id, type, enabled: true, settings: {} };
     case "video":
@@ -210,6 +218,25 @@ export function validateSections(sections: PageSection[]): string | null {
       section.settings.items.length > SECTION_LIMITS.maxFaqItems
     ) {
       return "Trop de questions dans la FAQ.";
+    }
+    if (section.type === "google_business" && section.settings.url) {
+      try {
+        const url = new URL(section.settings.url);
+        const googleHosts = [
+          "google.com",
+          "google.fr",
+          "goo.gl",
+          "g.page",
+        ];
+        const isGoogle = googleHosts.some(
+          (host) => url.hostname === host || url.hostname.endsWith(`.${host}`)
+        );
+        if (url.protocol !== "https:" || !isGoogle) {
+          return "Le lien Google Business Profile n'est pas valide.";
+        }
+      } catch {
+        return "Le lien Google Business Profile n'est pas valide.";
+      }
     }
     const bg = section.style?.background;
     if (bg) {

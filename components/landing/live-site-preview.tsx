@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Monitor, RefreshCw, Smartphone } from "lucide-react";
 import styles from "@/app/home.module.css";
@@ -10,13 +10,6 @@ type PreviewMode = "desktop" | "mobile";
 export function LiveSitePreview() {
   const [mode, setMode] = useState<PreviewMode>("desktop");
   const [reloadKey, setReloadKey] = useState(0);
-
-  useEffect(() => {
-    const frame = window.requestAnimationFrame(() => {
-      if (window.matchMedia("(max-width: 720px)").matches) setMode("mobile");
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, []);
 
   const reload = () => setReloadKey((key) => key + 1);
 

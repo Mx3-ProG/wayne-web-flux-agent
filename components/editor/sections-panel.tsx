@@ -45,6 +45,7 @@ import {
 type Props = {
   sections: PageSection[]; // liste résolue (jamais null)
   userId: string;
+  pageAddress: string;
   onChange: (sections: PageSection[]) => void;
   // Sous-page : les sections natives y sont facultatives — supprimables et
   // ré-ajoutables (sur la home elles sont fixes, seulement masquables).
@@ -68,7 +69,7 @@ function newSectionId(type: string): string {
 // clavier supporté via @dnd-kit), activer/désactiver, régler l'apparence et le
 // contenu, dupliquer et supprimer les blocs, en ajouter de nouveaux. Chaque
 // mutation écrit la liste complète dans le brouillon via onChange.
-export function SectionsPanel({ sections, userId, onChange, subpage = false }: Props) {
+export function SectionsPanel({ sections, userId, pageAddress, onChange, subpage = false }: Props) {
   const [openSettings, setOpenSettings] = useState<string | null>(null);
   const [openStyle, setOpenStyle] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
@@ -178,6 +179,7 @@ export function SectionsPanel({ sections, userId, onChange, subpage = false }: P
                 onDuplicate={() => duplicate(section.id)}
                 onRemove={() => remove(section.id)}
                 userId={userId}
+                pageAddress={pageAddress}
               />
             ))}
           </ul>
@@ -191,12 +193,15 @@ export function SectionsPanel({ sections, userId, onChange, subpage = false }: P
               <button
                 key={type}
                 type="button"
-                className="rounded-lg border border-border p-2 text-left hover:border-foreground/40"
+                className="rounded-lg border border-border p-2 text-left hover:border-foreground/40 disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={type === "carte" && !pageAddress.trim()}
                 onClick={() => add(type)}
               >
                 <p className="text-sm font-medium">{SECTION_META[type].label}</p>
                 <p className="text-xs text-muted-foreground">
-                  {SECTION_META[type].description}
+                  {type === "carte" && !pageAddress.trim()
+                    ? "Renseigne d'abord ton adresse dans « Identité » pour activer la carte."
+                    : SECTION_META[type].description}
                 </p>
               </button>
             ))}
@@ -231,6 +236,7 @@ function SortableSectionRow({
   onDuplicate,
   onRemove,
   userId,
+  pageAddress,
 }: {
   section: PageSection;
   subpage: boolean;
@@ -243,6 +249,7 @@ function SortableSectionRow({
   onDuplicate: () => void;
   onRemove: () => void;
   userId: string;
+  pageAddress: string;
 }) {
   const {
     attributes,
@@ -333,6 +340,7 @@ function SortableSectionRow({
           <SectionSettings
             section={section}
             userId={userId}
+            pageAddress={pageAddress}
             onChange={onUpdate}
           />
         </div>

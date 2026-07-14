@@ -1,0 +1,98 @@
+.card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: clamp(18px, 3cqi, 34px);
+  padding: clamp(24px, 4cqi, 40px);
+  overflow: hidden;
+  border: 1px solid #e2e5e9;
+  border-radius: 22px;
+  background: #fff;
+  box-shadow: 0 14px 42px rgb(15 23 42 / 10%);
+  color: #202124;
+  color-scheme: light;
+  text-align: left;
+}
+
+.icon {
+  display: grid;
+  width: 58px;
+  height: 58px;
+  place-items: center;
+  border-radius: 17px;
+  background: #fff4ce;
+  color: #e2a300;
+}
+
+.icon svg {
+  width: 28px;
+  fill: currentcolor;
+}
+
+.copy {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+}
+
+.eyebrow {
+  margin: 0;
+  color: #5f6368;
+  font: 700 11px/1.2 Arial, sans-serif;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.copy h2 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: #202124;
+  font: 700 clamp(24px, 3.8cqi, 36px)/1.08 Arial, sans-serif;
+  letter-spacing: -.025em;
+}
+
+.copy > p:last-child {
+  max-width: 620px;
+  margin: 0;
+  color: #5f6368;
+  font: 400 14px/1.6 Arial, sans-serif;
+}
+
+.actions {
+  display: grid;
+  min-width: 182px;
+  gap: 9px;
+}
+
+.actions a {
+  display: inline-flex;
+  min-height: 46px;
+  padding: 0 18px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid #1a73e8;
+  border-radius: 999px;
+  background: #1a73e8;
+  color: #fff;
+  font: 700 12px/1 Arial, sans-serif;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.actions a:hover { background: #1558b0; }
+.actions a svg { width: 16px; }
+
+.actions .secondary {
+  border-color: #dadce0;
+  background: #fff;
+  color: #3c4043;
+}
+
+.actions .secondary:hover { background: #f8f9fa; }
+
+@container storefront (max-width: 640px) {
+  .card { grid-template-columns: 1fr; }
+  .icon { width: 50px; height: 50px; }
+  .actions { width: 100%; min-width: 0; }
+}

@@ -408,12 +408,16 @@
 .deviceToggle button { min-height: 34px; padding: 0 10px; border: 0; border-radius: 9px; background: transparent; color: #8b8292; font: inherit; font-size: 10px; cursor: pointer; }
 .deviceToggle .active { background: linear-gradient(120deg, rgb(124 60 255 / 34%), rgb(232 198 106 / 14%)); color: #fff; }
 .device {
+  position: relative;
   overflow: hidden;
   margin-inline: auto;
   border: 1px solid rgb(232 198 106 / 22%);
   border-radius: 28px;
   background: #fff;
   box-shadow: 0 35px 90px rgb(0 0 0 / 48%), 0 0 48px rgb(124 60 255 / 9%);
+  /* Crée le viewport de la preview : les éléments fixed de la vitrine
+     (header, WhatsApp, retour en haut, panier) restent dans ce cadre. */
+  transform: translateZ(0);
   transition: max-width .3s ease;
 }
 .deviceMobile { max-width: 390px; }

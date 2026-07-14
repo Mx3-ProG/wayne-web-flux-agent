@@ -273,6 +273,7 @@ export function SubpageEditor({
                 <SectionsPanel
                   sections={draft.sections ?? []}
                   userId={page.user_id}
+                  pageAddress={page.address}
                   subpage
                   onChange={(sections) => patch({ sections })}
                 />

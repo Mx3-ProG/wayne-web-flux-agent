@@ -13,6 +13,7 @@ import { FaqSection } from "./sections/faq-section";
 import { AboutSection } from "./sections/about-section";
 import { BeforeAfterSection } from "./sections/before-after-section";
 import { MapSection } from "./sections/map-section";
+import { GoogleBusinessSection } from "./sections/google-business-section";
 import { NewsletterSection } from "./sections/newsletter-section";
 import { VideoSection } from "./sections/video-section";
 
@@ -117,11 +118,16 @@ export function SectionRenderer({
     case "carte":
       return (
         <MapSection
-          query={section.settings.query}
-          fallbackQuery={[page.address, page.city].filter(Boolean).join(", ")}
+          fallbackQuery={
+            page.address
+              ? [page.address, page.city].filter(Boolean).join(", ")
+              : ""
+          }
           first={first}
         />
       );
+    case "google_business":
+      return <GoogleBusinessSection {...section.settings} first={first} />;
     case "newsletter":
       return (
         <NewsletterSection

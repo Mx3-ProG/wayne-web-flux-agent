@@ -3,15 +3,14 @@
 import styles from "../vitrine.module.css";
 
 type Props = {
-  query?: string;
   fallbackQuery: string; // adresse + ville de la page
   first?: boolean;
 };
 
 // Carte Google Maps embarquée (iframe publique, sans clé API), cliquable
 // vers l'itinéraire.
-export function MapSection({ query, fallbackQuery, first = false }: Props) {
-  const q = (query || fallbackQuery).trim();
+export function MapSection({ fallbackQuery, first = false }: Props) {
+  const q = fallbackQuery.trim();
   if (!q) return null;
   const embed = `https://www.google.com/maps?q=${encodeURIComponent(q)}&output=embed`;
   return (
