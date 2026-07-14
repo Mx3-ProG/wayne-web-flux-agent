@@ -1,7 +1,8 @@
 # Mise en production Stripe
 
-Le code est prêt pour Stripe Checkout hébergé. Cette checklist relie les objets
-du Dashboard à l'application sans modifier les montants côté navigateur.
+Le code utilise Stripe Custom Checkout avec le Payment Element intégré aux
+pages FLUX. Cette checklist relie les objets du Dashboard à l'application sans
+exposer les montants ni les données de carte au navigateur.
 
 ## 1. Catalogue
 
@@ -14,8 +15,8 @@ Créer quatre produits/prix récurrents mensuels en EUR :
 | Business | 69 € / mois | 300 | `STRIPE_PRICE_BUSINESS` |
 | Entreprise | 89 € / mois | 500 | `STRIPE_PRICE_ENTREPRISE` |
 
-Les packs ponctuels restent définis dans `lib/credit-packs.ts` : 50 crédits à
-20 €, 150 à 54 €, 400 à 120 €. Ils utilisent des montants serveur inline.
+Les packs ponctuels restent définis dans `lib/credit-packs.ts` et reliés aux
+Prices Stripe existants : 50 crédits à 20 €, 150 à 54 €, 400 à 120 €.
 
 ## 2. Checkout et portail client
 
@@ -36,7 +37,13 @@ passer `STRIPE_AUTOMATIC_TAX=true`. Sinon, conserver `false` et configurer le
 régime de taxe des Prices/factures avec le conseil du comptable de l'entreprise.
 
 Les moyens de paiement se configurent dans Stripe. Le code ne force pas la
-carte et laisse Checkout proposer uniquement ceux compatibles avec le mode.
+carte et le Payment Element propose uniquement ceux compatibles avec le mode.
+
+Les pages accessibles aux utilisateurs sont :
+
+- `/checkout/formule/basique`, `/pro`, `/business`, `/entreprise` ;
+- `/checkout/credits/pack50`, `/pack150`, `/pack400` ;
+- `/paiement/confirmation` après confirmation ou authentification bancaire.
 
 ## 3. Webhook
 

@@ -44,6 +44,17 @@ export function getPack(id: string): CreditPack | undefined {
   return CREDIT_PACKS.find((pack) => pack.id === id);
 }
 
+const PACK_PRICE_ENV: Record<string, string> = {
+  pack50: "STRIPE_PRICE_CREDITS_PACK50",
+  pack150: "STRIPE_PRICE_CREDITS_PACK150",
+  pack400: "STRIPE_PRICE_CREDITS_PACK400",
+};
+
+export function stripeCreditPriceId(packId: string): string | null {
+  const envName = PACK_PRICE_ENV[packId];
+  return envName ? process.env[envName] || null : null;
+}
+
 export function packUnitPrice(pack: CreditPack): string {
   return (pack.priceCents / pack.credits / 100).toLocaleString("fr-FR", {
     minimumFractionDigits: 2,

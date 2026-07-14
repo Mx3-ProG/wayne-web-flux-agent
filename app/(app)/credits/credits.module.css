@@ -477,6 +477,7 @@
   font: inherit;
   font-size: 13px;
   font-weight: 850;
+  text-decoration: none;
   transition: transform .2s ease, border-color .2s ease, background .2s ease;
 }
 

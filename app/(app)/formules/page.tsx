@@ -21,7 +21,6 @@ import {
   WalletCards,
 } from "lucide-react";
 import styles from "./formules.module.css";
-import { subscribeToPlan } from "./actions";
 
 export const metadata = { title: "Formules FLUX" };
 
@@ -169,13 +168,10 @@ export default async function FormulesPage({ searchParams }: {
               {isCurrent ? (
                 <span className={styles.cta}>Ta formule</span>
               ) : (
-                <form action={subscribeToPlan}>
-                  <input type="hidden" name="plan" value={item} />
-                  <button className={styles.cta} type="submit">
+                <Link className={styles.cta} href={`/checkout/formule/${item}`}>
                     Choisir {PLAN_LABEL[item]}
                     <ArrowRight aria-hidden="true" />
-                  </button>
-                </form>
+                </Link>
               )}
             </article>
           );

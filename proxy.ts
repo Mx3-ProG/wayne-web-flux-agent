@@ -10,6 +10,7 @@ const PROTECTED_PREFIXES = [
   "/credits",
   "/resultats",
   "/compte",
+  "/checkout",
 ];
 
 export async function proxy(request: NextRequest) {
