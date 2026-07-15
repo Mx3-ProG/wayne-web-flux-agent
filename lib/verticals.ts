@@ -343,6 +343,58 @@ export function getVertical(slug: string): Vertical {
   return VERTICALS.find((v) => v.slug === slug) ?? VERTICALS[VERTICALS.length - 1];
 }
 
+export type CatalogWording = {
+  categoryWord: string;
+  itemWord: string;
+  categoryPlaceholder: string;
+  itemPlaceholder: string;
+  categoryHint: string;
+  itemHint: string;
+  showStock: boolean;
+};
+
+// Le tunnel fait créer à tout le monde une catégorie + un article, quelle que
+// soit la verticale : c'est la même table (products) derrière. Seul le
+// vocabulaire change, pour qu'un coiffeur ne se demande pas quel « produit » il
+// est censé vendre.
+export function catalogWording(kind: VerticalKind): CatalogWording {
+  if (kind === "service") {
+    return {
+      categoryWord: "catégorie de prestations",
+      itemWord: "prestation",
+      categoryPlaceholder: "Ex : Soins du visage",
+      itemPlaceholder: "Ex : Soin éclat 60 min",
+      categoryHint:
+        "Une famille de prestations, comme tu les regrouperais sur ton tarif affiché.",
+      itemHint:
+        "Ta prestation la plus demandée. C'est celle que tes clients viendront réserver en premier.",
+      // Une prestation ne s'épuise pas : le suivi de stock n'a aucun sens ici.
+      showStock: false,
+    };
+  }
+  if (kind === "product") {
+    return {
+      categoryWord: "catégorie",
+      itemWord: "produit",
+      categoryPlaceholder: "Ex : Bouquets",
+      itemPlaceholder: "Ex : Bouquet de saison",
+      categoryHint: "Un rayon de ta boutique, comme tes clients le chercheraient.",
+      itemHint: "Ton produit phare, celui que tu vends le plus.",
+      showStock: true,
+    };
+  }
+  return {
+    categoryWord: "catégorie",
+    itemWord: "produit ou prestation",
+    categoryPlaceholder: "Ex : Coupe & couleur",
+    itemPlaceholder: "Ex : Coupe brushing",
+    categoryHint:
+      "Tu peux y ranger aussi bien des produits que des prestations sur rendez-vous.",
+    itemHint: "Ce que tes clients te demandent le plus souvent.",
+    showStock: true,
+  };
+}
+
 export const FONTS: { id: string; label: string; css: string }[] = [
   { id: "fraunces", label: "Fraunces — éditoriale, premium (par défaut)", css: "'Fraunces', Georgia, serif" },
   { id: "inter", label: "Inter — moderne, neutre (par défaut)", css: "'Inter', sans-serif" },

@@ -74,7 +74,7 @@
 .storeNav > a, .storeNavActions > a { display: inline-flex; min-height: 38px; padding: 0 14px; align-items: center; border-radius: 999px; background: rgb(255 255 255 / 12%); color: #fff; font-size: 10px; font-weight: 700; text-decoration: none; }
 .storeNavActions { display: flex; flex-shrink: 0; align-items: center; gap: 8px; }
 .page[data-theme="editorial"] .heroInner { text-align: left; }
-.page[data-theme="studio"] .hero { background: radial-gradient(circle at 70% 20%, color-mix(in srgb, var(--client-accent) 22%, transparent), transparent 34%), #08080a; }
+.page[data-theme="studio"] .hero { background: radial-gradient(circle at 70% 20%, color-mix(in srgb, var(--client-accent) 22%, transparent), transparent 34%), var(--client-dark); }
 .page[data-theme="studio"] .heroInner { max-width: 860px; text-align: center; }
 .page[data-theme="studio"] .logo { margin-inline: auto; }
 .page[data-theme="studio"] .hero h1 { margin-inline: auto; }
@@ -101,7 +101,7 @@
 .page[data-theme="bold"] .product { border-width: 2px; border-radius: 8px; box-shadow: 8px 8px 0 color-mix(in srgb, var(--client-accent) 28%, transparent); }
 
 /* Thème Luxe : sombre, filets dorés, typographie ample et centrée. */
-.page[data-theme="luxe"] .hero { background: radial-gradient(circle at 50% 0%, color-mix(in srgb, #c9a86a 16%, transparent), transparent 46%), #0f0d09; }
+.page[data-theme="luxe"] .hero { background: radial-gradient(circle at 50% 0%, color-mix(in srgb, var(--client-accent) 16%, transparent), transparent 46%), var(--client-dark); }
 .page[data-theme="luxe"] .heroInner { max-width: 880px; text-align: center; }
 .page[data-theme="luxe"] .logo { margin-inline: auto; border-color: rgb(201 168 106 / 55%); }
 .page[data-theme="luxe"] .hero h1 { margin-inline: auto; font-weight: 470; letter-spacing: -.035em; }
@@ -140,7 +140,7 @@
 .page[data-theme="minimal"] .addButton { border-radius: 10px; box-shadow: none; }
 
 /* Thème Néon : nuit électrique, halos de la couleur du commerçant. */
-.page[data-theme="neon"] .hero { background: radial-gradient(circle at 80% 8%, color-mix(in srgb, var(--client-accent) 38%, transparent), transparent 42%), radial-gradient(circle at 12% 90%, color-mix(in srgb, var(--client-accent) 22%, transparent), transparent 38%), #07070d; }
+.page[data-theme="neon"] .hero { background: radial-gradient(circle at 80% 8%, color-mix(in srgb, var(--client-accent) 38%, transparent), transparent 42%), radial-gradient(circle at 12% 90%, color-mix(in srgb, var(--client-accent) 22%, transparent), transparent 38%), var(--client-dark); }
 .page[data-theme="neon"] .hero h1 { text-shadow: 0 0 34px color-mix(in srgb, var(--client-accent) 55%, transparent); }
 .page[data-theme="neon"] .family,
 .page[data-theme="neon"] .review,
@@ -193,15 +193,33 @@
 .page[data-design-button="button-outline-luxe"] .addButton,
 .page[data-design-button="button-outline-luxe"] .newsletterForm button { color: var(--client-accent); }
 
-.page[data-design-navigation="navigation-minimal"] .storeNav { border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
-.page[data-design-navigation="navigation-prestige"] .storeNav { border-width: 0 0 1px; border-radius: 0; background: transparent; box-shadow: none; backdrop-filter: none; }
+.page[data-design-button="button-pill"] .heroCta,
+.page[data-design-button="button-pill"] .bookButton,
+.page[data-design-button="button-pill"] .addButton,
+.page[data-design-button="button-pill"] .newsletterForm button { border-radius: 999px; }
+.page[data-design-navigation="navigation-glass"] .storeNav:not(.navTransparent) { border-color: rgb(255 255 255 / 18%); background: color-mix(in srgb, var(--client-dark) 58%, transparent); box-shadow: 0 18px 50px rgb(0 0 0 / 24%); backdrop-filter: blur(20px) saturate(165%); }
+.page[data-design-navigation="navigation-minimal"] .storeNav:not(.navTransparent) { border-width: 0 0 1px; border-radius: 0; background: color-mix(in srgb, var(--client-dark) 86%, transparent); box-shadow: none; backdrop-filter: blur(10px); }
+.page[data-design-navigation="navigation-prestige"] .storeNav:not(.navTransparent) { border-width: 1px 0; border-color: color-mix(in srgb, var(--client-accent) 46%, transparent); border-radius: 0; background: color-mix(in srgb, var(--client-dark) 90%, transparent); box-shadow: 0 12px 40px rgb(0 0 0 / 22%); backdrop-filter: blur(14px); }
+.page .storeNav.navTransparent { border-color: transparent; background: transparent; box-shadow: none; backdrop-filter: none; }
+.page[data-design-navigation="navigation-prestige"] .navLink,
+.page[data-design-navigation="navigation-prestige"] .navLinkActive { letter-spacing: .12em; text-transform: uppercase; }
+.page[data-design-header="header-editorial"] .heroInner { max-width: 1120px; text-align: left; }
+.page[data-design-header="header-editorial"] .logo,
+.page[data-design-header="header-editorial"] .hero h1,
+.page[data-design-header="header-editorial"] .tagline { margin-inline: 0; }
+.page[data-design-header="header-editorial"] .heroActions { justify-content: flex-start; }
 .page[data-design-header="header-centered"] .heroInner { max-width: 880px; text-align: center; }
 .page[data-design-header="header-centered"] .logo,
 .page[data-design-header="header-centered"] .hero h1,
 .page[data-design-header="header-centered"] .tagline { margin-inline: auto; }
 .page[data-design-header="header-centered"] .heroActions { justify-content: center; }
 .page[data-design-header="header-impact"] .hero h1 { max-width: 950px; font-family: var(--font-inter), sans-serif; font-weight: 820; letter-spacing: -.075em; text-transform: uppercase; }
-.page[data-design-footer="footer-prestige"] .footer { border-top: 1px solid rgb(197 164 109 / 30%); }
+.page[data-design-footer="footer-standard"] .footer { border-top: 0; }
+.page[data-design-footer="footer-prestige"] .footer { border-top: 1px solid color-mix(in srgb, var(--client-accent) 46%, transparent); box-shadow: inset 0 1px color-mix(in srgb, #fff 8%, transparent); }
+.page[data-design-footer="footer-prestige"] .footerKicker { letter-spacing: .3em; }
+.page[data-design-section="section-cards"] .family,
+.page[data-design-section="section-cards"] .review,
+.page[data-design-section="section-cards"] .product { border-radius: 20px; box-shadow: 0 14px 45px rgb(0 0 0 / 7%); }
 .page[data-design-section="section-flat"] .family,
 .page[data-design-section="section-flat"] .review,
 .page[data-design-section="section-flat"] .product,
@@ -209,6 +227,12 @@
 .page[data-design-section="section-glow"] .family,
 .page[data-design-section="section-glow"] .review,
 .page[data-design-section="section-glow"] .product { box-shadow: 0 0 0 1px color-mix(in srgb, var(--client-accent) 16%, transparent), 0 14px 44px color-mix(in srgb, var(--client-accent) 12%, transparent); }
+.page[data-design-category="category-accordion"] .familyList { grid-template-columns: 1fr; }
+.page[data-design-category="category-grid"] .familyList { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.page[data-design-category="category-grid"] .family { align-self: start; border-radius: 14px; }
+.page[data-design-product="product-card"] .product { overflow: hidden; }
+.page[data-design-product="product-minimal"] .product { border-color: transparent; background: transparent; }
+.page[data-design-product="product-minimal"] .productBody { padding-inline: 4px; }
 .heroCta svg { width: 15px; }
 .online { display: flex; align-items: center; gap: 8px; color: rgb(255 255 255 / 65%); font-size: 11px; }
 .online > span { width: 7px; height: 7px; border-radius: 50%; background: #5bd594; box-shadow: 0 0 10px #5bd594; }
@@ -273,6 +297,7 @@
   .services { padding: 80px 0; }
   .service { align-items: flex-start; }
   .serviceAction { align-items: flex-end; flex-direction: column; }
+  .page[data-design-category="category-grid"] .familyList { grid-template-columns: 1fr; }
   .heroActions { align-items: stretch; flex-direction: column; }
   .heroCta { justify-content: center; }
   .gallery { grid-template-columns: 1fr 1fr; }
@@ -563,7 +588,7 @@
   background:
     linear-gradient(90deg, rgb(5 5 5 / 82%) 0%, rgb(5 5 5 / 30%) 52%, rgb(5 5 5 / 20%)),
     radial-gradient(circle at 78% 12%, color-mix(in srgb, #c5a46d 20%, transparent), transparent 42%),
-    #050505;
+    var(--client-dark);
 }
 .page[data-theme="prestige"] .heroInner { text-align: left; }
 .page[data-theme="prestige"] .hero h1 { font-weight: 430; letter-spacing: -.055em; line-height: .94; }

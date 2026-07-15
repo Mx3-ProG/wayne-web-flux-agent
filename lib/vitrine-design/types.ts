@@ -1,4 +1,4 @@
-import type { PageTheme } from "@/lib/types";
+import type { PageColors, PageTheme, PageTypography } from "@/lib/types";
 
 export const DESIGN_SLOTS = [
   "button", "navigation", "header", "footer", "section", "category",
@@ -40,6 +40,11 @@ export type DesignKit = {
   tags: string[];
   status: DesignStatus;
   premium?: boolean;
+  defaults: {
+    colors: Required<PageColors>;
+    font: string;
+    typography: Required<PageTypography>;
+  };
   components: Record<DesignSlot, string>;
   voiceArchetypeId: string;
 };

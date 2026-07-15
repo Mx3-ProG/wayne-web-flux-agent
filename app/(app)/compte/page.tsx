@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import {
-  FLUX_PLANS,
+import { 
   PLAN_LABEL,
   PLAN_LIMITS,
   hasActiveAccess,
+  isActiveSubscriptionStatus,
   projectLimit,
   trialDaysLeft,
 } from "@/lib/plans";
 import type { Plan, Profile } from "@/lib/types";
-import { signOut } from "@/app/login/actions";
+import { logout } from "@/app/(app)/actions";
 import { DeleteAccountForm, ProfileForm } from "@/components/account/profile-settings";
 import { PasswordForm } from "@/components/account/password-form";
 import {
@@ -49,7 +49,7 @@ export default async function ComptePage() {
   if (!profile) redirect("/login");
 
   const plan = (profile.plan ?? "basique") as Plan;
-  const subscribed = ["active", "trialing", "past_due"].includes(profile.subscription_status ?? "");
+  const subscribed = isActiveSubscriptionStatus(profile.subscription_status);
   const trialActive = !subscribed && hasActiveAccess(profile);
   const daysLeft = trialDaysLeft(profile);
   // Échéance Stripe réelle (un mois civil n'est pas toujours égal à 30 jours).
@@ -133,31 +133,7 @@ export default async function ComptePage() {
           <Link href="/credits">Voir mon utilisation <ArrowRight aria-hidden="true" /></Link>
         </div>
       </section>
-
-      <section id="formules" className={styles.section}>
-        <div className={styles.sectionHeading}>
-          <h2>Formules FLUX</h2>
-          <p>Plus de crédits, plus de possibilités : fonctionnalités, modifications, personnalisation. 7 jours d’essai offerts. <Link href="/formules">Voir le détail des formules</Link></p>
-        </div>
-        <div className={styles.plans}>
-          {FLUX_PLANS.map((item) => (
-            <article className={subscribed && item === plan ? styles.planActive : styles.plan} key={item}>
-              <div className={styles.planTop}>
-                <span>{PLAN_LABEL[item]}</span>
-                {subscribed && item === plan && <small>Formule actuelle</small>}
-              </div>
-              <strong>{`${PLAN_LIMITS[item].priceEur} €/mois`}</strong>
-              <ul>
-                <li><Check aria-hidden="true" /> {PLAN_LIMITS[item].monthlyCredits} crédits/mois</li>
-                <li><Check aria-hidden="true" /> {PLAN_LIMITS[item].projects} projet{PLAN_LIMITS[item].projects > 1 ? "s" : ""}</li>
-                <li><Check aria-hidden="true" /> {PLAN_LIMITS[item].offers} offres actives</li>
-                <li><Check aria-hidden="true" /> {PLAN_LIMITS[item].customDomain ? "Domaine personnalisé" : "Adresse FLUX incluse"}</li>
-              </ul>
-            </article>
-          ))}
-        </div>
-      </section>
-
+      
       <section id="licence" className={styles.section}>
         <div className={styles.license}>
           <span className={styles.sectionIcon}><FileText aria-hidden="true" /></span>
@@ -180,7 +156,7 @@ export default async function ComptePage() {
           </div>
           <PasswordForm />
           <EmailChangeForm currentEmail={user.email ?? profile.email ?? ""} />
-          <form action={signOut}>
+          <form action={logout}>
             <button type="submit" className={styles.secondaryAction}>Se déconnecter</button>
           </form>
         </div>

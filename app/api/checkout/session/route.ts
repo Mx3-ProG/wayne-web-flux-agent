@@ -23,9 +23,25 @@ export async function POST(request: Request) {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("stripe_customer_id, subscription_status")
+    .select("stripe_customer_id, subscription_status, email_verified_at")
     .eq("user_id", user.id)
-    .single<Pick<Profile, "stripe_customer_id" | "subscription_status">>();
+    .single<
+      Pick<
+        Profile,
+        "stripe_customer_id" | "subscription_status" | "email_verified_at"
+      >
+    >();
+  // Le tunnel ouvre la session avant la preuve de possession de l'adresse : on
+  // n'encaisse pas quelqu'un qu'on ne sait pas joindre (facture, reçu, litige).
+  if (!profile?.email_verified_at) {
+    return NextResponse.json(
+      {
+        error: "Vérifie ton adresse email avant de payer.",
+        code: "email_not_verified",
+      },
+      { status: 403 }
+    );
+  }
   if (
     parsed.data.kind === "subscription" &&
     ACTIVE_SUBSCRIPTION_STATUSES.includes(profile?.subscription_status ?? "")

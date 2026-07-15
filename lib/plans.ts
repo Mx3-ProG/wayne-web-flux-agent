@@ -9,6 +9,18 @@
 
 import type { Plan, Profile } from "@/lib/types";
 
+export const ACTIVE_SUBSCRIPTION_STATUSES = [
+  "active",
+  "trialing",
+  "past_due",
+] as const;
+
+export function isActiveSubscriptionStatus(
+  status: string | null | undefined
+): boolean {
+  return ACTIVE_SUBSCRIPTION_STATUSES.some((active) => active === status);
+}
+
 // Coût d'une publication de nouvelle version de la vitrine (miroir de la
 // valeur codée dans publish_page, migration 00013).
 export const PUBLISH_COST = 5;
@@ -79,7 +91,7 @@ export function planFromStripePrice(priceId: string): Plan | null {
 export function hasActiveAccess(
   profile: Pick<Profile, "trial_ends_at" | "subscription_status">
 ): boolean {
-  if (["active", "trialing", "past_due"].includes(profile.subscription_status ?? "")) {
+  if (isActiveSubscriptionStatus(profile.subscription_status)) {
     return true;
   }
   return new Date(profile.trial_ends_at).getTime() > Date.now();

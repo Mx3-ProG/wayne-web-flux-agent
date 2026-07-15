@@ -1,4 +1,4 @@
-import type { PageTheme } from "@/lib/types";
+import type { Page, PageDraftFields, PageTheme } from "@/lib/types";
 import { DESIGN_COMPONENT_BY_ID, DESIGN_KIT_BY_ID, DESIGN_KITS, VOICE_ARCHETYPE_BY_ID } from "./registry";
 import { DESIGN_SLOTS, type ResolvedVitrineDesign, type VitrineDesignConfig } from "./types";
 
@@ -25,4 +25,20 @@ export function resolveVitrineDesign(theme: PageTheme, config?: VitrineDesignCon
   })) as ResolvedVitrineDesign["components"];
   const voice = VOICE_ARCHETYPE_BY_ID.get(safeConfig?.voiceArchetypeId ?? kit.voiceArchetypeId)!;
   return { kit, components, voice };
+}
+
+// Sélectionner un univers applique un preset visuel complet. Le contenu métier
+// reste intact et les overrides du kit précédent sont volontairement retirés.
+export function designKitPatch(
+  kitId: string,
+  current?: Pick<Page, "theme">
+): Partial<PageDraftFields> {
+  const kit = DESIGN_KIT_BY_ID.get(kitId) ?? DESIGN_KIT_BY_ID.get(current?.theme ?? "editorial") ?? DESIGN_KITS[0];
+  return {
+    theme: kit.legacyTheme,
+    design: { kitId: kit.id },
+    colors: { ...kit.defaults.colors },
+    font: kit.defaults.font,
+    typography: { ...kit.defaults.typography },
+  };
 }

@@ -2,8 +2,8 @@
 
 import { useActionState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ArrowRight, Check, LockKeyhole, Mail, Sparkles, User } from "lucide-react";
-import { signIn, signUp, type AuthState } from "./actions";
+import { ArrowLeft, ArrowRight, Check, LockKeyhole, Mail, Sparkles } from "lucide-react";
+import { signIn, type AuthState } from "./actions";
 import styles from "./login.module.css";
 import { FluxBrand } from "@/components/flux-brand";
 import { FluxRouteLoader } from "@/components/flux-route-loader";
@@ -12,11 +12,10 @@ const initialState: AuthState = {};
 
 export default function LoginPage() {
   const [loginState, loginAction, loginPending] = useActionState(signIn, initialState);
-  const [signupState, signupAction, signupPending] = useActionState(signUp, initialState);
 
   return (
     <main className={styles.page}>
-      {(loginPending || signupPending) && <FluxRouteLoader />}
+      {loginPending && <FluxRouteLoader />}
       <Link className={styles.back} href="/"><ArrowLeft aria-hidden="true" /> Accueil</Link>
       <FluxBrand className={styles.brand} priority />
 
@@ -59,22 +58,16 @@ export default function LoginPage() {
 
           <div className={styles.divider}><span>ou</span></div>
 
-          <details className={styles.create}>
-            <summary>Créer un compte directement</summary>
-            <p>Pour profiter de la configuration personnalisée, nous recommandons le tunnel.</p>
-            <Link className={styles.tunnelLink} href="/commencer">Configurer mon espace en 2 minutes <ArrowRight aria-hidden="true" /></Link>
-            <form action={signupAction}>
-              <label><span>Prénom</span><div><User aria-hidden="true" /><input name="name" placeholder="Alex" required autoComplete="given-name" /></div></label>
-              <label><span>Email</span><div><Mail aria-hidden="true" /><input name="email" type="email" placeholder="ton@email.fr" required autoComplete="email" /></div></label>
-              <label><span>Mot de passe</span><div><LockKeyhole aria-hidden="true" /><input name="password" type="password" placeholder="8 caractères minimum" required minLength={8} autoComplete="new-password" /></div></label>
-              {signupState.error && <p className={styles.error}>{signupState.error}</p>}
-              {signupState.message && <p className={styles.success}>{signupState.message}</p>}
-              <p className={styles.terms}>En créant ton compte, tu confirmes avoir lu et accepté nos <Link href="/cgv" target="_blank">conditions générales d’utilisation</Link>.</p>
-              <button className={styles.secondary} type="submit" disabled={signupPending}>
-                {signupPending ? "Création…" : "Créer mon compte sans configuration"}
-              </button>
-            </form>
-          </details>
+          {/* La création de compte se fait désormais UNIQUEMENT dans le tunnel :
+              c'est lui qui ouvre la session puis remplit l'espace au fur et à
+              mesure. Un compte créé « à sec » ici repartait vide, ce qui était
+              tout le problème. */}
+          <div className={styles.create}>
+            <p>Pas encore de compte ?</p>
+            <Link className={styles.tunnelLink} href="/commencer">
+              Configurer mon espace en 2 minutes <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
         </div>
       </section>
     </main>

@@ -23,7 +23,9 @@ import type { PageColors, PageDraftFields, PageSeo, Service, VoiceProfile } from
 import { DESIGN_KIT_BY_ID, registryContext } from "@/lib/vitrine-design/registry";
 
 export type FluxPrefillError =
+  | "flux_requires_subscription"
   | "flux_requires_payment"
+  | "flux_credits_expired"
   | "flux_trial_exhausted"
   | "insufficient_credits"
   | "subscription_required"
@@ -57,9 +59,10 @@ export async function fluxPrefill(
     .single();
   if (!page) return { error: "unknown" };
 
-  // Accès FLUX : payant (illimité) ou essai (plafonné à 2 générations). Sinon
-  // bloqué (essai expiré ou quota d'essai atteint).
-  const access = await checkFluxAccess(user.id);
+  // Le pré-remplissage reste testable pendant l'essai (plafonné à 2 générations) :
+  // c'est la porte d'entrée vers FLUX. Bloqué si l'essai est expiré ou le quota
+  // atteint.
+  const access = await checkFluxAccess(user.id, "prefill");
   if (!access.ok) return { error: access.reason };
 
   if (!rateLimit(`flux-prefill:${user.id}`, 3, 300_000)) {
@@ -178,7 +181,9 @@ export async function fluxPrefill(
 }
 
 export type FluxSiteError =
+  | "flux_requires_subscription"
   | "flux_requires_payment"
+  | "flux_credits_expired"
   | "flux_trial_exhausted"
   | "insufficient_credits"
   | "subscription_required"
@@ -191,8 +196,8 @@ export type FluxSiteError =
 // Génération complète de la vitrine par brief (SITE_GENERATE_COST crédits).
 // FLUX part du template métier et du brief pour écrire toute la vitrine : textes,
 // SEO, ambiance (thème + couleurs) et 2 à 5 sections. Écrit dans le BROUILLON
-// (jamais en live) ; l'utilisateur relit puis publie lui-même. Accès payant ou
-// essai plafonné (checkFluxAccess). Débit avant génération, remboursement si échec.
+// (jamais en live) ; l'utilisateur relit puis publie lui-même. RÉSERVÉ aux
+// abonnés payants (checkFluxAccess). Débit avant génération, remboursement si échec.
 export async function fluxGenerateSite(
   pageId: string,
   brief: string
@@ -214,7 +219,9 @@ export async function fluxGenerateSite(
     .single();
   if (!page) return { error: "unknown" };
 
-  const access = await checkFluxAccess(user.id);
+  // Écrire toute la vitrine est la fonction phare : réservée aux abonnés
+  // payants, essai en cours compris.
+  const access = await checkFluxAccess(user.id, "site");
   if (!access.ok) return { error: access.reason };
 
   if (!rateLimit(`flux-site:${user.id}`, 3, 600_000)) {

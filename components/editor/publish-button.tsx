@@ -51,6 +51,13 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion, redirect
         setTrialOver(true);
         return;
       }
+      if (result.error === "email_not_verified") {
+        setOpen(false);
+        toast.error(
+          "Vérifie ton adresse email pour publier. Le lien t'attend dans ta boîte de réception."
+        );
+        return;
+      }
       if (result.error === "nothing_to_publish") {
         setOpen(false);
         toast.info("Rien à publier : ton site est déjà à jour.");

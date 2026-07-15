@@ -1,507 +1,440 @@
 "use client";
 
-import { useActionState, useEffect, useMemo, useState } from "react";
-import Link from "next/link";
+import { useMemo, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
+import { ArrowLeft, ArrowRight } from "lucide-react";
+import { getVertical, type VerticalKind } from "@/lib/verticals";
+import { JOURNEY_STEPS, type JourneyChapterId, type JourneyStepState } from "@/lib/journey";
+import type { TunnelDraft } from "@/lib/types";
+import { completeJourneyStep } from "@/app/(app)/espace/actions";
 import {
-  ArrowLeft,
-  ArrowRight,
-  BarChart3,
-  BadgeEuro,
-  Boxes,
-  BriefcaseBusiness,
-  CalendarClock,
-  Check,
-  Clock3,
-  Globe2,
-  MapPin,
-  MoreVertical,
-  PackagePlus,
-  Search,
-  Share2,
-  Smartphone,
-  Sparkles,
-  Store,
-  Users,
-  WandSparkles,
-} from "lucide-react";
-import { signUp, type AuthState } from "@/app/login/actions";
-import { VERTICALS, getVertical } from "@/lib/verticals";
+  finishTunnel,
+  saveTunnelDraft,
+  tunnelCreateCatalog,
+  tunnelCreateOffer,
+  tunnelCreatePage,
+  tunnelSaveSchedules,
+  tunnelSaveVoice,
+} from "./actions";
+import { TunnelShell } from "@/components/tunnel/tunnel-shell";
+import { ChapterIntro } from "@/components/tunnel/chapter-intro";
+import { ChapterDone } from "@/components/tunnel/chapter-done";
+import { VitrinePreview, type PreviewState } from "@/components/tunnel/vitrine-preview";
+import { StepVertical } from "@/components/tunnel/steps/step-vertical";
+import { StepGoals } from "@/components/tunnel/steps/step-goals";
+import { StepIdentity } from "@/components/tunnel/steps/step-identity";
+import { StepVoice } from "@/components/tunnel/steps/step-voice";
+import { StepCatalog, type CatalogState } from "@/components/tunnel/steps/step-catalog";
+import { StepOffer, type OfferState } from "@/components/tunnel/steps/step-offer";
+import { StepAgenda } from "@/components/tunnel/steps/step-agenda";
+import { StepContent } from "@/components/tunnel/steps/step-content";
+import { StepResults } from "@/components/tunnel/steps/step-results";
+import { StepShare } from "@/components/tunnel/steps/step-share";
 import styles from "./tunnel.module.css";
-import { FluxBrand } from "@/components/flux-brand";
 
-const initialState: AuthState = {};
+// Écrans du tunnel. Les charnières et célébrations sont des vues dérivées : le
+// vrai état d'avancement, lui, vit en base (Parcours partagé avec /espace).
+const SCREEN = {
+  whyChapter1: 1,
+  vertical: 2,
+  goals: 3,
+  identity: 4,
+  voice: 5,
+  doneChapter1: 6,
+  whyChapter2: 7,
+  catalog: 8,
+  offer: 9,
+  agenda: 10,
+  doneChapter2: 11,
+  whyChapter3: 12,
+  content: 13,
+  results: 14,
+  share: 15,
+  doneChapter3: 16,
+} as const;
 
-const GOALS = [
-  { id: "temps", icon: Clock3, title: "Je manque de temps", text: "Le contenu et les réponses clients me prennent mes soirées." },
-  { id: "google", icon: Search, title: "On ne me trouve pas", text: "Je veux remonter sur Google et dans ma ville." },
-  { id: "leads", icon: Users, title: "Je veux plus de clients", text: "J'ai besoin de demandes régulières et qualifiées." },
-  { id: "tout", icon: BarChart3, title: "Tout centraliser", text: "Je veux arrêter de jongler entre cinq outils." },
+const FIRST_SCREEN = SCREEN.whyChapter1;
+const LAST_SCREEN = SCREEN.doneChapter3;
+
+// Écrans pilotés par la barre du bas. Les charnières et célébrations portent
+// leur propre bouton : leur donner aussi le footer afficherait deux CTA.
+const FOOTER_SCREENS: number[] = [
+  SCREEN.vertical,
+  SCREEN.goals,
+  SCREEN.identity,
+  SCREEN.voice,
+  SCREEN.catalog,
+  SCREEN.offer,
+  SCREEN.agenda,
+  SCREEN.content,
+  SCREEN.results,
+  SCREEN.share,
 ];
 
-const TONES = [
-  { id: "Direct et efficace", title: "Direct & efficace", sample: "On va droit au résultat." },
-  { id: "Chaleureux et proche", title: "Chaleureux & proche", sample: "Comme avec tes meilleurs clients." },
-  { id: "Premium et expert", title: "Premium & expert", sample: "Sobre, précis, haut de gamme." },
-  { id: "Dynamique et audacieux", title: "Dynamique & audacieux", sample: "De l'énergie et du caractère." },
-];
-
-const WEEKDAYS = [
-  { id: 1, label: "Lun" },
-  { id: 2, label: "Mar" },
-  { id: 3, label: "Mer" },
-  { id: 4, label: "Jeu" },
-  { id: 5, label: "Ven" },
-  { id: 6, label: "Sam" },
-  { id: 0, label: "Dim" },
-];
-
-type InstallPromptEvent = Event & {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+type Props = {
+  firstName: string;
+  draft: TunnelDraft;
+  cursor: number;
+  trialDays: number;
+  steps: JourneyStepState[];
+  completedCount: number;
+  total: number;
+  // Calculée côté serveur : window n'existe pas au premier rendu.
+  pageUrl: string | null;
+  balance: number;
+  generationCount: number;
+  upcomingBookings: number;
 };
 
-function Brand() {
-  return <FluxBrand className={styles.brand} />;
+function gainOf(n: number): string {
+  return JOURNEY_STEPS.find((step) => step.n === n)?.gain ?? "";
 }
 
-export function Tunnel() {
-  const [step, setStep] = useState(0);
-  const [vertical, setVertical] = useState("");
-  const [jobTitle, setJobTitle] = useState("");
-  const [goals, setGoals] = useState<string[]>([]);
-  const [city, setCity] = useState("");
-  const [businessName, setBusinessName] = useState("");
-  const [tone, setTone] = useState("");
-  const [categoryName, setCategoryName] = useState("");
-  const [productName, setProductName] = useState("");
-  const [productPrice, setProductPrice] = useState("");
-  const [trackStock, setTrackStock] = useState(true);
-  const [productStock, setProductStock] = useState("1");
-  const [availableDays, setAvailableDays] = useState<number[]>([1, 2, 3, 4, 5]);
+export function Tunnel(props: Props) {
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  const [error, setError] = useState("");
+
+  // Le curseur est repris depuis profiles.onboarding_step : quitter le tunnel et
+  // revenir redépose l'utilisateur sur son écran, pas au début.
+  const [screen, setScreen] = useState(() =>
+    Math.min(LAST_SCREEN, Math.max(FIRST_SCREEN, props.cursor || FIRST_SCREEN))
+  );
+
+  const [vertical, setVertical] = useState(props.draft.vertical ?? "");
+  const [goals, setGoals] = useState<string[]>(props.draft.goals ?? []);
+  const [businessName, setBusinessName] = useState(props.draft.businessName ?? "");
+  const [jobTitle, setJobTitle] = useState(props.draft.jobTitle ?? "");
+  const [city, setCity] = useState(props.draft.city ?? "");
+  const [tone, setTone] = useState(props.draft.tone ?? "");
+  const [catalog, setCatalog] = useState<CatalogState>({
+    categoryName: "",
+    productName: "",
+    productPrice: "",
+    trackStock: true,
+    productStock: "1",
+  });
+  const [offer, setOffer] = useState<OfferState>({
+    offerTitle: "",
+    offerDescription: "",
+    offerPrice: "",
+    offerCompareAt: "",
+  });
+  const [days, setDays] = useState<number[]>([1, 2, 3, 4, 5]);
   const [openingTime, setOpeningTime] = useState("09:00");
   const [closingTime, setClosingTime] = useState("18:00");
-  const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(null);
-  const [authState, authAction, pending] = useActionState(signUp, initialState);
 
-  const selectedVertical = vertical ? getVertical(vertical) : null;
-  const completion = Math.max(0, Math.min(100, (step / 11) * 100));
-  const previewName = businessName.trim() || "Ton commerce";
-  const previewJob = jobTitle.trim() || selectedVertical?.jobTitles[0] || "Ton activité";
-  const canContinue = useMemo(() => {
-    if (step === 1) return Boolean(vertical);
-    if (step === 2) return goals.length > 0;
-    if (step === 3) return Boolean(city.trim() && businessName.trim() && jobTitle.trim());
-    if (step === 4) return Boolean(tone);
-    if (step === 5) return Boolean(categoryName.trim());
-    if (step === 6) return Boolean(productName.trim());
-    if (step === 7)
-      return (
-        Number(productPrice) >= 0 &&
-        (!trackStock || Number(productStock) >= 0)
-      );
-    if (step === 8)
-      return (
-        availableDays.length > 0 &&
-        openingTime < closingTime
-      );
-    return true;
-  }, [
-    step,
+  const kind: VerticalKind = vertical ? getVertical(vertical).kind : "hybrid";
+  // Une boutique pure n'a pas d'agenda : l'écran disparaît, exactement comme
+  // l'étape 5 disparaît du Parcours (lib/journey.ts appliesTo).
+  const hasAgenda = kind !== "product";
+
+  const preview: PreviewState = {
     vertical,
-    goals,
-    city,
     businessName,
     jobTitle,
+    city,
     tone,
-    categoryName,
-    productName,
-    productPrice,
-    trackStock,
-    productStock,
-    availableDays,
+    categoryName: catalog.categoryName,
+    productName: catalog.productName,
+    productPrice: catalog.productPrice,
+    offerTitle: offer.offerTitle,
+    offerPrice: offer.offerPrice,
+    days: hasAgenda ? days : [],
     openingTime,
     closingTime,
-  ]);
+  };
 
-  useEffect(() => {
-    const capturePrompt = (event: Event) => {
-      event.preventDefault();
-      setInstallPrompt(event as InstallPromptEvent);
-    };
-    window.addEventListener("beforeinstallprompt", capturePrompt);
-    return () => window.removeEventListener("beforeinstallprompt", capturePrompt);
-  }, []);
+  const chapter: JourneyChapterId =
+    screen <= SCREEN.doneChapter1 ? 1 : screen <= SCREEN.doneChapter2 ? 2 : 3;
 
-  function chooseVertical(slug: string) {
-    const next = getVertical(slug);
-    setVertical(slug);
-    setJobTitle(next.jobTitles[0]);
+  const canContinue = useMemo(() => {
+    if (screen === SCREEN.vertical) return Boolean(vertical);
+    if (screen === SCREEN.goals) return goals.length > 0;
+    if (screen === SCREEN.identity)
+      return Boolean(businessName.trim() && jobTitle.trim() && city.trim());
+    if (screen === SCREEN.voice) return Boolean(tone);
+    if (screen === SCREEN.catalog)
+      return Boolean(
+        catalog.categoryName.trim() &&
+          catalog.productName.trim() &&
+          // Un prix vide n'est pas un prix à 0 : Number("") vaut 0, d'où le test
+          // explicite sur la chaîne.
+          catalog.productPrice.trim() !== "" &&
+          Number(catalog.productPrice) >= 0 &&
+          (!catalog.trackStock || Number(catalog.productStock) >= 0)
+      );
+    if (screen === SCREEN.offer)
+      return Boolean(offer.offerTitle.trim() && offer.offerPrice.trim() !== "");
+    if (screen === SCREEN.agenda) return days.length > 0 && openingTime < closingTime;
+    return true;
+  }, [screen, vertical, goals, businessName, jobTitle, city, tone, catalog, offer, days, openingTime, closingTime]);
+
+  function goTo(next: number) {
+    setError("");
+    setScreen(next);
   }
 
-  function toggleGoal(goalId: string) {
-    setGoals((current) =>
-      current.includes(goalId)
-        ? current.filter((item) => item !== goalId)
-        : [...current, goalId]
-    );
+  function nextScreen(from: number): number {
+    const next = from + 1;
+    if (next === SCREEN.agenda && !hasAgenda) return next + 1;
+    return Math.min(LAST_SCREEN, next);
   }
 
-  function next() {
-    if (canContinue) setStep((current) => Math.min(12, current + 1));
+  function prevScreen(from: number): number {
+    const previous = from - 1;
+    if (previous === SCREEN.agenda && !hasAgenda) return previous - 1;
+    return Math.max(FIRST_SCREEN, previous);
   }
 
-  function toggleDay(day: number) {
-    setAvailableDays((current) =>
-      current.includes(day)
-        ? current.filter((item) => item !== day)
-        : [...current, day]
-    );
+  // Chaque avancée écrit en base avant de bouger : c'est tout l'intérêt du
+  // tunnel connecté. Si l'écriture échoue, on reste sur l'écran avec le message.
+  function advance() {
+    if (!canContinue || pending) return;
+    const target = nextScreen(screen);
+
+    startTransition(async () => {
+      let result: { error?: string } = {};
+
+      if (screen === SCREEN.identity) {
+        result = await tunnelCreatePage({ vertical, businessName, jobTitle, city });
+      } else if (screen === SCREEN.voice) {
+        result = await tunnelSaveVoice({ tone, jobTitle, goals });
+      } else if (screen === SCREEN.catalog) {
+        result = await tunnelCreateCatalog({
+          categoryName: catalog.categoryName,
+          productName: catalog.productName,
+          priceCents: Math.round(Number(catalog.productPrice) * 100),
+          // Le suivi de stock n'a pas de sens pour une prestation.
+          trackStock: kind === "service" ? false : catalog.trackStock,
+          stock: Number(catalog.productStock),
+        });
+      } else if (screen === SCREEN.offer) {
+        result = await tunnelCreateOffer({
+          title: offer.offerTitle,
+          description: offer.offerDescription,
+          priceCents: Math.round(Number(offer.offerPrice) * 100),
+          compareAtCents: offer.offerCompareAt.trim()
+            ? Math.round(Number(offer.offerCompareAt) * 100)
+            : null,
+        });
+      } else if (screen === SCREEN.agenda) {
+        result = await tunnelSaveSchedules({ days, openingTime, closingTime });
+      } else if (screen === SCREEN.results) {
+        await completeJourneyStep(7);
+      } else if (screen === SCREEN.share) {
+        await completeJourneyStep(8);
+      }
+
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
+
+      // Les écrans sans écriture métier (verticale, objectifs) posent quand même
+      // leur brouillon : ces réponses n'ont pas encore de ligne en base.
+      await saveTunnelDraft(
+        { vertical, goals, businessName, jobTitle, city, tone },
+        target
+      );
+
+      setError("");
+      setScreen(target);
+      // Le Parcours affiché en tête (X/8) est recalculé côté serveur.
+      router.refresh();
+    });
   }
 
-  async function installApp() {
-    if (!installPrompt) return;
-    await installPrompt.prompt();
-    await installPrompt.userChoice;
-    setInstallPrompt(null);
-  }
-
-  function back() {
-    setStep((current) => Math.max(0, current - 1));
-  }
+  const chapter1Achievements = [
+    `Ta vitrine « ${businessName.trim() || "ton commerce"} » est créée`,
+    "L'IA a appris ton ton et ton métier",
+  ];
+  const chapter2Achievements = [
+    `Ta première ${kind === "service" ? "prestation" : "offre produit"} est en ligne`,
+    "Ton offre d'accroche est prête",
+    ...(hasAgenda ? ["Tes clients peuvent réserver un créneau"] : []),
+  ];
 
   return (
     <main className={styles.page}>
-      <header className={styles.header}>
-        <Link href="/" aria-label="Retour à l'accueil"><Brand /></Link>
-        {step > 0 && step < 12 && (
-          <div className={styles.progressMeta}>
-            <span>Étape {Math.min(step, 11)} sur 11</span>
-            <div className={styles.progress}><i style={{ width: `${completion}%` }} /></div>
-          </div>
-        )}
-        <Link className={styles.accountLink} href="/login">J&apos;ai déjà un compte</Link>
-      </header>
-
-      <section className={styles.stage}>
-        {step === 0 && (
-          <div className={styles.intro}>
-            <span className={styles.introIcon}><WandSparkles aria-hidden="true" /></span>
-            <p className={styles.kicker}>Configuration personnalisée</p>
-            <h1>On va construire ton<br /><em>moteur de croissance.</em></h1>
-            <p>
-              Réponds à quelques questions. Flux prépare ton espace, tes outils
-              et les fondations de ta visibilité.
-            </p>
-            <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={next}>
-              C&apos;est parti <ArrowRight aria-hidden="true" />
-            </button>
-            <small>7 jours d’essai offerts · 2 minutes · Sans carte bancaire</small>
-            <div className={styles.socialProof}>
-              <span aria-hidden="true"><i>ML</i><i>SC</i><i>TN</i></span>
-              <p>Déjà 150 commerçants ont commencé avec Wayne‑Web.</p>
-            </div>
-          </div>
-        )}
-
-        {step === 1 && (
-          <Question kicker="Ton activité" title={<>Tu fais <em>quoi</em> de mieux ?</>} subtitle="Choisis ton univers. Flux adaptera les outils et les contenus.">
-            <div className={styles.choiceGrid}>
-              {VERTICALS.map((item) => (
-                <button
-                  className={vertical === item.slug ? styles.choiceActive : styles.choice}
-                  key={item.slug}
-                  type="button"
-                  onClick={() => chooseVertical(item.slug)}
-                >
-                  <span>{item.emoji}</span>
-                  <strong>{item.label}</strong>
-                  {vertical === item.slug && <Check aria-hidden="true" />}
-                </button>
-              ))}
-            </div>
-          </Question>
-        )}
-
-        {step === 2 && (
-          <Question kicker="Tes objectifs" title={<>Qu&apos;est-ce qui te <em>freine</em> aujourd&apos;hui ?</>} subtitle="Choisis tout ce qui te correspond. On organisera ton espace autour de tes priorités.">
-            <div className={styles.goalGrid}>
-              {GOALS.map((item) => {
-                const Icon = item.icon;
-                return (
-                  <button
-                    className={goals.includes(item.id) ? styles.goalActive : styles.goal}
-                    key={item.id}
-                    type="button"
-                    onClick={() => toggleGoal(item.id)}
-                    aria-pressed={goals.includes(item.id)}
-                  >
-                    <Icon aria-hidden="true" />
-                    <span><strong>{item.title}</strong><small>{item.text}</small></span>
-                    {goals.includes(item.id) && <Check aria-hidden="true" />}
-                  </button>
-                );
-              })}
-            </div>
-          </Question>
-        )}
-
-        {step === 3 && (
-          <Question kicker="Ton commerce" title={<>Donnons-lui une <em>adresse.</em></>} subtitle="Ces informations préparent ta vitrine et ton référencement local.">
-            <div className={styles.fields}>
-              <label>
-                <span>Nom du commerce <small>Ton prénom fonctionne aussi</small></span>
-                <div><Store aria-hidden="true" /><input value={businessName} onChange={(event) => setBusinessName(event.target.value)} maxLength={60} placeholder="Ex : Atelier Louise" autoComplete="organization" /></div>
-              </label>
-              <label>
-                <span>Ton métier</span>
-                <div><BriefcaseBusiness aria-hidden="true" /><input value={jobTitle} onChange={(event) => setJobTitle(event.target.value)} maxLength={60} placeholder="Ex : Artisan fleuriste" /></div>
-              </label>
-              <label>
-                <span>Ta ville</span>
-                <div><MapPin aria-hidden="true" /><input value={city} onChange={(event) => setCity(event.target.value)} maxLength={60} placeholder="Ex : Lyon" autoComplete="address-level2" /></div>
-              </label>
-            </div>
-          </Question>
-        )}
-
-        {step === 4 && (
-          <Question kicker="Ta personnalité" title={<>Flux doit parler <em>comme toi.</em></>} subtitle="Choisis le ton qui ressemble le plus à ton commerce.">
-            <div className={styles.toneGrid}>
-              {TONES.map((item) => (
-                <button
-                  className={tone === item.id ? styles.toneActive : styles.tone}
-                  key={item.id}
-                  type="button"
-                  onClick={() => setTone(item.id)}
-                >
-                  <Sparkles aria-hidden="true" />
-                  <strong>{item.title}</strong>
-                  <small>{item.sample}</small>
-                </button>
-              ))}
-            </div>
-          </Question>
-        )}
-
-        {step === 5 && (
-          <Question kicker="Ton catalogue" title={<>Crée ta première <em>catégorie.</em></>} subtitle="Elle permettra à tes clients de comprendre immédiatement ce que tu proposes.">
-            <div className={styles.singleFieldCard}>
-              <span><Boxes aria-hidden="true" /></span>
-              <label>
-                <span>Nom de la catégorie</span>
-                <input
-                  value={categoryName}
-                  onChange={(event) => setCategoryName(event.target.value)}
-                  maxLength={60}
-                  placeholder="Ex : Soins du visage, Bouquets, Coaching…"
-                />
-              </label>
-            </div>
-          </Question>
-        )}
-
-        {step === 6 && (
-          <Question kicker="Ton premier produit" title={<>Qu&apos;est-ce que tu veux <em>vendre en premier ?</em></>} subtitle={`Ce produit sera rangé dans « ${categoryName || "ta catégorie"} » et visible dans ta vitrine.`}>
-            <div className={styles.singleFieldCard}>
-              <span><PackagePlus aria-hidden="true" /></span>
-              <label>
-                <span>Nom du produit</span>
-                <input
-                  value={productName}
-                  onChange={(event) => setProductName(event.target.value)}
-                  maxLength={100}
-                  placeholder="Ex : Soin éclat 60 min"
-                />
-              </label>
-            </div>
-          </Question>
-        )}
-
-        {step === 7 && (
-          <Question kicker="Prix et disponibilité" title={<>Donne-lui sa <em>valeur.</em></>} subtitle="Fixe le prix de vente et indique si FLUX doit surveiller le stock.">
-            <div className={styles.commerceFields}>
-              <label>
-                <span className={styles.fieldIcon}><BadgeEuro aria-hidden="true" /></span>
-                <span>Prix TTC</span>
-                <div><input type="number" min="0" step="0.01" value={productPrice} onChange={(event) => setProductPrice(event.target.value)} placeholder="49,00" /><b>€</b></div>
-              </label>
-              <div className={styles.stockCard}>
-                <button type="button" className={trackStock ? styles.stockToggleActive : styles.stockToggle} onClick={() => setTrackStock((value) => !value)} aria-pressed={trackStock}>
-                  <span><strong>Suivre le stock</strong><small>FLUX t&apos;alerte quand il est épuisé.</small></span>
-                  <i />
-                </button>
-                {trackStock && (
-                  <label>
-                    <span>Quantité disponible</span>
-                    <input type="number" min="0" step="1" value={productStock} onChange={(event) => setProductStock(event.target.value)} />
-                  </label>
-                )}
-              </div>
-            </div>
-          </Question>
-        )}
-
-        {step === 8 && (
-          <Question kicker="Ton agenda" title={<>Quand es-tu <em>disponible ?</em></>} subtitle="Choisis tes jours et une première plage horaire. Tout restera modifiable.">
-            <div className={styles.scheduleCard}>
-              <CalendarClock aria-hidden="true" />
-              <div className={styles.dayPicker}>
-                {WEEKDAYS.map((day) => (
-                  <button key={day.id} type="button" className={availableDays.includes(day.id) ? styles.dayActive : styles.day} onClick={() => toggleDay(day.id)}>
-                    {day.label}
-                  </button>
-                ))}
-              </div>
-              <div className={styles.timeFields}>
-                <label><span>De</span><input type="time" value={openingTime} onChange={(event) => setOpeningTime(event.target.value)} /></label>
-                <i>→</i>
-                <label><span>À</span><input type="time" value={closingTime} onChange={(event) => setClosingTime(event.target.value)} /></label>
-              </div>
-            </div>
-          </Question>
-        )}
-
-        {step === 9 && (
-          <div className={styles.reveal}>
-            <p className={styles.kicker}>Ton aperçu est prêt</p>
-            <h1>Voilà ce que tes clients<br />vont <em>comprendre.</em></h1>
-            <div className={styles.preview}>
-              <div className={styles.previewTop}>
-                <span className={styles.previewLogo}>{previewName.charAt(0).toUpperCase()}</span>
-                <span>Disponible à {city}</span>
-              </div>
-              <div className={styles.previewHero}>
-                <small>{previewJob} · {city}</small>
-                <h2>{previewName}</h2>
-                <p>Un savoir-faire local, une expérience simple et un service qui fait la différence.</p>
-                <button type="button">Prendre rendez-vous</button>
-              </div>
-              <div className={styles.previewStats}>
-                <span><Globe2 aria-hidden="true" /><strong>Visible</strong><small>sur Google</small></span>
-                <span><Users aria-hidden="true" /><strong>Accessible</strong><small>24 h / 24</small></span>
-                <span><Sparkles aria-hidden="true" /><strong>À ton image</strong><small>{tone}</small></span>
-              </div>
-            </div>
-            <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={next}>
-              Garder cette configuration <ArrowRight aria-hidden="true" />
-            </button>
-          </div>
-        )}
-
-        {step === 10 && (
-          <div className={styles.installScreen}>
-            <span className={styles.introIcon}><Smartphone aria-hidden="true" /></span>
-            <p className={styles.kicker}>Toujours à portée de main</p>
-            <h1>Installe FLUX comme<br />une vraie <em>app.</em></h1>
-            <p>Retrouve ton dashboard en un geste depuis ton écran d’accueil.</p>
-            <div className={styles.installGuides}>
-              <article>
-                <strong>Sur iPhone</strong>
-                <span><Share2 aria-hidden="true" /> Dans Safari, touche « Partager »</span>
-                <span>Choisis « Sur l’écran d’accueil »</span>
-              </article>
-              <article>
-                <strong>Sur Android</strong>
-                <span><MoreVertical aria-hidden="true" /> Ouvre le menu Chrome</span>
-                <span>Choisis « Installer l’application »</span>
-              </article>
-            </div>
-            {installPrompt && (
-              <button className={`flux-button-smooth ${styles.installNow}`} type="button" onClick={installApp}>
-                Installer maintenant
-              </button>
+      <TunnelShell
+        chapter={chapter}
+        completedCount={props.completedCount}
+        total={props.total}
+        trialDays={props.trialDays}
+      >
+        <section className={screen >= SCREEN.vertical ? styles.stageSplit : styles.stage}>
+          <div className={styles.stageMain}>
+            {screen === SCREEN.whyChapter1 && (
+              <ChapterIntro chapter={1} onNext={() => goTo(nextScreen(screen))} />
             )}
-            <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={next}>
-              Continuer <ArrowRight aria-hidden="true" />
+
+            {screen === SCREEN.vertical && (
+              <StepVertical
+                value={vertical}
+                onChange={(slug) => {
+                  setVertical(slug);
+                  // Le métier le plus courant de la verticale, pré-rempli : une
+                  // suggestion, pas une contrainte — l'écran suivant l'édite.
+                  if (!jobTitle.trim()) setJobTitle(getVertical(slug).jobTitles[0]);
+                }}
+              />
+            )}
+
+            {screen === SCREEN.goals && (
+              <StepGoals
+                value={goals}
+                onToggle={(id) =>
+                  setGoals((current) =>
+                    current.includes(id)
+                      ? current.filter((item) => item !== id)
+                      : [...current, id]
+                  )
+                }
+              />
+            )}
+
+            {screen === SCREEN.identity && (
+              <StepIdentity
+                businessName={businessName}
+                jobTitle={jobTitle}
+                city={city}
+                gain={gainOf(1)}
+                onChange={(patch) => {
+                  if (patch.businessName !== undefined) setBusinessName(patch.businessName);
+                  if (patch.jobTitle !== undefined) setJobTitle(patch.jobTitle);
+                  if (patch.city !== undefined) setCity(patch.city);
+                }}
+              />
+            )}
+
+            {screen === SCREEN.voice && (
+              <StepVoice value={tone} gain={gainOf(2)} onChange={setTone} />
+            )}
+
+            {screen === SCREEN.doneChapter1 && (
+              <ChapterDone
+                chapter={1}
+                achievements={chapter1Achievements}
+                onNext={() => goTo(nextScreen(screen))}
+              />
+            )}
+
+            {screen === SCREEN.whyChapter2 && (
+              <ChapterIntro chapter={2} onNext={() => goTo(nextScreen(screen))} />
+            )}
+
+            {screen === SCREEN.catalog && (
+              <StepCatalog
+                kind={kind}
+                state={catalog}
+                gain={gainOf(3)}
+                onChange={(patch) => setCatalog((current) => ({ ...current, ...patch }))}
+              />
+            )}
+
+            {screen === SCREEN.offer && (
+              <StepOffer
+                state={offer}
+                gain={gainOf(4)}
+                onChange={(patch) => setOffer((current) => ({ ...current, ...patch }))}
+              />
+            )}
+
+            {screen === SCREEN.agenda && hasAgenda && (
+              <StepAgenda
+                days={days}
+                openingTime={openingTime}
+                closingTime={closingTime}
+                gain={gainOf(5)}
+                onChange={(patch) => {
+                  if (patch.days !== undefined) setDays(patch.days);
+                  if (patch.openingTime !== undefined) setOpeningTime(patch.openingTime);
+                  if (patch.closingTime !== undefined) setClosingTime(patch.closingTime);
+                }}
+              />
+            )}
+
+            {screen === SCREEN.doneChapter2 && (
+              <ChapterDone
+                chapter={2}
+                achievements={chapter2Achievements}
+                onNext={() => goTo(nextScreen(screen))}
+              />
+            )}
+
+            {screen === SCREEN.whyChapter3 && (
+              <ChapterIntro chapter={3} onNext={() => goTo(nextScreen(screen))} />
+            )}
+
+            {screen === SCREEN.content && (
+              <StepContent
+                gain={gainOf(6)}
+                balance={props.balance}
+                done={props.generationCount > 0}
+                onDone={() => router.refresh()}
+              />
+            )}
+
+            {screen === SCREEN.results && (
+              <StepResults
+                balance={props.balance}
+                generationCount={props.generationCount}
+                upcomingBookings={props.upcomingBookings}
+                gain={gainOf(7)}
+              />
+            )}
+
+            {screen === SCREEN.share && (
+              <StepShare
+                pageUrl={props.pageUrl}
+                gain={gainOf(8)}
+                onShared={() => {
+                  startTransition(async () => {
+                    await completeJourneyStep(8);
+                    router.refresh();
+                  });
+                }}
+              />
+            )}
+
+            {screen === SCREEN.doneChapter3 && (
+              <ChapterDone
+                chapter={3}
+                achievements={props.steps.filter((s) => s.done).map((s) => s.title)}
+                ctaLabel="Entrer dans mon espace"
+                pending={pending}
+                onNext={() => startTransition(() => finishTunnel())}
+              />
+            )}
+
+            {error && <p className={styles.error}>{error}</p>}
+          </div>
+
+          {/* Monté hors du switch : le remonter à chaque écran tuerait les
+              transitions CSS qui font toute la révélation vivante. */}
+          {screen >= SCREEN.vertical && screen < SCREEN.content && (
+            <VitrinePreview state={preview} />
+          )}
+        </section>
+
+        {FOOTER_SCREENS.includes(screen) && (
+          <footer className={styles.controls}>
+            <button type="button" onClick={() => goTo(prevScreen(screen))} disabled={pending}>
+              <ArrowLeft aria-hidden="true" /> Retour
             </button>
-          </div>
-        )}
-
-        {step === 11 && (
-          <div className={styles.valueScreen}>
-            <span className={styles.introIcon}><Globe2 aria-hidden="true" /></span>
-            <p className={styles.kicker}>Tout est prêt</p>
-            <h1>Ton espace n&apos;attend<br />plus que <em>toi.</em></h1>
-            <div className={styles.valueList}>
-              <span><Check aria-hidden="true" /> Vitrine préremplie pour ton métier</span>
-              <span><Check aria-hidden="true" /> Outils de contenu et de conversion</span>
-              <span><Check aria-hidden="true" /> 100 crédits offerts au démarrage</span>
-            </div>
-            <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={next}>
-              Créer mon accès <ArrowRight aria-hidden="true" />
+            <button
+              className={`flux-button-smooth ${styles.primary}`}
+              type="button"
+              onClick={advance}
+              disabled={!canContinue || pending}
+            >
+              {pending ? "Un instant…" : "Continuer"}
+              {!pending && <ArrowRight aria-hidden="true" />}
             </button>
-          </div>
+          </footer>
         )}
-
-        {step === 12 && (
-          <div className={styles.claim}>
-            <p className={styles.kicker}>Dernière étape</p>
-            <h1>Garde tout ce qu&apos;on<br />vient de <em>préparer.</em></h1>
-            <p>Crée ton accès. Ta configuration sera appliquée automatiquement.</p>
-            <form action={authAction}>
-              <input type="hidden" name="vertical" value={vertical} />
-              <input type="hidden" name="businessName" value={businessName} />
-              <input type="hidden" name="jobTitle" value={jobTitle} />
-              <input type="hidden" name="city" value={city} />
-              <input type="hidden" name="tone" value={tone} />
-              <input type="hidden" name="goal" value={goals.join(",")} />
-              <input type="hidden" name="categoryName" value={categoryName} />
-              <input type="hidden" name="productName" value={productName} />
-              <input type="hidden" name="productPrice" value={productPrice} />
-              <input type="hidden" name="trackStock" value={String(trackStock)} />
-              <input type="hidden" name="productStock" value={productStock} />
-              <input type="hidden" name="availableDays" value={JSON.stringify(availableDays)} />
-              <input type="hidden" name="openingTime" value={openingTime} />
-              <input type="hidden" name="closingTime" value={closingTime} />
-              <label><span>Ton prénom</span><input name="name" required maxLength={40} placeholder="Alex" autoComplete="given-name" /></label>
-              <label><span>Ton email professionnel</span><input name="email" type="email" required placeholder="alex@moncommerce.fr" autoComplete="email" /></label>
-              <label><span>Choisis un mot de passe</span><input name="password" type="password" required minLength={8} placeholder="8 caractères minimum" autoComplete="new-password" /></label>
-              {authState.error && <p className={styles.error}>{authState.error}</p>}
-              {authState.message && <p className={styles.success}>{authState.message}</p>}
-              <button className={`flux-button-smooth ${styles.primary}`} type="submit" disabled={pending}>
-                {pending ? "Création de ton espace…" : "Créer mon espace gratuitement"}
-                {!pending && <ArrowRight aria-hidden="true" />}
-              </button>
-            </form>
-            <small>En créant ton espace, tu confirmes avoir lu et accepté nos <a href="/cgv" target="_blank" rel="noreferrer">conditions générales d&apos;utilisation</a>.</small>
-          </div>
-        )}
-      </section>
-
-      {step > 0 && step < 9 && (
-        <footer className={styles.controls}>
-          <button type="button" onClick={back}><ArrowLeft aria-hidden="true" /> Retour</button>
-          <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={next} disabled={!canContinue}>
-            Continuer <ArrowRight aria-hidden="true" />
-          </button>
-        </footer>
-      )}
-      {step >= 9 && step < 12 && (
-        <button className={styles.floatingBack} type="button" onClick={back} aria-label="Revenir à l'étape précédente">
-          <ArrowLeft aria-hidden="true" />
-        </button>
-      )}
+      </TunnelShell>
     </main>
-  );
-}
-
-function Question({
-  kicker,
-  title,
-  subtitle,
-  children,
-}: {
-  kicker: string;
-  title: React.ReactNode;
-  subtitle: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className={styles.question}>
-      <p className={styles.kicker}>{kicker}</p>
-      <h1>{title}</h1>
-      <p className={styles.subtitle}>{subtitle}</p>
-      {children}
-    </div>
   );
 }

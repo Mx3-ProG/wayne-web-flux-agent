@@ -136,10 +136,12 @@ export async function createPage(input: {
     }))
   );
 
-  // Active le nouveau projet et avance l'onboarding.
+  // Active le nouveau projet. On ne touche PAS à onboarding_step : c'est le
+  // curseur d'écran du tunnel /commencer, qui appelle cette action au milieu du
+  // Parcours — l'écraser ferait sauter l'utilisateur en avant.
   await supabase
     .from("profiles")
-    .update({ onboarding_step: 2, active_page_id: page.id })
+    .update({ active_page_id: page.id })
     .eq("user_id", user.id);
 
   revalidatePath("/ma-page");
@@ -232,6 +234,7 @@ export type PublishError =
   | "insufficient_credits"
   | "nothing_to_publish"
   | "subscription_required"
+  | "email_not_verified"
   | "path_taken"
   | "content_blocked"
   | "unknown";
@@ -289,6 +292,9 @@ export async function publishPage(
     }
     if (error.message.includes("subscription_required")) {
       return { error: "subscription_required" };
+    }
+    if (error.message.includes("email_not_verified")) {
+      return { error: "email_not_verified" };
     }
     if (error.message.includes("path_taken")) {
       return { error: "path_taken" };

@@ -8,8 +8,11 @@ import { MobileAppMenu } from "@/components/mobile-app-menu";
 import { AppBadgeSync } from "@/components/app-badge-sync";
 import { ProjectSwitcher } from "@/components/project-switcher";
 import { TrialBanner } from "@/components/trial-banner";
+import { EmailVerificationBanner } from "@/components/email-verification-banner";
 import { FluxBrand } from "@/components/flux-brand";
 import { CreditsLink } from "@/components/credits-link";
+import { AccountUpsellDialog } from "@/components/account-upsell-dialog";
+import { loadAccountAccess } from "@/lib/account-status";
 import type { Profile } from "@/lib/types";
 
 export default async function AppLayout({
@@ -25,14 +28,29 @@ export default async function AppLayout({
 
   // Recharge paresseuse selon la formule + solde à jour, affiché dans le
   // header. L'état d'essai alimente la bannière sous le header.
-  const [{ data: balance }, { data: trialProfile }] = await Promise.all([
+  const [{ data: balance }, { data: trialProfile }, accountAccess] = await Promise.all([
     supabase.rpc("apply_plan_topup", { uid: user.id }),
     supabase
       .from("profiles")
-      .select("trial_ends_at, subscription_status")
+      .select("trial_ends_at, subscription_status, email_verified_at, upsell_last_shown_at")
       .eq("user_id", user.id)
-      .single<Pick<Profile, "trial_ends_at" | "subscription_status">>(),
+      .single<
+        Pick<
+          Profile,
+          | "trial_ends_at"
+          | "subscription_status"
+          | "email_verified_at"
+          | "upsell_last_shown_at"
+        >
+      >(),
+    loadAccountAccess(user.id),
   ]);
+
+  const upsellDue =
+    !accountAccess.isSubscribed &&
+    (!trialProfile?.upsell_last_shown_at ||
+      new Date(trialProfile.upsell_last_shown_at).getTime() <=
+        Date.now() - 12 * 60 * 60 * 1000);
 
   // Projet actif + liste des projets (pour le switcher).
   const [activePageId, { data: pages }] = await Promise.all([
@@ -97,7 +115,13 @@ export default async function AppLayout({
         </div>
       </header>
       <main className={styles.main}>
+        {trialProfile && !trialProfile.email_verified_at && (
+          <EmailVerificationBanner />
+        )}
         {trialProfile && <TrialBanner profile={trialProfile} />}
+        {upsellDue && accountAccess.status !== "subscribed" && (
+          <AccountUpsellDialog status={accountAccess.status} />
+        )}
         {children}
       </main>
       <AppNavigation mobile pendingOrders={pendingOrders} lowStock={lowStock} />

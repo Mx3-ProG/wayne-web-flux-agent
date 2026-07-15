@@ -17,6 +17,7 @@ import {
   TRIAL_DAYS,
   VITRINE_ASSIST_COST,
   hasActiveAccess,
+  isActiveSubscriptionStatus,
   trialDaysLeft,
 } from "@/lib/plans";
 import { getPack } from "@/lib/credit-packs";
@@ -130,7 +131,7 @@ export default async function CreditsPage({
   const plan = (profile?.plan ?? "basique") as Plan;
   const monthlyCredits = PLAN_LIMITS[plan].monthlyCredits;
   const entries = (ledger ?? []) as CreditEntry[];
-  const subscribed = ["active", "trialing", "past_due"].includes(profile?.subscription_status ?? "");
+  const subscribed = isActiveSubscriptionStatus(profile?.subscription_status);
   const trialActive = profile ? !subscribed && hasActiveAccess(profile) : false;
   const daysLeft = profile ? trialDaysLeft(profile) : 0;
   const currentBalance = balance ?? 0;

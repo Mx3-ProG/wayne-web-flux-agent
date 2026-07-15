@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import type { Offer, Page, SitePage } from "@/lib/types";
 import { FONTS, type VerticalKind } from "@/lib/verticals";
 import { VITRINE_THEMES } from "@/lib/vitrine-themes";
+import { designKitPatch } from "@/lib/vitrine-design/resolver";
 import {
   savePageFields,
 } from "@/app/(app)/ma-page/actions";
@@ -550,7 +551,18 @@ export function PageEditor({
                 <Input
                   value={page.phone}
                   maxLength={20}
-                  onChange={(e) => patch({ phone: e.target.value })}
+                  onChange={(e) => {
+                    const phone = e.target.value;
+                    const syncFloatingNumber =
+                      page.floating_cta &&
+                      (!page.floating_cta.number || page.floating_cta.number === page.phone);
+                    patch({
+                      phone,
+                      ...(syncFloatingNumber
+                        ? { floating_cta: { ...page.floating_cta!, number: phone } }
+                        : {}),
+                    });
+                  }}
                 />
               </div>
               {(["instagram", "tiktok", "facebook", "snapchat"] as const).map(
@@ -657,10 +669,7 @@ export function PageEditor({
                     <button
                       key={theme.id}
                       type="button"
-                      onClick={() => patch({
-                        theme: theme.id,
-                        design: { kitId: theme.id, components: page.design?.components, voiceArchetypeId: page.design?.voiceArchetypeId },
-                      })}
+                      onClick={() => patch(designKitPatch(theme.id, page))}
                       data-theme={theme.id}
                       className={(page.theme || "editorial") === theme.id ? styles.themeActive : styles.themeChoice}
                     >
@@ -688,8 +697,7 @@ export function PageEditor({
                   value={page.design?.kitId ?? "auto"}
                   onValueChange={(kitId) => {
                     if (kitId === "auto") return patch({ design: null });
-                    const kit = DESIGN_KITS.find((entry) => entry.id === kitId)!;
-                    patch({ theme: kit.legacyTheme, design: { kitId } });
+                    patch(designKitPatch(kitId, page));
                   }}
                 >
                   <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
@@ -704,13 +712,21 @@ export function PageEditor({
                       const kitId = page.design?.kitId ?? page.theme ?? "editorial";
                       const kit = DESIGN_KITS.find((entry) => entry.id === kitId) ?? DESIGN_KITS[0];
                       const value = page.design?.components?.[slot] ?? kit.components[slot];
+                      const entries = componentsForSlot(slot, kitId);
                       return (
                         <div key={slot} className="space-y-1.5">
                           <Label>{DESIGN_SLOT_LABELS[slot]}</Label>
-                          <Select value={value} onValueChange={(id) => patch({ design: { kitId, voiceArchetypeId: page.design?.voiceArchetypeId, components: { ...page.design?.components, [slot]: id } } })}>
-                            <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
-                            <SelectContent>{componentsForSlot(slot, kitId).map((entry) => <SelectItem key={entry.id} value={entry.id}>{entry.name}</SelectItem>)}</SelectContent>
-                          </Select>
+                          {entries.length > 1 ? (
+                            <Select value={value} onValueChange={(id) => patch({ design: { kitId, voiceArchetypeId: page.design?.voiceArchetypeId, components: { ...page.design?.components, [slot]: id } } })}>
+                              <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                              <SelectContent>{entries.map((entry) => <SelectItem key={entry.id} value={entry.id}>{entry.name}</SelectItem>)}</SelectContent>
+                            </Select>
+                          ) : (
+                            <div className="rounded-md border border-border bg-muted/30 px-3 py-2 text-sm text-muted-foreground">
+                              {entries[0]?.name ?? "Inclus dans le kit"}
+                              <span className="mt-0.5 block text-[10px]">Seule variante disponible actuellement</span>
+                            </div>
+                          )}
                         </div>
                       );
                     })}

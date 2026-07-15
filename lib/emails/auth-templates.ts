@@ -35,6 +35,25 @@ export function confirmationEmail(confirmationUrl = CONFIRMATION_URL): AuthEmail
   };
 }
 
+// Vérification d'adresse du tunnel /commencer. Distinct de confirmationEmail :
+// ici le compte est DÉJÀ actif et l'utilisateur est déjà en train de travailler
+// dans son espace. On ne lui demande pas d'« activer », on lui demande de
+// débloquer la publication. Envoyé par le code (Resend), pas par Supabase, donc
+// l'URL est toujours fournie — d'où l'absence de placeholder par défaut.
+export function emailVerificationEmail(verifyUrl: string): AuthEmail {
+  return {
+    subject: "Vérifiez votre adresse — FLUX",
+    html: baseLayout({
+      title: "Vérifiez votre adresse",
+      preheader: "Débloquez la publication de votre vitrine",
+      bodyHtml: `
+        <p>Votre espace FLUX est prêt et vous pouvez déjà l’utiliser. Il ne reste qu’à confirmer que cette adresse est bien la vôtre pour débloquer la publication de votre vitrine et les paiements.</p>
+        ${emailButton("Vérifier mon adresse", verifyUrl)}
+        ${note("Si vous n’êtes pas à l’origine de cette inscription, ignorez simplement cet email.")}`,
+    }),
+  };
+}
+
 export function recoveryEmail(): AuthEmail {
   return {
     subject: "Réinitialisez votre mot de passe — FLUX",

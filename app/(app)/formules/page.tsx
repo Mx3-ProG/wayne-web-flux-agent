@@ -8,6 +8,7 @@ import {
   PUBLISH_COST,
   TRIAL_DAYS,
   hasActiveAccess,
+  isActiveSubscriptionStatus,
   trialDaysLeft,
 } from "@/lib/plans";
 import type { Plan, Profile } from "@/lib/types";
@@ -65,7 +66,7 @@ export default async function FormulesPage({ searchParams }: {
   const params = await searchParams;
   const payment = typeof params.paiement === "string" ? params.paiement : null;
   const plan = (profile?.plan ?? "basique") as Plan;
-  const subscribed = ["active", "trialing", "past_due"].includes(profile?.subscription_status ?? "");
+  const subscribed = isActiveSubscriptionStatus(profile?.subscription_status);
   const trialActive = profile ? !subscribed && hasActiveAccess(profile) : false;
   const daysLeft = profile ? trialDaysLeft(profile) : 0;
 

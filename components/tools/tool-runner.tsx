@@ -47,7 +47,9 @@ export function ToolRunner({ tool, balance }: Props) {
       if (res.status === 402) {
         const body = await res.json().catch(() => null);
         toast.error(
-          body?.error === "subscription_required"
+          body?.error === "ai_window_expired"
+            ? "Ta fenêtre d’accès aux outils IA est terminée. Choisis une formule pour la réactiver."
+            : body?.error === "subscription_required"
             ? "Ton essai FLUX est terminé. Choisis une formule pour continuer à générer."
             : "Plus assez de crédits. Passe à une formule FLUX pour recharger."
         );

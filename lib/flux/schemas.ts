@@ -148,11 +148,86 @@ export const FluxSiteOutputSchema = z.object({
 });
 export type FluxSiteOutput = z.infer<typeof FluxSiteOutputSchema>;
 
+// Mots-clés que z.toJSONSchema émet mais que les sorties structurées de l'API
+// refusent (400 invalid_request_error). Les envoyer casse TOUTE génération FLUX
+// — c'est ce qui rendait fluxGenerateSite et fluxPrefill inutilisables.
+//
+// Rien n'est perdu : la sortie du modèle est de toute façon revalidée par le
+// schéma Zod complet (safeParse) avant la moindre écriture. On retire ces bornes
+// du schéma ENVOYÉ, pas de la validation.
+const UNSUPPORTED_KEYWORDS = new Set([
+  "maxLength",
+  "minLength",
+  "pattern",
+  "minimum",
+  "maximum",
+  "exclusiveMinimum",
+  "exclusiveMaximum",
+  "multipleOf",
+  "minItems",
+  "maxItems",
+]);
+
+// Les bornes retirées sont repliées dans `description` (lui, supporté) : sans
+// ça le modèle ne saurait plus qu'il doit tenir en 70 caractères ou rendre 2 à
+// 5 sections, et safeParse rejetterait sa sortie après coup.
+function boundsHint(node: Record<string, unknown>): string | null {
+  const hints: string[] = [];
+  const { minLength, maxLength, minItems, maxItems } = node as {
+    minLength?: number;
+    maxLength?: number;
+    minItems?: number;
+    maxItems?: number;
+  };
+
+  if (typeof maxLength === "number" && typeof minLength === "number") {
+    hints.push(`entre ${minLength} et ${maxLength} caractères`);
+  } else if (typeof maxLength === "number") {
+    hints.push(`${maxLength} caractères maximum`);
+  } else if (typeof minLength === "number") {
+    hints.push(`${minLength} caractères minimum`);
+  }
+
+  if (typeof maxItems === "number" && typeof minItems === "number") {
+    hints.push(`entre ${minItems} et ${maxItems} éléments`);
+  } else if (typeof maxItems === "number") {
+    hints.push(`${maxItems} éléments maximum`);
+  } else if (typeof minItems === "number") {
+    hints.push(`${minItems} éléments minimum`);
+  }
+
+  return hints.length > 0 ? hints.join(", ") : null;
+}
+
+function adaptForAnthropic(node: unknown): unknown {
+  if (Array.isArray(node)) return node.map(adaptForAnthropic);
+  if (node === null || typeof node !== "object") return node;
+
+  const source = node as Record<string, unknown>;
+  const hint = boundsHint(source);
+  const out: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(source)) {
+    if (UNSUPPORTED_KEYWORDS.has(key)) continue;
+    // Zod émet `oneOf` pour les unions discriminées ; l'API n'accepte qu'anyOf.
+    out[key === "oneOf" ? "anyOf" : key] = adaptForAnthropic(value);
+  }
+
+  if (hint) {
+    const existing = typeof out.description === "string" ? out.description : "";
+    out.description = existing ? `${existing} (${hint})` : hint;
+  }
+  return out;
+}
+
 // Convertit un schéma Zod en JSON Schema pour l'API Anthropic
 // (output_config.format ou input_schema d'un tool).
+//
+// Le JSON Schema de Zod n'est PAS directement acceptable : il faut l'adapter aux
+// restrictions des sorties structurées (voir UNSUPPORTED_KEYWORDS). Le helper
+// officiel zodOutputFormat du SDK ne suffit pas — il laisse passer maxLength et
+// minItems, et l'API répond alors « Schema is too complex ».
 export function toAnthropicSchema(schema: z.ZodType): Record<string, unknown> {
-  return z.toJSONSchema(schema, { unrepresentable: "any" }) as Record<
-    string,
-    unknown
-  >;
+  const json = z.toJSONSchema(schema, { unrepresentable: "any" });
+  return adaptForAnthropic(json) as Record<string, unknown>;
 }

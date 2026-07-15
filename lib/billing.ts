@@ -2,8 +2,7 @@ import "server-only";
 import type Stripe from "stripe";
 import type { Plan } from "@/lib/types";
 import { PLAN_LIMITS, planFromStripePrice } from "@/lib/plans";
-
-export const ACTIVE_SUBSCRIPTION_STATUSES = ["active", "trialing", "past_due"];
+export { ACTIVE_SUBSCRIPTION_STATUSES } from "@/lib/plans";
 
 export function stripeId(value: string | { id: string } | null | undefined) {
   return typeof value === "string" ? value : value?.id ?? null;

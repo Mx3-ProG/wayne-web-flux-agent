@@ -1,6 +1,7 @@
 import "server-only";
 
 import { createAdminClient } from "@/lib/supabase/admin";
+import { loadAccountAccess } from "@/lib/account-status";
 
 // Nombre de générations FLUX offertes pendant l'essai (avant de devoir passer
 // à une formule ou un pack). L'utilisateur en essai peut ainsi TESTER FLUX en
@@ -11,47 +12,52 @@ export const FLUX_TRIAL_MAX_USES = 2;
 // génération réussie) — sert à compter les essais consommés.
 const FLUX_TOOL_PREFIX = "flux-";
 
+// Les deux briques FLUX n'ont pas le même régime :
+//   - « site »    : écrire TOUTE la vitrine à partir d'un brief → abonnés payants ;
+//   - « prefill » : pré-remplir les textes → testable pendant l'essai.
+// C'est ce qui laisse goûter à FLUX sans donner la fonction phare.
+export type FluxFeature = "site" | "prefill";
+
 export type FluxAccess =
   | { ok: true; mode: "paid" }
   | { ok: true; mode: "trial"; used: number; remaining: number }
-  | { ok: false; reason: "flux_requires_payment" | "flux_trial_exhausted" };
+  | {
+      ok: false;
+      reason:
+        // Génération complète demandée par un non-payant (essai en cours inclus).
+        | "flux_requires_subscription"
+        // Essai expiré, jamais payé.
+        | "flux_requires_payment"
+        // Le pack a bien été payé, mais sa fenêtre IA de 6 mois est terminée.
+        | "flux_credits_expired"
+        // Essai en cours mais quota de générations épuisé.
+        | "flux_trial_exhausted";
+    };
 
-// Accès à FLUX en trois états :
-//  - « paid » : souscription posée (subscribed_at) ou achat de pack → illimité ;
-//  - « trial » : essai encore actif → autorisé tant que < FLUX_TRIAL_MAX_USES
-//    générations FLUX réussies (l'utilisateur dépense ses crédits pour tester) ;
-//  - bloqué : essai expiré sans paiement (flux_requires_payment) ou quota
-//    d'essai atteint (flux_trial_exhausted).
-export async function checkFluxAccess(userId: string): Promise<FluxAccess> {
-  const admin = createAdminClient();
+export async function checkFluxAccess(
+  userId: string,
+  feature: FluxFeature
+): Promise<FluxAccess> {
+  const account = await loadAccountAccess(userId);
+  if (account.status === "subscribed" || account.status === "credits_active") {
+    return { ok: true, mode: "paid" };
+  }
+  if (account.status === "credits_expired") {
+    return { ok: false, reason: "flux_credits_expired" };
+  }
 
-  const { data: profile } = await admin
-    .from("profiles")
-    .select("subscribed_at, trial_ends_at, subscription_status")
-    .eq("user_id", userId)
-    .maybeSingle<{
-      subscribed_at: string | null;
-      trial_ends_at: string | null;
-      subscription_status: string | null;
-    }>();
+  // La génération complète ne se teste pas : elle est réservée aux payants,
+  // même pendant l'essai.
+  if (feature === "site") {
+    return { ok: false, reason: "flux_requires_subscription" };
+  }
 
-  if (profile?.subscribed_at) return { ok: true, mode: "paid" };
-
-  const { count: purchases } = await admin
-    .from("credit_purchases")
-    .select("id", { count: "exact", head: true })
-    .eq("user_id", userId);
-  if ((purchases ?? 0) > 0) return { ok: true, mode: "paid" };
-
-  // Essai encore actif ? (miroir de has_active_access, hors paiement)
-  const trialActive =
-    (profile?.trial_ends_at &&
-      new Date(profile.trial_ends_at).getTime() > Date.now()) ||
-    ["active", "trialing", "past_due"].includes(profile?.subscription_status ?? "");
-  if (!trialActive) return { ok: false, reason: "flux_requires_payment" };
+  // Essai encore actif ? Le volet « abonnement » est déjà traité au-dessus, il
+  // ne reste donc que la date de fin d'essai.
+  if (!account.aiAllowed) return { ok: false, reason: "flux_requires_payment" };
 
   // Générations FLUX déjà consommées pendant l'essai.
-  const { count: used } = await admin
+  const { count: used } = await createAdminClient()
     .from("generations")
     .select("id", { count: "exact", head: true })
     .eq("user_id", userId)

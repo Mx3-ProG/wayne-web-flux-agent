@@ -1,11 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { getActivePage } from "@/lib/active-project";
-import type { Generation, VoiceProfile } from "@/lib/types";
 import { TOOLS } from "@/lib/tools-config";
-import { voiceCompletion } from "@/lib/voice";
-import { parisNow } from "@/lib/slots";
+import { loadJourneySignals } from "@/lib/journey-signals";
+import { journeyState, type JourneyStepId } from "@/lib/journey";
 import { CopyButton } from "@/components/copy-button";
 import { RevenueCounter } from "@/components/revenue-counter";
 import { completeJourneyStep } from "./actions";
@@ -23,13 +21,6 @@ import styles from "./espace.module.css";
 
 export const metadata = { title: "Mon espace" };
 
-type Step = {
-  n: number;
-  title: string;
-  done: boolean;
-  content: React.ReactNode;
-};
-
 export default async function EspacePage() {
   const supabase = await createClient();
   const {
@@ -37,235 +28,139 @@ export default async function EspacePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: profile }, page] = await Promise.all([
+  const [{ data: profile }, journey] = await Promise.all([
     supabase.from("profiles").select("*").eq("user_id", user.id).single(),
-    getActivePage(supabase, user.id),
+    loadJourneySignals(supabase, user.id),
   ]);
-  // Voix du projet actif (voix par projet).
-  const { data: voice } = page
-    ? await supabase
-        .from("voice_profiles")
-        .select("*")
-        .eq("page_id", page.id)
-        .maybeSingle<VoiceProfile>()
-    : { data: null as VoiceProfile | null };
+  const { page, generations, balance, revenueCents, signals } = journey;
+  const { steps, completedCount, total, nextStep } = journeyState(signals);
 
-  let upcomingCount = 0;
-  let generations: Generation[] = [];
-  let revenueCents = 0;
-  let productCount = 0;
-  let offerCount = 0;
-  let scheduleCount = 0;
-  if (page) {
-    const today = parisNow().date;
-    const { data: rev } = await supabase.rpc("revenue_total", {
-      p_page: page.id,
-    });
-    revenueCents = Number(rev ?? 0);
-    const [
-      { count },
-      { data: gens },
-      { count: products },
-      { count: offers },
-      { count: schedules },
-    ] = await Promise.all([
-      supabase
-        .from("bookings")
-        .select("id", { count: "exact", head: true })
-        .eq("page_id", page.id)
-        .eq("status", "confirmed")
-        .gte("date", today),
-      supabase
-        .from("generations")
-        .select("*")
-        .eq("user_id", user.id)
-        .eq("page_id", page.id)
-        .limit(5),
-      supabase
-        .from("products")
-        .select("id", { count: "exact", head: true })
-        .eq("page_id", page.id),
-      supabase
-        .from("offers")
-        .select("id", { count: "exact", head: true })
-        .eq("page_id", page.id),
-      supabase
-        .from("schedules")
-        .select("weekday", { count: "exact", head: true })
-        .eq("page_id", page.id)
-        .eq("open", true),
-    ]);
-    upcomingCount = count ?? 0;
-    generations = (gens ?? []) as Generation[];
-    productCount = products ?? 0;
-    offerCount = offers ?? 0;
-    scheduleCount = schedules ?? 0;
+  // Un compte qui n'a encore rien franchi n'a rien à faire sur le dashboard :
+  // le tunnel est le seul endroit qui le mène jusqu'à un espace rempli.
+  if (completedCount === 0 && (profile?.onboarding_step ?? 0) < 99) {
+    redirect("/commencer");
   }
 
-  const { data: balance } = await supabase.rpc("credit_balance", {
-    uid: user.id,
-  });
-
-  const completion = voiceCompletion(voice, !!page);
+  const completion = signals.voiceCompletion;
+  const upcomingCount = signals.upcomingBookings;
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL || "https://www.flux-wayne.com";
   const pageUrl = page ? `${siteUrl}/p/${page.slug}#prestations` : null;
 
-  const steps: Step[] = [
-    {
-      n: 1,
-      title: "Crée ta vitrine",
-      done: !!page,
-      content: (
-        <Link className={styles.journeyAction} href="/ma-page">
-          <span>{page ? "Ouvrir l’éditeur de vitrine" : "Créer ma vitrine"}</span>
+  // Le « quoi faire » de chaque étape. La liste et l'ordre viennent de
+  // lib/journey.ts (partagé avec le tunnel) ; seul le rendu vit ici.
+  const stepContent: Record<JourneyStepId, React.ReactNode> = {
+    1: (
+      <Link className={styles.journeyAction} href="/ma-page">
+        <span>{page ? "Ouvrir l’éditeur de vitrine" : "Créer ma vitrine"}</span>
+        <ArrowRight aria-hidden="true" />
+      </Link>
+    ),
+    2: (
+      <div className={styles.voiceBlock}>
+        <p className={styles.voiceScore}>
+          J&apos;écris comme toi à <strong>{completion}%</strong>
+        </p>
+        <div className={styles.voiceMeter}>
+          <div style={{ width: `${completion}%` }} />
+        </div>
+        <p className={styles.stepHint}>
+          Plus tu lui en donnes, plus l&apos;IA écrit avec ta voix, ton ton,
+          tes mots à toi.
+        </p>
+        <Link className={styles.journeyAction} href="/contexte">
+          <span>
+            {completion >= 70 ? "Affiner encore" : "Faire connaissance (2 min)"}
+          </span>
           <ArrowRight aria-hidden="true" />
         </Link>
-      ),
-    },
-    {
-      n: 2,
-      title: "Apprends-lui à parler comme toi",
-      done: completion >= 70,
-      content: (
-        <div className={styles.voiceBlock}>
-          <p className={styles.voiceScore}>
-            J&apos;écris comme toi à <strong>{completion}%</strong>
-          </p>
-          <div className={styles.voiceMeter}>
-            <div style={{ width: `${completion}%` }} />
-          </div>
-          <p className={styles.stepHint}>
-            Plus tu lui en donnes, plus l&apos;IA écrit avec ta voix, ton ton,
-            tes mots à toi.
-          </p>
-          <Link className={styles.journeyAction} href="/contexte">
-            <span>
-              {completion >= 70 ? "Affiner encore" : "Faire connaissance (2 min)"}
-            </span>
-            <ArrowRight aria-hidden="true" />
-          </Link>
+      </div>
+    ),
+    3: (
+      <Link className={styles.journeyAction} href="/produits/configurer">
+        <span>{signals.productCount > 0 ? "Créer d’autres produits avec Flux" : "Lancer la création produit Flux"}</span>
+        <ArrowRight aria-hidden="true" />
+      </Link>
+    ),
+    4: (
+      <Link className={styles.journeyAction} href="/offres/configurer">
+        <span>{signals.offerCount > 0 ? "Créer une nouvelle offre avec Flux" : "Lancer la création d’offre Flux"}</span>
+        <ArrowRight aria-hidden="true" />
+      </Link>
+    ),
+    5: (
+      <Link className={styles.journeyAction} href="/agenda">
+        <span>{signals.openScheduleCount > 0 ? "Revoir mes horaires avec Flux" : "Configurer mes horaires"}</span>
+        <ArrowRight aria-hidden="true" />
+      </Link>
+    ),
+    6: (
+      <div className={styles.toolsBlock} id="outils">
+        <p className={styles.stepHint}>
+          Choisis un outil. Le coût en crédits est affiché avant de lancer.
+        </p>
+        <div className={styles.toolGrid}>
+          {TOOLS.map((tool) => (
+            <Link
+              key={tool.slug}
+              href={`/outil/${tool.slug}`}
+              className={styles.toolCard}
+            >
+              {tool.badge && (
+                <span className={styles.toolBadge}>{tool.badge}</span>
+              )}
+              <span className={styles.toolName}>{tool.name}</span>
+              <span className={styles.toolTagline}>{tool.tagline}</span>
+              <span className={styles.toolCost}>{tool.cost} cr.</span>
+            </Link>
+          ))}
         </div>
-      ),
-    },
-    {
-      n: 3,
-      title: "Crée ton produit",
-      done: productCount > 0,
-      content: (
-        <Link className={styles.journeyAction} href="/produits/configurer">
-          <span>{productCount > 0 ? "Créer d’autres produits avec Flux" : "Lancer la création produit Flux"}</span>
-          <ArrowRight aria-hidden="true" />
-        </Link>
-      ),
-    },
-    {
-      n: 4,
-      title: "Crée tes offres",
-      done: offerCount > 0,
-      content: (
-        <Link className={styles.journeyAction} href="/offres/configurer">
-          <span>{offerCount > 0 ? "Créer une nouvelle offre avec Flux" : "Lancer la création d’offre Flux"}</span>
-          <ArrowRight aria-hidden="true" />
-        </Link>
-      ),
-    },
-    {
-      n: 5,
-      title: "Crée ton agenda",
-      done: scheduleCount > 0,
-      content: (
-        <Link className={styles.journeyAction} href="/agenda">
-          <span>{scheduleCount > 0 ? "Revoir mes horaires avec Flux" : "Configurer mes horaires"}</span>
-          <ArrowRight aria-hidden="true" />
-        </Link>
-      ),
-    },
-    {
-      n: 6,
-      title: "Crée ton premier contenu",
-      done: generations.length > 0,
-      content: (
-        <div className={styles.toolsBlock} id="outils">
-          <p className={styles.stepHint}>
-            Choisis un outil. Le coût en crédits est affiché avant de lancer.
-          </p>
-          <div className={styles.toolGrid}>
-            {TOOLS.map((tool) => (
-              <Link
-                key={tool.slug}
-                href={`/outil/${tool.slug}`}
-                className={styles.toolCard}
-              >
-                {tool.badge && (
-                  <span className={styles.toolBadge}>{tool.badge}</span>
-                )}
-                <span className={styles.toolName}>{tool.name}</span>
-                <span className={styles.toolTagline}>{tool.tagline}</span>
-                <span className={styles.toolCost}>{tool.cost} cr.</span>
-              </Link>
-            ))}
-          </div>
+      </div>
+    ),
+    7: (
+      <div className={styles.resultGrid}>
+        <div className={styles.resultCard}>
+          <strong>{balance}</strong>
+          <span>crédits restants</span>
+          <Link href="/credits">Voir mes crédits</Link>
         </div>
-      ),
-    },
-    {
-      n: 7,
-      title: "Regarde tes résultats",
-      done: upcomingCount > 0 || (page?.journey_completed_steps ?? []).includes(7),
-      content: (
-        <div className={styles.resultGrid}>
-          <div className={styles.resultCard}>
-            <strong>{balance ?? 0}</strong>
-            <span>crédits restants</span>
-            <Link href="/credits">Voir mes crédits</Link>
-          </div>
-          <div className={styles.resultCard}>
-            <strong>{generations.length}</strong>
-            <span>
-              création{generations.length > 1 ? "s" : ""} dans ton coffre
-            </span>
-            <Link href="/resultats">Ouvrir mon coffre</Link>
-          </div>
-          <div className={styles.resultCard}>
-            <strong>{upcomingCount}</strong>
-            <span>rendez-vous à venir</span>
-            <Link href="/agenda">Ouvrir mon agenda</Link>
-          </div>
+        <div className={styles.resultCard}>
+          <strong>{generations.length}</strong>
+          <span>
+            création{generations.length > 1 ? "s" : ""} dans ton coffre
+          </span>
+          <Link href="/resultats">Ouvrir mon coffre</Link>
         </div>
-      ),
-    },
-    {
-      n: 8,
-      title: "Partage ton business partout",
-      done: (page?.journey_completed_steps ?? []).includes(8),
-      content: (
-        <div className={styles.shareBlock}>
-          <p className={styles.stepHint}>
-            Bio Instagram, statut WhatsApp, fiche Google : plus ton lien
-            circule, plus ton agenda se remplit tout seul.
-          </p>
-          {pageUrl && (
-            <div className={styles.shareRow}>
-              <CopyButton text={pageUrl} />
-              <a
-                className={styles.journeyAction}
-                href={`https://wa.me/?text=${encodeURIComponent(`Réserve ton rendez-vous en ligne : ${pageUrl}`)}`}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <span>Partager sur WhatsApp</span>
-                <ArrowRight aria-hidden="true" />
-              </a>
-            </div>
-          )}
+        <div className={styles.resultCard}>
+          <strong>{upcomingCount}</strong>
+          <span>rendez-vous à venir</span>
+          <Link href="/agenda">Ouvrir mon agenda</Link>
         </div>
-      ),
-    },
-  ];
-
-  const nextStep = steps.find((step) => !step.done);
-  const completedCount = steps.filter((step) => step.done).length;
+      </div>
+    ),
+    8: (
+      <div className={styles.shareBlock}>
+        <p className={styles.stepHint}>
+          Bio Instagram, statut WhatsApp, fiche Google : plus ton lien
+          circule, plus ton agenda se remplit tout seul.
+        </p>
+        {pageUrl && (
+          <div className={styles.shareRow}>
+            <CopyButton text={pageUrl} />
+            <a
+              className={styles.journeyAction}
+              href={`https://wa.me/?text=${encodeURIComponent(`Réserve ton rendez-vous en ligne : ${pageUrl}`)}`}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span>Partager sur WhatsApp</span>
+              <ArrowRight aria-hidden="true" />
+            </a>
+          </div>
+        )}
+      </div>
+    ),
+  };
 
   return (
     <div className={styles.page}>
@@ -335,14 +230,14 @@ export default async function EspacePage() {
         </article>
         <article className={styles.metric}>
           <span>Crédits disponibles</span>
-          <strong>{balance ?? 0}</strong>
+          <strong>{balance}</strong>
           <small>{generations.length} contenu{generations.length > 1 ? "s" : ""} créé{generations.length > 1 ? "s" : ""}</small>
         </article>
       </section>
 
       <div className={styles.sectionHeader}>
         <div><h2>Ton parcours</h2><p>Une étape claire à la fois.</p></div>
-        <span className={styles.progressLabel}><b>{completedCount}</b> / 8 terminé</span>
+        <span className={styles.progressLabel}><b>{completedCount}</b> / {total} terminé</span>
       </div>
 
       <ol className={styles.journey}>
@@ -353,7 +248,7 @@ export default async function EspacePage() {
             </span>
             <div>
               <h3>{step.title}</h3>
-              <div className={styles.stepContent}>{step.content}</div>
+              <div className={styles.stepContent}>{stepContent[step.n]}</div>
             </div>
             <span className={styles.status}>{step.done ? "Terminé" : "À faire"}</span>
           </li>

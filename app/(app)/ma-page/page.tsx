@@ -13,6 +13,7 @@ import type {
 import { getVertical } from "@/lib/verticals";
 import { getActivePage } from "@/lib/active-project";
 import { subpageLimit } from "@/lib/plans";
+import { checkFluxAccess } from "@/lib/flux/access";
 import type { CategoryWithProducts } from "@/components/vitrine/vitrine-view";
 import { CreatePageWizard } from "@/components/editor/create-page-wizard";
 import { PageEditor } from "@/components/editor/page-editor";
@@ -83,7 +84,16 @@ export default async function MaPagePage({
 
   const params = await searchParams;
   if (params.view !== "editor") {
-    return <VitrineGuide initialPage={page} publish={publishProps} />;
+    // Annonce le verrou de la génération complète avant le clic. L'autorité
+    // reste checkFluxAccess dans fluxGenerateSite ; ceci n'est que l'affichage.
+    const siteAccess = await checkFluxAccess(user.id, "site");
+    return (
+      <VitrineGuide
+        initialPage={page}
+        publish={publishProps}
+        canGenerateSite={siteAccess.ok}
+      />
+    );
   }
 
   const [

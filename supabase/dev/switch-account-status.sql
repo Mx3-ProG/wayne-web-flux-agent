@@ -1,0 +1,71 @@
+-- OUTIL DE DÉVELOPPEMENT UNIQUEMENT — NE JAMAIS EXÉCUTER EN PRODUCTION.
+-- Remplace l'email dans UN bloc, puis décommente uniquement ce bloc.
+
+-- ABONNÉ
+-- do $$ declare uid uuid; begin
+--   select id into uid from auth.users where email = 'test+abonne@wayne-web.test';
+--   delete from public.credit_purchases where user_id = uid;
+--   update public.profiles set subscription_status = 'active', plan = 'pro',
+--     stripe_subscription_id = 'sub_test_switch_' || uid, subscribed_at = now(),
+--     trial_ends_at = now() - interval '1 day', upsell_last_shown_at = null
+--   where user_id = uid;
+-- end $$;
+
+-- RÉSILIÉ (subscribed_at reste volontairement non nul)
+-- do $$ declare uid uuid; begin
+--   select id into uid from auth.users where email = 'test+resilie@wayne-web.test';
+--   delete from public.credit_purchases where user_id = uid;
+--   update public.profiles set subscription_status = 'canceled', plan = 'pro',
+--     stripe_subscription_id = 'sub_test_switch_' || uid,
+--     subscribed_at = coalesce(subscribed_at, now() - interval '2 months'),
+--     trial_ends_at = now() - interval '1 day', upsell_last_shown_at = null
+--   where user_id = uid;
+-- end $$;
+
+-- PAST_DUE (grâce Stripe : accès maintenu)
+-- do $$ declare uid uuid; begin
+--   select id into uid from auth.users where email = 'test+pastdue@wayne-web.test';
+--   delete from public.credit_purchases where user_id = uid;
+--   update public.profiles set subscription_status = 'past_due', plan = 'pro',
+--     stripe_subscription_id = 'sub_test_switch_' || uid,
+--     trial_ends_at = now() - interval '1 day', upsell_last_shown_at = null
+--   where user_id = uid;
+-- end $$;
+
+-- PACK RÉCENT (fenêtre IA active)
+-- do $$ declare uid uuid; begin
+--   select id into uid from auth.users where email = 'test+pack-recent@wayne-web.test';
+--   delete from public.credit_purchases where user_id = uid;
+--   update public.profiles set subscription_status = null,
+--     stripe_subscription_id = null, subscribed_at = null,
+--     trial_ends_at = now() - interval '1 day', upsell_last_shown_at = null
+--   where user_id = uid;
+--   insert into public.credit_purchases
+--     (user_id, stripe_session_id, pack_id, credits, amount_cents, created_at)
+--   values (uid, 'cs_test_switch_recent_' || uid, 'pack150', 150, 5000,
+--     now() - interval '1 month');
+-- end $$;
+
+-- PACK PÉRIMÉ (crédits conservés, IA coupée)
+-- do $$ declare uid uuid; begin
+--   select id into uid from auth.users where email = 'test+pack-perime@wayne-web.test';
+--   delete from public.credit_purchases where user_id = uid;
+--   update public.profiles set subscription_status = null,
+--     stripe_subscription_id = null, subscribed_at = null,
+--     trial_ends_at = now() - interval '1 day', upsell_last_shown_at = null
+--   where user_id = uid;
+--   insert into public.credit_purchases
+--     (user_id, stripe_session_id, pack_id, credits, amount_cents, created_at)
+--   values (uid, 'cs_test_switch_expired_' || uid, 'pack150', 150, 5000,
+--     now() - interval '7 months');
+-- end $$;
+
+-- ESSAI EXPIRÉ (aucun paiement)
+-- do $$ declare uid uuid; begin
+--   select id into uid from auth.users where email = 'test+essai-expire@wayne-web.test';
+--   delete from public.credit_purchases where user_id = uid;
+--   update public.profiles set subscription_status = null, plan = 'basique',
+--     stripe_subscription_id = null, subscribed_at = null,
+--     trial_ends_at = now() - interval '1 day', upsell_last_shown_at = null
+--   where user_id = uid;
+-- end $$;

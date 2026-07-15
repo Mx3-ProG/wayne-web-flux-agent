@@ -25,4 +25,7 @@ export async function completeJourneyStep(step: number): Promise<void> {
     .eq("user_id", user.id);
 
   revalidatePath("/espace");
+  // Le tunnel /commencer affiche le même Parcours et fait franchir ces deux
+  // étapes : sans ça, il resterait sur un état périmé après validation.
+  revalidatePath("/commencer");
 }

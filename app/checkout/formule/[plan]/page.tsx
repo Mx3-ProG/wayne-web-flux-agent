@@ -1,7 +1,12 @@
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { CustomCheckout } from "@/components/checkout/custom-checkout";
-import { FLUX_PLANS, PLAN_LABEL, PLAN_LIMITS } from "@/lib/plans";
+import {
+  FLUX_PLANS,
+  PLAN_LABEL,
+  PLAN_LIMITS,
+  isActiveSubscriptionStatus,
+} from "@/lib/plans";
 import type { Plan } from "@/lib/types";
 import type { Profile } from "@/lib/types";
 
@@ -19,7 +24,7 @@ export default async function PlanCheckoutPage({ params }: { params: Promise<{ p
     .select("subscription_status")
     .eq("user_id", user.id)
     .single<Pick<Profile, "subscription_status">>();
-  if (["active", "trialing", "past_due"].includes(profile?.subscription_status ?? "")) {
+  if (isActiveSubscriptionStatus(profile?.subscription_status)) {
     redirect("/compte/facturation");
   }
   const key = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || process.env.STRIPE_PUBLIC_KEY;

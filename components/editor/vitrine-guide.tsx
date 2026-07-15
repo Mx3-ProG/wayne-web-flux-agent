@@ -10,7 +10,9 @@ import {
   Check,
   ExternalLink,
   ImageIcon,
+  MessageCircle,
   Palette,
+  Phone,
   PencilRuler,
   Store,
 } from "lucide-react";
@@ -18,6 +20,7 @@ import { toast } from "sonner";
 import type { Page } from "@/lib/types";
 import { FONTS } from "@/lib/verticals";
 import { VITRINE_THEMES } from "@/lib/vitrine-themes";
+import { designKitPatch, resolveVitrineDesign } from "@/lib/vitrine-design/resolver";
 import { VITRINE_ASSIST_COST, SITE_GENERATE_COST } from "@/lib/plans";
 import { PREFILL_COST } from "@/lib/tools-config";
 import { saveVitrineGuide } from "@/app/(app)/ma-page/actions";
@@ -40,9 +43,13 @@ import styles from "@/components/commerce/setup-tunnel.module.css";
 export function VitrineGuide({
   initialPage,
   publish,
+  canGenerateSite,
 }: {
   initialPage: Page;
   publish: PublishProps;
+  // Droit d'accès à la génération complète, résolu côté serveur. Sert à
+  // annoncer le verrou AVANT le clic ; l'autorité reste checkFluxAccess.
+  canGenerateSite: boolean;
 }) {
   const router = useRouter();
   const [step, setStep] = useState(0);
@@ -51,7 +58,9 @@ export function VitrineGuide({
   const [creditsDialog, setCreditsDialog] = useState<
     | "insufficient_credits"
     | "subscription_required"
+    | "flux_requires_subscription"
     | "flux_requires_payment"
+    | "flux_credits_expired"
     | "flux_trial_exhausted"
     | null
   >(null);
@@ -72,7 +81,9 @@ export function VitrineGuide({
     startTransition(async () => {
       const result = await fluxPrefill(initialPage.id);
       if (
+        result.error === "flux_requires_subscription" ||
         result.error === "flux_requires_payment" ||
+        result.error === "flux_credits_expired" ||
         result.error === "flux_trial_exhausted" ||
         result.error === "insufficient_credits" ||
         result.error === "subscription_required"
@@ -84,7 +95,9 @@ export function VitrineGuide({
         toast.error(
           result.error === "content_blocked"
             ? "Les messages de haines ou les contenus explicit sont interdit et amendé sur FLUX, veuillez respectez votre environnement et celui des autres. 3 Infractions contre nos conditions d'utilisations le compte est supprimé."
-            : "La génération a échoué — tes crédits n'ont pas été débités."
+            : result.error === "too_many_requests"
+              ? "Tu as lancé plusieurs générations coup sur coup. Réessaie dans quelques minutes."
+              : "La génération a échoué — tes crédits n'ont pas été débités."
         );
         return;
       }
@@ -102,7 +115,9 @@ export function VitrineGuide({
     startTransition(async () => {
       const result = await fluxGenerateSite(initialPage.id, brief);
       if (
+        result.error === "flux_requires_subscription" ||
         result.error === "flux_requires_payment" ||
+        result.error === "flux_credits_expired" ||
         result.error === "flux_trial_exhausted" ||
         result.error === "insufficient_credits" ||
         result.error === "subscription_required"
@@ -116,7 +131,9 @@ export function VitrineGuide({
             ? "Les messages de haines ou les contenus explicit sont interdit et amendé sur FLUX, veuillez respectez votre environnement et celui des autres. 3 Infractions contre nos conditions d'utilisations le compte est supprimé."
             : result.error === "empty_brief"
               ? "Décris ton commerce en quelques mots d'abord."
-              : "La génération a échoué — tes crédits n'ont pas été débités."
+              : result.error === "too_many_requests"
+                ? "Tu as lancé plusieurs générations coup sur coup. Réessaie dans quelques minutes."
+                : "La génération a échoué — tes crédits n'ont pas été débités."
         );
         return;
       }
@@ -135,11 +152,14 @@ export function VitrineGuide({
         city: page.city,
         address: page.address,
         phone: page.phone,
+        floating_cta: page.floating_cta,
         logo_url: page.logo_url,
         hero_url: page.hero_url,
         theme: page.theme,
         font: page.font,
         colors: page.colors,
+        typography: page.typography,
+        design: page.design,
       });
       if (
         result.error === "insufficient_credits" ||
@@ -189,13 +209,19 @@ export function VitrineGuide({
               onChange={(event) => setBrief(event.target.value)}
               placeholder="Décris ton commerce en quelques phrases : ce que tu proposes, ton style, ce qui te distingue… FLUX s'occupe du reste."
             />
+            {/* Le bouton reste cliquable : le dialogue explique le verrou et
+                mène à /formules — c'est le meilleur endroit pour convertir. */}
             <button
               className={`flux-button-smooth ${styles.primary}`}
               type="button"
               disabled={pending}
               onClick={generateSite}
             >
-              {pending ? "FLUX crée ta vitrine…" : `FLUX crée toute ma vitrine (${SITE_GENERATE_COST} cr.)`}
+              {pending
+                ? "FLUX crée ta vitrine…"
+                : canGenerateSite
+                  ? `FLUX crée toute ma vitrine (${SITE_GENERATE_COST} cr.)`
+                  : `FLUX crée toute ma vitrine — formule payante`}
               <ArrowRight aria-hidden="true" />
             </button>
             <button
@@ -253,7 +279,7 @@ export function VitrineGuide({
               {VITRINE_THEMES.map((theme) => {
                 const selected = (page.theme || "editorial") === theme.id;
                 return (
-                  <button type="button" key={theme.id} className={selected ? styles.choiceActive : styles.choice} onClick={() => patch({ theme: theme.id })}>
+                  <button type="button" key={theme.id} className={selected ? styles.choiceActive : styles.choice} onClick={() => patch(designKitPatch(theme.id, page))}>
                     <Palette aria-hidden="true" />
                     <strong>{theme.name}</strong>
                     <small>{theme.description}</small>
@@ -279,7 +305,13 @@ export function VitrineGuide({
                 <label><span>Couleur principale</span><input type="color" value={page.colors.primary ?? "#ef233c"} onChange={(event) => patch({ colors: { ...page.colors, primary: event.target.value } })} /></label>
                 <label><span>Couleur foncée</span><input type="color" value={page.colors.dark ?? "#111114"} onChange={(event) => patch({ colors: { ...page.colors, dark: event.target.value } })} /></label>
               </div>
-              <Field label="Téléphone" value={page.phone} maxLength={30} placeholder="Ex : 06 12 34 56 78" onChange={(phone) => patch({ phone })} />
+              <Field label="Téléphone" value={page.phone} maxLength={30} placeholder="Ex : 06 12 34 56 78" onChange={(phone) => {
+                const syncFloatingNumber = page.floating_cta && (!page.floating_cta.number || page.floating_cta.number === page.phone);
+                patch({
+                  phone,
+                  ...(syncFloatingNumber ? { floating_cta: { ...page.floating_cta!, number: phone } } : {}),
+                });
+              }} />
               <Field label="Adresse" value={page.address} maxLength={120} placeholder="Facultatif" onChange={(address) => patch({ address })} />
             </div>
           </Screen>
@@ -327,22 +359,30 @@ export function VitrineGuide({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {creditsDialog === "subscription_required"
-                ? "Ton essai est terminé"
-                : creditsDialog === "flux_trial_exhausted"
-                  ? "Tu as testé FLUX — la suite avec une formule"
-                  : creditsDialog === "flux_requires_payment"
-                    ? "FLUX est prête à travailler pour toi"
-                    : "Plus assez de crédits"}
+              {creditsDialog === "flux_requires_subscription"
+                ? "La création complète est réservée aux abonnés"
+                : creditsDialog === "flux_credits_expired"
+                  ? "Ta fenêtre IA de 6 mois est terminée"
+                : creditsDialog === "subscription_required"
+                  ? "Ton essai est terminé"
+                  : creditsDialog === "flux_trial_exhausted"
+                    ? "Tu as testé FLUX — la suite avec une formule"
+                    : creditsDialog === "flux_requires_payment"
+                      ? "FLUX est prête à travailler pour toi"
+                      : "Plus assez de crédits"}
             </DialogTitle>
             <DialogDescription>
-              {creditsDialog === "subscription_required"
-                ? "Tes 7 jours d'essai FLUX sont passés. Choisis une formule pour continuer à utiliser l'assistant."
-                : creditsDialog === "flux_trial_exhausted"
-                  ? "Tu as utilisé tes 2 générations FLUX offertes pendant l'essai. Continue avec une formule — ou pars des templates déjà en place dans l'éditeur complet (gratuit)."
-                  : creditsDialog === "flux_requires_payment"
-                    ? "FLUX crée et améliore ta vitrine à ta place. Pars des templates déjà en place dans l'éditeur complet (gratuit), ou débloque FLUX avec une formule ou un pack de crédits."
-                    : `L'assistant vitrine coûte ${VITRINE_ASSIST_COST} crédits. Recharge tes crédits, ou utilise l'éditeur complet (gratuit).`}
+              {creditsDialog === "flux_requires_subscription"
+                ? `FLUX écrit ta vitrine entière — textes, SEO, ambiance et sections — à partir de ton brief. C'est réservé aux formules payantes. En attendant, tu peux déjà faire pré-remplir tes textes par FLUX (${PREFILL_COST} cr.), ou partir d'un template dans l'éditeur complet, gratuitement.`
+                : creditsDialog === "flux_credits_expired"
+                  ? "Ton achat t’a donné accès à l’IA pendant 6 mois. Tes crédits restants sont toujours disponibles pour publier et gérer ta vitrine ; choisis une formule pour réactiver les générations IA."
+                : creditsDialog === "subscription_required"
+                  ? "Tes 7 jours d'essai FLUX sont passés. Choisis une formule pour continuer à utiliser l'assistant."
+                  : creditsDialog === "flux_trial_exhausted"
+                    ? "Tu as utilisé tes 2 générations FLUX offertes pendant l'essai. Continue avec une formule — ou pars des templates déjà en place dans l'éditeur complet (gratuit)."
+                    : creditsDialog === "flux_requires_payment"
+                      ? "FLUX crée et améliore ta vitrine à ta place. Pars des templates déjà en place dans l'éditeur complet (gratuit), ou débloque FLUX avec une formule ou un pack de crédits."
+                      : `L'assistant vitrine coûte ${VITRINE_ASSIST_COST} crédits. Recharge tes crédits, ou utilise l'éditeur complet (gratuit).`}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -352,18 +392,12 @@ export function VitrineGuide({
             <Button asChild>
               <Link
                 href={
-                  creditsDialog === "subscription_required" ||
-                  creditsDialog === "flux_requires_payment" ||
-                  creditsDialog === "flux_trial_exhausted"
-                    ? "/formules"
-                    : "/credits"
+                  creditsDialog === "insufficient_credits" ? "/credits" : "/formules"
                 }
               >
-                {creditsDialog === "subscription_required" ||
-                creditsDialog === "flux_requires_payment" ||
-                creditsDialog === "flux_trial_exhausted"
-                  ? "Choisir ma formule FLUX"
-                  : "Recharger mes crédits"}
+                {creditsDialog === "insufficient_credits"
+                  ? "Recharger mes crédits"
+                  : "Choisir ma formule FLUX"}
               </Link>
             </Button>
           </DialogFooter>
@@ -382,6 +416,7 @@ function Field({ label, value, placeholder, maxLength, onChange }: { label: stri
 }
 
 function VitrinePreview({ page }: { page: Page }) {
+  const design = resolveVitrineDesign(page.theme, page.design);
   const font = FONTS.find((item) => item.id === page.font)?.css ?? FONTS[0].css;
   const primary = page.colors.primary ?? "#ef233c";
   const dark = page.colors.dark ?? "#111114";
@@ -390,6 +425,9 @@ function VitrinePreview({ page }: { page: Page }) {
     <div
       className={styles.vitrinePreview}
       data-theme={page.theme || "editorial"}
+      data-design-button={design.components.button.renderId}
+      data-design-header={design.components.header.renderId}
+      data-design-section={design.components.section.renderId}
       style={{
         "--preview-primary": primary,
         "--preview-dark": dark,
@@ -423,6 +461,14 @@ function VitrinePreview({ page }: { page: Page }) {
         <strong>{page.business_name || "Ton commerce"}</strong>
         <p>{page.tagline || "Ta phrase d’accroche apparaîtra ici."}</p>
         <span className={styles.vitrinePreviewButton}>Découvrir</span>
+        {(page.phone || page.floating_cta?.number) && (
+          <span className={styles.vitrinePreviewContacts}>
+            {page.phone && <span><Phone aria-hidden="true" /> {page.phone}</span>}
+            {page.floating_cta?.type === "whatsapp" && page.floating_cta.number && (
+              <span><MessageCircle aria-hidden="true" /> WhatsApp activé</span>
+            )}
+          </span>
+        )}
       </div>
     </div>
   );

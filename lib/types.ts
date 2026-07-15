@@ -2,6 +2,43 @@
 
 export type Plan = "basique" | "pro" | "business" | "entreprise";
 
+export type AdminRole = "admin" | "superadmin";
+export type AdminPermission =
+  | "users.read"
+  | "customers.read"
+  | "sites.moderate"
+  | "flux.review"
+  | "credits.manage"
+  | "billing.read"
+  | "security.read";
+
+export type AdminMembership = {
+  user_id: string;
+  role: AdminRole;
+  permissions: AdminPermission[];
+  status: "pending" | "active" | "suspended";
+  invited_by: string | null;
+  invited_at: string;
+  activated_at: string | null;
+  updated_at: string;
+};
+
+export type ShopModerationStatus = "unverified" | "verified" | "archived";
+
+// Réponses du tunnel /commencer qui n'ont pas encore de ligne en base : la
+// verticale et les objectifs sont choisis avant la création de la vitrine.
+// Tout le reste du tunnel écrit directement dans les tables métier.
+export type TunnelDraft = {
+  vertical?: string;
+  goals?: string[];
+  businessName?: string;
+  jobTitle?: string;
+  city?: string;
+  tone?: string;
+};
+
+// profiles.email_verify_token_hash n'est volontairement pas exposé ici : c'est
+// un secret serveur, jamais utile à un composant.
 export type Profile = {
   user_id: string;
   name: string | null;
@@ -13,6 +50,13 @@ export type Profile = {
   siret: string | null;
   address: string | null;
   onboarding_step: number;
+  // Curseur d'écran du tunnel /commencer (99 = Parcours terminé) et réponses
+  // en cours, conservées pour reprendre le tunnel après une interruption.
+  onboarding_draft: TunnelDraft;
+  // Possession réelle de l'adresse : le tunnel ouvre la session sans attendre
+  // le clic, donc auth.users.email_confirmed_at ne dit plus rien (00026).
+  email_verified_at: string | null;
+  email_verify_sent_at: string | null;
   ical_token: string;
   plan: Plan;
   // Essai applicatif sans carte, puis cycle de facturation piloté par Stripe.
@@ -25,6 +69,8 @@ export type Profile = {
   current_period_end: string | null;
   cancel_at_period_end: boolean;
   active_page_id: string | null;
+  upsell_last_shown_at: string | null;
+  last_login_at: string | null;
   created_at: string;
 };
 
@@ -122,6 +168,14 @@ export type Page = {
   typography: PageTypography;
   // Registre de conception composable. Absent = kit dérivé de `theme`.
   design: PageDesign | null;
+  moderation_status: ShopModerationStatus;
+  verified_by: string | null;
+  verified_at: string | null;
+  verified_version: number | null;
+  archived_by: string | null;
+  archived_at: string | null;
+  archive_reason: string | null;
+  moderation_was_published: boolean | null;
   published: boolean;
   custom_domain: string | null;
   ical_token: string;
@@ -407,7 +461,48 @@ export type Generation = {
   inputs: Record<string, string>;
   output: string;
   credits_spent: number;
+  ai_usage_event_id: string | null;
   created_at: string;
+};
+
+export type UserSession = {
+  id: string;
+  user_id: string;
+  started_at: string;
+  last_seen_at: string;
+  ended_at: string | null;
+  authenticated_seconds: number;
+  active_seconds: number;
+  explicit_logout: boolean;
+  user_agent: string | null;
+};
+
+export type AiUsageEvent = {
+  id: string;
+  user_id: string | null;
+  page_id: string | null;
+  provider: string;
+  model: string;
+  operation: string;
+  input_tokens: number;
+  output_tokens: number;
+  cache_creation_tokens: number;
+  cache_read_tokens: number;
+  latency_ms: number | null;
+  outcome: "success" | "blocked" | "error";
+  error_code: string | null;
+  raw_usage: Record<string, unknown>;
+  created_at: string;
+};
+
+export type GenerationReview = {
+  generation_id: string;
+  status: "approved" | "rejected";
+  score: number | null;
+  tags: string[];
+  note: string | null;
+  reviewed_by: string;
+  reviewed_at: string;
 };
 
 export type VoiceProfile = {

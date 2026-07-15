@@ -1,6 +1,10 @@
 import Link from "next/link";
 import { Sparkles, Lock } from "lucide-react";
-import { hasActiveAccess, trialDaysLeft } from "@/lib/plans";
+import {
+  hasActiveAccess,
+  isActiveSubscriptionStatus,
+  trialDaysLeft,
+} from "@/lib/plans";
 import type { Profile } from "@/lib/types";
 
 type Props = {
@@ -11,7 +15,7 @@ type Props = {
 // Souscrit → rien. Essai en cours → compte à rebours. Essai expiré → lecture
 // seule (les actions à crédits sont bloquées côté SQL), CTA vers /formules.
 export function TrialBanner({ profile }: Props) {
-  if (["active", "trialing", "past_due"].includes(profile.subscription_status ?? "")) return null;
+  if (isActiveSubscriptionStatus(profile.subscription_status)) return null;
 
   const active = hasActiveAccess(profile);
   const days = trialDaysLeft(profile);

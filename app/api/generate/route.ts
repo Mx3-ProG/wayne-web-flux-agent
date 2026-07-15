@@ -6,6 +6,7 @@ import { anthropic, buildPrompt, GENERATION_MODEL } from "@/lib/claude";
 import { getTool } from "@/lib/tools-config";
 import { rateLimit } from "@/lib/rate-limit";
 import { enforceKarlMada, KARLMADA_BLOCK_MESSAGE } from "@/lib/karlmada";
+import { loadAccountAccess } from "@/lib/account-status";
 import type { Service, VoiceProfile } from "@/lib/types";
 
 export const maxDuration = 120;
@@ -32,6 +33,13 @@ export async function POST(request: Request) {
 
   const tool = getTool(String(body.tool ?? ""));
   if (!tool) return NextResponse.json({ error: "unknown_tool" }, { status: 400 });
+
+  // La fenêtre IA est distincte du droit de publier : on la contrôle avant
+  // tout débit et sans modifier has_active_access côté SQL.
+  const account = await loadAccountAccess(user.id);
+  if (!account.aiAllowed) {
+    return NextResponse.json({ error: "ai_window_expired" }, { status: 402 });
+  }
 
   // Entrées : uniquement les champs déclarés par l'outil, longueur bornée.
   const inputs: Record<string, string> = {};

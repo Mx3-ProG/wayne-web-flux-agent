@@ -53,7 +53,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if ((path === "/login" || path === "/commencer") && user) {
+  // /commencer n'est PAS listé ici : le tunnel se joue désormais connecté (le
+  // compte est créé à son premier écran). La page gère elle-même les deux états
+  // — visiteur → création de compte, connecté → suite du Parcours — et renvoie
+  // vers /espace une fois le Parcours terminé.
+  if (path === "/login" && user) {
     const url = request.nextUrl.clone();
     url.pathname = "/espace";
     url.search = "";
