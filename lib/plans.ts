@@ -54,15 +54,19 @@ export const PLAN_LABEL: Record<Plan, string> = {
 // Ordre d'affichage sur la page pricing (/formules).
 export const FLUX_PLANS: Plan[] = ["basique", "pro", "business", "entreprise"];
 
-const PLAN_PRICE_ENV: Record<Plan, string> = {
-  basique: "STRIPE_PRICE_BASIQUE",
-  pro: "STRIPE_PRICE_PRO",
-  business: "STRIPE_PRICE_BUSINESS",
-  entreprise: "STRIPE_PRICE_ENTREPRISE",
+const PLAN_PRICE_ENV: Record<Plan, readonly string[]> = {
+  basique: ["STRIPE_PRICE_BASIQUE", "STRIPE_BASIQUE_FORFAIT"],
+  pro: ["STRIPE_PRICE_PRO", "STRIPE_PRO_FORFAIT"],
+  business: ["STRIPE_PRICE_BUSINESS", "STRIPE_BUSINESS_FORFAIT"],
+  entreprise: ["STRIPE_PRICE_ENTREPRISE", "STRIPE_ENTREPRISE_FORFAIT"],
 };
 
 export function stripePriceId(plan: Plan): string | null {
-  return process.env[PLAN_PRICE_ENV[plan]] || null;
+  for (const envName of PLAN_PRICE_ENV[plan]) {
+    const priceId = process.env[envName];
+    if (priceId) return priceId;
+  }
+  return null;
 }
 
 export function planFromStripePrice(priceId: string): Plan | null {

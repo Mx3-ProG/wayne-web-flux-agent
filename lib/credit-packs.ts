@@ -44,15 +44,20 @@ export function getPack(id: string): CreditPack | undefined {
   return CREDIT_PACKS.find((pack) => pack.id === id);
 }
 
-const PACK_PRICE_ENV: Record<string, string> = {
-  pack50: "STRIPE_PRICE_CREDITS_PACK50",
-  pack150: "STRIPE_PRICE_CREDITS_PACK150",
-  pack400: "STRIPE_PRICE_CREDITS_PACK400",
+const PACK_PRICE_ENV: Record<string, readonly string[]> = {
+  pack50: ["STRIPE_PRICE_CREDITS_PACK50", "STRIPE_50_CREDIT_FLUX"],
+  pack150: ["STRIPE_PRICE_CREDITS_PACK150", "STRIPE_150_CREDIT_FLUX"],
+  pack400: ["STRIPE_PRICE_CREDITS_PACK400", "STRIPE_400_CREDIT_FLUX"],
 };
 
 export function stripeCreditPriceId(packId: string): string | null {
-  const envName = PACK_PRICE_ENV[packId];
-  return envName ? process.env[envName] || null : null;
+  const envNames = PACK_PRICE_ENV[packId];
+  if (!envNames) return null;
+  for (const envName of envNames) {
+    const priceId = process.env[envName];
+    if (priceId) return priceId;
+  }
+  return null;
 }
 
 export function packUnitPrice(pack: CreditPack): string {
