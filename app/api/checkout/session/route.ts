@@ -52,14 +52,12 @@ export async function POST(request: Request) {
     // Stripe SDK v22 nomme le mode Custom Checkout `elements`.
     ui_mode: "elements" as const,
     customer: customerId,
-    // La collecte d'un numéro de TVA pour un Customer existant oblige Stripe
-    // à enregistrer le nom légal saisi. L'adresse sert aussi de source fiable
-    // si Stripe Tax est activé plus tard.
-    customer_update: { name: "auto" as const, address: "auto" as const },
+    // Enregistre l'adresse saisie sur le Customer et permet à Stripe Tax de
+    // l'utiliser si le calcul automatique est activé plus tard.
+    customer_update: { address: "auto" as const },
     client_reference_id: user.id,
     billing_address_collection: "required" as const,
     automatic_tax: { enabled: process.env.STRIPE_AUTOMATIC_TAX === "true" },
-    tax_id_collection: { enabled: true },
     return_url: `${site}/paiement/confirmation?session_id={CHECKOUT_SESSION_ID}`,
   };
 

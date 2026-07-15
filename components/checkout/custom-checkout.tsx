@@ -8,7 +8,6 @@ import {
   BillingAddressElement,
   CheckoutElementsProvider,
   PaymentElement,
-  TaxIdElement,
   useCheckoutElements,
 } from "@stripe/react-stripe-js/checkout";
 import { Check, LockKeyhole, ShieldCheck } from "lucide-react";
@@ -52,7 +51,6 @@ function PaymentForm({ product }: { product: CheckoutProduct }) {
   return (
     <form onSubmit={submit} className={styles.paymentForm}>
       <div className={styles.block}><h2>Informations de facturation</h2><BillingAddressElement options={{ display: { name: "split" } }} /></div>
-      <div className={styles.block}><h2>TVA professionnelle <small>facultatif</small></h2><TaxIdElement options={{ visibility: "auto", fields: { businessName: "auto" } }} /></div>
       <div className={styles.block}><h2>Moyen de paiement</h2><PaymentElement options={{ layout: { type: "accordion", defaultCollapsed: false }, terms: { card: "never" } }} /></div>
       <label className={styles.consent}>
         <input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} />
