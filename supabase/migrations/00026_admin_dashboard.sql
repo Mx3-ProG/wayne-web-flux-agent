@@ -420,19 +420,19 @@ as $$
     from public.pages p
     join (
       select page_id, coalesce(
-        nullif('p:' || regexp_replace(coalesce(phone, ''), '\\D', '', 'g'), 'p:'),
+        nullif('p:' || regexp_replace(coalesce(phone, ''), '[^0-9]', '', 'g'), 'p:'),
         nullif('e:' || lower(trim(coalesce(email, ''))), 'e:')
       ) as contact_key from public.customers
       union all
       select page_id, coalesce(
-        nullif('p:' || regexp_replace(coalesce(phone, ''), '\\D', '', 'g'), 'p:'),
+        nullif('p:' || regexp_replace(coalesce(phone, ''), '[^0-9]', '', 'g'), 'p:'),
         nullif('e:' || lower(trim(coalesce(email, ''))), 'e:')
       ) from public.bookings
       union all
       select page_id, nullif('e:' || lower(trim(email)), 'e:') from public.page_subscribers
       union all
       select page_id, coalesce(
-        nullif('p:' || regexp_replace(coalesce(phone, ''), '\\D', '', 'g'), 'p:'),
+        nullif('p:' || regexp_replace(coalesce(phone, ''), '[^0-9]', '', 'g'), 'p:'),
         nullif('e:' || lower(trim(coalesce(email, ''))), 'e:')
       ) from public.orders
     ) source on source.page_id = p.id
