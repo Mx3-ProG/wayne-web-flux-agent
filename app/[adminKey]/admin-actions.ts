@@ -55,6 +55,11 @@ export async function moderatePage(formData: FormData) {
     throw new Error("Un motif d’archivage est requis");
   }
   const admin = createAdminClient();
+  const { data: pageBefore } = await admin
+    .from("pages")
+    .select("slug")
+    .eq("id", pageId.data)
+    .maybeSingle();
   const { error } = await admin.rpc("admin_moderate_page", {
     actor: context.userId,
     target_page: pageId.data,
@@ -62,6 +67,7 @@ export async function moderatePage(formData: FormData) {
     moderation_reason: rawReason || null,
   });
   if (error) throw new Error(error.message.includes("page_not_published") ? "La boutique doit être publiée." : "Modération impossible.");
+  if (pageBefore?.slug) revalidatePath(`/p/${pageBefore.slug}`, "layout");
   revalidatePath(adminBasePath(), "layout");
 }
 
@@ -152,12 +158,15 @@ export async function inviteAdmin(
   const admin = createAdminClient();
   let authUser = await findAuthUserByEmail(email.data);
   let actionLink: string | null = null;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (!siteUrl) return { error: "NEXT_PUBLIC_SITE_URL est absent." };
+  const confirmUrl = `${siteUrl}/auth/confirm?next=${encodeURIComponent(adminBasePath())}`;
 
   if (!authUser) {
     const { data, error } = await admin.auth.admin.generateLink({
       type: "invite",
       email: email.data,
-      options: { redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}${adminBasePath()}` },
+      options: { redirectTo: confirmUrl },
     });
     if (error || !data.user) return { error: "Impossible de créer l’invitation Supabase." };
     authUser = data.user;
@@ -166,7 +175,7 @@ export async function inviteAdmin(
     const { data, error } = await admin.auth.admin.generateLink({
       type: "magiclink",
       email: email.data,
-      options: { redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}${adminBasePath()}` },
+      options: { redirectTo: confirmUrl },
     });
     if (!error) actionLink = data.properties.action_link;
   }
@@ -180,6 +189,19 @@ export async function inviteAdmin(
     activated_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   };
+  const { data: previousMembership } = await admin
+    .from("admin_memberships")
+    .select("role, status")
+    .eq("user_id", authUser.id)
+    .maybeSingle();
+  if (previousMembership?.role === "superadmin" && role.data !== "superadmin") {
+    const { count } = await admin
+      .from("admin_memberships")
+      .select("user_id", { count: "exact", head: true })
+      .eq("role", "superadmin")
+      .eq("status", "active");
+    if ((count ?? 0) <= 1) return { error: "Le dernier superadmin doit rester actif." };
+  }
   const { error: membershipError } = await admin
     .from("admin_memberships")
     .upsert(membership, { onConflict: "user_id" });
@@ -198,7 +220,7 @@ export async function inviteAdmin(
     ? await sendEmailWithResult({
         to: email.data,
         subject: "Invitation à l’administration FLUX",
-        html: `<p>Vous êtes invité à rejoindre l’administration FLUX.</p><p><a href="${actionLink}">Accepter l’invitation</a></p><p>La double authentification sera obligatoire à la première connexion.</p>`,
+        html: `<p>Vous êtes invité à rejoindre l’administration FLUX.</p><p><a href="${actionLink.replaceAll("&", "&amp;").replaceAll('"', "&quot;")}">Accepter l’invitation</a></p><p>La double authentification sera obligatoire à la première connexion.</p>`,
       })
     : false;
   await writeAdminAudit({
@@ -251,4 +273,3 @@ export async function updateAdminMembership(formData: FormData) {
   });
   revalidatePath(`${adminBasePath()}/equipe`);
 }
-

@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { endUserSession, startUserSession } from "@/lib/user-session";
 
 // La création de compte vit dans app/commencer/actions.ts (createAccount) : le
 // tunnel ouvre la session puis écrit la configuration étape par étape. L'ancien
@@ -67,8 +68,10 @@ export async function signIn(
   }
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) return { error: "Identifiants incorrects. Réessaie." };
+
+  if (data.user) await startUserSession(data.user.id);
 
   revalidatePath("/", "layout");
   redirect("/espace");
@@ -76,6 +79,8 @@ export async function signIn(
 
 export async function signOut() {
   const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (user) await endUserSession(user.id);
   await supabase.auth.signOut();
   revalidatePath("/", "layout");
   redirect("/login");

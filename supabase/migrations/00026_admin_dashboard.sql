@@ -234,6 +234,10 @@ begin
       verified_version = null
   where id = pid;
 
+  insert into public.activity_events (user_id, page_id, kind, source)
+  select user_id, id, 'site.published', 'database'
+  from public.pages where id = pid;
+
   return result;
 end;
 $$;
@@ -472,6 +476,9 @@ returns void
 language plpgsql security definer set search_path = public
 as $$
 begin
+  update public.user_sessions
+  set ended_at = last_seen_at + interval '15 minutes'
+  where ended_at is null and last_seen_at < now() - interval '15 minutes';
   delete from public.user_sessions where started_at < now() - interval '13 months';
   delete from public.activity_events where created_at < now() - interval '13 months';
   delete from public.ai_usage_events where created_at < now() - interval '13 months';
@@ -500,4 +507,5 @@ revoke all on public.generation_reviews from anon, authenticated;
 revoke execute on function public.admin_adjust_credit(uuid, uuid, int, text) from public, anon, authenticated;
 revoke execute on function public.admin_moderate_page(uuid, uuid, text, text) from public, anon, authenticated;
 revoke execute on function public.admin_list_users(uuid, text, int, int) from public, anon, authenticated;
+revoke execute on function public.admin_has_permission(uuid, text) from public, anon, authenticated;
 revoke execute on function public.purge_admin_telemetry() from public, anon, authenticated;

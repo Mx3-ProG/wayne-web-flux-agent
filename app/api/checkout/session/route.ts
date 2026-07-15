@@ -3,8 +3,11 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { getStripe } from "@/lib/stripe";
 import { getPack, stripeCreditPriceId } from "@/lib/credit-packs";
-import { FLUX_PLANS, stripePriceId } from "@/lib/plans";
-import { ACTIVE_SUBSCRIPTION_STATUSES } from "@/lib/billing";
+import {
+  FLUX_PLANS,
+  isActiveSubscriptionStatus,
+  stripePriceId,
+} from "@/lib/plans";
 import type { Plan, Profile } from "@/lib/types";
 
 const inputSchema = z.discriminatedUnion("kind", [
@@ -44,7 +47,7 @@ export async function POST(request: Request) {
   }
   if (
     parsed.data.kind === "subscription" &&
-    ACTIVE_SUBSCRIPTION_STATUSES.includes(profile?.subscription_status ?? "")
+    isActiveSubscriptionStatus(profile?.subscription_status)
   ) {
     return NextResponse.json({ error: "Un abonnement est déjà actif.", code: "already_subscribed" }, { status: 409 });
   }

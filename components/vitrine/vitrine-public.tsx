@@ -12,6 +12,7 @@ import { BookingModal } from "./booking-modal";
 import { OrderModal, type CartLine } from "./order-modal";
 import { VitrineTracker } from "./vitrine-tracker";
 import { resolveVitrineDesign } from "@/lib/vitrine-design/resolver";
+import styles from "./vitrine.module.css";
 
 type Props = {
   page: Page;
@@ -74,6 +75,11 @@ export function VitrinePublic({
 
   return (
     <>
+      {page.moderation_status === "verified" && (
+        <div className={styles.verifiedBadge} title="Cette version de la boutique a été contrôlée par FLUX.">
+          <span aria-hidden="true">✓</span> Boutique vérifiée
+        </div>
+      )}
       {/* Tracking uniquement sur la vraie vitrine publique, jamais en préview. */}
       <VitrineTracker slug={page.slug} pageId={page.id} />
       {sitePage ? (

@@ -8,6 +8,7 @@ import { rateLimit } from "@/lib/rate-limit";
 import { enforceKarlMada, KARLMADA_BLOCK_MESSAGE } from "@/lib/karlmada";
 import { loadAccountAccess } from "@/lib/account-status";
 import type { Service, VoiceProfile } from "@/lib/types";
+import { recordAiUsage } from "@/lib/ai-usage";
 
 export const maxDuration = 120;
 
@@ -108,9 +109,11 @@ export async function POST(request: Request) {
 
   const encoder = new TextEncoder();
   let fullText = "";
+  const aiStartedAt = Date.now();
 
   const stream = new ReadableStream({
     async start(controller) {
+      let usageRecorded = false;
       try {
         const messageStream = anthropic.messages.stream({
           model: GENERATION_MODEL,
@@ -126,18 +129,39 @@ export async function POST(request: Request) {
             fullText += event.delta.text;
           }
         }
+        const finalMessage = await messageStream.finalMessage();
         const outputModeration = await enforceKarlMada(fullText, {
           userId: user.id,
           pageId: page?.id,
           surface: `ai-tool:${tool.slug}:output`,
         });
         if (outputModeration.error) {
+          await recordAiUsage({
+            userId: user.id,
+            pageId: page?.id,
+            model: GENERATION_MODEL,
+            operation: `tool:${tool.slug}`,
+            usage: finalMessage.usage,
+            startedAt: aiStartedAt,
+            outcome: "blocked",
+          });
+          usageRecorded = true;
           controller.enqueue(encoder.encode(KARLMADA_BLOCK_MESSAGE));
           controller.close();
           return;
         }
 
         // Coffre-fort : le résultat reste accessible pour toujours.
+        const aiUsageEventId = await recordAiUsage({
+          userId: user.id,
+          pageId: page?.id,
+          model: GENERATION_MODEL,
+          operation: `tool:${tool.slug}`,
+          usage: finalMessage.usage,
+          startedAt: aiStartedAt,
+          outcome: "success",
+        });
+        usageRecorded = true;
         await admin.from("generations").insert({
           user_id: user.id,
           page_id: page?.id ?? null,
@@ -145,10 +169,22 @@ export async function POST(request: Request) {
           inputs,
           output: fullText,
           credits_spent: tool.cost,
+          ai_usage_event_id: aiUsageEventId,
         });
         controller.enqueue(encoder.encode(fullText));
         controller.close();
       } catch (err) {
+        if (!usageRecorded) {
+          await recordAiUsage({
+            userId: user.id,
+            pageId: page?.id,
+            model: GENERATION_MODEL,
+            operation: `tool:${tool.slug}`,
+            startedAt: aiStartedAt,
+            outcome: "error",
+            errorCode: "stream_failed",
+          });
+        }
         if (!fullText) {
           // Rien d'utilisable n'a été produit : on rembourse.
           await admin.from("credit_ledger").insert({

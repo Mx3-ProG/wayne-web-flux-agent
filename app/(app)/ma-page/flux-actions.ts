@@ -21,6 +21,7 @@ import { PREFILL_COST } from "@/lib/tools-config";
 import { SITE_GENERATE_COST } from "@/lib/plans";
 import type { PageColors, PageDraftFields, PageSeo, Service, VoiceProfile } from "@/lib/types";
 import { DESIGN_KIT_BY_ID, registryContext } from "@/lib/vitrine-design/registry";
+import { recordAiUsage } from "@/lib/ai-usage";
 
 export type FluxPrefillError =
   | "flux_requires_subscription"
@@ -75,6 +76,8 @@ export async function fluxPrefill(
   if (spend.error === "insufficient_credits") return { error: "insufficient_credits" };
   if (spend.error) return { error: "unknown" };
 
+  const aiStartedAt = Date.now();
+  let usageRecorded = false;
   try {
     // Contexte : prestations + profil de voix du projet.
     const [{ data: v }, { data: s }] = await Promise.all([
@@ -133,7 +136,14 @@ export async function fluxPrefill(
       pageId,
       surface: "flux-prefill:output",
     });
-    if (generatedModeration.error) return { error: "content_blocked" };
+    if (generatedModeration.error) {
+      await recordAiUsage({
+        userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-prefill",
+        usage: message.usage, startedAt: aiStartedAt, outcome: "blocked",
+      });
+      usageRecorded = true;
+      return { error: "content_blocked" };
+    }
 
     // Patch non destructif : uniquement les champs vides.
     const fields: Partial<PageDraftFields> = {};
@@ -161,6 +171,11 @@ export async function fluxPrefill(
     if (applied.error) throw new Error(applied.error);
 
     // Coffre-fort : trace de la génération.
+    const aiUsageEventId = await recordAiUsage({
+      userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-prefill",
+      usage: message.usage, startedAt: aiStartedAt, outcome: "success",
+    });
+    usageRecorded = true;
     const admin = createAdminClient();
     await admin.from("generations").insert({
       user_id: user.id,
@@ -169,11 +184,18 @@ export async function fluxPrefill(
       inputs: {},
       output: raw.text,
       credits_spent: PREFILL_COST,
+      ai_usage_event_id: aiUsageEventId,
     });
 
     revalidatePath("/ma-page");
     return {};
   } catch {
+    if (!usageRecorded) {
+      await recordAiUsage({
+        userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-prefill",
+        startedAt: aiStartedAt, outcome: "error", errorCode: "generation_failed",
+      });
+    }
     // Rien d'utilisable produit : on rembourse.
     await refundCredits(user.id, PREFILL_COST, "refund:flux-prefill");
     return { error: "generation_failed" };
@@ -241,6 +263,8 @@ export async function fluxGenerateSite(
   if (spend.error === "insufficient_credits") return { error: "insufficient_credits" };
   if (spend.error) return { error: "unknown" };
 
+  const aiStartedAt = Date.now();
+  let usageRecorded = false;
   try {
     const [{ data: v }, { data: s }] = await Promise.all([
       supabase
@@ -293,6 +317,11 @@ export async function fluxGenerateSite(
       surface: "flux-site:output",
     });
     if (moderation.error) {
+      await recordAiUsage({
+        userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-site",
+        usage: final.usage, startedAt: aiStartedAt, outcome: "blocked",
+      });
+      usageRecorded = true;
       await refundCredits(user.id, SITE_GENERATE_COST, "refund:flux-site");
       return { error: "content_blocked" };
     }
@@ -317,6 +346,11 @@ export async function fluxGenerateSite(
     const applied = await applyFluxPatch(supabase, pageId, { fields, sections });
     if (applied.error) throw new Error(applied.error);
 
+    const aiUsageEventId = await recordAiUsage({
+      userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-site",
+      usage: final.usage, startedAt: aiStartedAt, outcome: "success",
+    });
+    usageRecorded = true;
     const admin = createAdminClient();
     await admin.from("generations").insert({
       user_id: user.id,
@@ -325,11 +359,18 @@ export async function fluxGenerateSite(
       inputs: { brief: cleanBrief },
       output: raw.text,
       credits_spent: SITE_GENERATE_COST,
+      ai_usage_event_id: aiUsageEventId,
     });
 
     revalidatePath("/ma-page");
     return {};
   } catch {
+    if (!usageRecorded) {
+      await recordAiUsage({
+        userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-site",
+        startedAt: aiStartedAt, outcome: "error", errorCode: "generation_failed",
+      });
+    }
     await refundCredits(user.id, SITE_GENERATE_COST, "refund:flux-site");
     return { error: "generation_failed" };
   }

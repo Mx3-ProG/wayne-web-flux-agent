@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed:test-accounts": "node --env-file-if-exists=.env.local --experimental-strip-types scripts/seed-test-accounts.ts"
+    "seed:test-accounts": "node --env-file-if-exists=.env --env-file-if-exists=.env.local --experimental-strip-types scripts/seed-test-accounts.ts",
+    "check:test-account-access": "node --conditions=react-server --env-file-if-exists=.env --env-file-if-exists=.env.local --experimental-strip-types --import ./scripts/ts-alias-register.mjs scripts/check-test-account-access.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.110.0",

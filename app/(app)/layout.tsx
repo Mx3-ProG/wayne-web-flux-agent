@@ -12,8 +12,12 @@ import { EmailVerificationBanner } from "@/components/email-verification-banner"
 import { FluxBrand } from "@/components/flux-brand";
 import { CreditsLink } from "@/components/credits-link";
 import { AccountUpsellDialog } from "@/components/account-upsell-dialog";
-import { loadAccountAccess } from "@/lib/account-status";
+import {
+  isAccountUpsellDue,
+  loadAccountAccess,
+} from "@/lib/account-status";
 import type { Profile } from "@/lib/types";
+import { SessionTracker } from "@/components/session-tracker";
 
 export default async function AppLayout({
   children,
@@ -48,9 +52,7 @@ export default async function AppLayout({
 
   const upsellDue =
     !accountAccess.isSubscribed &&
-    (!trialProfile?.upsell_last_shown_at ||
-      new Date(trialProfile.upsell_last_shown_at).getTime() <=
-        Date.now() - 12 * 60 * 60 * 1000);
+    isAccountUpsellDue(trialProfile?.upsell_last_shown_at ?? null);
 
   // Projet actif + liste des projets (pour le switcher).
   const [activePageId, { data: pages }] = await Promise.all([
@@ -86,6 +88,7 @@ export default async function AppLayout({
 
   return (
     <div className={styles.shell}>
+      <SessionTracker />
       <AppBadgeSync pendingOrders={pendingOrders ?? 0} />
       <aside className={styles.sidebar}>
         <Link href="/espace" className={styles.brand}>

@@ -610,3 +610,30 @@
 .page[data-theme="prestige"] .sectionHeading h2 { font-weight: 450; letter-spacing: -.045em; }
 .page[data-theme="prestige"] .online { color: #d7d2ca; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
 .page[data-theme="prestige"] .footer { border-top: 1px solid rgb(197 164 109 / 30%); }
+.verifiedBadge {
+  position: fixed;
+  z-index: 1000;
+  top: 12px;
+  right: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, .28);
+  border-radius: 999px;
+  background: rgba(12, 31, 23, .9);
+  color: #b9f6d2;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, .2);
+  backdrop-filter: blur(10px);
+  font: 700 12px/1 system-ui, sans-serif;
+}
+
+.verifiedBadge span {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  border-radius: 50%;
+  background: #2f9f67;
+  color: white;
+}

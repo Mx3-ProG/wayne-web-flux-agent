@@ -21,6 +21,13 @@ export type AccountAccess = {
   aiExpiresAt: string | null;
 };
 
+export function isAccountUpsellDue(lastShownAt: string | null): boolean {
+  return (
+    !lastShownAt ||
+    new Date(lastShownAt).getTime() <= Date.now() - 12 * 60 * 60 * 1000
+  );
+}
+
 function addUtcMonths(isoDate: string, months: number): string {
   const source = new Date(isoDate);
   const day = source.getUTCDate();
@@ -88,7 +95,11 @@ export async function loadAccountAccess(userId: string): Promise<AccountAccess> 
     };
   }
 
+  // Un état Stripe inactif (canceled, unpaid…) ne doit jamais retomber sur
+  // l'essai, même si trial_ends_at est encore dans le futur. On ne consulte
+  // pas subscribed_at : subscription_status suffit et est maintenu à jour.
   const trialActive =
+    !profile?.subscription_status &&
     !!profile?.trial_ends_at &&
     new Date(profile.trial_ends_at).getTime() > Date.now();
   return {
