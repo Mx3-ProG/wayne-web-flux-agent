@@ -2,12 +2,14 @@
 
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
+import { withSpamHint } from "@/lib/email-hints";
 
 export type ResetState = { error?: string; message?: string };
 
 // Message neutre : on ne révèle jamais si un compte existe pour cet email.
-const NEUTRAL =
-  "Si un compte est associé à cet email, un lien de réinitialisation vient d’être envoyé.";
+const NEUTRAL = withSpamHint(
+  "Si un compte est associé à cet email, un lien de réinitialisation vient d’être envoyé."
+);
 
 export async function requestPasswordReset(
   _prev: ResetState,

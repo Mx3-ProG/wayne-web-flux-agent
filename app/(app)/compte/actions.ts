@@ -7,6 +7,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
 import { sendFriendInvite } from "@/lib/emails/account-emails";
+import { withSpamHint } from "@/lib/email-hints";
 
 type ActionState = { error?: string; message?: string };
 
@@ -63,8 +64,7 @@ export async function requestAccountPasswordReset(
 
   if (!rateLimit(`account-password-reset:${user.id}`, 3, 3_600_000)) {
     return {
-      message:
-        "Un email a déjà été envoyé. Vérifie ta boîte de réception et tes spams.",
+      message: withSpamHint("Un email a déjà été envoyé."),
     };
   }
 
@@ -76,8 +76,9 @@ export async function requestAccountPasswordReset(
   if (error) return { error: "Impossible d’envoyer l’email pour le moment." };
 
   return {
-    message:
-      "Email envoyé à ton adresse actuelle. Le lien est temporaire et à usage unique.",
+    message: withSpamHint(
+      "Email envoyé à ton adresse actuelle. Le lien est temporaire et à usage unique."
+    ),
   };
 }
 
@@ -118,8 +119,9 @@ export async function changeEmail(
   if (error) return { error: "Impossible de lancer le changement d’email." };
 
   return {
-    message:
-      "Demande envoyée. Ton adresse ne changera qu’après confirmation depuis ton adresse actuelle et la nouvelle.",
+    message: withSpamHint(
+      "Demande envoyée. Ton adresse ne changera qu’après confirmation depuis ton adresse actuelle et la nouvelle."
+    ),
   };
 }
 
@@ -143,7 +145,7 @@ export async function inviteFriend(
       console.error("account: invite email failed", e)
     )
   );
-  return { message: `Invitation envoyée à ${email}.` };
+  return { message: withSpamHint(`Invitation envoyée à ${email}.`, "other") };
 }
 
 export async function deleteAccount(

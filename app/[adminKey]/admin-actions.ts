@@ -7,6 +7,7 @@ import { ADMIN_PERMISSIONS, adminBasePath } from "@/lib/admin/config";
 import { writeAdminAudit } from "@/lib/admin/audit";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendEmailWithResult } from "@/lib/emails/send";
+import { withSpamHint } from "@/lib/email-hints";
 import type { AdminPermission, AdminRole } from "@/lib/types";
 
 export type AdminActionState = { error?: string; message?: string };
@@ -232,7 +233,7 @@ export async function inviteAdmin(
   });
   revalidatePath(`${adminBasePath()}/equipe`);
   return sent
-    ? { message: "Invitation envoyée." }
+    ? { message: withSpamHint("Invitation envoyée.", "other") }
     : { message: "Rôle créé, mais l’email n’a pas pu être envoyé." };
 }
 

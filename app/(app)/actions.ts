@@ -11,6 +11,7 @@ import {
 } from "@/lib/email-verification";
 import { sendEmailWithResult } from "@/lib/emails/send";
 import { emailVerificationEmail } from "@/lib/emails/auth-templates";
+import { withSpamHint } from "@/lib/email-hints";
 
 /**
  * Renvoie le lien de vérification d'adresse (bandeau du dashboard).
@@ -65,7 +66,7 @@ export async function resendVerificationEmail(): Promise<{
   if (!sent) return { error: "L'email n'est pas parti. Réessaie dans un instant." };
 
   revalidatePath("/", "layout");
-  return { message: "Email envoyé. Regarde ta boîte de réception." };
+  return { message: withSpamHint("Email envoyé. Regarde ta boîte de réception.") };
 }
 
 /** Ferme la session de l'utilisateur sur cet appareil. */
