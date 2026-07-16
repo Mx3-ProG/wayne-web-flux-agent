@@ -1,12 +1,11 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePageId } from "@/lib/active-project";
 import styles from "./app-shell.module.css";
-import { AppNavigation } from "@/components/app-navigation";
+import { MobileBottomNavigation } from "@/components/app-navigation";
 import { MobileAppMenu } from "@/components/mobile-app-menu";
+import { DesktopAppNavigation } from "@/components/desktop-app-navigation";
 import { AppBadgeSync } from "@/components/app-badge-sync";
-import { ProjectSwitcher } from "@/components/project-switcher";
 import { TrialBanner } from "@/components/trial-banner";
 import { EmailVerificationBanner } from "@/components/email-verification-banner";
 import { FluxBrand } from "@/components/flux-brand";
@@ -90,24 +89,21 @@ export default async function AppLayout({
     <div className={styles.shell}>
       <SessionTracker />
       <AppBadgeSync pendingOrders={pendingOrders ?? 0} />
-      <aside className={styles.sidebar}>
-        <Link href="/espace" className={styles.brand}>
-          <FluxBrand />
-        </Link>
-        {projects.length > 0 && (
-          <div className={styles.switcher}>
-            <ProjectSwitcher projects={projects} activeId={activePageId} />
-          </div>
-        )}
-        <AppNavigation pendingOrders={pendingOrders} lowStock={lowStock} />
-        <p className={styles.sidebarHint}>Ton commerce.<br />Un seul espace.<br /><small>KarlMada protège FLUX des contenus illicites.</small></p>
-      </aside>
       <header className={styles.header}>
         <div className={styles.headerInner}>
+          <div className={styles.desktopHeaderContent}>
+            <DesktopAppNavigation
+              balance={balance ?? 0}
+              pendingOrders={pendingOrders}
+              lowStock={lowStock}
+              projects={projects}
+              activeProjectId={activePageId}
+            />
+          </div>
           <div className={styles.mobileBrand}>
             <FluxBrand markOnly />
           </div>
-          <div className={styles.actions}>
+          <div className={styles.mobileActions}>
             <CreditsLink balance={balance ?? 0} className={styles.credits} />
             <MobileAppMenu
               balance={balance ?? 0}
@@ -127,7 +123,7 @@ export default async function AppLayout({
         )}
         {children}
       </main>
-      <AppNavigation mobile pendingOrders={pendingOrders} lowStock={lowStock} />
+      <MobileBottomNavigation pendingOrders={pendingOrders} lowStock={lowStock} />
     </div>
   );
 }

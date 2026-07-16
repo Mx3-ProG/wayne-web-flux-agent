@@ -78,6 +78,16 @@ export function MobileAppMenu({
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
+    const desktopQuery = window.matchMedia("(min-width: 980px)");
+    const closeOnDesktop = (event: MediaQueryListEvent) => {
+      if (event.matches) setOpen(false);
+    };
+
+    desktopQuery.addEventListener("change", closeOnDesktop);
+    return () => desktopQuery.removeEventListener("change", closeOnDesktop);
+  }, []);
+
+  useEffect(() => {
     if (!open) return;
 
     const previousOverflow = document.body.style.overflow;
