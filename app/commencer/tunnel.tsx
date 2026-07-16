@@ -4,6 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getVertical, type VerticalKind } from "@/lib/verticals";
+import { DESIGN_KIT_BY_ID } from "@/lib/vitrine-design/registry";
 import { JOURNEY_STEPS, type JourneyChapterId, type JourneyStepState } from "@/lib/journey";
 import type { TunnelDraft } from "@/lib/types";
 import { completeJourneyStep } from "@/app/(app)/espace/actions";
@@ -13,7 +14,9 @@ import {
   tunnelCreateCatalog,
   tunnelCreateOffer,
   tunnelCreatePage,
+  tunnelSaveDesign,
   tunnelSaveSchedules,
+  tunnelSaveTheme,
   tunnelSaveVoice,
 } from "./actions";
 import { TunnelShell } from "@/components/tunnel/tunnel-shell";
@@ -29,6 +32,10 @@ import { StepOffer, type OfferState } from "@/components/tunnel/steps/step-offer
 import { StepAgenda } from "@/components/tunnel/steps/step-agenda";
 import { StepContent } from "@/components/tunnel/steps/step-content";
 import { StepResults } from "@/components/tunnel/steps/step-results";
+import { StepStyle } from "@/components/tunnel/steps/step-style";
+import { StepImages } from "@/components/tunnel/steps/step-images";
+import { StepDetails, type DetailsState } from "@/components/tunnel/steps/step-details";
+import { StepPublish } from "@/components/tunnel/steps/step-publish";
 import { StepShare } from "@/components/tunnel/steps/step-share";
 import styles from "./tunnel.module.css";
 
@@ -49,8 +56,15 @@ const SCREEN = {
   whyChapter3: 12,
   content: 13,
   results: 14,
-  share: 15,
-  doneChapter3: 16,
+  // Reprise des écrans design de l'assistant vitrine (/ma-page) : ambiance,
+  // images, détails, mise en ligne. L'écran « identité » de l'assistant n'est
+  // volontairement PAS repris — le tunnel le demande déjà à l'écran 4.
+  style: 15,
+  images: 16,
+  details: 17,
+  publish: 18,
+  share: 19,
+  doneChapter3: 20,
 } as const;
 
 const FIRST_SCREEN = SCREEN.whyChapter1;
@@ -68,6 +82,10 @@ const FOOTER_SCREENS: number[] = [
   SCREEN.agenda,
   SCREEN.content,
   SCREEN.results,
+  SCREEN.style,
+  SCREEN.images,
+  SCREEN.details,
+  SCREEN.publish,
   SCREEN.share,
 ];
 
@@ -86,10 +104,34 @@ const PREVIEW_SCREENS: number[] = [
   SCREEN.catalog,
   SCREEN.offer,
   SCREEN.agenda,
+  // Régler un design sans le voir s'appliquer n'aurait aucun sens : les écrans
+  // repris de l'assistant vitrine rouvrent donc la seconde colonne, jusqu'à la
+  // mise en ligne — le dernier moment où l'on montre ce qu'on publie.
+  SCREEN.style,
+  SCREEN.images,
+  SCREEN.details,
+  SCREEN.publish,
 ];
 
 type Props = {
   firstName: string;
+  // Adresse du compte : le pop-up de vérification a besoin de la nommer et d'en
+  // déduire le webmail à ouvrir.
+  email: string;
+  userId: string;
+  // Null tant que l'écran « identité » n'a pas créé la vitrine. Les écrans
+  // design reprennent l'état réel de la page, pas des valeurs par défaut : on y
+  // revient après un aller-retour dans l'éditeur sans perdre ses réglages.
+  page: {
+    logoUrl: string;
+    heroUrl: string;
+    font: string;
+    primary: string;
+    dark: string;
+    phone: string;
+    address: string;
+    published: boolean;
+  } | null;
   draft: TunnelDraft;
   cursor: number;
   trialDays: number;
@@ -124,6 +166,16 @@ export function Tunnel(props: Props) {
   const [jobTitle, setJobTitle] = useState(props.draft.jobTitle ?? "");
   const [city, setCity] = useState(props.draft.city ?? "");
   const [tone, setTone] = useState(props.draft.tone ?? "");
+  const [theme, setTheme] = useState(props.draft.theme ?? "");
+  const [logoUrl, setLogoUrl] = useState(props.page?.logoUrl ?? "");
+  const [heroUrl, setHeroUrl] = useState(props.page?.heroUrl ?? "");
+  const [details, setDetails] = useState<DetailsState>({
+    font: props.page?.font ?? "fraunces",
+    primary: props.page?.primary ?? "",
+    dark: props.page?.dark ?? "",
+    phone: props.page?.phone ?? "",
+    address: props.page?.address ?? "",
+  });
   const [catalog, setCatalog] = useState<CatalogState>({
     categoryName: "",
     productName: "",
@@ -148,6 +200,7 @@ export function Tunnel(props: Props) {
 
   const preview: PreviewState = {
     vertical,
+    theme,
     businessName,
     jobTitle,
     city,
@@ -160,6 +213,11 @@ export function Tunnel(props: Props) {
     days: hasAgenda ? days : [],
     openingTime,
     closingTime,
+    logoUrl,
+    heroUrl,
+    font: details.font,
+    primary: details.primary,
+    dark: details.dark,
   };
 
   const chapter: JourneyChapterId =
@@ -188,8 +246,9 @@ export function Tunnel(props: Props) {
     if (screen === SCREEN.offer)
       return Boolean(offer.offerTitle.trim() && offer.offerPrice.trim() !== "");
     if (screen === SCREEN.agenda) return days.length > 0 && openingTime < closingTime;
+    if (screen === SCREEN.style) return Boolean(theme);
     return true;
-  }, [screen, vertical, goals, businessName, jobTitle, city, tone, catalog, offer, days, openingTime, closingTime]);
+  }, [screen, vertical, goals, businessName, jobTitle, city, tone, catalog, offer, days, openingTime, closingTime, theme]);
 
   function goTo(next: number) {
     setError("");
@@ -243,6 +302,12 @@ export function Tunnel(props: Props) {
         result = await tunnelSaveSchedules({ days, openingTime, closingTime });
       } else if (screen === SCREEN.results) {
         await completeJourneyStep(7);
+      } else if (screen === SCREEN.style) {
+        result = await tunnelSaveTheme(theme);
+      } else if (screen === SCREEN.images) {
+        result = await tunnelSaveDesign({ logoUrl, heroUrl });
+      } else if (screen === SCREEN.details) {
+        result = await tunnelSaveDesign(details);
       } else if (screen === SCREEN.share) {
         await completeJourneyStep(8);
       }
@@ -255,7 +320,7 @@ export function Tunnel(props: Props) {
       // Les écrans sans écriture métier (verticale, objectifs) posent quand même
       // leur brouillon : ces réponses n'ont pas encore de ligne en base.
       await saveTunnelDraft(
-        { vertical, goals, businessName, jobTitle, city, tone },
+        { vertical, goals, businessName, jobTitle, city, tone, theme },
         target
       );
 
@@ -294,10 +359,19 @@ export function Tunnel(props: Props) {
               <StepVertical
                 value={vertical}
                 onChange={(slug) => {
-                  setVertical(slug);
                   // Le métier le plus courant de la verticale, pré-rempli : une
                   // suggestion, pas une contrainte — l'écran suivant l'édite.
-                  if (!jobTitle.trim()) setJobTitle(getVertical(slug).jobTitles[0]);
+                  //
+                  // Une suggestion doit suivre la verticale : rester sur
+                  // « Esthéticienne » après un passage sur Mode faisait mentir
+                  // l'aperçu. On ne remplace donc que ce que l'utilisateur n'a
+                  // pas écrit lui-même — un métier absent des listes (« Artisan
+                  // fleuriste ») survit à tous les changements d'univers.
+                  const previous = vertical ? getVertical(vertical) : null;
+                  const wasSuggested =
+                    !jobTitle.trim() || (previous?.jobTitles.includes(jobTitle) ?? false);
+                  setVertical(slug);
+                  if (wasSuggested) setJobTitle(getVertical(slug).jobTitles[0]);
                 }}
               />
             )}
@@ -317,6 +391,7 @@ export function Tunnel(props: Props) {
 
             {screen === SCREEN.identity && (
               <StepIdentity
+                vertical={vertical}
                 businessName={businessName}
                 jobTitle={jobTitle}
                 city={city}
@@ -403,6 +478,56 @@ export function Tunnel(props: Props) {
                 generationCount={props.generationCount}
                 upcomingBookings={props.upcomingBookings}
                 gain={gainOf(7)}
+              />
+            )}
+
+            {screen === SCREEN.style && (
+              <StepStyle
+                value={theme}
+                onChange={(kitId) => {
+                  setTheme(kitId);
+                  // Le kit repose les couleurs ET la police (designKitPatch les
+                  // écrit toutes les trois). Sans cette remise à niveau, l'écran
+                  // « détails » renverrait les anciennes valeurs et effacerait
+                  // le style qu'on vient de choisir.
+                  const kit = DESIGN_KIT_BY_ID.get(kitId);
+                  if (kit) {
+                    setDetails((current) => ({
+                      ...current,
+                      font: kit.defaults.font,
+                      primary: kit.defaults.colors.primary,
+                      dark: kit.defaults.colors.dark,
+                    }));
+                  }
+                }}
+              />
+            )}
+
+            {screen === SCREEN.images && (
+              <StepImages
+                userId={props.userId}
+                logoUrl={logoUrl}
+                heroUrl={heroUrl}
+                onChange={(patch) => {
+                  if (patch.logoUrl !== undefined) setLogoUrl(patch.logoUrl);
+                  if (patch.heroUrl !== undefined) setHeroUrl(patch.heroUrl);
+                }}
+              />
+            )}
+
+            {screen === SCREEN.details && (
+              <StepDetails
+                state={details}
+                onChange={(patch) => setDetails((current) => ({ ...current, ...patch }))}
+              />
+            )}
+
+            {screen === SCREEN.publish && (
+              <StepPublish
+                email={props.email}
+                balance={props.balance}
+                published={props.page?.published ?? false}
+                onPublished={() => router.refresh()}
               />
             )}
 

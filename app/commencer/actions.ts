@@ -4,16 +4,23 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { createPage } from "@/app/(app)/ma-page/actions";
+import {
+  createPage,
+  publishPage,
+  savePageFields,
+  type PublishError,
+} from "@/app/(app)/ma-page/actions";
 import { saveVoiceProfile } from "@/app/(app)/contexte/actions";
 import { saveSchedules } from "@/app/(app)/agenda/actions";
 import { getActivePage } from "@/lib/active-project";
-import { getVertical } from "@/lib/verticals";
+import { getFont, getVertical } from "@/lib/verticals";
+import { DESIGN_KIT_BY_ID } from "@/lib/vitrine-design/registry";
+import { designKitPatch } from "@/lib/vitrine-design/resolver";
 import { enforceKarlMada } from "@/lib/karlmada";
 import { sendEmailWithResult } from "@/lib/emails/send";
 import { emailVerificationEmail } from "@/lib/emails/auth-templates";
 import { createVerificationToken, verificationUrl } from "@/lib/email-verification";
-import type { TimeRange, TunnelDraft } from "@/lib/types";
+import type { PageDraftFields, TimeRange, TunnelDraft } from "@/lib/types";
 
 // Actions du tunnel /commencer.
 //
@@ -335,6 +342,85 @@ export async function tunnelSaveSchedules(input: {
         : [],
     }))
   );
+}
+
+// --------------------------------------------------------------- style
+
+// « Choisis ton style » : applique un kit de la bibliothèque de design à la
+// vitrine. Passe par savePageFields (gratuite, c'est le chemin de l'éditeur) —
+// le style atterrit donc dans le brouillon, comme les écritures des écrans
+// précédents, et part en ligne à la première publication.
+export async function tunnelSaveTheme(kitId: string): Promise<{ error?: string }> {
+  const { supabase, user } = await currentUser();
+  if (!user) return { error: "Non connecté." };
+  const page = await getActivePage(supabase, user.id);
+  if (!page) return { error: "Crée d'abord ta vitrine." };
+
+  // designKitPatch retombe silencieusement sur un kit par défaut si l'id est
+  // inconnu : on refuse explicitement plutôt que d'appliquer autre chose que ce
+  // que l'utilisateur a cliqué.
+  if (!DESIGN_KIT_BY_ID.has(kitId)) return { error: "Style inconnu." };
+
+  return savePageFields(page.id, designKitPatch(kitId, page));
+}
+
+// Écrans « images » et « détails », repris de l'assistant vitrine (/ma-page).
+// L'assistant, lui, facture VITRINE_ASSIST_COST à la confirmation : ici on passe
+// par savePageFields (gratuite), conformément à la règle « le Parcours est
+// offert » du haut de ce fichier.
+//
+// L'entrée est une liste blanche explicite plutôt qu'un Partial<PageDraftFields>
+// ouvert : cette action est appelée depuis le tunnel, elle n'a aucune raison de
+// pouvoir écrire `sections`, `legal` ou `hide_branding`.
+export async function tunnelSaveDesign(input: {
+  logoUrl?: string | null;
+  heroUrl?: string | null;
+  font?: string;
+  primary?: string;
+  dark?: string;
+  phone?: string;
+  address?: string;
+}): Promise<{ error?: string }> {
+  const { supabase, user } = await currentUser();
+  if (!user) return { error: "Non connecté." };
+  const page = await getActivePage(supabase, user.id);
+  if (!page) return { error: "Crée d'abord ta vitrine." };
+
+  const fields: Partial<PageDraftFields> = {};
+  if (input.logoUrl !== undefined) fields.logo_url = input.logoUrl || null;
+  if (input.heroUrl !== undefined) fields.hero_url = input.heroUrl || null;
+  if (input.font) fields.font = getFont(input.font).id;
+  if (input.phone !== undefined) fields.phone = input.phone.trim().slice(0, 30);
+  if (input.address !== undefined) fields.address = input.address.trim().slice(0, 120);
+  // Les couleurs sont un jsonb complet : les fusionner avec celles déjà posées
+  // par le kit, sinon choisir une couleur principale effacerait le reste.
+  if (input.primary || input.dark) {
+    fields.colors = {
+      ...page.colors,
+      ...(input.primary ? { primary: input.primary } : {}),
+      ...(input.dark ? { dark: input.dark } : {}),
+    };
+  }
+
+  if (Object.keys(fields).length === 0) return {};
+  return savePageFields(page.id, fields);
+}
+
+// --------------------------------------------------------------- publication
+
+// Publier depuis le tunnel. Le coût (PUBLISH_COST) et le verrou email vivent
+// dans le RPC publish_page : cette action ne fait que résoudre le projet actif,
+// elle ne rejoue aucune de ces règles.
+export async function tunnelPublish(): Promise<{
+  error?: PublishError;
+  balance?: number;
+}> {
+  const { supabase, user } = await currentUser();
+  if (!user) return { error: "unknown" };
+  const page = await getActivePage(supabase, user.id);
+  if (!page) return { error: "unknown" };
+
+  return publishPage(page.id);
 }
 
 // ----------------------------------------------------------------- sortie

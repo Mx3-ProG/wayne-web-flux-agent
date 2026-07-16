@@ -35,6 +35,8 @@ export type TunnelDraft = {
   jobTitle?: string;
   city?: string;
   tone?: string;
+  // Kit de design choisi à l'écran « Choisis ton style » (lib/vitrine-design).
+  theme?: string;
 };
 
 // profiles.email_verify_token_hash n'est volontairement pas exposé ici : c'est
