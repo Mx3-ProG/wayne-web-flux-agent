@@ -2,7 +2,8 @@ import "server-only";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // Erreurs typées renvoyées par spend_credits (SQL, migration 00018) :
-// - subscription_required : essai 7 jours expiré sans souscription
+// - subscription_required : essai expiré, sans souscription ET sans crédits
+//   (depuis 00031, un solde restant suffit à autoriser le débit)
 // - insufficient_credits : solde insuffisant
 export type CreditError =
   | "insufficient_credits"

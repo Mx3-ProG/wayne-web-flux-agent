@@ -2,8 +2,11 @@
 // dégressifs dans lib/credit-packs.ts).
 // Plus de palier gratuit : 4 formules payantes avec un essai de 7 jours
 // automatique à l'inscription (les 100 crédits de bienvenue servent de
-// carburant d'essai). Essai expiré sans souscription = lecture seule (le site
-// reste en ligne, les actions à crédits sont bloquées côté SQL).
+// carburant d'essai). Essai expiré sans souscription : le site reste en ligne
+// et les crédits restants continuent de payer les actions non-IA (publier,
+// offres, produits, réservations, contexte). Les générations IA, elles,
+// demandent une formule ou un pack dans sa fenêtre de 6 mois. Solde à zéro =
+// lecture seule (bloqué côté SQL).
 // Stripe est l'autorité de facturation. Les valeurs ci-dessous sont l'autorité
 // produit côté application et doivent correspondre aux Prices récurrents Stripe.
 
@@ -85,9 +88,12 @@ export function planFromStripePrice(priceId: string): Plan | null {
   return FLUX_PLANS.find((plan) => stripePriceId(plan) === priceId) ?? null;
 }
 
-// Accès actif = essai en cours ou souscription posée. Miroir TS de la
-// fonction SQL has_active_access (qui reste la seule autorité pour bloquer
-// les débits) — celui-ci ne sert qu'à l'affichage.
+// Essai en cours ou souscription posée — sert à l'affichage uniquement.
+// Ce n'est PAS le miroir du droit de dépenser : la fonction SQL
+// has_active_access (migration 00031, seule autorité) autorise en plus tout
+// compte dont le solde est > 0. Un essai expiré avec des crédits continue donc
+// de payer les actions non-IA, d'où les appelants qui croisent cette fonction
+// avec le solde (voir components/trial-banner.tsx).
 export function hasActiveAccess(
   profile: Pick<Profile, "trial_ends_at" | "subscription_status">
 ): boolean {

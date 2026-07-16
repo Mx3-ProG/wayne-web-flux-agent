@@ -304,7 +304,7 @@ function creditsErrorMessage(error: string, cost: number): string | null {
     return `Cette action coûte ${cost} crédit${cost > 1 ? "s" : ""} et ton solde est insuffisant. Recharge tes crédits depuis la page Crédits.`;
   }
   if (error === "subscription_required") {
-    return "Ton essai FLUX est terminé. Choisis une formule pour continuer.";
+    return "Ton essai FLUX est terminé et ton solde est vide. Choisis une formule pour continuer.";
   }
   return null;
 }

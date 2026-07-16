@@ -197,12 +197,12 @@ export function ProductTunnel({ userId, balance }: { userId: string; balance: nu
           <DialogHeader>
             <DialogTitle>
               {creditsDialog === "subscription_required"
-                ? "Ton essai est terminé"
+                ? "Essai terminé et solde vide"
                 : "Plus assez de crédits"}
             </DialogTitle>
             <DialogDescription>
               {creditsDialog === "subscription_required"
-                ? "Tes 7 jours d'essai FLUX sont passés. Choisis une formule pour continuer à créer des produits."
+                ? "Ton essai est passé et il ne te reste plus de crédits. Une formule FLUX recharge ton solde chaque mois et rouvre les générations IA — rien n'est perdu."
                 : `Créer tes produits coûte ${PRODUCT_CREATE_COST} crédits. Recharge tes crédits pour finaliser — rien n'est perdu.`}
             </DialogDescription>
           </DialogHeader>

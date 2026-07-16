@@ -106,11 +106,12 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion, redirect
         {trialOver ? (
           <>
             <DialogHeader>
-              <DialogTitle>Ton essai est terminé</DialogTitle>
+              <DialogTitle>Essai terminé et solde vide</DialogTitle>
               <DialogDescription>
-                Tes 7 jours d&apos;essai FLUX sont passés. Ton site reste en
-                ligne et ton brouillon est bien conservé — choisis une formule
-                pour continuer à publier, générer et personnaliser.
+                Ton essai est passé et il ne te reste plus de crédits. Ton site
+                reste en ligne et ton brouillon est bien conservé — une formule
+                FLUX recharge ton solde chaque mois pour publier, générer et
+                personnaliser.
               </DialogDescription>
             </DialogHeader>
             <DialogFooter>

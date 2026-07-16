@@ -117,9 +117,14 @@ export default async function AppLayout({
         {trialProfile && !trialProfile.email_verified_at && (
           <EmailVerificationBanner />
         )}
-        {trialProfile && <TrialBanner profile={trialProfile} />}
+        {trialProfile && (
+          <TrialBanner profile={trialProfile} balance={balance ?? 0} />
+        )}
         {upsellDue && accountAccess.status !== "subscribed" && (
-          <AccountUpsellDialog status={accountAccess.status} />
+          <AccountUpsellDialog
+            status={accountAccess.status}
+            balance={balance ?? 0}
+          />
         )}
         {children}
       </main>

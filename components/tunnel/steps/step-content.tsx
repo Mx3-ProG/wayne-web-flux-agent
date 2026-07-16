@@ -60,8 +60,14 @@ export function StepContent({
         // sont des situations normales, pas des bugs.
         if (body?.error === "insufficient_credits") {
           setError("Il te manque des crédits pour cette génération.");
+        } else if (body?.error === "ai_window_expired") {
+          setError(
+            "Ton essai est terminé : tes crédits continuent de payer tes modifications, mais les générations IA demandent une formule FLUX."
+          );
         } else if (body?.error === "subscription_required") {
-          setError("Ton essai est terminé. Choisis une formule pour continuer.");
+          setError(
+            "Ton essai est terminé et ton solde est vide. Choisis une formule pour continuer."
+          );
         } else if (body?.error === "content_blocked") {
           setError("Ce sujet ne passe pas la modération. Reformule-le.");
         } else {

@@ -27,7 +27,7 @@ const COPY: Record<
   trial_expired: {
     title: "Réactive ton élan avec FLUX",
     description:
-      "Ton essai est terminé. Ton site reste accessible : choisis une formule pour reprendre les générations IA et continuer à le faire évoluer.",
+      "Ton essai est terminé et ton solde est vide. Ton site reste en ligne : une formule relance les modifications, les publications et les générations IA.",
   },
   credits_active: {
     title: "Passe d’un pack ponctuel à un rythme régulier",
@@ -41,14 +41,27 @@ const COPY: Record<
   },
 };
 
+// Essai expiré avec des crédits au compteur : les modifications continuent, ce
+// n'est donc pas la même promesse que le solde vide traité dans COPY.
+const TRIAL_EXPIRED_WITH_CREDITS = {
+  title: "Tes crédits tiennent, l’IA t’attend",
+  description:
+    "Ton essai est terminé, mais tes crédits restants continuent de payer tes modifications et tes publications. Une formule rouvre les générations IA et recharge ton solde chaque mois.",
+};
+
 export function AccountUpsellDialog({
   status,
+  balance,
 }: {
   status: Exclude<AccountStatus, "subscribed">;
+  balance: number;
 }) {
   const [open, setOpen] = useState(true);
   const timestamped = useRef(false);
-  const copy = COPY[status];
+  const copy =
+    status === "trial_expired" && balance > 0
+      ? TRIAL_EXPIRED_WITH_CREDITS
+      : COPY[status];
 
   useEffect(() => {
     if (timestamped.current) return;

@@ -57,7 +57,7 @@ export function VoiceForm({
       }
       if (result.error === "subscription_required") {
         toast.error(
-          "Ton essai FLUX est terminé. Choisis une formule pour continuer."
+          "Ton essai FLUX est terminé et ton solde est vide. Choisis une formule pour continuer."
         );
         return;
       }

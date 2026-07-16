@@ -378,12 +378,12 @@ export function OffersManager({
           <DialogHeader>
             <DialogTitle>
               {creditsDialog === "subscription_required"
-                ? "Ton essai est terminé"
+                ? "Essai terminé et solde vide"
                 : "Plus assez de crédits"}
             </DialogTitle>
             <DialogDescription>
               {creditsDialog === "subscription_required"
-                ? "Tes 7 jours d'essai FLUX sont passés. Choisis une formule pour continuer à créer des offres."
+                ? "Ton essai est passé et il ne te reste plus de crédits. Une formule FLUX recharge ton solde chaque mois et rouvre les générations IA."
                 : `Créer une offre coûte ${createCost} crédits et il t'en reste ${balance}. Recharge tes crédits pour continuer.`}
             </DialogDescription>
           </DialogHeader>
