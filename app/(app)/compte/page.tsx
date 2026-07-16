@@ -11,6 +11,7 @@ import {
 } from "@/lib/plans";
 import type { Plan, Profile } from "@/lib/types";
 import { logout } from "@/app/(app)/actions";
+import { healMissingProfile } from "@/lib/profile-heal";
 import { DeleteAccountForm, ProfileForm } from "@/components/account/profile-settings";
 import { PasswordForm } from "@/components/account/password-form";
 import {
@@ -38,7 +39,7 @@ export default async function ComptePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: profile }, { data: balance }, { count: projectCount }] = await Promise.all([
+  const [profileResult, topupResult, { count: projectCount }] = await Promise.all([
     supabase.from("profiles").select("*").eq("user_id", user.id).single<Profile>(),
     supabase.rpc("apply_plan_topup", { uid: user.id }),
     supabase
@@ -46,7 +47,35 @@ export default async function ComptePage() {
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id),
   ]);
-  if (!profile) redirect("/login");
+  let { data: profile, error: profileError } = profileResult;
+  let balance = topupResult.data;
+
+  // Profil manquant (ligne supprimée hors de l'app) : on le recrée à la volée
+  // (lib/profile-heal.ts) puis on relit. Le layout fait pareil, mais layout et
+  // page s'exécutent en parallèle — cette page ne peut pas compter sur lui.
+  if (!profile) {
+    await healMissingProfile(supabase, user);
+    [{ data: profile, error: profileError }, { data: balance }] = await Promise.all([
+      supabase.from("profiles").select("*").eq("user_id", user.id).single<Profile>(),
+      supabase.rpc("apply_plan_topup", { uid: user.id }),
+    ]);
+  }
+
+  // NE PAS renvoyer un utilisateur CONNECTÉ vers /login : proxy.ts le renvoie
+  // aussitôt sur /espace, si bien que le clic sur « Mon profil » ne faisait
+  // rien du tout — deux redirections, aucun message, et la vraie erreur perdue.
+  //
+  // Ici, la réparation a déjà été tentée : on lève l'erreur (app/error.tsx)
+  // après avoir journalisé la cause, au lieu de boucler en silence.
+  if (profileError || !profile) {
+    console.error("compte: profil illisible", {
+      userId: user.id,
+      code: profileError?.code,
+      message: profileError?.message,
+      details: profileError?.details,
+    });
+    throw new Error("Profil introuvable pour cet utilisateur.");
+  }
 
   const plan = (profile.plan ?? "basique") as Plan;
   const subscribed = isActiveSubscriptionStatus(profile.subscription_status);

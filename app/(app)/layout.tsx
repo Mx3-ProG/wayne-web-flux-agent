@@ -15,6 +15,7 @@ import {
   isAccountUpsellDue,
   loadAccountAccess,
 } from "@/lib/account-status";
+import { healMissingProfile } from "@/lib/profile-heal";
 import type { Profile } from "@/lib/types";
 import { SessionTracker } from "@/components/session-tracker";
 
@@ -31,7 +32,7 @@ export default async function AppLayout({
 
   // Recharge paresseuse selon la formule + solde à jour, affiché dans le
   // header. L'état d'essai alimente la bannière sous le header.
-  const [{ data: balance }, { data: trialProfile }, accountAccess] = await Promise.all([
+  const [topupResult, profileResult, accountAccess] = await Promise.all([
     supabase.rpc("apply_plan_topup", { uid: user.id }),
     supabase
       .from("profiles")
@@ -48,6 +49,31 @@ export default async function AppLayout({
       >(),
     loadAccountAccess(user.id),
   ]);
+  let balance = topupResult.data;
+  let trialProfile = profileResult.data;
+
+  // Session valide mais profil absent : la ligne a été supprimée hors de
+  // l'app (vu en vrai — nettoyage manuel dans Supabase Studio). Sans elle,
+  // /compte, /commencer et les bannières cassent en silence. On la recrée à
+  // la volée, puis on relit ce qui en dépend.
+  if (!trialProfile && (await healMissingProfile(supabase, user))) {
+    [{ data: balance }, { data: trialProfile }] = await Promise.all([
+      supabase.rpc("apply_plan_topup", { uid: user.id }),
+      supabase
+        .from("profiles")
+        .select("trial_ends_at, subscription_status, email_verified_at, upsell_last_shown_at")
+        .eq("user_id", user.id)
+        .single<
+          Pick<
+            Profile,
+            | "trial_ends_at"
+            | "subscription_status"
+            | "email_verified_at"
+            | "upsell_last_shown_at"
+          >
+        >(),
+    ]);
+  }
 
   const upsellDue =
     !accountAccess.isSubscribed &&

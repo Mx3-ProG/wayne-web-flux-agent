@@ -4,6 +4,7 @@ import { loadJourneySignals } from "@/lib/journey-signals";
 import { journeyState } from "@/lib/journey";
 import { trialDaysLeft } from "@/lib/plans";
 import { GOOGLE_FONTS_URL } from "@/lib/verticals";
+import { healMissingProfile } from "@/lib/profile-heal";
 import type { Profile, TunnelDraft } from "@/lib/types";
 import { AccountGate } from "@/components/tunnel/account-gate";
 import { Tunnel } from "./tunnel";
@@ -26,7 +27,7 @@ export default async function CommencerPage() {
 
   if (!user) return <AccountGate />;
 
-  const [{ data: profile }, journey] = await Promise.all([
+  const [profileResult, journey] = await Promise.all([
     supabase
       .from("profiles")
       .select("name, onboarding_step, onboarding_draft, trial_ends_at")
@@ -36,6 +37,20 @@ export default async function CommencerPage() {
       >(),
     loadJourneySignals(supabase, user.id),
   ]);
+  let profile = profileResult.data;
+
+  // Profil manquant : sans cette ligne, chaque saveTunnelDraft est un UPDATE
+  // sur zéro ligne — le tunnel semble avancer mais ne sauvegarde jamais rien.
+  // On recrée la ligne avant de rendre quoi que ce soit (lib/profile-heal.ts).
+  if (!profile && (await healMissingProfile(supabase, user))) {
+    ({ data: profile } = await supabase
+      .from("profiles")
+      .select("name, onboarding_step, onboarding_draft, trial_ends_at")
+      .eq("user_id", user.id)
+      .single<
+        Pick<Profile, "name" | "onboarding_step" | "onboarding_draft" | "trial_ends_at">
+      >());
+  }
 
   const { steps, completedCount, total } = journeyState(journey.signals);
   const draft: TunnelDraft = profile?.onboarding_draft ?? {};
