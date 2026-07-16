@@ -13,7 +13,14 @@
 <tr><td align="center" style="padding:32px 16px;">
   <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px;width:100%;">
     <tr><td style="padding:0 8px 20px;">
-      <span style="font-family:Georgia, 'Times New Roman', serif;font-size:26px;font-weight:700;letter-spacing:1px;color:#f7f5f2;">FLUX<span style="color:#ef233c;">.</span></span>
+      <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+        <td style="padding-right:10px;vertical-align:middle;">
+          <img src="{{ .SiteURL }}/flux-email-logo.png" width="48" height="32" alt="" style="display:block;border:0;outline:none;text-decoration:none;width:48px;height:32px;">
+        </td>
+        <td style="vertical-align:middle;">
+          <span style="font-family:Georgia, 'Times New Roman', serif;font-size:26px;font-weight:700;letter-spacing:1px;color:#f7f5f2;">FLUX<span style="color:#ef233c;">.</span></span>
+        </td>
+      </tr></table>
     </td></tr>
     <tr><td style="background:#121216;border:1px solid rgba(255,255,255,0.10);border-radius:16px;padding:32px 28px;">
       <h1 style="margin:0 0 16px;font-family:Georgia, 'Times New Roman', serif;font-size:22px;font-weight:700;color:#f7f5f2;">Votre lien de connexion</h1>
@@ -21,7 +28,7 @@
         
         <p>Cliquez sur le bouton ci-dessous pour vous connecter à votre espace FLUX. Ce lien est valable un court instant et à usage unique.</p>
         <table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0;"><tr><td style="border-radius:10px;background:#ef233c;">
-    <a href="{{ .ConfirmationURL }}" style="display:inline-block;padding:13px 28px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:10px;">Me connecter</a>
+    <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=magiclink&amp;next=%2Fespace" style="display:inline-block;padding:13px 28px;font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;border-radius:10px;">Me connecter</a>
   </td></tr></table>
         <p style="color:#a8a4aa;font-size:13px;">Si vous n’avez pas demandé ce lien, ignorez simplement cet email.</p>
       </div>

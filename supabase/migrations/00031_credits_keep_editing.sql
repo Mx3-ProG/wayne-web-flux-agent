@@ -5,13 +5,14 @@
 -- même avec un solde payé au compteur — y compris après l'achat d'un pack,
 -- record_credit_purchase (00019) ne touchant ni trial_ends_at ni
 -- subscription_status. Le solde devient un motif d'accès à part entière :
--- publication, offres, produits, catégories, réservations et contexte
--- repassent tant qu'il reste des crédits. Solde à zéro → subscription_required
--- comme avant, et l'app renvoie vers /formules.
+-- publication, offres, produits, catégories, réservations, contexte ET
+-- générations IA repassent tant qu'il reste des crédits — le crédit est la
+-- seule limite. Solde à zéro → subscription_required comme avant, et l'app
+-- renvoie vers /formules.
 --
--- Cette fonction n'ouvre AUCUNE génération IA : la fenêtre IA se décide en
--- amont côté application (loadAccountAccess.aiAllowed et checkFluxAccess), qui
--- refusent avant même d'appeler spend_credits.
+-- Seule porte encore fermée côté application : la fenêtre IA de 6 mois d'un
+-- pack acheté (loadAccountAccess.aiAllowed puis checkFluxAccess, qui refusent
+-- avant même d'appeler spend_credits).
 create or replace function public.has_active_access(uid uuid)
 returns boolean
 language sql stable security definer set search_path = public

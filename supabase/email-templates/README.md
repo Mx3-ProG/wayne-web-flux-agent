@@ -41,21 +41,37 @@ Supabase dashboard → **Authentication → SMTP Settings** :
 | Champ | Valeur |
 |---|---|
 | Host | `smtp.resend.com` |
-| Port | `465` |
+| Port | `587` |
 | Username | `resend` |
 | Password | clé API Resend (idéalement une clé dédiée SMTP) |
-| Sender email | `no-reply@mail.<domaine-flux>` |
+| Sender email | `noreply@flux-wayne.com` (doit être sur le domaine vérifié) |
 | Sender name | `FLUX` |
+
+⚠️ **Port : utiliser 587 (STARTTLS), pas 465.** Le client SMTP de Supabase
+attend un dialogue STARTTLS ; sur le port 465 (TLS implicite) la connexion
+reste pendue et l'API Auth renvoie un `504 upstream request timeout` au bout
+de ~35 s, sans qu'aucun email n'atteigne Resend.
+
+Le `Sender email` doit impérativement appartenir au domaine vérifié dans
+Resend, sinon chaque envoi est rejeté.
 
 ## 4. Supabase Auth — templates
 
 Supabase dashboard → **Authentication → Email Templates**, coller le HTML :
 
-- *Confirm signup* → `confirmation.html`
-- *Magic Link* → `magic-link.html`
-- *Reset Password* → `recovery.html`
-- *Change Email Address* → `email-change.html`
-- *Reauthentication* → `reauthentication.html`
+Le **sujet** est un champ **séparé** du HTML : coller les deux, sinon le sujet
+reste au libellé anglais par défaut de Supabase.
+
+| Template Supabase | Fichier | Sujet |
+|---|---|---|
+| *Confirm signup* | `confirmation.html` | Confirmez votre adresse — FLUX |
+| *Reset Password* | `recovery.html` | Réinitialisez votre mot de passe — FLUX |
+| *Magic Link* | `magic-link.html` | Votre lien de connexion — FLUX |
+| *Invite user* | `invite.html` | Vous êtes invité à rejoindre FLUX |
+| *Change Email Address* | `email-change.html` | Confirmez votre nouvelle adresse — FLUX |
+| *Reauthentication* | `reauthentication.html` | Votre code de confirmation — FLUX |
+
+`scripts/generate-auth-emails.ts` réaffiche ces sujets à chaque génération.
 
 Les variables `{{ .ConfirmationURL }}` et `{{ .SiteURL }}` sont remplacées
 par Supabase à l'envoi.

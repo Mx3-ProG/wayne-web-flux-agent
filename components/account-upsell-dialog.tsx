@@ -25,9 +25,9 @@ const COPY: Record<
       "Ton essai te permet de découvrir les outils IA. Une formule débloque la création complète de vitrine et recharge tes crédits chaque mois.",
   },
   trial_expired: {
-    title: "Réactive ton élan avec FLUX",
+    title: "Tu as terminé ton essai",
     description:
-      "Ton essai est terminé et ton solde est vide. Ton site reste en ligne : une formule relance les modifications, les publications et les générations IA.",
+      "Ton solde est vide et ton site reste en ligne. Recharge pour profiter de FLUX à 100 % : modifications, publications et générations.",
   },
   credits_active: {
     title: "Passe d’un pack ponctuel à un rythme régulier",
@@ -41,12 +41,12 @@ const COPY: Record<
   },
 };
 
-// Essai expiré avec des crédits au compteur : les modifications continuent, ce
-// n'est donc pas la même promesse que le solde vide traité dans COPY.
+// Essai expiré avec des crédits au compteur : tout tourne encore, ce n'est donc
+// pas la même promesse que le solde vide traité dans COPY.
 const TRIAL_EXPIRED_WITH_CREDITS = {
-  title: "Tes crédits tiennent, l’IA t’attend",
+  title: "Tu as terminé ton essai",
   description:
-    "Ton essai est terminé, mais tes crédits restants continuent de payer tes modifications et tes publications. Une formule rouvre les générations IA et recharge ton solde chaque mois.",
+    "Tes crédits restants font toujours tourner FLUX — générations comprises. Recharge pour en profiter à 100 %, avec un solde qui se renouvelle chaque mois.",
 };
 
 export function AccountUpsellDialog({

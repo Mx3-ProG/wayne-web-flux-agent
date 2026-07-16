@@ -24,10 +24,8 @@ import { DESIGN_KIT_BY_ID, registryContext } from "@/lib/vitrine-design/registry
 import { recordAiUsage } from "@/lib/ai-usage";
 
 export type FluxPrefillError =
-  | "flux_requires_subscription"
   | "flux_requires_payment"
   | "flux_credits_expired"
-  | "flux_trial_exhausted"
   | "insufficient_credits"
   | "subscription_required"
   | "too_many_requests"
@@ -36,8 +34,8 @@ export type FluxPrefillError =
   | "unknown";
 
 // Pré-remplissage IA de la vitrine (PREFILL_COST crédits). Accès via
-// checkFluxAccess : payant (illimité) ou essai (plafonné à FLUX_TRIAL_MAX_USES
-// générations pour tester). Débit AVANT génération, remboursement si l'appel
+// checkFluxAccess : ouvert tant qu'il reste des crédits utilisables, sans
+// quota. Débit AVANT génération, remboursement si l'appel
 // échoue — même pattern que saveVitrineGuide. FLUX écrit dans le BROUILLON :
 // l'utilisateur relit puis publie lui-même.
 //
@@ -60,10 +58,7 @@ export async function fluxPrefill(
     .single();
   if (!page) return { error: "unknown" };
 
-  // Le pré-remplissage reste testable pendant l'essai (plafonné à 2 générations) :
-  // c'est la porte d'entrée vers FLUX. Bloqué si l'essai est expiré ou le quota
-  // atteint.
-  const access = await checkFluxAccess(user.id, "prefill");
+  const access = await checkFluxAccess(user.id);
   if (!access.ok) return { error: access.reason };
 
   if (!rateLimit(`flux-prefill:${user.id}`, 3, 300_000)) {
@@ -203,10 +198,8 @@ export async function fluxPrefill(
 }
 
 export type FluxSiteError =
-  | "flux_requires_subscription"
   | "flux_requires_payment"
   | "flux_credits_expired"
-  | "flux_trial_exhausted"
   | "insufficient_credits"
   | "subscription_required"
   | "too_many_requests"
@@ -218,8 +211,9 @@ export type FluxSiteError =
 // Génération complète de la vitrine par brief (SITE_GENERATE_COST crédits).
 // FLUX part du template métier et du brief pour écrire toute la vitrine : textes,
 // SEO, ambiance (thème + couleurs) et 2 à 5 sections. Écrit dans le BROUILLON
-// (jamais en live) ; l'utilisateur relit puis publie lui-même. RÉSERVÉ aux
-// abonnés payants (checkFluxAccess). Débit avant génération, remboursement si échec.
+// (jamais en live) ; l'utilisateur relit puis publie lui-même. Ouvert à tout
+// compte ayant des crédits utilisables (checkFluxAccess), essai expiré compris.
+// Débit avant génération, remboursement si échec.
 export async function fluxGenerateSite(
   pageId: string,
   brief: string
@@ -241,9 +235,7 @@ export async function fluxGenerateSite(
     .single();
   if (!page) return { error: "unknown" };
 
-  // Écrire toute la vitrine est la fonction phare : réservée aux abonnés
-  // payants, essai en cours compris.
-  const access = await checkFluxAccess(user.id, "site");
+  const access = await checkFluxAccess(user.id);
   if (!access.ok) return { error: access.reason };
 
   if (!rateLimit(`flux-site:${user.id}`, 3, 600_000)) {

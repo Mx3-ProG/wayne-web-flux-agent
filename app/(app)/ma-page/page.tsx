@@ -88,7 +88,7 @@ export default async function MaPagePage({
   if (params.view !== "editor") {
     // Annonce le verrou de la génération complète avant le clic. L'autorité
     // reste checkFluxAccess dans fluxGenerateSite ; ceci n'est que l'affichage.
-    const siteAccess = await checkFluxAccess(user.id, "site");
+    const siteAccess = await checkFluxAccess(user.id);
     return (
       <VitrineGuide
         initialPage={page}

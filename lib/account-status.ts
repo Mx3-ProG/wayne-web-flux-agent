@@ -16,9 +16,9 @@ export type AccountAccess = {
   status: AccountStatus;
   isSubscribed: boolean;
   aiAllowed: boolean;
-  fluxSiteAllowed: boolean;
   lastPurchaseAt: string | null;
   aiExpiresAt: string | null;
+  creditBalance: number;
 };
 
 export function isAccountUpsellDue(lastShownAt: string | null): boolean {
@@ -46,36 +46,43 @@ function addUtcMonths(isoDate: string, months: number): string {
 
 export async function loadAccountAccess(userId: string): Promise<AccountAccess> {
   const admin = createAdminClient();
-  const [{ data: profile, error: profileError }, { data: purchase, error: purchaseError }] =
-    await Promise.all([
-      admin
-        .from("profiles")
-        .select("trial_ends_at, subscription_status")
-        .eq("user_id", userId)
-        .maybeSingle<{
-          trial_ends_at: string | null;
-          subscription_status: string | null;
-        }>(),
-      admin
-        .from("credit_purchases")
-        .select("created_at")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle<{ created_at: string }>(),
-    ]);
+  const [
+    { data: profile, error: profileError },
+    { data: purchase, error: purchaseError },
+    { data: balance, error: balanceError },
+  ] = await Promise.all([
+    admin
+      .from("profiles")
+      .select("trial_ends_at, subscription_status")
+      .eq("user_id", userId)
+      .maybeSingle<{
+        trial_ends_at: string | null;
+        subscription_status: string | null;
+      }>(),
+    admin
+      .from("credit_purchases")
+      .select("created_at")
+      .eq("user_id", userId)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle<{ created_at: string }>(),
+    admin.rpc("credit_balance", { uid: userId }),
+  ]);
 
   if (profileError) throw new Error(`account_access_profile: ${profileError.message}`);
   if (purchaseError) throw new Error(`account_access_purchase: ${purchaseError.message}`);
+  if (balanceError) throw new Error(`account_access_balance: ${balanceError.message}`);
+
+  const creditBalance = typeof balance === "number" ? balance : 0;
 
   if (isActiveSubscriptionStatus(profile?.subscription_status)) {
     return {
       status: "subscribed",
       isSubscribed: true,
       aiAllowed: true,
-      fluxSiteAllowed: true,
       lastPurchaseAt: purchase?.created_at ?? null,
       aiExpiresAt: null,
+      creditBalance,
     };
   }
 
@@ -89,9 +96,9 @@ export async function loadAccountAccess(userId: string): Promise<AccountAccess> 
       status: active ? "credits_active" : "credits_expired",
       isSubscribed: false,
       aiAllowed: active,
-      fluxSiteAllowed: active,
       lastPurchaseAt: purchase.created_at,
       aiExpiresAt,
+      creditBalance,
     };
   }
 
@@ -102,12 +109,15 @@ export async function loadAccountAccess(userId: string): Promise<AccountAccess> 
     !profile?.subscription_status &&
     !!profile?.trial_ends_at &&
     new Date(profile.trial_ends_at).getTime() > Date.now();
+  // Essai expiré : le solde prend le relais. Tant qu'il reste des crédits, tout
+  // reste ouvert (IA comprise) — le crédit est la seule limite, et son débit
+  // reste arbitré par spend_credits côté SQL. Solde vide = lecture seule.
   return {
     status: trialActive ? "trial" : "trial_expired",
     isSubscribed: false,
-    aiAllowed: trialActive,
-    fluxSiteAllowed: false,
+    aiAllowed: trialActive || creditBalance > 0,
     lastPurchaseAt: null,
     aiExpiresAt: null,
+    creditBalance,
   };
 }

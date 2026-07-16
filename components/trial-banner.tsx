@@ -14,7 +14,7 @@ type Props = {
 
 // Bandeau d'état de l'essai FLUX, affiché sous le header de l'app.
 // Souscrit → rien. Essai en cours → compte à rebours. Essai expiré avec des
-// crédits → les modifications continuent, seule l'IA attend une formule. Essai
+// crédits → tout continue de tourner, le crédit étant la seule limite. Essai
 // expiré et solde vide → lecture seule (bloqué côté SQL). Dans tous les cas
 // non souscrits, le CTA mène à /formules.
 export function TrialBanner({ profile, balance }: Props) {
@@ -44,9 +44,9 @@ export function TrialBanner({ profile, balance }: Props) {
       <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-primary/10 px-4 py-2 text-xs text-foreground">
         <Coins aria-hidden="true" className="h-3.5 w-3.5" />
         <span>
-          Essai terminé — tes {balance} crédit{balance > 1 ? "s" : ""} restant
-          {balance > 1 ? "s" : ""} continuent de payer tes modifications et
-          publications. L&apos;IA reprend avec une formule.
+          Tu as terminé ton essai — tes {balance} crédit
+          {balance > 1 ? "s" : ""} restant{balance > 1 ? "s" : ""} font toujours
+          tourner FLUX. Recharge pour en profiter à 100 %.
         </span>
         <Link href="/formules" className="font-semibold underline underline-offset-4">
           Voir les formules

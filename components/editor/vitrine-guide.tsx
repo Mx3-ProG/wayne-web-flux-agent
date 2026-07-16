@@ -47,8 +47,8 @@ export function VitrineGuide({
 }: {
   initialPage: Page;
   publish: PublishProps;
-  // Droit d'accès à la génération complète, résolu côté serveur. Sert à
-  // annoncer le verrou AVANT le clic ; l'autorité reste checkFluxAccess.
+  // Crédits utilisables pour l'IA, résolu côté serveur. Sert à annoncer le
+  // verrou AVANT le clic ; l'autorité reste checkFluxAccess.
   canGenerateSite: boolean;
 }) {
   const router = useRouter();
@@ -58,10 +58,8 @@ export function VitrineGuide({
   const [creditsDialog, setCreditsDialog] = useState<
     | "insufficient_credits"
     | "subscription_required"
-    | "flux_requires_subscription"
     | "flux_requires_payment"
     | "flux_credits_expired"
-    | "flux_trial_exhausted"
     | null
   >(null);
   const [brief, setBrief] = useState("");
@@ -81,10 +79,8 @@ export function VitrineGuide({
     startTransition(async () => {
       const result = await fluxPrefill(initialPage.id);
       if (
-        result.error === "flux_requires_subscription" ||
         result.error === "flux_requires_payment" ||
         result.error === "flux_credits_expired" ||
-        result.error === "flux_trial_exhausted" ||
         result.error === "insufficient_credits" ||
         result.error === "subscription_required"
       ) {
@@ -115,10 +111,8 @@ export function VitrineGuide({
     startTransition(async () => {
       const result = await fluxGenerateSite(initialPage.id, brief);
       if (
-        result.error === "flux_requires_subscription" ||
         result.error === "flux_requires_payment" ||
         result.error === "flux_credits_expired" ||
-        result.error === "flux_trial_exhausted" ||
         result.error === "insufficient_credits" ||
         result.error === "subscription_required"
       ) {
@@ -221,7 +215,7 @@ export function VitrineGuide({
                 ? "FLUX crée ta vitrine…"
                 : canGenerateSite
                   ? `FLUX crée toute ma vitrine (${SITE_GENERATE_COST} cr.)`
-                  : `FLUX crée toute ma vitrine — formule payante`}
+                  : `FLUX crée toute ma vitrine — recharge tes crédits`}
               <ArrowRight aria-hidden="true" />
             </button>
             <button
@@ -359,30 +353,20 @@ export function VitrineGuide({
         <DialogContent>
           <DialogHeader>
             <DialogTitle>
-              {creditsDialog === "flux_requires_subscription"
-                ? "La création complète est réservée aux abonnés"
-                : creditsDialog === "flux_credits_expired"
-                  ? "Ta fenêtre IA de 6 mois est terminée"
-                : creditsDialog === "subscription_required"
-                  ? "Essai terminé et solde vide"
-                  : creditsDialog === "flux_trial_exhausted"
-                    ? "Tu as testé FLUX — la suite avec une formule"
-                    : creditsDialog === "flux_requires_payment"
-                      ? "FLUX est prête à travailler pour toi"
-                      : "Plus assez de crédits"}
+              {creditsDialog === "flux_credits_expired"
+                ? "Ta fenêtre IA de 6 mois est terminée"
+                : creditsDialog === "subscription_required" ||
+                    creditsDialog === "flux_requires_payment"
+                  ? "Tu as terminé ton essai"
+                  : "Plus assez de crédits"}
             </DialogTitle>
             <DialogDescription>
-              {creditsDialog === "flux_requires_subscription"
-                ? `FLUX écrit ta vitrine entière — textes, SEO, ambiance et sections — à partir de ton brief. C'est réservé aux formules payantes. En attendant, tu peux déjà faire pré-remplir tes textes par FLUX (${PREFILL_COST} cr.), ou partir d'un template dans l'éditeur complet, gratuitement.`
-                : creditsDialog === "flux_credits_expired"
-                  ? "Ton achat t’a donné accès à l’IA pendant 6 mois. Tes crédits restants sont toujours disponibles pour publier et gérer ta vitrine ; choisis une formule pour réactiver les générations IA."
-                : creditsDialog === "subscription_required"
-                  ? "Ton essai est passé et il ne te reste plus de crédits. Une formule FLUX recharge ton solde chaque mois et rouvre les générations IA."
-                  : creditsDialog === "flux_trial_exhausted"
-                    ? "Tu as utilisé tes 2 générations FLUX offertes pendant l'essai. Continue avec une formule — ou pars des templates déjà en place dans l'éditeur complet (gratuit)."
-                    : creditsDialog === "flux_requires_payment"
-                      ? "FLUX crée et améliore ta vitrine à ta place. Pars des templates déjà en place dans l'éditeur complet (gratuit), ou débloque FLUX avec une formule ou un pack de crédits."
-                      : `L'assistant vitrine coûte ${VITRINE_ASSIST_COST} crédits. Recharge tes crédits, ou utilise l'éditeur complet (gratuit).`}
+              {creditsDialog === "flux_credits_expired"
+                ? "Ton achat t’a donné accès à l’IA pendant 6 mois. Tes crédits restants sont toujours disponibles pour publier et gérer ta vitrine ; choisis une formule pour réactiver les générations IA."
+                : creditsDialog === "subscription_required" ||
+                    creditsDialog === "flux_requires_payment"
+                  ? "Tu as terminé ton essai — recharge pour profiter de FLUX à 100 %."
+                  : `L'assistant vitrine coûte ${VITRINE_ASSIST_COST} crédits. Recharge tes crédits, ou utilise l'éditeur complet (gratuit).`}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>

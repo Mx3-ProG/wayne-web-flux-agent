@@ -3,13 +3,17 @@ import { loadAccountAccess } from "@/lib/account-status";
 import { checkFluxAccess } from "@/lib/flux/access";
 
 const domain = process.env.TEST_ACCOUNT_DOMAIN ?? "wayne-web.test";
+// Les comptes semés gardent leurs crédits de bienvenue. Depuis que le solde est
+// la seule limite, un essai expiré qui a des crédits garde l'IA ET la
+// publication ; seule la fenêtre IA de 6 mois d'un pack (pack-perime) coupe
+// encore l'IA tout en laissant publier.
 const cases = [
   { key: "abonne", status: "subscribed", ai: true, publication: true },
-  { key: "resilie", status: "trial_expired", ai: false, publication: false },
+  { key: "resilie", status: "trial_expired", ai: true, publication: true },
   { key: "pastdue", status: "subscribed", ai: true, publication: true },
   { key: "pack-recent", status: "credits_active", ai: true, publication: true },
   { key: "pack-perime", status: "credits_expired", ai: false, publication: true },
-  { key: "essai-expire", status: "trial_expired", ai: false, publication: false },
+  { key: "essai-expire", status: "trial_expired", ai: true, publication: true },
 ] as const;
 
 const admin = createAdminClient();
@@ -26,18 +30,17 @@ for (const expected of cases) {
     continue;
   }
 
-  const [account, site, prefill, { data: publication }] = await Promise.all([
+  const [account, flux, { data: publication }] = await Promise.all([
     loadAccountAccess(user.id),
-    checkFluxAccess(user.id, "site"),
-    checkFluxAccess(user.id, "prefill"),
+    checkFluxAccess(user.id),
     admin.rpc("has_active_access", { uid: user.id }),
   ]);
   const actual = {
     email,
     status: account.status,
+    balance: account.creditBalance,
     ai: account.aiAllowed,
-    site: site.ok,
-    prefill: prefill.ok,
+    flux: flux.ok,
     publication: publication === true,
   };
   console.log(actual);
@@ -45,8 +48,7 @@ for (const expected of cases) {
   if (
     account.status !== expected.status ||
     account.aiAllowed !== expected.ai ||
-    site.ok !== expected.ai ||
-    prefill.ok !== expected.ai ||
+    flux.ok !== expected.ai ||
     actual.publication !== expected.publication
   ) {
     failed = true;

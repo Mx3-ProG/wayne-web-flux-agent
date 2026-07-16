@@ -259,13 +259,8 @@ export default async function CreditsPage({
           <CreditPacks />
           {profile && !hasActiveAccess(profile) && (
             <p className={styles.smallNote}>
-              Ton essai est terminé : tes crédits continuent de payer tes
-              publications, tes offres et tes produits. Pour rouvrir les
-              générations IA et recharger ton solde chaque mois, pense à{" "}
-              <Link href="/formules">
-                choisir une formule FLUX
-              </Link>
-              .
+              Tu as terminé ton essai — recharge pour profiter de FLUX à 100 %.{" "}
+              <Link href="/formules">Choisir une formule FLUX</Link>.
             </p>
           )}
         </div>

@@ -23,12 +23,14 @@ process.env.NEXT_PUBLIC_SITE_URL = "{{ .SiteURL }}";
 
 const outDir = join(process.cwd(), "supabase", "email-templates");
 
-for (const [filename, { html }] of Object.entries(authEmailFiles())) {
+for (const [filename, { html, subject }] of Object.entries(authEmailFiles())) {
   const path = join(outDir, filename);
   writeFileSync(path, html + "\n", "utf8");
-  console.log(`✓ ${filename}`);
+  // Le sujet est un champ SÉPARÉ du HTML dans le dashboard Supabase : on le
+  // rappelle ici, sinon il reste au libellé anglais par défaut.
+  console.log(`✓ ${filename.padEnd(22)} sujet: ${subject}`);
 }
 
 console.log(
-  "\nTerminé. Recolle ces fichiers dans Supabase → Authentication → Email Templates."
+  "\nTerminé. Dans Supabase → Authentication → Emails, coller pour chaque template\nle HTML ET le sujet ci-dessus (deux champs distincts)."
 );

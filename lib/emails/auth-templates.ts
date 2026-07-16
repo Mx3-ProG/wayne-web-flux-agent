@@ -15,6 +15,16 @@ const { MUTED } = emailColors;
 // Placeholders substitués par Supabase au moment de l'envoi.
 const CONFIRMATION_URL = "{{ .ConfirmationURL }}";
 
+// Lien de confirmation « côté serveur ». On n'utilise PAS {{ .ConfirmationURL }}
+// ici : il passe par le endpoint de vérification Supabase, qui retombe sur la
+// Site URL du dashboard — une destination unique pour TOUS les types d'emails.
+// En construisant le lien vers notre route /auth/confirm avec {{ .TokenHash }}
+// (motif recommandé pour l'auth SSR), chaque type choisit sa destination :
+// un invité va définir son mot de passe, un changement d'email revient au compte.
+function confirmUrl(type: string, next: string): string {
+  return `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=${type}&next=${encodeURIComponent(next)}`;
+}
+
 function note(text: string): string {
   return `<p style="color:${MUTED};font-size:13px;">${text}</p>`;
 }
@@ -62,8 +72,27 @@ export function recoveryEmail(): AuthEmail {
       preheader: "Choisissez un nouveau mot de passe FLUX",
       bodyHtml: `
         <p>Une demande de réinitialisation de mot de passe a été faite pour votre compte FLUX. Cliquez sur le bouton ci-dessous pour choisir un nouveau mot de passe.</p>
-        ${emailButton("Réinitialiser mon mot de passe", CONFIRMATION_URL)}
+        ${emailButton("Réinitialiser mon mot de passe", confirmUrl("recovery", "/reinitialiser-mot-de-passe"))}
         ${note("Si vous n’êtes pas à l’origine de cette demande, ignorez cet email — votre mot de passe reste inchangé.")}`,
+    }),
+  };
+}
+
+// Invitation émise par un admin (auth.admin.inviteUserByEmail) : le compte est
+// déjà créé côté Supabase, le lien sert à l'activer et à définir un mot de passe.
+// À ne pas confondre avec friendInvite() (templates.ts), l'email de partage
+// marketing envoyé par le code via Resend, qui ne crée aucun compte.
+export function inviteEmail(): AuthEmail {
+  return {
+    subject: "Vous êtes invité à rejoindre FLUX",
+    html: baseLayout({
+      title: "Votre espace FLUX vous attend",
+      preheader: "Activez votre compte FLUX",
+      bodyHtml: `
+        <p>Vous avez été invité à rejoindre <strong>FLUX</strong>. Un espace a déjà été créé pour vous : vitrine, commandes, rendez-vous et contenus réunis au même endroit.</p>
+        <p>Cliquez sur le bouton ci-dessous pour l’activer et choisir votre mot de passe.</p>
+        ${emailButton("Activer mon espace", confirmUrl("invite", "/reinitialiser-mot-de-passe"))}
+        ${note("Ce lien est personnel et à usage unique. Si vous ne vous attendiez pas à cette invitation, ignorez simplement cet email.")}`,
     }),
   };
 }
@@ -76,7 +105,7 @@ export function emailChangeEmail(): AuthEmail {
       preheader: "Validez votre nouvelle adresse email FLUX",
       bodyHtml: `
         <p>Une demande de changement d’adresse email a été faite pour votre compte FLUX. Cliquez sur le bouton ci-dessous pour la confirmer.</p>
-        ${emailButton("Confirmer mon adresse", CONFIRMATION_URL)}
+        ${emailButton("Confirmer mon adresse", confirmUrl("email_change", "/compte"))}
         ${note("Si vous n’êtes pas à l’origine de cette demande, ignorez cet email et changez votre mot de passe par précaution — votre adresse actuelle reste active tant que ce lien n’est pas validé.")}`,
     }),
   };
@@ -106,7 +135,7 @@ export function magicLinkEmail(): AuthEmail {
       preheader: "Connectez-vous à votre espace FLUX",
       bodyHtml: `
         <p>Cliquez sur le bouton ci-dessous pour vous connecter à votre espace FLUX. Ce lien est valable un court instant et à usage unique.</p>
-        ${emailButton("Me connecter", CONFIRMATION_URL)}
+        ${emailButton("Me connecter", confirmUrl("magiclink", "/espace"))}
         ${note("Si vous n’avez pas demandé ce lien, ignorez simplement cet email.")}`,
     }),
   };
@@ -120,6 +149,7 @@ export function authEmailFiles(): Record<string, AuthEmail> {
     "confirmation.html": confirmationEmail(),
     "recovery.html": recoveryEmail(),
     "magic-link.html": magicLinkEmail(),
+    "invite.html": inviteEmail(),
     "email-change.html": emailChangeEmail(),
     "reauthentication.html": reauthenticationEmail(),
   };
