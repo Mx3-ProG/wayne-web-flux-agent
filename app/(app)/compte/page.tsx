@@ -152,7 +152,7 @@ export default async function ComptePage() {
         <div className={styles.securityGrid}>
           <div>
             <h2>Sécurité</h2>
-            <p>Modifie ton mot de passe, ton adresse email ou ferme ta session sur cet appareil.</p>
+            <p>Gère tes identifiants grâce à des validations sécurisées par email, ou ferme ta session sur cet appareil.</p>
           </div>
           <PasswordForm />
           <EmailChangeForm currentEmail={user.email ?? profile.email ?? ""} />

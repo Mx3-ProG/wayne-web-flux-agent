@@ -5,10 +5,8 @@ import { redirect } from "next/navigation";
 import { after } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
-import {
-  sendFriendInvite,
-  sendPasswordChangedEmail,
-} from "@/lib/emails/account-emails";
+import { rateLimit } from "@/lib/rate-limit";
+import { sendFriendInvite } from "@/lib/emails/account-emails";
 
 type ActionState = { error?: string; message?: string };
 
@@ -50,32 +48,37 @@ export async function updateProfile(
   return { message: "Profil enregistré." };
 }
 
-export async function changePassword(
-  _prev: { error?: string; message?: string },
-  formData: FormData
-): Promise<{ error?: string; message?: string }> {
-  const newPassword = String(formData.get("new_password") ?? "");
-  if (newPassword.length < 8)
-    return { error: "Le nouveau mot de passe doit faire au moins 8 caractères." };
+export async function requestAccountPasswordReset(
+  _prev: ActionState,
+  _formData: FormData
+): Promise<ActionState> {
+  void _prev;
+  void _formData;
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  if (!user?.email) return { error: "Ta session a expiré." };
 
-  const { error } = await supabase.auth.updateUser({ password: newPassword });
-  if (error) return { error: "Impossible de mettre à jour le mot de passe." };
-
-  // Notification de sécurité à l'adresse du compte (anti-fraude).
-  if (user?.email) {
-    const firstName = String(user.user_metadata?.name ?? "").trim();
-    after(() =>
-      sendPasswordChangedEmail(user.email!, firstName).catch((e) =>
-        console.error("account: password-changed email failed", e)
-      )
-    );
+  if (!rateLimit(`account-password-reset:${user.id}`, 3, 3_600_000)) {
+    return {
+      message:
+        "Un email a déjà été envoyé. Vérifie ta boîte de réception et tes spams.",
+    };
   }
-  return { message: "Mot de passe mis à jour." };
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.flux-wayne.com";
+  const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
+    redirectTo: `${siteUrl}/auth/confirm?next=/reinitialiser-mot-de-passe`,
+  });
+  if (error) return { error: "Impossible d’envoyer l’email pour le moment." };
+
+  return {
+    message:
+      "Email envoyé à ton adresse actuelle. Le lien est temporaire et à usage unique.",
+  };
 }
 
 // Lance le changement d'adresse email. Supabase (secure email change) envoie un
@@ -97,17 +100,26 @@ export async function changeEmail(
   if (user.email?.toLowerCase() === email.toLowerCase())
     return { error: "C’est déjà ton adresse actuelle." };
 
+  if (!rateLimit(`account-email-change:${user.id}`, 3, 3_600_000)) {
+    return {
+      message:
+        "Une demande est déjà en cours. Vérifie tes deux boîtes de réception.",
+    };
+  }
+
+  const siteUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://www.flux-wayne.com";
   const { error } = await supabase.auth.updateUser(
     { email },
     {
-      emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/confirm?next=/compte`,
+      emailRedirectTo: `${siteUrl}/auth/confirm?next=/compte`,
     }
   );
   if (error) return { error: "Impossible de lancer le changement d’email." };
 
   return {
     message:
-      "Un lien de confirmation vient d’être envoyé à ta nouvelle adresse (et à l’ancienne). Clique dessus pour valider le changement.",
+      "Demande envoyée. Ton adresse ne changera qu’après confirmation depuis ton adresse actuelle et la nouvelle.",
   };
 }
 

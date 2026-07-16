@@ -11,6 +11,13 @@ export function EmailChangeForm({ currentEmail }: { currentEmail: string }) {
 
   return (
     <form action={action} className="space-y-4">
+      <div className="space-y-1.5">
+        <p className="text-sm font-medium text-foreground">Adresse email</p>
+        <p className="text-sm leading-relaxed text-muted-foreground">
+          Ton adresse actuelle est <strong className="text-foreground">{currentEmail}</strong>.
+          Le changement exige une confirmation depuis l’ancienne et la nouvelle adresse.
+        </p>
+      </div>
       <div className="space-y-2">
         <Label htmlFor="new-email">Nouvelle adresse email</Label>
         <Input
@@ -19,13 +26,13 @@ export function EmailChangeForm({ currentEmail }: { currentEmail: string }) {
           type="email"
           required
           autoComplete="email"
-          placeholder={currentEmail || "ton@email.fr"}
+          placeholder="nouvelle@adresse.fr"
         />
       </div>
       {state.error && <p className="text-sm text-destructive">{state.error}</p>}
       {state.message && <p className="text-sm text-emerald-400">{state.message}</p>}
       <Button type="submit" variant="secondary" disabled={pending}>
-        {pending ? "Envoi du lien…" : "Changer d’adresse"}
+        {pending ? "Envoi des confirmations…" : "Envoyer les confirmations"}
       </Button>
     </form>
   );
