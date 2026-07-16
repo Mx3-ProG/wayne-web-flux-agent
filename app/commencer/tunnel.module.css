@@ -230,7 +230,10 @@
 .installGuides strong { font-size: 15px; }
 .installGuides span { display: flex; align-items: center; gap: 8px; color: #89858c; font-size: 11px; }
 .installGuides svg { width: 16px; flex: 0 0 16px; color: var(--red-soft); }
-.installNow { min-height: 46px; margin: 22px 6px 0 0; padding: 0 18px; border: 1px solid rgb(255 99 120 / 25%); border-radius: 999px; background: rgb(239 35 60 / 8%); color: var(--red-soft); cursor: pointer; font: inherit; font-size: 11px; font-weight: 750; }
+/* Centré par marges auto : ce bouton vit désormais dans .question (écran
+   « Partage »), qui ne centre pas ses enfants — contrairement à l'ancien
+   .installScreen en text-align: center. */
+.installNow { display: flex; width: fit-content; min-height: 46px; margin: 22px auto 0; padding: 0 18px; align-items: center; border: 1px solid rgb(255 99 120 / 25%); border-radius: 999px; background: rgb(239 35 60 / 8%); color: var(--red-soft); cursor: pointer; font: inherit; font-size: 11px; font-weight: 750; }
 .installScreen > .primary { margin-top: 22px; }
 
 .claim { max-width: 610px; }
@@ -254,7 +257,9 @@
 /* Deux colonnes dès que la vitrine a de quoi s'afficher : les réponses à
    gauche, la révélation vivante à droite. */
 .stageSplit { display: grid; width: min(1180px, calc(100% - 40px)); min-height: calc(100svh - 170px); margin: 0 auto; padding: 35px 0 80px; grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr); align-items: start; gap: 44px; }
-.stageMain { min-width: 0; }
+/* width: 100% est nécessaire pour la mise en page centrée (.stage utilise
+   place-items: center, qui sinon dimensionnerait ce bloc sur son contenu). */
+.stageMain { width: 100%; min-width: 0; }
 
 /* Le gain de l'étape (lib/journey.ts) : le bénéfice, pas la mécanique. */
 .gain { display: flex; max-width: 590px; margin: 16px auto 0; padding: 10px 14px; align-items: center; justify-content: center; gap: 9px; border: 1px solid rgb(255 99 120 / 20%); border-radius: 999px; background: rgb(239 35 60 / 7%); color: #d9d5da; font-size: 12px; line-height: 1.45; text-align: center; }
@@ -265,7 +270,10 @@
 .costBadge { border: 1px solid rgb(255 99 120 / 28%); background: rgb(239 35 60 / 9%); color: var(--red-soft); }
 
 .fieldHint { margin-top: 6px; color: #77747a; font-size: 10px; line-height: 1.5; }
-.centered { margin: 26px auto 0; }
+/* .primary est inline-flex : les marges auto ne centrent PAS une boîte inline,
+   et .question ne centre que son h1 et son sous-titre. D'où le passage en flex
+   + width fit-content, seule façon de centrer ce bouton. */
+.centered { display: flex; width: fit-content; margin: 26px auto 0; }
 .spin { animation: tunnelSpin .9s linear infinite; }
 @keyframes tunnelSpin { to { transform: rotate(360deg); } }
 
@@ -276,6 +284,7 @@
 .contentForm select:focus, .contentForm input:focus { border-color: rgb(255 99 120 / 60%); box-shadow: 0 0 0 4px rgb(239 35 60 / 9%); }
 
 .output { max-width: 720px; margin: 26px auto 0; padding: 20px; border: 1px solid rgb(255 99 120 / 18%); border-radius: 20px; background: rgb(20 20 25 / 84%); text-align: left; }
+.outputNote { margin: 12px auto 0; color: #77747a; font-size: 11px; text-align: center; }
 .outputLabel { margin-bottom: 12px; color: var(--red-soft); font-size: 10px; font-weight: 750; letter-spacing: .1em; text-transform: uppercase; }
 .output pre { max-height: 320px; overflow-y: auto; color: #ddd9dd; font-family: inherit; font-size: 13px; line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
 

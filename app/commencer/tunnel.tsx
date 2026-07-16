@@ -71,6 +71,23 @@ const FOOTER_SCREENS: number[] = [
   SCREEN.share,
 ];
 
+// Écrans où l'on construit la vitrine : ce sont les seuls à afficher l'aperçu,
+// donc les seuls à passer en deux colonnes. Les charnières, les célébrations et
+// la fin du Parcours sont des moments plein cadre, centrés.
+//
+// Cette liste pilote À LA FOIS la classe de mise en page et le montage de
+// l'aperçu : les dissocier laissait une colonne vide qui décalait tout le
+// contenu vers la gauche.
+const PREVIEW_SCREENS: number[] = [
+  SCREEN.vertical,
+  SCREEN.goals,
+  SCREEN.identity,
+  SCREEN.voice,
+  SCREEN.catalog,
+  SCREEN.offer,
+  SCREEN.agenda,
+];
+
 type Props = {
   firstName: string;
   draft: TunnelDraft;
@@ -147,6 +164,10 @@ export function Tunnel(props: Props) {
 
   const chapter: JourneyChapterId =
     screen <= SCREEN.doneChapter1 ? 1 : screen <= SCREEN.doneChapter2 ? 2 : 3;
+
+  // Une seule source pour la mise en page ET l'aperçu : deux colonnes seulement
+  // quand il y a réellement quelque chose à mettre dans la seconde.
+  const showPreview = PREVIEW_SCREENS.includes(screen);
 
   const canContinue = useMemo(() => {
     if (screen === SCREEN.vertical) return Boolean(vertical);
@@ -263,7 +284,7 @@ export function Tunnel(props: Props) {
         total={props.total}
         trialDays={props.trialDays}
       >
-        <section className={screen >= SCREEN.vertical ? styles.stageSplit : styles.stage}>
+        <section className={showPreview ? styles.stageSplit : styles.stage}>
           <div className={styles.stageMain}>
             {screen === SCREEN.whyChapter1 && (
               <ChapterIntro chapter={1} onNext={() => goTo(nextScreen(screen))} />
@@ -413,9 +434,7 @@ export function Tunnel(props: Props) {
 
           {/* Monté hors du switch : le remonter à chaque écran tuerait les
               transitions CSS qui font toute la révélation vivante. */}
-          {screen >= SCREEN.vertical && screen < SCREEN.content && (
-            <VitrinePreview state={preview} />
-          )}
+          {showPreview && <VitrinePreview state={preview} />}
         </section>
 
         {FOOTER_SCREENS.includes(screen) && (

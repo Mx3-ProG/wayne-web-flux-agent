@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ArrowRight, Loader2, WandSparkles } from "lucide-react";
+import { Loader2, WandSparkles } from "lucide-react";
 import { getTool } from "@/lib/tools-config";
 import { Question } from "@/components/tunnel/question";
 import styles from "@/app/commencer/tunnel.module.css";
@@ -149,8 +149,8 @@ export function StepContent({
       )}
 
       {done && output && (
-        <p className={styles.fieldHint}>
-          Tu peux le retrouver à tout moment dans ton coffre. <ArrowRight aria-hidden="true" />
+        <p className={styles.outputNote}>
+          Tu peux le retrouver à tout moment dans ton coffre.
         </p>
       )}
     </Question>
