@@ -16,8 +16,8 @@ export const metadata: Metadata = {
 const FEATURES: Record<Plan, string[]> = {
   basique: ["Personnalisation essentielle", "Adresse FLUX incluse", "Outils FLUX inclus"],
   pro: ["Personnalisation avancée", "Thèmes premium", "Outils FLUX inclus"],
-  business: ["Domaine personnalisé", "Sans branding Wayne Web", "Thèmes premium"],
-  entreprise: ["10 vitrines professionnelles", "Domaine personnalisé", "Sans branding Wayne Web"],
+  business: ["Domaine personnalisé", "Thèmes premium", "Outils FLUX inclus"],
+  entreprise: ["10 vitrines professionnelles", "Domaine personnalisé", "Signature Wayne Web masquable"],
 };
 
 export default function PricingPage() {

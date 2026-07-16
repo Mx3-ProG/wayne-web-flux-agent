@@ -36,13 +36,12 @@ const PLAN_FEATURES: Record<Plan, string[]> = {
   business: [
     "Personnalisation avancée (sections, blocs)",
     "Thèmes premium",
-    "Sans branding Wayne Web",
     "Outils FLUX inclus",
   ],
   entreprise: [
     "Toute la personnalisation, sans limite d'ambition",
     "Thèmes premium",
-    "Sans branding Wayne Web",
+    "Signature Wayne Web masquable",
     "Outils FLUX inclus",
   ],
 };

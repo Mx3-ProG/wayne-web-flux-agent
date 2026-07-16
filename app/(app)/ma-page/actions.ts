@@ -183,6 +183,17 @@ export async function savePageFields(
     if (designError) return { error: designError };
   }
   const supabase = await createClient();
+  if (fields.hide_branding === true) {
+    const { data: allowed, error: entitlementError } = await supabase.rpc(
+      "can_hide_branding"
+    );
+    if (entitlementError || allowed !== true) {
+      return {
+        error:
+          "La signature peut uniquement être retirée avec la formule Entreprise à 89 € par mois.",
+      };
+    }
+  }
   const { error } = await supabase.rpc("merge_page_draft", {
     pid: pageId,
     fields,

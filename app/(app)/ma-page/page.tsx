@@ -47,6 +47,7 @@ export default async function MaPagePage({
     { count: pendingOffers },
     { data: rawSitePages },
     { data: profile },
+    { data: canHideBranding },
   ] = await Promise.all([
     supabase.rpc("credit_balance", { uid: user.id }),
     supabase
@@ -67,6 +68,7 @@ export default async function MaPagePage({
       .eq("page_id", page.id)
       .order("position"),
     supabase.from("profiles").select("plan").eq("user_id", user.id).single(),
+    supabase.rpc("can_hide_branding"),
   ]);
   const sitePages = (rawSitePages ?? []) as SitePage[];
   const pendingSitePages = sitePages.some(
@@ -183,6 +185,7 @@ export default async function MaPagePage({
       publish={publishProps}
       sitePages={sitePages}
       subpageLimit={maxSubpages}
+      canHideBranding={canHideBranding === true}
     />
   );
 }

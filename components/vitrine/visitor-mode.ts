@@ -47,5 +47,5 @@ export function useVisitorMode(darkTheme: boolean) {
 }
 
 export function isDarkTheme(theme: string): boolean {
-  return ["studio", "luxe", "neon", "prestige"].includes(theme);
+  return ["studio", "luxe", "neon", "prestige", "performance-gt", "rosso-editorial"].includes(theme);
 }

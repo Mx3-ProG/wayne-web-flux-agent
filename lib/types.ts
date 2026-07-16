@@ -91,7 +91,10 @@ export type PageTheme =
   | "luxe"
   | "minimal"
   | "neon"
-  | "prestige";
+  | "prestige"
+  | "performance-gt"
+  | "rosso-editorial"
+  | "maison-couture";
 
 // Typographie fine : échelle des titres et police de titres distincte du
 // corps (id de lib/verticals FONTS). Vide = rendu historique.

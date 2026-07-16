@@ -77,6 +77,7 @@ type Props = {
   publish: PublishProps;
   sitePages?: SitePage[];
   subpageLimit?: number;
+  canHideBranding: boolean;
 };
 
 // Éditeur de vitrine : tout s'enregistre tout seul (autosave débouncé) dans le
@@ -93,6 +94,7 @@ export function PageEditor({
   publish,
   sitePages = [],
   subpageLimit = 0,
+  canHideBranding,
 }: Props) {
   const [page, setPage] = useState<Page>(initialPage);
   const [catalogProducts, setCatalogProducts] =
@@ -1089,12 +1091,27 @@ export function PageEditor({
               <div className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
                 <div>
                   <Label>Masquer « Créé avec Wayne Web Flux »</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Retire la signature en bas de ta page publique.
+                  <p
+                    id={!canHideBranding ? "branding-entitlement-help" : undefined}
+                    className="text-xs text-muted-foreground"
+                  >
+                    {canHideBranding
+                      ? "Retire la signature en bas de ta page publique."
+                      : "Fonctionnalité réservée à la formule Entreprise à 89 € par mois."}
                   </p>
+                  {!canHideBranding && (
+                    <div className="mt-2 text-xs">
+                      <Link className="text-primary underline underline-offset-4" href="/formules">
+                        Découvrir la formule Entreprise
+                      </Link>
+                    </div>
+                  )}
                 </div>
                 <Switch
-                  checked={page.hide_branding ?? false}
+                  checked={canHideBranding && (page.hide_branding ?? false)}
+                  disabled={!canHideBranding}
+                  aria-label="Masquer la signature Wayne Web Flux"
+                  aria-describedby={!canHideBranding ? "branding-entitlement-help" : undefined}
                   onCheckedChange={(hide_branding) => patch({ hide_branding })}
                 />
               </div>

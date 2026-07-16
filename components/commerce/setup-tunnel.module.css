@@ -105,6 +105,28 @@
 .vitrinePreview[data-theme="prestige"] .vitrinePreviewTop { margin: 0 18px; padding-inline: 4px; border-bottom-color: color-mix(in srgb, var(--preview-primary) 35%, transparent); }
 .vitrinePreview[data-theme="prestige"] .vitrinePreviewContent { padding-left: 52px; }
 .vitrinePreview[data-theme="prestige"] .vitrinePreviewButton { border: 1px solid var(--preview-primary); border-radius: 0; background: transparent; color: var(--preview-primary); letter-spacing: .1em; text-transform: uppercase; }
+.vitrinePreview[data-theme="performance-gt"] { min-height: 285px; border-color: rgb(255 255 255 / 20%); border-radius: 0; background: var(--preview-dark); box-shadow: 0 28px 70px rgb(0 0 0 / 48%); }
+.vitrinePreview[data-theme="performance-gt"] .vitrinePreviewShade { background: linear-gradient(90deg, color-mix(in srgb, var(--preview-dark) 96%, black), color-mix(in srgb, var(--preview-dark) 62%, transparent) 58%, transparent); }
+.vitrinePreview[data-theme="performance-gt"] .vitrinePreviewTop { height: 54px; border-bottom-color: rgb(255 255 255 / 22%); background: color-mix(in srgb, var(--preview-dark) 78%, transparent); }
+.vitrinePreview[data-theme="performance-gt"] .vitrinePreviewTop > span { border-radius: 0; clip-path: polygon(22% 0, 100% 0, 78% 100%, 0 100%); }
+.vitrinePreview[data-theme="performance-gt"] .vitrinePreviewContent { max-width: 650px; padding-top: 38px; }
+.vitrinePreview[data-theme="performance-gt"] .vitrinePreviewContent > strong { font-size: clamp(38px, 8cqi, 66px); font-weight: 900; letter-spacing: -.035em; text-transform: uppercase; }
+.vitrinePreview[data-theme="performance-gt"] .vitrinePreviewButton { min-width: 110px; justify-content: center; border-radius: 0; background: var(--preview-primary); color: #080808; clip-path: polygon(10% 0, 100% 0, 90% 100%, 0 100%); letter-spacing: .08em; text-transform: uppercase; }
+.vitrinePreview[data-theme="rosso-editorial"] { min-height: 285px; border-color: rgb(255 255 255 / 18%); border-radius: 0; background: var(--preview-dark); }
+.vitrinePreview[data-theme="rosso-editorial"] .vitrinePreviewShade { background: linear-gradient(0deg, color-mix(in srgb, var(--preview-dark) 88%, black), transparent 72%), color-mix(in srgb, var(--preview-dark) 18%, transparent); }
+.vitrinePreview[data-theme="rosso-editorial"] .vitrinePreviewTop { border-bottom-color: rgb(255 255 255 / 18%); background: color-mix(in srgb, var(--preview-dark) 30%, transparent); }
+.vitrinePreview[data-theme="rosso-editorial"] .vitrinePreviewTop > span { border-radius: 50%; background: transparent; outline: 1px solid var(--preview-primary); color: #fff; }
+.vitrinePreview[data-theme="rosso-editorial"] .vitrinePreviewContent { max-width: none; padding-top: 56px; justify-items: center; text-align: center; }
+.vitrinePreview[data-theme="rosso-editorial"] .vitrinePreviewContent > strong { font-size: clamp(36px, 7cqi, 58px); font-weight: 500; letter-spacing: -.025em; }
+.vitrinePreview[data-theme="rosso-editorial"] .vitrinePreviewButton { min-width: 86px; justify-content: center; border: 1px solid #fff; border-radius: 999px; background: transparent; letter-spacing: .08em; text-transform: uppercase; }
+.vitrinePreview[data-theme="maison-couture"] { min-height: 285px; border-color: rgb(25 22 20 / 16%); border-radius: 0; background: #f7f6f3; box-shadow: 0 24px 60px rgb(35 28 24 / 14%); color: #1c1b1a; }
+.vitrinePreview[data-theme="maison-couture"] .vitrinePreviewShade { background: linear-gradient(0deg, rgb(20 18 16 / 66%), transparent 70%); }
+.vitrinePreview[data-theme="maison-couture"] .vitrinePreviewTop { height: 54px; border-bottom-color: rgb(28 27 26 / 14%); background: rgb(247 246 243 / 84%); }
+.vitrinePreview[data-theme="maison-couture"] .vitrinePreviewTop > span { border-radius: 0; background: transparent; color: #1c1b1a; }
+.vitrinePreview[data-theme="maison-couture"] .vitrinePreviewTop small { color: rgb(28 27 26 / 58%); }
+.vitrinePreview[data-theme="maison-couture"] .vitrinePreviewContent { max-width: none; padding-top: 62px; justify-items: center; color: #fff; text-align: center; }
+.vitrinePreview[data-theme="maison-couture"] .vitrinePreviewContent > strong { font-size: clamp(32px, 6cqi, 52px); font-weight: 500; letter-spacing: -.02em; }
+.vitrinePreview[data-theme="maison-couture"] .vitrinePreviewButton { border-radius: 0; background: #fff; color: #1c1b1a; letter-spacing: .06em; text-transform: uppercase; }
 .vitrinePreviewContacts { display: flex; margin-top: 12px; gap: 7px; flex-wrap: wrap; }
 .vitrinePreviewContacts span { display: inline-flex; min-height: 25px; padding: 0 9px; align-items: center; gap: 5px; border: 1px solid currentColor; border-radius: 999px; color: color-mix(in srgb, var(--preview-primary) 76%, white); font-size: 7px; font-weight: 750; opacity: .86; }
 .vitrinePreviewContacts svg { width: 10px; height: 10px; }

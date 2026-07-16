@@ -120,9 +120,8 @@ export function canUseCustomDomain(plan: Plan): boolean {
   return PLAN_LIMITS[plan]?.customDomain ?? false;
 }
 
-// Personnalisation avancée de la vitrine (sections/blocs, thèmes premium,
-// retrait du branding…). Construite ouverte à tous : passer le flag à true au
-// déploiement pour la réserver aux paliers supérieurs.
+// Personnalisation avancée de la vitrine (sections/blocs, thèmes premium).
+// Le retrait du branding suit une règle commerciale distincte : Entreprise.
 const ADVANCED_CUSTOMIZATION_GATED = false;
 
 export function canUseAdvancedCustomization(plan: Plan): boolean {
@@ -136,6 +135,5 @@ export function canUsePremiumThemes(plan: Plan): boolean {
 }
 
 export function canHideBranding(plan: Plan): boolean {
-  if (!ADVANCED_CUSTOMIZATION_GATED) return true;
-  return plan === "business" || plan === "entreprise";
+  return plan === "entreprise";
 }
