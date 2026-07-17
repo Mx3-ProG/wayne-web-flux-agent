@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { MarketingFooter } from "@/components/marketing-footer";
 import {
@@ -21,6 +22,10 @@ import styles from "./home.module.css";
 import { PillarGrid } from "@/components/landing/pillar-grid";
 import { ScrollingAcquireCta } from "@/components/landing/scrolling-acquire-cta";
 import { LiveSitePreview } from "@/components/landing/live-site-preview";
+import { NewsletterForm } from "@/components/landing/newsletter-form";
+import { ContactForm } from "@/components/landing/contact-form";
+import { ShareCta } from "@/components/landing/share-cta";
+import { SectionScroller } from "@/components/landing/section-scroller";
 import { FluxBrand } from "@/components/flux-brand";
 
 const TOOLS = [
@@ -89,6 +94,104 @@ const TOOLS = [
   },
 ];
 
+const TESTIMONIALS = [
+  {
+    name: "Sophie",
+    job: "Fleuriste · Lyon",
+    initials: "SO",
+    photo: "/temoignages/sophie_fleuriste_lyon.jpg",
+    quote:
+      "Avant, mes soirées partaient dans Instagram et mon site datait de 2017. Aujourd'hui Flux publie pour moi, ma vitrine est magnifique et mes clientes réservent leurs bouquets en ligne. J'ai retrouvé mes dimanches.",
+    metric: "6 h gagnées / semaine",
+  },
+  {
+    name: "Karim",
+    job: "Barbier · Paris 11e",
+    initials: "KA",
+    photo: "/temoignages/karim_barbier_paris.jpg",
+    quote:
+      "Le carnet de rendez-vous en ligne a tout changé : fini les appels pendant une coupe. Mes clients réservent la nuit, je découvre mon planning rempli au réveil. Ça, ça n'a pas de prix.",
+    metric: "+30 % de réservations",
+  },
+  {
+    name: "Claire",
+    job: "Institut de beauté · Bordeaux",
+    initials: "CL",
+    photo: "/temoignages/claire_institut_beaute.jpg",
+    quote:
+      "Je pensais que Google, c'était pour les grandes enseignes. Trois semaines après avoir publié ma vitrine, une cliente m'a dit : « Je vous ai trouvée en cherchant institut près de chez moi ». J'en ai eu des frissons.",
+    metric: "1ʳᵉ page Google locale",
+  },
+  {
+    name: "Marco",
+    job: "Restaurateur · Marseille",
+    initials: "MA",
+    photo: "/temoignages/marco_restaurant.jpg",
+    quote:
+      "Entre les fourneaux et les livraisons, je n'avais pas une minute pour le digital. Flux me prépare mes posts et répond à mes avis. Mon restaurant vit en ligne pendant que je cuisine.",
+    metric: "2 h gagnées / jour",
+  },
+  {
+    name: "Julie",
+    job: "Photographe · Nantes",
+    initials: "JU",
+    photo: "/temoignages/julie_photographe_nante.jpg",
+    quote:
+      "Ma vitrine a été en ligne le soir même. Le lendemain, premier message d'un couple pour un mariage. Le devis est parti depuis mon espace Flux, signé dans la semaine. Je n'ai jamais signé aussi vite.",
+    metric: "1 mariage signé en 7 jours",
+  },
+  {
+    name: "Laurent",
+    job: "Garage automobile · Lille",
+    initials: "LA",
+    photo: "/temoignages/laurent_garagiste_prestige.jpg",
+    quote:
+      "Je ne suis pas un homme de sites web, je suis un homme de moteurs. Flux a fait le site, le référencement et les demandes de rappel. Mon chiffre a suivi. Je recommande à tous les artisans.",
+    metric: "CA +22 % en 3 mois",
+  },
+];
+
+const FAQ_ITEMS = [
+  {
+    q: "Comment ça marche, concrètement ?",
+    a: "Tu crées ton compte gratuitement, tu réponds à quelques questions sur ton activité, et Flux construit ta vitrine en quelques secondes. Ensuite, tu actives les outils dont tu as besoin : rendez-vous, publications, réponses clients, SEO local… Tout se pilote depuis un seul espace, pensé pour les gens de terrain.",
+  },
+  {
+    q: "Combien ça coûte ?",
+    a: "Tu démarres avec 100 crédits offerts, sans carte bancaire. Ensuite, tu utilises tes crédits selon tes besoins réels : pas d'abonnement forcé, pas de frais cachés. Tu avances à ton rythme, et tu ne paies que ce qui fait avancer ton commerce.",
+  },
+  {
+    q: "Je ne suis pas doué en informatique, c'est un problème ?",
+    a: "Au contraire : Flux a été construit pour toi. Si tu sais envoyer un message, tu sais utiliser Flux. Pas de code, pas de jargon, pas de réglages compliqués — tu réponds à des questions simples et l'outil fait le travail technique à ta place.",
+  },
+  {
+    q: "En combien de temps mon site est-il en ligne ?",
+    a: "Ta vitrine se déploie en 1 seconde une fois prête. La construction elle-même prend quelques minutes : le temps de répondre à quelques questions sur ton activité. Tu peux littéralement commencer ce soir et être visible demain matin.",
+  },
+  {
+    q: "Est-ce que je peux gérer mes rendez-vous et mes clients ?",
+    a: "Oui. Tes clients réservent en ligne sur ta vitrine, tu retrouves ton planning dans ton espace, et tu peux rappeler un client en un clic. Les demandes, les messages et les prospects sont centralisés au même endroit — fini les post-its et les appels manqués.",
+  },
+  {
+    q: "Il y a un engagement ? Je peux arrêter quand je veux ?",
+    a: "Aucun engagement. Tu t'inscris sans carte bancaire, tu testes avec tes crédits offerts, et tu restes uniquement si Flux te fait gagner du temps et des clients. Tes données t'appartiennent, point.",
+  },
+  {
+    q: "Et si j'ai besoin d'aide ?",
+    a: "On est développeurs, mais on est surtout à tes côtés : une vraie équipe répond à tes messages sous 24 h ouvrées. Écris-nous via le formulaire de contact juste en dessous, on lit tout et on répond vite.",
+  },
+];
+
+const FAQ_JSON_LD = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQ_ITEMS.map((item) => ({
+    "@type": "Question",
+    name: item.q,
+    acceptedAnswer: { "@type": "Answer", text: item.a },
+  })),
+};
+
 function Brand() {
   return <FluxBrand className={styles.brand} priority />;
 }
@@ -106,6 +209,9 @@ export default function LandingPage() {
             <a href="#outils">Les outils</a>
             <Link href="/pricing">Tarifs</Link>
             <a href="#histoire">Notre histoire</a>
+            <a href="#avis">Avis</a>
+            <a href="#faq">FAQ</a>
+            <a href="#contact">Contact</a>
           </nav>
           <div className={styles.navActions}>
             <Link className={styles.loginLink} href="/login">
@@ -403,11 +509,158 @@ export default function LandingPage() {
                 </span>
               </p>
               <div className={styles.storyProofs}>
-                <span><strong>48 h</strong> livraison moyenne</span>
-                <span><strong>5/5</strong> satisfaction clients</span>
-                <span><strong>24/7</strong> outils disponibles</span>
+                <span><strong>1 seconde</strong> pour déployer ton site web</span>
+                <span><strong>24h/7j</strong> au travail pour toi</span>
+                <span><strong>+20 outils</strong> gain de temps</span>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className={styles.testimonials} id="avis">
+          <div className={styles.sectionHeading}>
+            <div>
+              <p className={styles.sectionIndex}>05 / ILS EN PARLENT MIEUX QUE NOUS</p>
+              <h2>
+                Ce qu&apos;ils pensent
+                <br />
+                <em>de nous.</em>
+              </h2>
+            </div>
+            <p>
+              Des commerçants comme toi ont repris la main sur leur visibilité.
+              Voici ce que ça change, dans leurs mots — pas dans les nôtres.
+            </p>
+          </div>
+          <div className={styles.testimonialGrid}>
+            {TESTIMONIALS.map((t) => (
+              <figure key={t.name} className={styles.testimonialCard}>
+                <div className={styles.testimonialStars} aria-label="Note : 5 sur 5">
+                  <Star aria-hidden="true" />
+                  <Star aria-hidden="true" />
+                  <Star aria-hidden="true" />
+                  <Star aria-hidden="true" />
+                  <Star aria-hidden="true" />
+                </div>
+                <blockquote>{t.quote}</blockquote>
+                <figcaption>
+                  <span className={styles.testimonialAvatar} aria-hidden="true">
+                    {t.photo ? (
+                      <Image
+                        src={t.photo}
+                        alt=""
+                        width={80}
+                        height={80}
+                        sizes="40px"
+                      />
+                    ) : (
+                      t.initials
+                    )}
+                  </span>
+                  <span className={styles.testimonialWho}>
+                    <strong>{t.name}</strong>
+                    <small>{t.job}</small>
+                  </span>
+                  <em className={styles.testimonialMetric}>{t.metric}</em>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+          <div className={styles.testimonialCtaRow}>
+            <Link className={`flux-button-smooth ${styles.primaryCta}`} href="/commencer">
+              Rejoins-les : crée ta boutique aujourd&apos;hui
+              <ArrowRight aria-hidden="true" />
+            </Link>
+            <Link className={styles.textCta} href="/login">
+              Déjà membre ? Connecte-toi et checke tes rendez-vous
+            </Link>
+          </div>
+        </section>
+
+        <section className={styles.faq} id="faq">
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_JSON_LD) }}
+          />
+          <div className={styles.faqIntro}>
+            <p className={styles.sectionIndex}>06 / ON TE RÉPOND</p>
+            <h2>
+              Les questions qu&apos;on nous pose
+              <br />
+              <em>souvent.</em>
+            </h2>
+            <p>
+              Tout ce que tu veux savoir avant de te lancer, sans langue de
+              bois. Il te reste un doute ? Écris-nous, un humain te répond.
+            </p>
+            <a className={styles.textCta} href="#contact">
+              Poser ma question
+            </a>
+          </div>
+          <div className={styles.faqList}>
+            {FAQ_ITEMS.map((item, index) => (
+              <details
+                key={item.q}
+                className={styles.faqItem}
+                name="flux-faq"
+                open={index === 0}
+              >
+                <summary>
+                  <span>{item.q}</span>
+                  <ChevronDown aria-hidden="true" />
+                </summary>
+                <div className={styles.faqBody}>
+                  <p>{item.a}</p>
+                </div>
+              </details>
+            ))}
+            <Link className={`flux-button-smooth ${styles.primaryCta} ${styles.faqCta}`} href="/commencer">
+              C&apos;est clair, je me lance
+              <ArrowRight aria-hidden="true" />
+            </Link>
+          </div>
+        </section>
+
+        <section className={styles.newsletter} id="newsletter">
+          <div className={styles.newsletterCard}>
+            <div className={styles.newsletterCopy}>
+              <p className={styles.sectionIndex}>07 / LA NEWSLETTER</p>
+              <h2>
+                Un conseil business par semaine.
+                <br />
+                <em>Zéro blabla.</em>
+              </h2>
+              <p>
+                Idées de posts, astuces SEO local, nouveautés Flux : un email
+                par semaine pour faire grandir ton commerce, écrit par des
+                développeurs qui parlent ta langue. Désinscription en un clic.
+              </p>
+            </div>
+            <NewsletterForm />
+          </div>
+        </section>
+
+        <section className={styles.contact} id="contact">
+          <div className={styles.contactGrid}>
+            <div className={styles.contactIntro}>
+              <p className={styles.sectionIndex}>08 / CONTACTE-NOUS</p>
+              <h2>
+                Une question ?
+                <br />
+                <em>Parlons-en.</em>
+              </h2>
+              <p>
+                Derrière Flux, il y a des humains qui connaissent le terrain.
+                Projet, question, besoin particulier : raconte-nous, on te
+                répond sous 24 h ouvrées — et on te dit franchement si Flux
+                est fait pour toi.
+              </p>
+              <div className={styles.contactChannels}>
+                <a href="mailto:contact@wayne-web.com">contact@wayne-web.com</a>
+                <ShareCta />
+              </div>
+            </div>
+            <ContactForm />
           </div>
         </section>
 
@@ -434,6 +687,8 @@ export default function LandingPage() {
       </main>
 
       <MarketingFooter />
+
+      <SectionScroller />
 
       <aside className={styles.mobileStickyCta} aria-label="Accès rapide à Flux">
         <Link
