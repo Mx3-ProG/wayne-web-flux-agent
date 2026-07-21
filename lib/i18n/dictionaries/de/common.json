@@ -1,0 +1,70 @@
+{
+ "brandHomeAria": "Wayne Web Flux, Startseite",
+ "nav": {
+  "aria": "Hauptnavigation",
+  "solution": "Die Lösung",
+  "tools": "Die Tools",
+  "pricing": "Preise",
+  "story": "Unsere Geschichte",
+  "reviews": "Bewertungen",
+  "faq": "FAQ",
+  "contact": "Kontakt",
+  "home": "Startseite",
+  "login": "Anmelden",
+  "tryFree": "Kostenlos testen"
+ },
+ "languageSwitcher": {
+  "aria": "Sprache wechseln",
+  "label": "Sprache"
+ },
+ "footer": {
+  "tagline": "Die digitale Präsenz, die wirklich für dein Geschäft arbeitet.",
+  "cta": "FLUX kostenlos testen",
+  "product": "Produkt",
+  "resources": "Ressourcen",
+  "helpCenter": "Hilfe-Center",
+  "contactUs": "Kontaktiere uns",
+  "legal": "Rechtliches",
+  "legalNotice": "Impressum",
+  "terms": "AGB",
+  "privacy": "Datenschutz",
+  "safety": "Infrastruktur geschützt durch KarlMada · Null Toleranz für Erwachseneninhalte, Drogen, Waffen, Betrug und illegale Aktivitäten.",
+  "rights": "© 2026 Wayne Web. Alle Rechte vorbehalten.",
+  "status": "Services betriebsbereit",
+  "linkedinAria": "Wayne Web auf LinkedIn",
+  "instagramAria": "Wayne Web auf Instagram"
+ },
+ "cookieConsent": {
+  "kicker": "Deine Wahl, ganz einfach",
+  "title": "Cookies für einen Service, der sich weiterentwickelt.",
+  "description": "Wir verwenden optionale Cookies, um zu verstehen, was für dich nützlich ist, Flux zu verbessern und bekannter zu machen. Du behältst die Kontrolle.",
+  "categories": {
+   "necessary": {
+    "title": "Notwendig",
+    "description": "Anmeldung, Sicherheit und Betrieb des Dienstes."
+   },
+   "analytics": {
+    "title": "Reichweitenmessung",
+    "description": "Nutzung verstehen und die Qualität des Dienstes verbessern."
+   },
+   "personalization": {
+    "title": "Personalisierung",
+    "description": "Erlebnis und Inhalte an deine Vorlieben anpassen."
+   },
+   "marketing": {
+    "title": "Bekanntheit",
+    "description": "Unsere Kampagnen messen und unsere Dienste bekannt machen."
+   }
+  },
+  "preferencesAria": "Cookie-Einstellungen",
+  "toggleAria": "{title}: {state}",
+  "enabled": "aktiviert",
+  "disabled": "deaktiviert",
+  "legalPrefix": "Notwendige Cookies bleiben aktiv. Lies unsere",
+  "privacyPolicy": "Datenschutzerklärung",
+  "acceptAll": "Alle akzeptieren",
+  "saveChoices": "Meine Auswahl speichern",
+  "customize": "Anpassen",
+  "declineOptional": "Weiter ohne zu akzeptieren"
+ }
+}

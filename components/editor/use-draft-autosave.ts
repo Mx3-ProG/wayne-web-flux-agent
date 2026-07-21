@@ -11,7 +11,7 @@ import { toast } from "sonner";
 export function useDraftAutosave<T>(
   initial: T,
   save: (fields: Partial<T>) => Promise<{ error?: string }>,
-  options?: { delay?: number; initiallyDirty?: boolean }
+  options?: { delay?: number; initiallyDirty?: boolean; translateError?: (error: string) => string }
 ) {
   const delay = options?.delay ?? 800;
   const [state, setState] = useState<T>(initial);
@@ -35,10 +35,12 @@ export function useDraftAutosave<T>(
         setSaving(true);
         const result = await save(toSave);
         setSaving(false);
-        if (result.error) toast.error(result.error);
+        if (result.error) {
+          toast.error(options?.translateError?.(result.error) ?? result.error);
+        }
       }, delay);
     },
-    [save, delay]
+    [save, delay, options]
   );
 
   useEffect(

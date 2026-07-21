@@ -17,6 +17,8 @@ import type {
   CategoryWithProducts,
   FamilyWithServices,
 } from "@/components/vitrine/vitrine-view";
+import { defaultLocale, hasLocale, type Locale } from "@/lib/i18n/config";
+import { applyTranslation, loadPublishedTranslations, translationFor } from "@/lib/localized-content";
 
 export type VitrineData = {
   page: Page;
@@ -25,9 +27,22 @@ export type VitrineData = {
   offers: Offer[];
   sitePages: SitePage[];
   bookingEnabled: boolean;
+  // Langue effectivement servie (peut différer de `requestedLocale` quand
+  // celle-ci n'a pas de traduction publiée complète : repli propre sur la
+  // langue principale plutôt que mélanger les langues).
+  locale: Locale;
+  requestedLocale: Locale;
+  // Langue principale + langues dont la traduction de page est publiée.
+  availableLocales: Locale[];
 };
 
-export async function loadVitrine(slug: string): Promise<VitrineData | null> {
+// `locale` = langue demandée par l'URL (segment /p/{slug}/{locale}/...).
+// Absent ou invalide → langue principale du projet, sans traduction à
+// fusionner (comportement historique de /p/{slug}).
+export async function loadVitrine(
+  slug: string,
+  locale?: string
+): Promise<VitrineData | null> {
   const supabase = createPublicClient();
   const { data: page, error: pageError } = await supabase
     .from("pages")
@@ -143,5 +158,85 @@ export async function loadVitrine(slug: string): Promise<VitrineData | null> {
   const offers = (offersResult.data ?? []) as Offer[];
   const sitePages = (sitePagesResult.data ?? []) as SitePage[];
 
-  return { page, families, productCategories, offers, sitePages, bookingEnabled };
+  const defaultProjectLocale = hasLocale(page.default_locale) ? page.default_locale : defaultLocale;
+  const requestedLocale = locale && hasLocale(locale) ? locale : defaultProjectLocale;
+
+  // Langues avec une traduction de page publiée (source de vérité pour le
+  // globe, le hreflang et la résolution de langue ci-dessous : jamais une
+  // langue "activée" mais dont la traduction n'est pas encore prête).
+  const { data: publishedPageLocales } = await supabase
+    .from("localized_content")
+    .select("locale")
+    .eq("page_id", page.id)
+    .eq("entity_type", "page")
+    .eq("entity_id", page.id)
+    .not("published_fields", "is", null);
+  const availableLocales: Locale[] = Array.from(
+    new Set([
+      defaultProjectLocale,
+      ...((publishedPageLocales ?? []) as { locale: string }[])
+        .map((r) => r.locale)
+        .filter(hasLocale),
+    ])
+  );
+
+  // Repli propre sur la langue principale si la langue demandée n'a pas
+  // (ou plus) de traduction publiée complète : on ne mélange jamais deux
+  // langues dans une même page rendue.
+  const resolvedLocale: Locale = availableLocales.includes(requestedLocale)
+    ? requestedLocale
+    : defaultProjectLocale;
+
+  let mergedPage = page;
+  let mergedSitePages = sitePages;
+  let mergedFamilies = families;
+  let mergedProductCategories = productCategories;
+  let mergedOffers = offers;
+
+  if (resolvedLocale !== defaultProjectLocale) {
+    const translations = await loadPublishedTranslations(supabase, page.id, resolvedLocale);
+    mergedPage = applyTranslation(page, translationFor(translations, "page", page.id), [
+      "tagline",
+      "seo",
+      "navigation",
+      "sections",
+      "legal",
+      "reviews",
+    ]);
+    mergedSitePages = sitePages.map((sp) =>
+      applyTranslation(sp, translationFor(translations, "site_page", sp.id), [
+        "title",
+        "subtitle",
+        "seo",
+        "sections",
+      ])
+    );
+    mergedFamilies = families.map((f) => ({
+      ...applyTranslation(f, translationFor(translations, "service_family", f.id), ["name"]),
+      services: f.services.map((s) =>
+        applyTranslation(s, translationFor(translations, "service", s.id), ["name"])
+      ),
+    }));
+    mergedProductCategories = productCategories.map((c) => ({
+      ...applyTranslation(c, translationFor(translations, "product_category", c.id), ["name"]),
+      products: c.products.map((p) =>
+        applyTranslation(p, translationFor(translations, "product", p.id), ["name", "description"])
+      ),
+    }));
+    mergedOffers = offers.map((o) =>
+      applyTranslation(o, translationFor(translations, "offer", o.id), ["title", "description"])
+    );
+  }
+
+  return {
+    page: mergedPage,
+    families: mergedFamilies,
+    productCategories: mergedProductCategories,
+    offers: mergedOffers,
+    sitePages: mergedSitePages,
+    bookingEnabled,
+    locale: resolvedLocale,
+    requestedLocale,
+    availableLocales,
+  };
 }

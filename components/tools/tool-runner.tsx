@@ -17,12 +17,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import type { ToolsDict } from "@/lib/i18n/get-dictionary";
 
-type Props = { tool: Tool; balance: number };
+type Props = { tool: Tool; balance: number; t: ToolsDict };
 
 // Formulaire de l'outil + résultat streamé. Le coût est affiché AVANT de
 // lancer ; rien n'est prélevé en douce.
-export function ToolRunner({ tool, balance }: Props) {
+export function ToolRunner({ tool, balance, t }: Props) {
   const router = useRouter();
   const [inputs, setInputs] = useState<Record<string, string>>({});
   const [output, setOutput] = useState("");
@@ -48,10 +49,10 @@ export function ToolRunner({ tool, balance }: Props) {
         const body = await res.json().catch(() => null);
         toast.error(
           body?.error === "ai_window_expired"
-            ? "Ta fenêtre d’accès aux outils IA est terminée. Choisis une formule pour la réactiver."
+            ? t.runner.errors.ai_window_expired
             : body?.error === "subscription_required"
-            ? "Ton essai FLUX est terminé. Choisis une formule pour continuer à générer."
-            : "Plus assez de crédits. Passe à une formule FLUX pour recharger."
+            ? t.runner.errors.subscription_required
+            : t.runner.errors.insufficient_credits
         );
         setRunning(false);
         return;
@@ -61,7 +62,7 @@ export function ToolRunner({ tool, balance }: Props) {
         toast.error(
           body?.error === "content_blocked" && body?.message
             ? body.message
-            : "La génération a échoué."
+            : t.runner.errors.generation_failed
         );
         setRunning(false);
         return;
@@ -76,7 +77,7 @@ export function ToolRunner({ tool, balance }: Props) {
       setDone(true);
       router.refresh(); // met à jour le solde du header
     } catch {
-      toast.error("La génération a été interrompue.");
+      toast.error(t.runner.errors.generation_interrupted);
     } finally {
       setRunning(false);
     }
@@ -97,7 +98,7 @@ export function ToolRunner({ tool, balance }: Props) {
                   }
                 >
                   <SelectTrigger className="w-full">
-                    <SelectValue placeholder="— choisir —" />
+                    <SelectValue placeholder={t.runner.choosePlaceholder} />
                   </SelectTrigger>
                   <SelectContent>
                     {field.options?.map((o) => (
@@ -132,8 +133,12 @@ export function ToolRunner({ tool, balance }: Props) {
 
           <div className="flex items-center justify-between gap-4 pt-2">
             <p className="text-sm text-muted-foreground">
-              Coût : <strong className="text-foreground">{tool.cost} crédits</strong>
-              {" · "}Solde : {balance}
+              {t.runner.costLabel}{" "}
+              <strong className="text-foreground">
+                {t.runner.costCredits.replace("{cost}", String(tool.cost))}
+              </strong>
+              {" · "}
+              {t.runner.balanceLabel.replace("{balance}", String(balance))}
             </p>
             <Button
               size="lg"
@@ -141,15 +146,15 @@ export function ToolRunner({ tool, balance }: Props) {
               onClick={generate}
             >
               {running
-                ? "L'IA écrit pour toi…"
-                : `Générer mon résultat (${tool.cost} cr.)`}
+                ? t.runner.running
+                : t.runner.generate.replace("{cost}", String(tool.cost))}
             </Button>
           </div>
           {!canAfford && (
             <p className="text-sm text-destructive">
-              Il te manque des crédits.{" "}
+              {t.runner.missingCredits}{" "}
               <Link href="/formules" className="underline underline-offset-4">
-                Découvrir les formules FLUX
+                {t.runner.discoverPlans}
               </Link>
             </p>
           )}
@@ -160,7 +165,7 @@ export function ToolRunner({ tool, balance }: Props) {
         <Card>
           <CardContent className="pt-1 space-y-4">
             <div className="whitespace-pre-wrap text-sm leading-relaxed">
-              {output || "Quelques secondes de patience, l'IA réfléchit pour toi…"}
+              {output || t.runner.waiting}
             </div>
             {done && (
               <div className="flex flex-wrap gap-2">
@@ -169,13 +174,13 @@ export function ToolRunner({ tool, balance }: Props) {
                   size="sm"
                   onClick={() => {
                     navigator.clipboard.writeText(output);
-                    toast.success("Copié !");
+                    toast.success(t.runner.copied);
                   }}
                 >
-                  Copier
+                  {t.runner.copy}
                 </Button>
                 <Button asChild variant="ghost" size="sm">
-                  <Link href="/resultats">Voir dans mon coffre →</Link>
+                  <Link href="/resultats">{t.runner.viewInVault}</Link>
                 </Button>
               </div>
             )}

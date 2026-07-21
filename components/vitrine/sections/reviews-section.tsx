@@ -2,22 +2,25 @@
 
 import type { Review } from "@/lib/types";
 import styles from "../vitrine.module.css";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
+import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
 
 type Props = {
   reviews: Review[];
   first?: boolean;
   title?: string;
   subtitle?: string;
+  t?: StorefrontDict["sections"]["reviews"];
 };
 
-export function ReviewsSection({ reviews, first = false, title, subtitle }: Props) {
+export function ReviewsSection({ reviews, first = false, title, subtitle, t = frStorefront.sections.reviews }: Props) {
   if (reviews.length === 0) return null;
   return (
     <div className={`${styles.contentSection} ${first ? styles.firstInGroup : ""}`}>
       <div className={styles.sectionHeading}>
-        <p>Ils me font confiance</p>
-        <h2>{title || "Ce qu'on dit de moi"}</h2>
-        <span>{subtitle || "Des mots vrais, laissés par mes clients."}</span>
+        <p>{t.eyebrow}</p>
+        <h2>{title || t.title}</h2>
+        <span>{subtitle || t.subtitle}</span>
       </div>
       <div className={styles.reviews}>
         {reviews.map((review, i) => {

@@ -1,0 +1,53 @@
+{
+ "meta": {
+  "title": "数据统计"
+ },
+ "hero": {
+  "kicker": "数据中心",
+  "titleStart": "你的",
+  "titleEm": "仪表盘",
+  "textStart": "看看",
+  "textLink": "你的网站",
+  "textEnd": "发生了什么：访问量、联系人和订阅者，实时呈现。",
+  "visitSingular": "次访问（最近30天）",
+  "visitPlural": "次访问（最近30天）"
+ },
+ "cards": {
+  "visits7": "访问量（7天）",
+  "visits30": "访问量（30天）",
+  "phoneClicks30": "电话点击（30天）",
+  "whatsappClicks30": "WhatsApp点击（30天）",
+  "socialClicks30": "社交网络点击（30天）",
+  "newsletterSubscribers": "订阅者数"
+ },
+ "chart": {
+  "title": "最近14天的访问量",
+  "empty": "暂无数据：一旦你的网站有了第一次访问，数据就会出现在这里。",
+  "tooltipSingular": "{label}：{count} 次访问",
+  "tooltipPlural": "{label}：{count} 次访问"
+ },
+ "subscribers": {
+  "title": "你的订阅者名单",
+  "hint": "通过你网站上的「订阅通讯」模块收集而来。",
+  "export": "导出（CSV）",
+  "empty": "目前还没有人订阅。在你的网站编辑器中（「我的页面版块」栏目）添加「订阅通讯」模块，开始收集邮箱吧。",
+  "csvHeader": "email;inscrit_le"
+ },
+ "tunnel": {
+  "step": "第 {current} / {total} 步",
+  "exit": "我的统计数据",
+  "kicker1": "让你的链接传播出去",
+  "title1Start": "你的统计数据始于一次",
+  "title1Em": "分享。",
+  "subtitle1": "把你的链接分享给欣赏你手艺、从中获得价值或慰藉的人。每一次访问、点击和关注都会显示在这里——链接传播得越多，你的数据就越能讲述你的故事。",
+  "uniqueLink": "你的专属链接",
+  "copyLink": "复制我的链接",
+  "continueCta": "继续",
+  "fromTeam": "来自整个团队",
+  "title2Start": "感谢你将 FLUX 用于",
+  "title2Em": "你的生意。",
+  "text2": "你的手艺值得被看见、被选择、被推荐。祝你取得伟大的成就——我们会一直在这里，与你一起记录每一次胜利。",
+  "back": "返回",
+  "viewStats": "查看我的统计数据"
+ }
+}

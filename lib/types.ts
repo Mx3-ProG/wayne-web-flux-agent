@@ -1,5 +1,7 @@
 // Types des lignes de la base (miroir de supabase/migrations/00001_schema.sql)
 
+import { formatCurrency } from "./i18n/format";
+
 export type Plan = "basique" | "pro" | "business" | "entreprise";
 
 export type AdminRole = "admin" | "superadmin";
@@ -29,6 +31,8 @@ export type ShopModerationStatus = "unverified" | "verified" | "archived";
 // verticale et les objectifs sont choisis avant la création de la vitrine.
 // Tout le reste du tunnel écrit directement dans les tables métier.
 export type TunnelDraft = {
+  // Langue de production choisie gratuitement au début du parcours.
+  siteLocale?: import("./i18n/config").Locale;
   vertical?: string;
   goals?: string[];
   businessName?: string;
@@ -71,6 +75,7 @@ export type Profile = {
   current_period_end: string | null;
   cancel_at_period_end: boolean;
   active_page_id: string | null;
+  locale: import("./i18n/config").Locale;
   upsell_last_shown_at: string | null;
   last_login_at: string | null;
   created_at: string;
@@ -143,6 +148,8 @@ export type Page = {
   id: string;
   user_id: string;
   slug: string;
+  default_locale: import("./i18n/config").Locale;
+  enabled_locales: import("./i18n/config").Locale[];
   vertical: string;
   business_name: string;
   job_title: string;
@@ -523,7 +530,13 @@ export type VoiceProfile = {
   updated_at: string;
 };
 
-export function formatPrice(cents: number): string {
+// Sans locale (défaut historique fr) : formatage manuel. Avec locale, délègue
+// à Intl via lib/i18n/format.ts pour un rendu correct dans les 9 langues —
+// devise conservée en EUR (voir AGENTS.md / brief i18n dashboard).
+export function formatPrice(cents: number, locale?: import("./i18n/config").Locale): string {
+  if (locale && locale !== "fr") {
+    return formatCurrency(locale, cents / 100);
+  }
   const euros = cents / 100;
   return Number.isInteger(euros)
     ? `${euros} €`

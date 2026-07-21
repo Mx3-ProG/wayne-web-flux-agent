@@ -8,6 +8,7 @@ import { tunnelPublish } from "@/app/commencer/actions";
 import { EmailVerifyDialog } from "@/components/tunnel/email-verify-dialog";
 import { Question } from "@/components/tunnel/question";
 import styles from "@/app/commencer/tunnel.module.css";
+import type { TunnelDict } from "@/lib/i18n/get-dictionary";
 
 // Dernier écran repris de l'assistant vitrine : tout ce qui précède vit en
 // brouillon, seule la publication rend la vitrine visible — et c'est elle qui
@@ -18,11 +19,15 @@ import styles from "@/app/commencer/tunnel.module.css";
 // Pas de `gain` : comme l'écran « style », la mise en ligne n'est pas une des 8
 // étapes du Parcours (lib/journey.ts) — elle n'a pas de bénéfice à afficher.
 export function StepPublish({
+  dict,
+  emailVerifyDict,
   email,
   balance,
   published,
   onPublished,
 }: {
+  dict: TunnelDict["publish"];
+  emailVerifyDict: TunnelDict["emailVerify"];
   email: string;
   balance: number;
   published: boolean;
@@ -45,51 +50,51 @@ export function StepPublish({
         return;
       }
       if (result.error === "insufficient_credits") {
-        toast.error(`Il te faut ${PUBLISH_COST} crédits pour publier.`);
+        toast.error(dict.errors.insufficientCredits.replace("{cost}", String(PUBLISH_COST)));
         return;
       }
       if (result.error === "subscription_required") {
-        toast.error("Ton essai est terminé : choisis une formule pour publier.");
+        toast.error(dict.errors.subscriptionRequired);
         return;
       }
       if (result.error === "nothing_to_publish") {
         setDone(true);
         onPublished();
-        toast.info("Ta vitrine est déjà à jour.");
+        toast.info(dict.errors.alreadyUpToDate);
         return;
       }
       if (result.error === "content_blocked") {
         toast.error(
-          "Les messages de haines ou les contenus explicit sont interdit et amendé sur FLUX, veuillez respectez votre environnement et celui des autres. 3 Infractions contre nos conditions d'utilisations le compte est supprimé."
+          dict.errors.contentBlocked
         );
         return;
       }
       if (result.error) {
-        toast.error("Publication impossible. Réessaie dans un instant.");
+        toast.error(dict.errors.generic);
         return;
       }
 
       setDone(true);
       onPublished();
-      toast.success(`Ta vitrine est en ligne ! Solde : ${result.balance} cr.`);
+      toast.success(dict.errors.success.replace("{balance}", String(result.balance)));
     });
   }
 
   return (
     <Question
-      kicker="Ton style · Mise en ligne"
-      title={<>On la met <em>en ligne ?</em></>}
-      subtitle="Tout ce que tu viens de régler vit en brouillon. Publier, c'est ce qui rend ta vitrine visible par tes clients — et ce qui donne un sens au lien de l'étape suivante."
+      kicker={dict.kicker}
+      title={<>{dict.titleStart} <em>{dict.titleEm}</em></>}
+      subtitle={dict.subtitle}
     >
       <div className={styles.publishCard}>
         {done ? (
           <p className={styles.publishDone}>
-            <CheckCircle2 aria-hidden="true" /> Ta vitrine est en ligne.
+            <CheckCircle2 aria-hidden="true" /> {dict.done}
           </p>
         ) : (
           <>
             <p className={styles.publishCost}>
-              Publier coûte {PUBLISH_COST} crédits · ton solde : {balance} cr.
+              {dict.cost.replace("{cost}", String(PUBLISH_COST)).replace("{balance}", String(balance))}
             </p>
             <button
               className={`flux-button-smooth ${styles.primary}`}
@@ -97,21 +102,19 @@ export function StepPublish({
               disabled={pending || !enough}
               onClick={publish}
             >
-              {pending ? "Mise en ligne…" : "Publier ma vitrine"}
+              {pending ? dict.publishing : dict.cta}
               {!pending && <Rocket aria-hidden="true" />}
             </button>
             {!enough && (
               <p className={styles.publishHint}>
-                Il te manque {PUBLISH_COST - balance} crédit
-                {PUBLISH_COST - balance > 1 ? "s" : ""}. Tu peux continuer et
-                publier plus tard depuis ton espace.
+                {(PUBLISH_COST - balance === 1 ? dict.missingCredits : dict.missingCreditsPlural).replace("{missing}", String(PUBLISH_COST - balance))}
               </p>
             )}
           </>
         )}
       </div>
 
-      <EmailVerifyDialog email={email} open={emailDialog} onOpenChange={setEmailDialog} />
+      <EmailVerifyDialog dict={emailVerifyDict} email={email} open={emailDialog} onOpenChange={setEmailDialog} />
     </Question>
   );
 }

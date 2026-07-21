@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "title": "My profile",
+    "billingTitle": "Billing"
+  },
+  "hero": {
+    "eyebrow": "Your personal space",
+    "title": "My profile",
+    "text": "Everything about your identity, your business, and your access to FLUX."
+  },
+  "nav": {
+    "aria": "Profile sections",
+    "info": "Information",
+    "adventure": "Start the adventure",
+    "invite": "Invite a friend",
+    "credits": "Credits",
+    "plans": "Plans",
+    "license": "License",
+    "billing": "Billing"
+  },
+  "info": {
+    "title": "Personal and professional information",
+    "text": "This information stays private and is used to personalize your experience."
+  },
+  "profileForm": {
+    "name": "Full name",
+    "email": "Login email",
+    "phone": "Personal phone",
+    "company": "Company",
+    "job": "Job / role",
+    "businessEmail": "Business email",
+    "siret": "SIRET",
+    "address": "Business address",
+    "saving": "Saving…",
+    "save": "Save"
+  },
+  "adventure": {
+    "canCreateTitle": "Create a new showcase",
+    "limitTitle": "Find your projects",
+    "canCreateText": "A few questions are all it takes: FLUX prepares the foundation and you stay in control of everything.",
+    "limitText": "Your plan has reached its project limit. You can manage your existing showcases.",
+    "startTunnel": "Start the tunnel",
+    "viewProjects": "View my projects"
+  },
+  "invite": {
+    "title": "Invite a friend",
+    "text": "Introduce FLUX to a business owner you know: they get an invitation and 7 days of free trial.",
+    "emailLabel": "Your friend's email",
+    "emailPlaceholder": "friend@email.com",
+    "sending": "Sending…",
+    "send": "Send invitation"
+  },
+  "credits": {
+    "available": "Available credits",
+    "nextRecharge": "Next recharge on {date}",
+    "trial": "FLUX trial: {days} day left",
+    "trialPlural": "FLUX trial: {days} days left",
+    "subscribed": "Recharge via your FLUX plan",
+    "trialOver": "Trial over — choose your FLUX plan",
+    "viewUsage": "View my usage"
+  },
+  "license": {
+    "title": "License of use",
+    "text": "You remain the owner of the information and content you add. FLUX grants you a personal right to use the service, with no transfer of ownership over the platform."
+  },
+  "security": {
+    "title": "Security",
+    "text": "Manage your credentials with secure email validations, or log out on this device.",
+    "logout": "Log out"
+  },
+  "passwordForm": {
+    "title": "Password",
+    "text": "Receive a secure link at your current email address to choose a new password.",
+    "sending": "Sending…",
+    "cta": "I forgot my password"
+  },
+  "emailForm": {
+    "title": "Email address",
+    "text": "Your current address is {email}. Changing it requires confirmation from both the old and new address.",
+    "newEmailLabel": "New email address",
+    "newEmailPlaceholder": "new@address.com",
+    "sending": "Sending confirmations…",
+    "cta": "Send confirmations"
+  },
+  "danger": {
+    "title": "Danger zone",
+    "text": "Deleting your account permanently erases your account, showcases, customers, orders, appointments, and content. This action is irreversible.",
+    "confirmLabel": "Type {word} to confirm",
+    "confirmWord": "DELETE",
+    "deleting": "Deleting…",
+    "delete": "Permanently delete my account"
+  },
+  "billing": {
+    "kicker": "Account",
+    "title": "Billing",
+    "subtitle": "Your subscription, due dates, and invoices all in one place.",
+    "portalUnavailable": "The billing portal is temporarily unavailable.",
+    "currentPlan": "Current plan",
+    "noActivePlan": "No active plan",
+    "price": "Price",
+    "priceValue": "€{price} / month",
+    "includedCredits": "Included credits",
+    "includedCreditsValue": "{credits} per paid invoice",
+    "accessEndsAt": "Access ends on",
+    "nextDueDate": "Next due date",
+    "toConfirm": "To confirm",
+    "manage": "Manage subscription and invoices",
+    "choosePlan": "Choose a plan",
+    "help": "The secure Stripe portal lets you update your payment method, download invoices, change plans, or cancel.",
+    "back": "← Back to profile",
+    "status": {
+      "active": "Active",
+      "trialing": "Trial period",
+      "past_due": "Payment due",
+      "unpaid": "Unpaid",
+      "canceled": "Canceled",
+      "incomplete": "Incomplete activation",
+      "incomplete_expired": "Activation expired",
+      "paused": "Paused"
+    }
+  },
+  "errors": {
+    "session_expired": "Your session has expired.",
+    "name_required": "Please enter at least your name.",
+    "save_failed": "Unable to save the profile.",
+    "email_send_failed": "Unable to send the email right now.",
+    "invalid_email": "Invalid email address.",
+    "already_current_email": "This is already your current address.",
+    "email_change_failed": "Unable to start the email change.",
+    "confirmation_mismatch": "Type DELETE to confirm.",
+    "deletion_failed": "Deletion failed. Try again later.",
+    "content_blocked": "Hate speech or explicit content is forbidden and penalized on FLUX; please respect your environment and that of others. After 3 violations of our terms of use, the account is deleted.",
+    "unknown": "An error occurred. Please try again in a moment."
+  },
+  "messages": {
+    "profile_saved": "Profile saved.",
+    "reset_email_sent": "An email has already been sent.",
+    "reset_email_sent_fresh": "Email sent to your current address. The link is temporary and single-use.",
+    "email_change_pending": "A request is already in progress. Check both of your inboxes.",
+    "email_change_requested": "Request sent. Your address will only change once confirmed from both your current and new address.",
+    "invite_sent": "Invitation sent to {email}."
+  }
+}

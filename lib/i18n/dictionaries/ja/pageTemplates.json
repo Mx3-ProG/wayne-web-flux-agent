@@ -1,0 +1,43 @@
+{
+  "a-propos": {
+    "label": "私たちについて",
+    "description": "あなたのストーリー、歩み、写真を。",
+    "defaultTitle": "私たちについて",
+    "aProposHistoryTitle": "私のストーリー",
+    "aProposHistoryBody": "ここにあなたの歩み、情熱、仕事のこだわりを綴ろう。",
+    "aProposMethodTitle": "私の仕事の進め方",
+    "aProposMethodBody": "あなたの手法や価値観、お客様が期待できることを説明しよう。"
+  },
+  "tarifs": {
+    "label": "料金",
+    "description": "料金をわかりやすく提示。",
+    "defaultTitle": "料金",
+    "tarifsTitle": "料金プラン",
+    "tarifsBody": "ここで価格とその内容を紹介しよう。",
+    "tarifsFaqTitle": "よくある質問",
+    "tarifsFaqQuestion": "どんな支払い方法に対応していますか?"
+  },
+  "contact": {
+    "label": "お問い合わせ",
+    "description": "地図、営業時間、連絡先を。",
+    "defaultTitle": "お問い合わせ",
+    "contactTitle": "連絡はこちらから",
+    "contactBody": "一番連絡が取りやすい方法をここに書こう。"
+  },
+  "galerie": {
+    "label": "ギャラリー",
+    "description": "写真で見るあなたの実績。",
+    "defaultTitle": "ギャラリー"
+  },
+  "faq": {
+    "label": "よくある質問",
+    "description": "よくある疑問への答え。",
+    "defaultTitle": "よくある質問",
+    "faqTitle": "よくある質問"
+  },
+  "libre": {
+    "label": "フリーページ",
+    "description": "自由に作れる空白のページ。",
+    "defaultTitle": "新しいページ"
+  }
+}

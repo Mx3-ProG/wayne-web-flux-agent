@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "title": "My Orders"
+  },
+  "status": {
+    "pending": "To Process",
+    "accepted": "Accepted",
+    "fulfilled": "Completed",
+    "cancelled": "Cancelled"
+  },
+  "bookingStatus": {
+    "cancelled": "Cancelled",
+    "confirmed": "Confirmed"
+  },
+  "itemKind": {
+    "offer": "Offer",
+    "reservation": "Booking",
+    "product": "Product"
+  },
+  "clientSheet": {
+    "aria": "Client sheet",
+    "titleWithName": "Client sheet · {name}",
+    "titleDefault": "Client sheet",
+    "interactions": "{count} interaction(s)",
+    "phone": "Phone",
+    "email": "Email",
+    "notProvided": "Not provided",
+    "address": "Physical address",
+    "addressNotProvided": "Not provided"
+  },
+  "history": {
+    "title": "Client history",
+    "purchases": "{count} purchase(s)",
+    "reservation": "Booking"
+  },
+  "orderCard": {
+    "transaction": "FLUX transaction",
+    "defaultClient": "Client",
+    "itemSingular": "item",
+    "itemPlural": "items",
+    "accept": "Accept",
+    "markDone": "Mark as completed",
+    "cancel": "Cancel",
+    "refuse": "Decline"
+  },
+  "clientProfile": {
+    "dossier": "Client file",
+    "interactionSingular": "interaction",
+    "interactionPlural": "interactions"
+  },
+  "hero": {
+    "kicker": "FLUX Portfolio",
+    "titleStart": "Business ",
+    "titleEm": "Hub",
+    "text": "Manage your orders, find every client in a click, then turn your storefront into a clean, easy-to-read revenue log.",
+    "movementSingular": "movement tracked",
+    "movementPlural": "movements tracked"
+  },
+  "metrics": {
+    "aria": "Order metrics",
+    "toProcess": "To Process",
+    "accepted": "Accepted",
+    "history": "History",
+    "clientSheets": "Client sheets"
+  },
+  "empty": {
+    "noPageStart": "First, create your",
+    "noPageLink": "storefront",
+    "noPageEnd": "to start receiving orders.",
+    "noOrdersStart": "No orders yet. Add products to your",
+    "noOrdersLink": "storefront",
+    "noOrdersEnd": "and share your link."
+  },
+  "sections": {
+    "incoming": "Incoming transactions",
+    "toProcess": "To Process",
+    "toProcessCount": "{count} file(s) to validate",
+    "openLabel": "Open files",
+    "accepted": "Accepted",
+    "acceptedCount": "{count} payment(s) in progress",
+    "ledger": "Ledger",
+    "history": "History",
+    "historyCount": "{count} transaction(s) filed",
+    "book": "Business book",
+    "clientSheets": "Client sheets",
+    "clientSheetsCount": "{count} relationship(s) kept"
+  },
+  "errors": {
+    "not_authenticated": "You need to be logged in to continue.",
+    "action_failed": "Action not possible.",
+    "unknown": "Something went wrong. Try again in a moment."
+  }
+}

@@ -63,6 +63,26 @@ export default async function sitemap({
         priority: 0.6,
       });
     }
+
+    // Home des traductions publiées (jamais une langue absente/en erreur —
+    // published_fields non nul est la seule preuve d'une traduction sûre à
+    // servir en public).
+    const { data: translatedHomes } = await supabase
+      .from("localized_content")
+      .select("page_id, locale, translated_at")
+      .eq("entity_type", "page")
+      .in("page_id", pages.map((p) => p.id))
+      .not("published_fields", "is", null);
+    for (const row of translatedHomes ?? []) {
+      const slug = slugById.get(row.page_id);
+      if (!slug) continue;
+      entries.push({
+        url: `${base}/p/${slug}/${row.locale}`,
+        lastModified: row.translated_at ? new Date(row.translated_at) : new Date(),
+        changeFrequency: "weekly",
+        priority: 0.7,
+      });
+    }
   }
 
   return entries;

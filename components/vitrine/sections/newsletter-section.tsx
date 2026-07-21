@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import styles from "../vitrine.module.css";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
+import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
 
 type Props = {
   slug: string;
@@ -10,6 +12,7 @@ type Props = {
   description?: string;
   interactive?: boolean; // false en préview éditeur
   first?: boolean;
+  t?: StorefrontDict["sections"]["newsletter"];
 };
 
 export function NewsletterSection({
@@ -19,6 +22,7 @@ export function NewsletterSection({
   description,
   interactive = true,
   first = false,
+  t = frStorefront.sections.newsletter,
 }: Props) {
   const [email, setEmail] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
@@ -43,14 +47,12 @@ export function NewsletterSection({
     <div className={`${styles.contentSection} ${first ? styles.firstInGroup : ""}`}>
       <div className={styles.newsletter}>
         <div className={styles.sectionHeading}>
-          <p>Restons en lien</p>
-          <h2>{title || "Reste informé"}</h2>
-          <span>
-            {description || "Reçois mes offres et mes nouveautés, sans spam."}
-          </span>
+          <p>{t.eyebrow}</p>
+          <h2>{title || t.title}</h2>
+          <span>{description || t.subtitle}</span>
         </div>
         {state === "done" ? (
-          <p className={styles.newsletterDone}>Merci ! C&apos;est noté. ✨</p>
+          <p className={styles.newsletterDone}>{t.done}</p>
         ) : (
           <form className={styles.newsletterForm} onSubmit={subscribe}>
             <input
@@ -58,22 +60,20 @@ export function NewsletterSection({
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="ton@email.fr"
-              aria-label="Ton adresse email"
+              placeholder={t.emailPlaceholder}
+              aria-label={t.emailAria}
             />
             <button
               type="submit"
               disabled={state === "sending"}
               style={{ backgroundColor: accent }}
             >
-              {state === "sending" ? "…" : "S'inscrire"}
+              {state === "sending" ? t.sending : t.subscribe}
             </button>
           </form>
         )}
         {state === "error" && (
-          <p className={styles.newsletterError}>
-            Impossible de t&apos;inscrire pour le moment. Réessaie plus tard.
-          </p>
+          <p className={styles.newsletterError}>{t.error}</p>
         )}
       </div>
     </div>

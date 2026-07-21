@@ -1,0 +1,379 @@
+{
+ "nav": {
+  "menu": "メニュー",
+  "open": "ナビゲーションを開く",
+  "close": "ナビゲーションを閉じる",
+  "homeAria": "WayneWeb FLUX ホーム",
+  "mainAria": "メインナビゲーション",
+  "mobileAria": "モバイルナビゲーション",
+  "title": "ナビゲーション",
+  "activeProject": "進行中のプロジェクト",
+  "workspace": "マイスペース",
+  "tagline": "あなたのお店。すべてがここに。",
+  "manageCredits": "クレジットを管理",
+  "credits": "クレジット",
+  "pending": "{count}件 保留中",
+  "groups": {
+   "control": "管理する",
+   "sell": "売る",
+   "grow": "伸ばす",
+   "essential": "基本情報",
+   "business": "マイビジネス",
+   "account": "マイアカウント"
+  },
+  "items": {
+   "home": "ホーム",
+   "stats": "統計情報",
+   "statsShort": "統計",
+   "orders": "注文管理",
+   "ordersShort": "注文",
+   "offers": "オファー管理",
+   "offersShort": "オファー",
+   "projects": "プロジェクト一覧",
+   "storefront": "マイサイト",
+   "products": "商品管理",
+   "agenda": "予約カレンダー",
+   "content": "コンテンツ管理",
+   "ai": "FLUX – AI",
+   "install": "アプリをインストール",
+   "profile": "マイプロフィール",
+   "viewProfile": "プロフィールを見る"
+  }
+ },
+ "language": {
+  "aria": "スペースの言語",
+  "title": "スペースの表示言語",
+  "description": "この言語はダッシュボードに反映され、新しいページの元言語にもなります。",
+  "firstChoice": "最初の選択はトンネル内で無料です。",
+  "change": "変更する · {cost} クレジット",
+  "changing": "変更中…",
+  "success": "スペースの言語を変更しました。",
+  "error": "現在、言語を変更できません。",
+  "insufficient": "アカウントの言語を変更するには{cost}クレジットが必要です。",
+  "laterChangeCost": "店舗を公開した後の変更には{cost}クレジットが必要です（再翻訳を含む）。"
+ },
+ "vitrineGuide": {
+  "step": "ステップ {current} / {total}",
+  "fullEditor": "フルエディター",
+  "back": "戻る",
+  "continue": "続ける",
+  "edit": "編集する",
+  "saving": "保存中…",
+  "draftSaved": "下書きを保存しました。",
+  "errors": {
+   "blocked": "このコンテンツはFLUXのルールに反しています。",
+   "rate": "連続で生成を行いすぎました。数分後にもう一度試してね。",
+   "generation": "生成に失敗しました — クレジットは差し引かれていません。",
+   "brief": "まずはあなたのお店を一言で説明してね。"
+  },
+  "intro": {
+   "kicker": "FLUX サイトアシスタント",
+   "titleStart": "サイトを進化させよう、",
+   "titleEm": "ひとつずつ、確実に。",
+   "text": "FLUXは現在の情報を引き継ぎ、ステップごとにサポートします。最終確認までは何も変更されません。",
+   "placeholder": "あなたのお店を数フレーズで紹介してみて：何を提供しているか、雰囲気、こだわりなど…あとはFLUXにお任せ。",
+   "creating": "FLUXがサイトを作成中…",
+   "create": "FLUXにサイト全体を作らせる（{cost} クレジット）",
+   "recharge": "FLUXにサイト全体を作らせる — クレジットをチャージしてね",
+   "working": "FLUXが作業中…",
+   "prefill": "テキストだけ自動入力する（{cost} クレジット）",
+   "stepByStep": "またはステップごとに編集する",
+   "direct": "エディターに直接進む",
+   "prefillSuccess": "FLUXが下書きを自動入力しました。確認して公開してね。",
+   "generateSuccess": "FLUXがサイトを作成しました。下書きを確認して公開してね。"
+  },
+  "identity": {
+   "kicker": "あなたのアイデンティティ",
+   "title": "お客様に覚えてもらいたいことは？",
+   "subtitle": "最初に表示される店名・職業・キャッチコピーです。",
+   "business": "店名",
+   "job": "あなたの職業",
+   "tagline": "キャッチコピー",
+   "taglinePlaceholder": "選ばれる理由を一言で",
+   "city": "あなたの街"
+  },
+  "images": {
+   "kicker": "あなたの画像",
+   "title": "どんな印象を残したい？",
+   "subtitle": "ロゴと、訪問者を迎える大きな写真を追加しよう。",
+   "logo": "ロゴまたはポートレート",
+   "logoChange": "ロゴを変更する",
+   "logoAdd": "ロゴを追加する",
+   "hero": "大きなカバー写真",
+   "heroChange": "写真を変更する",
+   "heroAdd": "写真を追加する"
+  },
+  "mood": {
+   "kicker": "あなたの雰囲気",
+   "title": "あなたのビジネスを一番よく表す世界観は？",
+   "subtitle": "構成はそのままアクセシブル＆レスポンシブ、雰囲気だけが変わります。"
+  },
+  "details": {
+   "kicker": "細かい設定",
+   "title": "どうやってあなたを見分け、連絡できる？",
+   "subtitle": "フォント、カラーを選んで、連絡先を確認しよう。",
+   "font": "フォントスタイル",
+   "primary": "メインカラー",
+   "dark": "ダークカラー",
+   "phone": "電話番号",
+   "phonePlaceholder": "例：080 1234 5678",
+   "address": "住所",
+   "optional": "任意"
+  },
+  "confirmation": {
+   "kicker": "確認",
+   "title": "サイトの進化準備が整いました。",
+   "subtitle": "重要ポイントを確認してね：変更内容は下書きとして保存され、その後公開するか選べます。",
+   "business": "お店",
+   "positioning": "ポジショニング",
+   "mood": "雰囲気",
+   "images": "画像",
+   "imagesCount": "2枚中{count}枚追加済み",
+   "cost": "アシスタントの利用コスト",
+   "costValue": "{cost} クレジット · 残高：{balance} クレジット",
+   "missing": "あと{count}クレジット足りません。",
+   "recharge": "クレジットをチャージする",
+   "freeEditor": "またはフルエディターを無料で使う。",
+   "confirm": "変更内容を確定する（{cost} クレジット）"
+  },
+  "publish": {
+   "kicker": "公開",
+   "title": "下書きの準備ができました。公開する？",
+   "subtitle": "公開中のサイトはまだ以前のバージョンです。新しいバージョンを公開すると、お客様に表示される内容が切り替わります。",
+   "later": "あとで — エディターに進む"
+  },
+  "credits": {
+   "expiredTitle": "6か月のAI利用期間が終了しました",
+   "trialTitle": "お試し期間が終了しました",
+   "insufficientTitle": "クレジットが不足しています",
+   "expired": "ご購入により6か月間AI機能をご利用いただけました。残りのクレジットは引き続きサイトの公開・管理に利用できます。AI生成を再開するにはプランを選んでね。",
+   "trial": "お試し期間が終了しました — チャージしてFLUXを100%活用しよう。",
+   "insufficient": "サイトアシスタントの利用には{cost}クレジットが必要です。クレジットをチャージするか、フルエディター（無料）を使ってね。",
+   "template": "テンプレートから始める",
+   "recharge": "クレジットをチャージする",
+   "plan": "FLUXのプランを選ぶ"
+  },
+  "preview": {
+   "aria": "現在のサイトのプレビュー",
+   "live": "リアルタイムプレビュー",
+   "job": "あなたの職業",
+   "city": "あなたの街",
+   "business": "あなたのお店",
+   "tagline": "ここにキャッチコピーが表示されます。",
+   "discover": "詳しく見る",
+   "whatsapp": "WhatsApp 有効"
+  }
+ },
+ "offerTunnel": {
+  "step": "ステップ {current} / 8",
+  "myOffers": "オファー管理",
+  "back": "戻る",
+  "continue": "続ける",
+  "creation": "FLUX オファー作成",
+  "create": "オファーを作成する",
+  "success": "オファーの準備ができました。サイトの新しいバージョンを公開して反映させてね。",
+  "intro": {
+   "title": "思わず行動したくなるオファーを作ろう。",
+   "text": "FLUXが、あなたのサイトに最適な訴求と価格を提案します。"
+  },
+  "format": {
+   "kicker": "フォーマット",
+   "title": "何をアピールしたい？",
+   "subtitle": "あなたのオファーに一番合うタイプを選んでね。",
+   "kinds": {
+    "produit": {
+     "title": "商品オファー",
+     "text": "注文できる商品やパックです。"
+    },
+    "service": {
+     "title": "サービスオファー",
+     "text": "おすすめのサービス内容です。"
+    },
+    "evenement": {
+     "title": "イベント",
+     "text": "日程や定員のある体験企画です。"
+    }
+   }
+  },
+  "promise": {
+   "kicker": "訴求ポイント",
+   "title": "オファーの名前は？",
+   "subtitle": "ひと目で伝わる短いタイトルにしよう。",
+   "label": "オファーのタイトル",
+   "placeholder": "例：お試しパック"
+  },
+  "price": {
+   "kicker": "価格",
+   "title": "どんな価値を表示したい？",
+   "subtitle": "本当にお得なプロモーションの場合のみ、取消線の価格を追加してね。",
+   "offer": "オファー価格（円）",
+   "offerPlaceholder": "例：4900",
+   "compare": "取消線の元価格（円）・任意",
+   "comparePlaceholder": "例：12000"
+  },
+  "benefit": {
+   "kicker": "メリット",
+   "title": "なぜお客様はこれを選ぶべき？",
+   "subtitle": "内容とお客様のメリットをシンプルに説明しよう。",
+   "label": "説明",
+   "placeholder": "オファーに含まれるもの、その利点、期限など…"
+  },
+  "photo": {
+   "kicker": "写真",
+   "title": "オファーに印象的な画像をつけよう。",
+   "subtitle": "写真は任意ですが、あるとオファーが目立ちます。",
+   "change": "写真を変更する",
+   "add": "写真を追加する"
+  },
+  "visibility": {
+   "kicker": "公開設定",
+   "title": "オファーは公開の準備ができてる？",
+   "subtitle": "今すぐ公開するか、下書きのまま保存できます。",
+   "online": "公開する",
+   "onlineHint": "次回の公開時にサイトに表示されます。",
+   "draft": "下書きのまま保存",
+   "draftHint": "後でじっくり編集できます。"
+  },
+  "confirm": {
+   "kicker": "確認",
+   "title": "オファーの準備が整いました。",
+   "subtitle": "作成前に内容を確認してね。",
+   "type": "タイプ",
+   "status": "ステータス",
+   "offer": "オファー",
+   "price": "価格",
+   "cost": "作成コスト",
+   "online": "公開中",
+   "draft": "下書き",
+   "instead": "の代わりに",
+   "costValue": "{cost} クレジット · 残高：{balance} クレジット",
+   "extra": "プランの上限を超えた分",
+   "missing": "このオファーを作成するにはあと{count}クレジット必要です。",
+   "recharge": "クレジットをチャージする",
+   "edit": "編集する",
+   "creating": "作成中…",
+   "create": "確定して作成する（{cost} クレジット）"
+  },
+  "limit": {
+   "overTitle": "プランの上限を超えています",
+   "reachedTitle": "プランの上限に達しました",
+   "over": "あなたのプランには{limit}件のオファーが含まれていますが、すでに{count}件作成済みです。それでもこのオファーは作成できます：通常の{normal}クレジットではなく{extra}クレジットかかります。",
+   "reached": "あなたのプランには{limit}件のオファーが含まれていますが、すでに{count}件作成済みです。続けるにはクレジットをチャージしてね：追加オファーは{extra}クレジットで、残高は{balance}クレジットです。",
+   "view": "オファー一覧を見る",
+   "continue": "続ける（{cost} クレジット）",
+   "recharge": "クレジットをチャージする"
+  },
+  "credits": {
+   "trialTitle": "お試し終了、残高なし",
+   "insufficientTitle": "クレジットが不足しています",
+   "trial": "お試し期間が終了し、クレジットの残高がありません。FLUXのプランなら毎月クレジットがチャージされます。オファーは準備済みなので、何も失われません。",
+   "insufficient": "このオファーの作成には{cost}クレジットが必要です。完了するにはクレジットをチャージしてね。オファーは準備済みなので、何も失われません。",
+   "later": "あとで",
+   "plan": "FLUXのプランを選ぶ",
+   "recharge": "クレジットをチャージする"
+  },
+  "errors": {
+   "not_authenticated": "続けるにはログインが必要です。",
+   "no_active_page": "まずはサイトを作成してね。",
+   "offer_creation_failed": "オファーの作成に失敗しました。",
+   "content_blocked": "ヘイトメッセージや露骨な内容はFLUXで禁止されており、違反には制裁措置があります。あなたと他の利用者の環境を大切にしてください。利用規約への違反が3回に達すると、アカウントは削除されます。",
+   "unknown": "エラーが発生しました。少し時間をおいてもう一度試してね。"
+  }
+ },
+ "installer": {
+  "metaTitle": "アプリをインストール",
+  "eyebrow": "いつでも手元に",
+  "title": "Wayne Web Flux をインストールしよう",
+  "subtitle": "ホーム画面にアプリを追加すれば、本物のアプリのようにダッシュボードを開けます。デバイスがバッジ表示に対応していれば、処理待ちの注文数がアイコンに表示されます。",
+  "noteTitle": "知っておきたいこと",
+  "note": "バッジはアプリを開くたびに更新され、処理すべき注文がなくなると消えます。表示方法はスマホやブラウザによって異なります。",
+  "installed": "アプリはインストール済みです",
+  "oneMinute": "1分でインストール完了",
+  "installedHint": "ホーム画面から見つけられます。",
+  "chooseDevice": "お使いのスマホに合った手順を選んでね。",
+  "installNow": "今すぐインストール",
+  "iphonePlatform": "iPhone · Safari",
+  "fromSafari": "Safari から",
+  "iphoneSteps": [
+   "このページを Safari で開く。",
+   "共有ボタンをタップする。",
+   "「ホーム画面に追加」を選び、「追加」をタップする。"
+  ],
+  "androidPlatform": "Android · Chrome",
+  "fromChrome": "Chrome から",
+  "androidSteps": [
+   "このページを Chrome で開く。",
+   "右上のメニューをタップする。",
+   "「アプリをインストール」または「ホーム画面に追加」を選ぶ。"
+  ]
+ },
+ "emailVerification": {
+  "banner": "サイトを公開してお客様からの支払いを受け取るには、メールアドレスを確認してね。",
+  "resend": "メールを再送信する",
+  "resending": "送信中…",
+  "sent": "メールを送信しました。受信ボックスを確認してね。",
+  "spamHint": "見当たらない場合は、迷惑メールフォルダも確認してね。",
+  "errors": {
+   "not_authenticated": "続けるにはログインが必要です。",
+   "already_verified": "このアドレスはすでに確認済みです。",
+   "rate_limited": "再送信の前に1分ほど待ってね。",
+   "update_failed": "メールを送信できませんでした。あとで再度試してね。",
+   "send_failed": "メールが送信されませんでした。少し時間をおいてもう一度試してね。",
+   "unknown": "エラーが発生しました。少し時間をおいてもう一度試してね。"
+  }
+ },
+ "trialBanner": {
+  "activeSingular": "FLUXお試し：すべて試せる期間はあと{days}日。",
+  "activePlural": "FLUXお試し：すべて試せる期間はあと{days}日。",
+  "viewPlans": "プランを見る",
+  "creditsActiveSingular": "お試し期間は終了しました — 残り{credits}クレジットでFLUXは引き続き動きます。チャージすれば100%活用できます。",
+  "creditsActivePlural": "お試し期間は終了しました — 残り{credits}クレジットでFLUXは引き続き動きます。チャージすれば100%活用できます。",
+  "expiredNoCredits": "お試し終了・残高なし — サイトは公開中のままですが、変更は一時停止しています。",
+  "choosePlan": "FLUXのプランを選ぶ"
+ },
+ "revenueCounter": {
+  "aria": "発生した売上",
+  "eyebrow": "あなたの売上",
+  "milestoneReached": "🎉 {amount}の節目を達成",
+  "caption": "あなたの技術は共有される価値があります。これは、来店・予約の実施と注文の承認によってFLUXの店舗がすでに生み出した成果です。",
+  "nextMilestone": "次の節目：{amount}",
+  "remaining": "あと{amount}で到達 💪",
+  "maxed": "すべての節目を突破しました 🚀 その調子！"
+ },
+ "upsellDialog": {
+  "later": "あとで",
+  "discoverPlans": "プランを見る",
+  "trial": {
+   "title": "FLUXにもっと力を",
+   "description": "お試し期間中はAIツールを体験できます。プランに加入すると、店舗の完全作成が可能になり、クレジットが毎月チャージされます。"
+  },
+  "trialExpired": {
+   "title": "お試し期間が終了しました",
+   "description": "残高はゼロですが、サイトは公開されたままです。チャージすればFLUXを100%活用できます：編集・公開・生成。"
+  },
+  "trialExpiredWithCredits": {
+   "title": "お試し期間が終了しました",
+   "description": "残りのクレジットで生成も含めFLUXは引き続き動きます。チャージすれば100%活用でき、残高は毎月更新されます。"
+  },
+  "creditsActive": {
+   "title": "単発パックから定期プランへ",
+   "description": "パックでは引き続きAIを利用できます。プランなら毎月のチャージが加わり、購入を待たずにFLUXを使い続けられます。"
+  },
+  "creditsExpired": {
+   "title": "AI利用期間は終了、クレジットは健在",
+   "description": "残りのクレジットで店舗の公開・管理は引き続き可能です。プランに加入するとAI生成が再開し、毎月のリズムが整います。"
+  }
+ },
+ "photoUpload": {
+  "uploading": "送信中…",
+  "tooLarge": "ファイルが大きすぎます（最大{max}MB）。",
+  "failed": "送信に失敗しました。もう一度お試しください。"
+ },
+ "copyButton": {
+  "copy": "コピー",
+  "copied": "リンクをコピーしました。"
+ },
+ "creditsLink": {
+  "aria": "{credits}クレジット — マイクレジットを見る"
+ }
+}

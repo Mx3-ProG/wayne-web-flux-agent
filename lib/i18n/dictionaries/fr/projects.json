@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "Mes projets",
+    "newTitle": "Nouveau projet"
+  },
+  "eyebrow": "Ton compte",
+  "title": "Mes projets",
+  "subtitle": "Chaque projet est une boutique complète : sa vitrine, ses produits, ses commandes, son chiffre d'affaires. Choisis le projet actif pour piloter tout ton espace dessus.",
+  "counter": "{count} / {limit} projet — forfait {plan}",
+  "counterPlural": "{count} / {limit} projets — forfait {plan}",
+  "noName": "Sans nom",
+  "revenue": "Chiffre d'affaires",
+  "open": "Ouvrir ↗",
+  "newProject": "Nouveau projet",
+  "upsellTitle": "Plusieurs boutiques",
+  "upsellBasique": "Gère plusieurs boutiques (jusqu'à 10) avec les formules supérieures.",
+  "upsellLimit": "Tu as atteint la limite de projets de ta formule.",
+  "discoverPlans": "Découvrir les formules FLUX",
+  "activeProject": "Projet actif",
+  "activating": "…",
+  "activate": "Activer ce projet",
+  "domain": {
+    "title": "Nom de domaine",
+    "text": "Branche ton propre domaine (ex. {example}) sur la vitrine du projet actif.",
+    "soon": "Dès la formule Pro",
+    "placeholder": "ma-boutique.fr",
+    "saving": "…",
+    "save": "Enregistrer",
+    "saved": "Domaine enregistré.",
+    "comingSoon": "Cette fonctionnalité arrive prochainement en production. Elle est déjà testable en local."
+  },
+  "backToProjects": "← Mes projets",
+  "errors": {
+    "feature_coming_soon": "Fonction bientôt disponible.",
+    "not_authenticated": "Non connecté.",
+    "plan_restricted": "Réservé aux formules Pro et supérieures.",
+    "invalid_domain": "Nom de domaine invalide (ex. ma-boutique.fr).",
+    "save_failed": "Enregistrement impossible (domaine déjà pris ?).",
+    "project_not_found": "Projet introuvable.",
+    "change_failed": "Changement impossible.",
+    "content_blocked": "Les messages de haine ou les contenus explicites sont interdits et sanctionnés sur FLUX ; merci de respecter ton environnement et celui des autres. Au bout de 3 infractions à nos conditions d'utilisation, le compte est supprimé.",
+    "unknown": "Une erreur est survenue. Réessaie dans un instant."
+  }
+}

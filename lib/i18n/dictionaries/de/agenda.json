@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "title": "Mein Kalender"
+  },
+  "weekdaysShort": {
+    "0": "So",
+    "1": "Mo",
+    "2": "Di",
+    "3": "Mi",
+    "4": "Do",
+    "5": "Fr",
+    "6": "Sa"
+  },
+  "weekdaysLong": {
+    "0": "Sonntag",
+    "1": "Montag",
+    "2": "Dienstag",
+    "3": "Mittwoch",
+    "4": "Donnerstag",
+    "5": "Freitag",
+    "6": "Samstag"
+  },
+  "rhythms": {
+    "classic": "Klassischer Tag",
+    "extended": "Verlängerter Tag",
+    "split": "Mit Mittagspause",
+    "morning": "Eher morgens",
+    "afternoon": "Eher nachmittags",
+    "evening": "Tagesende & Abend"
+  },
+  "tunnel": {
+    "myAgenda": "Mein Kalender",
+    "step": "Schritt {current} von 4",
+    "intro": {
+      "kicker": "Deine Zeit, gut organisiert",
+      "titleStart": "FLUX, der Kalender im Dienst",
+      "titleEm": "deiner Bedürfnisse.",
+      "text": "Wähle deine Tage und deinen Rhythmus. Flux bereitet die Termine vor, die deine Kunden über deine Vitrine buchen können.",
+      "cta": "Meine Öffnungszeiten erstellen",
+      "shortcutText": "Ich habe meine Geschäftszeiten schon festgelegt",
+      "shortcutCta": "Zurück zum Kalender"
+    },
+    "days": {
+      "kicker": "Deine Öffnungstage",
+      "titleStart": "Welche Tage sollen",
+      "titleEm": "buchbar sein?",
+      "subtitle": "Wähle alle Tage aus, an denen deine Kunden Termine vereinbaren können."
+    },
+    "rhythm": {
+      "kicker": "Dein Rhythmus",
+      "titleStart": "Zu welchen Zeiten arbeitest du",
+      "titleEm": "am besten?",
+      "subtitle": "Dieser Rhythmus wird auf die ausgewählten Tage angewendet. Du kannst ihn später in deinem Kalender feinjustieren."
+    },
+    "variable": {
+      "kicker": "Variable Zeiten",
+      "titleStart": "Haben manche Tage einen",
+      "titleEm": "anderen Rhythmus?",
+      "subtitle": "Behalte den Hauptrhythmus bei oder passe jeden Tag individuell an. Kein Feld auszufüllen."
+    },
+    "review": {
+      "kicker": "Dein Zeitplan ist bereit",
+      "title": "Hier sind die Termine, die deinen Kunden vorgeschlagen werden.",
+      "closed": "Geschlossen",
+      "open": "Geöffnet",
+      "unavailable": "Nicht verfügbar",
+      "saving": "Dein Kalender wird erstellt…",
+      "save": "Speichern und meinen Kalender öffnen",
+      "editAria": "Meine Öffnungszeiten ändern"
+    },
+    "back": "Zurück",
+    "continue": "Weiter",
+    "successToast": "Deine Öffnungszeiten sind bereit. Dein Kalender ist zu den richtigen Zeiten geöffnet."
+  },
+  "empty": {
+    "title": "Zuerst deine Vitrine",
+    "text": "Dein Kalender aktiviert sich, sobald deine Seite existiert: Deine Kunden buchen dort direkt.",
+    "cta": "Meine Vitrine erstellen"
+  },
+  "view": {
+    "eyebrow": "Dein Flux-Kalender",
+    "greeting": "Hallo{name}.",
+    "noUpcoming": "Deine Woche ist ruhig. Deine Termine bleiben offen und deine Vitrine arbeitet für dich.",
+    "upcomingCount": "{count} anstehende Termine. Alles ist bereit, um deine Kunden zu empfangen.",
+    "viewStorefront": "Meine Vitrine ansehen",
+    "statsAria": "Kalenderübersicht",
+    "upcomingLabel": "Anstehende Termine",
+    "syncedHint": "Zeitplan synchronisiert",
+    "registeredClients": "Registrierte Kunden",
+    "listFillsItself": "Die Liste füllt sich von selbst",
+    "bookableDays": "Buchbare Tage",
+    "outOf7": "von 7 Tagen",
+    "myWeek": "Meine Woche",
+    "weekHint": "Tippe auf einen Tag, um deinen Tagesablauf zu sehen. Der rote Punkt = Termine vorhanden.",
+    "noBookingToday": "Für diesen Tag liegt noch kein Termin vor.",
+    "cancel": "Stornieren",
+    "bookingCancelled": "Termin storniert.",
+    "myClients": "Meine Kunden",
+    "clientsHint": "Diese Liste füllt sich bei jeder Buchung von selbst. Tippe auf einen Kunden für seinen Verlauf und deine private Notiz.",
+    "searchPlaceholder": "Nach Vorname oder Nummer suchen…",
+    "firstClientHint": "Dein erster Kunde erscheint hier nach seiner Buchung.",
+    "noClientMatch": "Kein Kunde mit diesem Namen.",
+    "visitSingular": "Besuch",
+    "visitPlural": "Besuche",
+    "orderSingular": "Bestellung",
+    "orderPlural": "Bestellungen",
+    "clientRevenue": "Kundenumsatz",
+    "email": "E-Mail",
+    "hisAppointments": "Seine Termine",
+    "myNote": "Meine Notiz (nur für dich sichtbar)",
+    "save": "Speichern",
+    "noteSaved": "Notiz gespeichert.",
+    "variableHours": "Variable Öffnungszeiten",
+    "variableHoursHint": "Jeder Tag kann seinen eigenen Rhythmus haben. Fahre über eine Zeile, um sie in den Vordergrund zu holen.",
+    "removeRange": "Zeitraum entfernen",
+    "addBreak": "+ Pause",
+    "saveVariableHours": "Meine variablen Öffnungszeiten speichern",
+    "variableHoursSaved": "Gespeichert. Deine Kunden sehen bereits die richtigen Termine.",
+    "blockPeriod": "Zeitraum blockieren",
+    "blockPeriodHint": "Urlaub, private Termine: Niemand kann darauf buchen.",
+    "from": "Vom",
+    "to": "bis",
+    "block": "Blockieren",
+    "periodBlocked": "Zeitraum blockiert.",
+    "fromTo": "Vom {start} bis {end}",
+    "unblock": "entsperren",
+    "googleAgenda": "In deinem Google Kalender",
+    "googleAgendaHint": "Füge diesen Link EINMAL in Google Kalender ein (+ → „Aus URL“) und deine Termine erscheinen dort ganz von allein. Nur Lesezugriff — behalte ihn für dich.",
+    "copy": "Kopieren",
+    "linkCopied": "Link kopiert."
+  },
+  "errors": {
+    "not_authenticated": "Du musst angemeldet sein, um fortzufahren.",
+    "save_failed": "Speichern nicht möglich.",
+    "invalid_dates": "Ungültige Daten.",
+    "end_before_start": "Das Ende muss nach dem Beginn liegen.",
+    "block_failed": "Dieser Zeitraum kann nicht blockiert werden.",
+    "note_save_failed": "Notiz nicht gespeichert.",
+    "cancel_failed": "Stornierung nicht möglich.",
+    "unknown": "Ein Fehler ist aufgetreten. Versuch's gleich noch einmal."
+  }
+}

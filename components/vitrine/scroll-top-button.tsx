@@ -6,8 +6,9 @@
 import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
 import styles from "./vitrine.module.css";
+import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
 
-export function ScrollTopButton() {
+export function ScrollTopButton({ label = frStorefront.shell.scrollTop }: { label?: string }) {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -22,7 +23,7 @@ export function ScrollTopButton() {
     <button
       type="button"
       className={styles.scrollTopFab}
-      aria-label="Remonter en haut de la page"
+      aria-label={label}
       onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
     >
       <ArrowUp aria-hidden="true" />

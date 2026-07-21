@@ -1,0 +1,59 @@
+{
+  "chapters": {
+    "1": {
+      "title": "Tu dirección",
+      "whyTitle": "Hoy, tus clientes te buscan y no te encuentran.",
+      "whyBody": "Uno de cada dos clientes que no encuentra una dirección clara llama a la competencia de al lado. Vamos a darte un enlace tuyo, que conservas de por vida, y que Google por fin puede leer.",
+      "doneTitle": "Tu dirección ya existe.",
+      "doneBody": "Es tuya. Nadie puede quitártela — y la IA ya sabe escribir con tus palabras."
+    },
+    "2": {
+      "title": "Lo que vendes",
+      "whyTitle": "Un escaparate vacío no vende nada.",
+      "whyBody": "Un visitante decide en 8 segundos. Si no ve ni precio, ni oferta, ni horario disponible, se va. Vamos a llenar tu escaparate ahora — no «más tarde».",
+      "doneTitle": "Tus clientes saben qué comprar.",
+      "doneBody": "Un catálogo, una oferta destacada, y horarios reales. Tu escaparate puede recibir peticiones mientras tú trabajas."
+    },
+    "3": {
+      "title": "Tu visibilidad",
+      "whyTitle": "El escaparate más bonito del mundo no sirve de nada si nadie pasa por delante.",
+      "whyBody": "Es el paso que todo el mundo se salta — y es justo el que llena una agenda. Vamos a crear tu primer contenido y a hacer circular tu enlace.",
+      "doneTitle": "Tu recorrido ha terminado.",
+      "doneBody": "Tu negocio está online, completo y listo para compartir. Todo lo que añadas a partir de ahora solo aumenta la ventaja."
+    }
+  },
+  "steps": {
+    "1": {
+      "title": "Crea tu escaparate",
+      "gain": "Una dirección tuya, legible por Google, lista en 30 segundos."
+    },
+    "2": {
+      "title": "Enséñale a hablar como tú",
+      "gain": "La IA deja de escribir como un robot y empieza a escribir como tú."
+    },
+    "3": {
+      "title": "Crea tu producto",
+      "gain": "Sin precio visible, uno de cada dos visitantes se va sin contactarte."
+    },
+    "4": {
+      "title": "Crea tus ofertas",
+      "gain": "La oferta destacada es lo primero que ve un cliente. Es la que activa la venta."
+    },
+    "5": {
+      "title": "Crea tu agenda",
+      "gain": "Tus clientes reservan por la noche, el domingo, mientras tú trabajas."
+    },
+    "6": {
+      "title": "Crea tu primer contenido",
+      "gain": "Publicar con regularidad es lo que hace que la gente vuelva a tu escaparate."
+    },
+    "7": {
+      "title": "Mira tus resultados",
+      "gain": "Lo que no mides, no puedes mejorarlo."
+    },
+    "8": {
+      "title": "Comparte tu negocio en todas partes",
+      "gain": "Cuanto más circula tu enlace, más se llena tu agenda sola."
+    }
+  }
+}

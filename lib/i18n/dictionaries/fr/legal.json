@@ -1,0 +1,13 @@
+{
+  "chrome": {
+    "backToSite": "Retour au site",
+    "eyebrow": "Wayne Web Flux · Informations contractuelles",
+    "lastUpdated": "Dernière mise à jour :",
+    "frenchOnlyNotice": ""
+  },
+  "titles": {
+    "terms": "Conditions générales de vente et d’utilisation",
+    "privacy": "Politique de confidentialité",
+    "legalNotice": "Mentions légales"
+  }
+}

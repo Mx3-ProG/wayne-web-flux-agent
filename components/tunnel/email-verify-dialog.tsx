@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import { ExternalLink, MailWarning } from "lucide-react";
 import { toast } from "sonner";
-import { SPAM_HINT_SELF, webmail } from "@/lib/email-hints";
+import { webmail } from "@/lib/email-hints-constants";
 import { resendVerificationEmail } from "@/app/(app)/actions";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,6 +14,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import type { TunnelDict } from "@/lib/i18n/get-dictionary";
 
 // Le tunnel ouvre la session sans attendre le clic sur l'email (createAccount) :
 // l'utilisateur arrive donc à la publication avec une adresse non prouvée, et
@@ -21,10 +22,12 @@ import {
 // un mur, pas une notification : on l'explique, on ouvre sa boîte mail, et on
 // prévient pour les spams, sans quoi il conclut que la publication est cassée.
 export function EmailVerifyDialog({
+  dict,
   email,
   open,
   onOpenChange,
 }: {
+  dict: TunnelDict["emailVerify"];
   email: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -38,11 +41,10 @@ export function EmailVerifyDialog({
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <MailWarning aria-hidden="true" className="h-4 w-4" />
-            Confirme ton adresse pour publier
+            {dict.title}
           </DialogTitle>
           <DialogDescription>
-            On a envoyé un lien de confirmation à <strong>{email}</strong>. Clique
-            dessus, puis reviens ici : ta vitrine partira en ligne. {SPAM_HINT_SELF}
+            {dict.description.replace("{email}", email)} {dict.spamHint}
           </DialogDescription>
         </DialogHeader>
 
@@ -53,7 +55,7 @@ export function EmailVerifyDialog({
           {provider && (
             <Button asChild>
               <a href={provider.url} target="_blank" rel="noreferrer">
-                Ouvrir {provider.label} <ExternalLink aria-hidden="true" />
+                {dict.openWebmail.replace("{label}", provider.label)} <ExternalLink aria-hidden="true" />
               </a>
             </Button>
           )}
@@ -64,12 +66,17 @@ export function EmailVerifyDialog({
             onClick={() =>
               startTransition(async () => {
                 const result = await resendVerificationEmail();
-                if (result.error) toast.error(result.error);
-                else if (result.message) toast.success(result.message);
+                if (result.error) {
+                  toast.error(dict.errors[result.error as keyof typeof dict.errors] ?? dict.errors.unknown);
+                } else if (result.message === "already_verified") {
+                  toast.success(dict.errors.already_verified);
+                } else if (result.message === "sent") {
+                  toast.success(`${dict.sent} ${dict.spamHint}`);
+                }
               })
             }
           >
-            {pending ? "Envoi…" : "Renvoyer l'email"}
+            {pending ? dict.resending : dict.resend}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -39,6 +39,9 @@ import {
 } from "@/components/ui/accordion";
 import { ExternalLink, FileText, Trash2, Undo2 } from "lucide-react";
 import styles from "./page-editor-redesign.module.css";
+import { useI18n } from "@/components/i18n-provider";
+import { translateActionError } from "./translate-action-error";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
 
 type Props = {
   page: Page; // home avec brouillon appliqué (thème, couleurs, footer…)
@@ -49,6 +52,8 @@ type Props = {
   previewProducts: CategoryWithProducts[];
   previewOffers: Offer[];
   publish: PublishProps;
+  // Langue du PROJET : voir la même note dans page-editor.tsx.
+  storefrontDict: StorefrontDict;
 };
 
 export function SubpageEditor({
@@ -60,8 +65,11 @@ export function SubpageEditor({
   previewProducts,
   previewOffers,
   publish,
+  storefrontDict,
 }: Props) {
   const router = useRouter();
+  const { editor, dictionary } = useI18n();
+  const t = editor.subpageEditor;
   const [previewMode, setPreviewMode] = useState<"mobile" | "desktop">("mobile");
   const [panelMode, setPanelMode] = useState<"edit" | "preview">("edit");
   const [deleting, startDeleting] = useTransition();
@@ -80,7 +88,10 @@ export function SubpageEditor({
       sections: merged.sections,
     },
     (fields) => saveSitePageFields(sitePage.id, fields),
-    { initiallyDirty: publish.hasDraft }
+    {
+      initiallyDirty: publish.hasDraft,
+      translateError: (error) => translateActionError(editor.actionErrors, error),
+    }
   );
 
   const previewSitePage: SitePage = { ...merged, ...draft };
@@ -90,9 +101,7 @@ export function SubpageEditor({
   function onDelete() {
     if (
       !window.confirm(
-        pathLocked
-          ? "Cette page sera retirée de ton site à la prochaine publication. Continuer ?"
-          : "Supprimer cette page brouillon ? Cette action est immédiate."
+        pathLocked ? t.confirmDeleteLocked : t.confirmDeleteDraft
       )
     ) {
       return;
@@ -100,7 +109,7 @@ export function SubpageEditor({
     startDeleting(async () => {
       const result = await deleteSitePage(sitePage.id);
       if (result.error) {
-        toast.error(result.error);
+        toast.error(translateActionError(editor.actionErrors, result.error));
         return;
       }
       if (sitePage.draft_status === "new") {
@@ -114,57 +123,51 @@ export function SubpageEditor({
   function onRestore() {
     startDeleting(async () => {
       const result = await restoreSitePage(sitePage.id);
-      if (result.error) toast.error(result.error);
+      if (result.error) toast.error(translateActionError(editor.actionErrors, result.error));
       else router.refresh();
     });
   }
 
   return (
     <>
-      <div className={styles.mobileSwitch} aria-label="Mode de l’éditeur">
+      <div className={styles.mobileSwitch} aria-label={t.editorMode}>
         <button
           className={panelMode === "edit" ? styles.active : ""}
           type="button"
           onClick={() => setPanelMode("edit")}
         >
-          Réglages
+          {t.settingsTab}
         </button>
         <button
           className={panelMode === "preview" ? styles.active : ""}
           type="button"
           onClick={() => setPanelMode("preview")}
         >
-          Aperçu
+          {t.previewTab}
         </button>
       </div>
 
       <section className={styles.royalHero}>
         <span className={styles.overline}>
           <FileText aria-hidden="true" />
-          Page « {draft.title || draft.path} »
+          {t.pageOverline.replace("{name}", draft.title || draft.path)}
         </span>
         <h1>
-          Une page de <span>ton site</span>
+          {t.heroTitleStart} <span>{t.heroTitleEm}</span>
         </h1>
         <p>
-          Compose cette page avec les mêmes blocs que ta page d&apos;accueil.
-          Elle sera en ligne sur /p/{page.slug}/{draft.path} à la prochaine
-          publication.
+          {t.heroText.replace("{slug}", page.slug).replace("{path}", draft.path)}
         </p>
         <div className={styles.heroActions}>
           <div className={styles.saveStatus} data-saving={saving}>
             <span />
-            {saving
-              ? "Enregistrement du brouillon..."
-              : dirty
-                ? "Brouillon enregistré — modifications non publiées"
-                : "Ton site en ligne est à jour"}
+            {saving ? t.saving : dirty ? t.unpublished : t.upToDate}
           </div>
           <PublishButton {...publish} hasDraft={dirty || publish.hasDraft} />
           {sitePage.published && (
             <Button asChild variant="secondary" className={styles.openPage}>
               <Link href={`/p/${page.slug}/${sitePage.path}`} target="_blank">
-                Voir la page <ExternalLink aria-hidden="true" />
+                {t.viewPage} <ExternalLink aria-hidden="true" />
               </Link>
             </Button>
           )}
@@ -184,16 +187,14 @@ export function SubpageEditor({
 
           {pendingDeletion && (
             <div className="flex items-center justify-between gap-3 rounded-lg border border-destructive/40 bg-destructive/5 p-3">
-              <p className="text-sm">
-                Cette page sera supprimée à la prochaine publication.
-              </p>
+              <p className="text-sm">{t.pendingDeletion}</p>
               <Button
                 variant="secondary"
                 size="sm"
                 disabled={deleting}
                 onClick={onRestore}
               >
-                <Undo2 aria-hidden="true" /> Garder la page
+                <Undo2 aria-hidden="true" /> {t.keepPage}
               </Button>
             </div>
           )}
@@ -206,10 +207,10 @@ export function SubpageEditor({
           >
             {/* Infos de la page */}
             <AccordionItem value="infos" className="border rounded-xl px-4">
-              <AccordionTrigger>La page — titre, adresse, bannière</AccordionTrigger>
+              <AccordionTrigger>{t.infoAccordion}</AccordionTrigger>
               <AccordionContent className="space-y-4 pt-1">
                 <div className="space-y-2">
-                  <Label>Titre de la page</Label>
+                  <Label>{t.pageTitle}</Label>
                   <Input
                     value={draft.title}
                     maxLength={80}
@@ -217,7 +218,7 @@ export function SubpageEditor({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Sous-titre (facultatif)</Label>
+                  <Label>{t.subtitleOptional}</Label>
                   <Input
                     value={draft.subtitle}
                     maxLength={200}
@@ -225,7 +226,7 @@ export function SubpageEditor({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Adresse de la page</Label>
+                  <Label>{t.pageAddress}</Label>
                   <div className="flex items-center gap-2">
                     <span className="text-sm text-muted-foreground">
                       /p/{page.slug}/
@@ -238,18 +239,16 @@ export function SubpageEditor({
                     />
                   </div>
                   {pathLocked && (
-                    <p className="text-xs text-muted-foreground">
-                      L&apos;adresse d&apos;une page déjà publiée ne peut plus
-                      changer (elle est peut-être déjà référencée).
-                    </p>
+                    <p className="text-xs text-muted-foreground">{t.addressLockedHint}</p>
                   )}
                 </div>
                 <div className="space-y-2">
-                  <Label>Bannière de la page (facultatif)</Label>
+                  <Label>{t.bannerOptional}</Label>
                   <div className="flex items-center gap-3">
                     <PhotoUpload
                       userId={page.user_id}
-                      label="Choisir une photo"
+                      label={t.choosePhoto}
+                      messages={dictionary.photoUpload}
                       onUploaded={(url) => patch({ hero_url: url })}
                     />
                     {draft.hero_url && (
@@ -258,7 +257,7 @@ export function SubpageEditor({
                         size="sm"
                         onClick={() => patch({ hero_url: null })}
                       >
-                        Retirer
+                        {t.remove}
                       </Button>
                     )}
                   </div>
@@ -268,7 +267,7 @@ export function SubpageEditor({
 
             {/* Sections */}
             <AccordionItem value="sections" className="border rounded-xl px-4">
-              <AccordionTrigger>Les sections de cette page</AccordionTrigger>
+              <AccordionTrigger>{t.sectionsAccordion}</AccordionTrigger>
               <AccordionContent className="pt-1">
                 <SectionsPanel
                   sections={draft.sections ?? []}
@@ -282,10 +281,12 @@ export function SubpageEditor({
 
             {/* SEO */}
             <AccordionItem value="seo" className="border rounded-xl px-4">
-              <AccordionTrigger>Référencement (SEO)</AccordionTrigger>
+              <AccordionTrigger>{t.seoAccordion}</AccordionTrigger>
               <AccordionContent className="space-y-4 pt-1">
                 <div className="space-y-2">
-                  <Label>Titre Google ({(draft.seo?.title ?? "").length}/60)</Label>
+                  <Label>
+                    {t.googleTitle.replace("{count}", String((draft.seo?.title ?? "").length))}
+                  </Label>
                   <Input
                     value={draft.seo?.title ?? ""}
                     maxLength={60}
@@ -296,7 +297,10 @@ export function SubpageEditor({
                 </div>
                 <div className="space-y-2">
                   <Label>
-                    Description Google ({(draft.seo?.description ?? "").length}/160)
+                    {t.googleDescription.replace(
+                      "{count}",
+                      String((draft.seo?.description ?? "").length)
+                    )}
                   </Label>
                   <Textarea
                     value={draft.seo?.description ?? ""}
@@ -321,7 +325,7 @@ export function SubpageEditor({
             disabled={deleting || pendingDeletion}
             onClick={onDelete}
           >
-            <Trash2 aria-hidden="true" /> Supprimer cette page
+            <Trash2 aria-hidden="true" /> {t.deletePage}
           </Button>
         </div>
 
@@ -330,21 +334,21 @@ export function SubpageEditor({
           className={`${styles.previewPanel} ${panelMode === "edit" ? styles.panelHidden : ""}`}
         >
           <div className={styles.previewToolbar}>
-            <p>Ta page, en direct</p>
+            <p>{t.livePreview}</p>
             <div className={styles.deviceToggle}>
               <button
                 type="button"
                 onClick={() => setPreviewMode("mobile")}
                 className={previewMode === "mobile" ? styles.active : ""}
               >
-                Téléphone
+                {t.mobile}
               </button>
               <button
                 type="button"
                 onClick={() => setPreviewMode("desktop")}
                 className={previewMode === "desktop" ? styles.active : ""}
               >
-                Ordi
+                {t.desktop}
               </button>
             </div>
           </div>
@@ -359,6 +363,7 @@ export function SubpageEditor({
                 productCategories={previewProducts}
                 offers={previewOffers}
                 preview
+                t={storefrontDict}
               />
             </div>
           </div>

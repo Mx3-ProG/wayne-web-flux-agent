@@ -2,6 +2,8 @@
 // Les clients mail n'appliquent pas les CSS externes ni les webfonts : tout
 // est inline, avec des font stacks système (serif pour les titres).
 
+import { LOCALE_BCP47, type Locale } from "@/lib/i18n/config";
+
 const CANVAS = "#070708";
 const SURFACE = "#121216";
 const TEXT = "#f7f5f2";
@@ -41,7 +43,10 @@ export function baseLayout(opts: {
   preheader?: string;
   bodyHtml: string;
   footerNote?: string;
+  locale?: Locale;
+  footerTagline?: string;
 }): string {
+  const locale = opts.locale ?? "fr";
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://www.flux-wayne.com";
   const preheader = opts.preheader
     ? `<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${escapeHtml(opts.preheader)}</div>`
@@ -49,9 +54,10 @@ export function baseLayout(opts: {
   const footerNote =
     opts.footerNote ??
     "Email transactionnel envoyé automatiquement, merci de ne pas y répondre.";
+  const footerTagline = opts.footerTagline ?? "— votre vitrine, vos commandes, votre chiffre d'affaires.";
 
   return `<!DOCTYPE html>
-<html lang="fr">
+<html lang="${LOCALE_BCP47[locale]}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -83,7 +89,7 @@ ${preheader}
     <tr><td style="padding:20px 8px 0;">
       <p style="margin:0;font-family:${SANS};font-size:12px;line-height:1.6;color:${MUTED};">
         ${escapeHtml(footerNote)}<br>
-        <a href="${escapeHtml(siteUrl)}" style="color:${MUTED};text-decoration:underline;">FLUX</a> — votre vitrine, vos commandes, votre chiffre d'affaires.
+        <a href="${escapeHtml(siteUrl)}" style="color:${MUTED};text-decoration:underline;">FLUX</a> ${escapeHtml(footerTagline)}
       </p>
     </td></tr>
   </table>

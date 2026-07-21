@@ -1,5 +1,9 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
+import { getAccountLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { defaultLocale, hasLocale } from "@/lib/i18n/config";
 import type {
   Offer,
   Page,
@@ -20,7 +24,14 @@ import { PageEditor } from "@/components/editor/page-editor";
 import { SubpageEditor } from "@/components/editor/subpage-editor";
 import { VitrineGuide } from "@/components/editor/vitrine-guide";
 
-export const metadata = { title: "Ma vitrine" };
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const locale = user ? await getAccountLocale(supabase, user.id) : defaultLocale;
+  return { title: (await getDictionary(locale, "editor")).meta.title };
+}
 
 export default async function MaPagePage({
   searchParams,
@@ -40,6 +51,13 @@ export default async function MaPagePage({
   // L'éditeur travaille sur le brouillon : état publié + modifications en
   // attente (pages.draft). La vitrine publique, elle, ne lit que les colonnes.
   const page: Page = { ...rawPage, ...(rawPage.draft ?? {}) };
+
+  // Aperçu live (VitrineView/VitrineSubpage) dans la langue du PROJET, pas
+  // celle du tableau de bord : une boutique allemande doit s'afficher en
+  // allemand dans l'éditeur, jamais retomber sur le français par défaut des
+  // composants (voir components/vitrine/vitrine-view.tsx#t=frStorefront).
+  const storefrontLocale = hasLocale(page.default_locale) ? page.default_locale : defaultLocale;
+  const storefrontDict = await getDictionary(storefrontLocale, "storefront");
 
   const [
     { data: balance },
@@ -171,6 +189,7 @@ export default async function MaPagePage({
         previewProducts={previewProducts}
         previewOffers={previewOffers}
         publish={publishProps}
+        storefrontDict={storefrontDict}
       />
     );
   }
@@ -186,6 +205,7 @@ export default async function MaPagePage({
       sitePages={sitePages}
       subpageLimit={maxSubpages}
       canHideBranding={canHideBranding === true}
+      storefrontDict={storefrontDict}
     />
   );
 }

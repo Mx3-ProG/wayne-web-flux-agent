@@ -200,24 +200,26 @@ export const SECTION_LIMITS = {
 } as const;
 
 // Validation serveur d'une liste de sections (savePageFields et
-// saveSitePageFields). Retourne un message d'erreur, ou null si valide.
+// saveSitePageFields). Retourne un CODE d'erreur stable (traduit à la
+// frontière d'affichage via editor.actionErrors — voir
+// translate-action-error.ts), ou null si valide.
 export function validateSections(sections: PageSection[]): string | null {
   if (sections.length > SECTION_LIMITS.maxSections) {
-    return "Trop de sections sur la page.";
+    return "too_many_sections";
   }
   let videoBackgrounds = 0;
   for (const section of sections) {
     const settings = (section.settings ?? {}) as Record<string, unknown>;
     for (const value of Object.values(settings)) {
       if (typeof value === "string" && value.length > SECTION_LIMITS.maxBodyLength) {
-        return "Un des textes de section est trop long.";
+        return "section_text_too_long";
       }
     }
     if (
       section.type === "faq" &&
       section.settings.items.length > SECTION_LIMITS.maxFaqItems
     ) {
-      return "Trop de questions dans la FAQ.";
+      return "too_many_faq_items";
     }
     if (section.type === "google_business" && section.settings.url) {
       try {
@@ -232,10 +234,10 @@ export function validateSections(sections: PageSection[]): string | null {
           (host) => url.hostname === host || url.hostname.endsWith(`.${host}`)
         );
         if (url.protocol !== "https:" || !isGoogle) {
-          return "Le lien Google Business Profile n'est pas valide.";
+          return "invalid_google_business_link";
         }
       } catch {
-        return "Le lien Google Business Profile n'est pas valide.";
+        return "invalid_google_business_link";
       }
     }
     const bg = section.style?.background;
@@ -243,7 +245,7 @@ export function validateSections(sections: PageSection[]): string | null {
       if (bg.kind === "video") videoBackgrounds++;
       if ("overlay" in bg && bg.overlay !== undefined) {
         if (typeof bg.overlay !== "number" || bg.overlay < 0 || bg.overlay > 0.8) {
-          return "Voile de fond invalide.";
+          return "invalid_background_overlay";
         }
       }
       // Les médias de fond doivent venir du Storage de l'app (bucket public).
@@ -251,15 +253,15 @@ export function validateSections(sections: PageSection[]): string | null {
         (bg.kind === "image" || bg.kind === "video") &&
         !isAppStorageUrl(bg.url)
       ) {
-        return "L'image ou la vidéo de fond doit être importée depuis l'éditeur.";
+        return "invalid_background_media_source";
       }
       if (bg.kind === "video" && bg.posterUrl && !isAppStorageUrl(bg.posterUrl)) {
-        return "L'image d'attente doit être importée depuis l'éditeur.";
+        return "invalid_poster_media_source";
       }
     }
   }
   if (videoBackgrounds > 1) {
-    return "Une seule vidéo de fond par page (pour garder ta page rapide).";
+    return "too_many_video_backgrounds";
   }
   return null;
 }

@@ -18,6 +18,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { useI18n } from "@/components/i18n-provider";
 
 type Props = {
   pageId: string;
@@ -33,6 +34,8 @@ type Props = {
 // C'est la seule porte de sortie du brouillon vers la vitrine publique.
 export function PublishButton({ pageId, balance, hasDraft, nextVersion, redirectTo }: Props) {
   const router = useRouter();
+  const { editor } = useI18n();
+  const t = editor.publish;
   const [open, setOpen] = useState(false);
   const [outOfCredits, setOutOfCredits] = useState(false);
   const [trialOver, setTrialOver] = useState(false);
@@ -53,14 +56,12 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion, redirect
       }
       if (result.error === "email_not_verified") {
         setOpen(false);
-        toast.error(
-          "Vérifie ton adresse email pour publier. Le lien t'attend dans ta boîte de réception."
-        );
+        toast.error(t.toastEmailUnverified);
         return;
       }
       if (result.error === "nothing_to_publish") {
         setOpen(false);
-        toast.info("Rien à publier : ton site est déjà à jour.");
+        toast.info(t.toastNothingToPublish);
         if (redirectTo) {
           router.push(redirectTo);
         }
@@ -68,16 +69,16 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion, redirect
         return;
       }
       if (result.error === "content_blocked") {
-        toast.error("Les messages de haines ou les contenus explicit sont interdit et amendé sur FLUX, veuillez respectez votre environnement et celui des autres. 3 Infractions contre nos conditions d'utilisations le compte est supprimé.");
+        toast.error(t.toastContentBlocked);
         return;
       }
       if (result.error) {
-        toast.error("Publication impossible. Réessaie dans un instant.");
+        toast.error(t.toastGenericError);
         return;
       }
       setOpen(false);
       toast.success(
-        `Version ${nextVersion} publiée ! Ton site est à jour. Solde : ${result.balance} cr.`
+        t.toastSuccess.replace("{version}", String(nextVersion)).replace("{balance}", String(result.balance))
       );
       if (redirectTo) {
         router.push(redirectTo);
@@ -98,79 +99,69 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion, redirect
       }}
     >
       <DialogTrigger asChild>
-        <Button disabled={!hasDraft} title={hasDraft ? undefined : "Aucune modification à publier"}>
-          <Rocket aria-hidden="true" /> Publier ma nouvelle version
+        <Button disabled={!hasDraft} title={hasDraft ? undefined : t.noDraft}>
+          <Rocket aria-hidden="true" /> {t.cta}
         </Button>
       </DialogTrigger>
       <DialogContent>
         {trialOver ? (
           <>
             <DialogHeader>
-              <DialogTitle>Essai terminé et solde vide</DialogTitle>
-              <DialogDescription>
-                Ton essai est passé et il ne te reste plus de crédits. Ton site
-                reste en ligne et ton brouillon est bien conservé — une formule
-                FLUX recharge ton solde chaque mois pour publier, générer et
-                personnaliser.
-              </DialogDescription>
+              <DialogTitle>{t.trialOverTitle}</DialogTitle>
+              <DialogDescription>{t.trialOverText}</DialogDescription>
             </DialogHeader>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="ghost">Plus tard</Button>
+                <Button variant="ghost">{t.later}</Button>
               </DialogClose>
               <Button asChild>
-                <Link href="/formules">Choisir ma formule FLUX</Link>
+                <Link href="/formules">{t.choosePlan}</Link>
               </Button>
             </DialogFooter>
           </>
         ) : outOfCredits || !enough ? (
           <>
             <DialogHeader>
-              <DialogTitle>Plus assez de crédits</DialogTitle>
+              <DialogTitle>{t.insufficientTitle}</DialogTitle>
               <DialogDescription>
-                Publier une nouvelle version coûte {PUBLISH_COST} crédits et il
-                t&apos;en reste {balance}. Tes modifications sont bien
-                enregistrées en brouillon — elles t&apos;attendent.
+                {t.insufficientText
+                  .replace("{cost}", String(PUBLISH_COST))
+                  .replace("{balance}", String(balance))}
               </DialogDescription>
             </DialogHeader>
-            <p className="text-sm text-muted-foreground">
-              Les formules FLUX rechargent de 100 à 3000 crédits par mois :
-              plus de crédits, c&apos;est plus de possibilités pour ton site.
-            </p>
+            <p className="text-sm text-muted-foreground">{t.plansHint}</p>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="ghost">Plus tard</Button>
+                <Button variant="ghost">{t.later}</Button>
               </DialogClose>
               <Button asChild variant="secondary">
-                <Link href="/credits">Voir mes crédits</Link>
+                <Link href="/credits">{t.viewCredits}</Link>
               </Button>
               <Button asChild>
-                <Link href="/formules">Découvrir les formules</Link>
+                <Link href="/formules">{t.discoverPlans}</Link>
               </Button>
             </DialogFooter>
           </>
         ) : (
           <>
             <DialogHeader>
-              <DialogTitle>Publier la version {nextVersion} de ton site ?</DialogTitle>
+              <DialogTitle>{t.confirmTitle.replace("{version}", String(nextVersion))}</DialogTitle>
               <DialogDescription>
-                Tes modifications passent en ligne, visibles par tes clients.
-                Chaque publication mobilise nos serveurs : elle coûte{" "}
-                {PUBLISH_COST} crédits.
+                {t.confirmText.replace("{cost}", String(PUBLISH_COST))}
               </DialogDescription>
             </DialogHeader>
             <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2 text-sm">
-              <span className="text-muted-foreground">Ton solde</span>
+              <span className="text-muted-foreground">{t.balance}</span>
               <span>
                 {balance} cr. → <strong>{balance - PUBLISH_COST} cr.</strong>
               </span>
             </div>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="ghost">Pas maintenant</Button>
+                <Button variant="ghost">{t.notNow}</Button>
               </DialogClose>
               <Button onClick={confirm} disabled={pending}>
-                {pending ? "Publication…" : `Publier (${PUBLISH_COST} cr.)`}
+                {pending ? t.publishing : t.publishCta.replace("{cost}", String(PUBLISH_COST))}
               </Button>
             </DialogFooter>
           </>

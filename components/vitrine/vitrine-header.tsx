@@ -11,7 +11,11 @@ import Link from "next/link";
 import type { Page } from "@/lib/types";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { isDarkTheme, useVisitorMode } from "./visitor-mode";
+import { LanguageGlobe } from "./language-globe";
 import styles from "./vitrine.module.css";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
+import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
+import type { Locale } from "@/lib/i18n/config";
 
 type Props = {
   page: Page;
@@ -19,9 +23,19 @@ type Props = {
   // renvoient vers l'accueil, le lien actif est mis en évidence.
   currentPath: string;
   preview?: boolean;
+  t?: StorefrontDict["header"];
+  locale?: Locale;
+  availableLocales?: Locale[];
 };
 
-export function VitrineHeader({ page, currentPath, preview = false }: Props) {
+export function VitrineHeader({
+  page,
+  currentPath,
+  preview = false,
+  t = frStorefront.header,
+  locale,
+  availableLocales,
+}: Props) {
   const [open, setOpen] = useState(false);
   const { effectiveDark, toggleMode } = useVisitorMode(isDarkTheme(page.theme));
   const nav = page.navigation;
@@ -102,19 +116,27 @@ export function VitrineHeader({ page, currentPath, preview = false }: Props) {
           ) : (
             <i>{(page.business_name || "M").charAt(0).toUpperCase()}</i>
           ))}
-        <b>{page.business_name || "Mon commerce"}</b>
+        <b>{page.business_name || t.defaultBusinessName}</b>
       </span>
 
-      <nav className={styles.navLinks} aria-label="Navigation du site">
+      <nav className={styles.navLinks} aria-label={t.navAria}>
         {links}
       </nav>
 
       <span className={styles.storeNavActions}>
+        {!preview && locale && availableLocales && (
+          <LanguageGlobe
+            slug={page.slug}
+            currentPath={currentPath}
+            locale={locale}
+            availableLocales={availableLocales}
+          />
+        )}
         <button
           type="button"
           className={styles.modeToggle}
           onClick={toggleMode}
-          aria-label={effectiveDark ? "Passer en mode clair" : "Passer en mode sombre"}
+          aria-label={effectiveDark ? t.lightMode : t.darkMode}
         >
           {effectiveDark ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
         </button>
@@ -127,7 +149,7 @@ export function VitrineHeader({ page, currentPath, preview = false }: Props) {
           type="button"
           className={`${styles.modeToggle} ${styles.navBurger}`}
           onClick={() => setOpen((v) => !v)}
-          aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+          aria-label={open ? t.closeMenu : t.openMenu}
           aria-expanded={open}
         >
           {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
@@ -135,7 +157,7 @@ export function VitrineHeader({ page, currentPath, preview = false }: Props) {
       </span>
 
       {open && (
-        <nav className={styles.navMobile} aria-label="Navigation du site">
+        <nav className={styles.navMobile} aria-label={t.navAria}>
           {links}
         </nav>
       )}

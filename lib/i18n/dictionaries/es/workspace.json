@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "title": "Mi espacio"
+  },
+  "hero": {
+    "eyebrow": "Vista general",
+    "greeting": "Hola {name}",
+    "greetingNoName": "Hola",
+    "text": "Esto es lo que hace avanzar tu negocio hoy.",
+    "cta": "Crear un contenido"
+  },
+  "storefront": {
+    "eyebrow": "Mi escaparate",
+    "titleOnline": "Tu escaparate está en línea",
+    "titleOffline": "Crea tu dirección en la web",
+    "textOnline": "El enlace único para compartir con tus clientes, allá donde te busquen.",
+    "textOffline": "Una página clara, bonita y lista para recibir tus primeras solicitudes.",
+    "copyLink": "Copiar enlace",
+    "emptyText": "Con algunas elecciones basta para preparar tu primer escaparate.",
+    "editCta": "Editar mi escaparate",
+    "createCta": "Crear mi escaparate",
+    "viewCta": "Ver mi escaparate"
+  },
+  "metrics": {
+    "aria": "Indicadores",
+    "readyLabel": "Tu espacio está listo al",
+    "voiceGood": "Tu voz está bien configurada",
+    "voiceContinue": "Sigue personalizando tu voz",
+    "upcomingBookings": "Próximas citas",
+    "agendaSynced": "Agenda sincronizada",
+    "availableCredits": "Créditos disponibles",
+    "contentSingular": "contenido creado",
+    "contentPlural": "contenidos creados"
+  },
+  "journey": {
+    "title": "Tu recorrido",
+    "subtitle": "Un paso claro cada vez.",
+    "progress": "{completed} / {total} completado",
+    "done": "Completado",
+    "todo": "Por hacer",
+    "nextStep": "Próximo paso",
+    "todoNow": "Por hacer ahora",
+    "viewStep": "Ver el paso",
+    "validate": "Validar"
+  },
+  "steps": {
+    "openEditor": "Abrir el editor de escaparate",
+    "createStorefront": "Crear mi escaparate",
+    "voiceScore": "Escribo como tú al {percent}%",
+    "voiceHint": "Cuanto más le cuentes, más escribirá la IA con tu voz, tu tono, tus propias palabras.",
+    "voiceRefine": "Afinar aún más",
+    "voiceMeet": "Conocernos (2 min)",
+    "createMoreProducts": "Crear más productos con Flux",
+    "startProductCreation": "Lanzar la creación de producto Flux",
+    "createNewOffer": "Crear una nueva oferta con Flux",
+    "startOfferCreation": "Lanzar la creación de oferta Flux",
+    "reviewSchedule": "Revisar mis horarios con Flux",
+    "configureSchedule": "Configurar mis horarios",
+    "toolsHint": "Elige una herramienta. El coste en créditos se muestra antes de lanzarla.",
+    "creditsLeft": "créditos restantes",
+    "viewCredits": "Ver mis créditos",
+    "creationSingular": "creación",
+    "creationPlural": "creaciones",
+    "inYourVault": "en tu cofre",
+    "openVault": "Abrir mi cofre",
+    "upcomingAppointments": "próximas citas",
+    "openAgenda": "Abrir mi agenda",
+    "shareHint": "Bio de Instagram, estado de WhatsApp, ficha de Google: cuanto más circule tu enlace, más se llenará tu agenda solita.",
+    "shareWhatsapp": "Compartir por WhatsApp",
+    "whatsappMessage": "Reserva tu cita en línea: {url}"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "マイプロジェクト",
+    "newTitle": "新規プロジェクト"
+  },
+  "eyebrow": "アカウント",
+  "title": "マイプロジェクト",
+  "subtitle": "各プロジェクトはそれぞれ独立したショップだよ:専用のサイト、商品、注文、売上がすべて紐づいてる。アクティブなプロジェクトを選んで、そこから自分の空間を操作しよう。",
+  "counter": "{count} / {limit} プロジェクト —{plan}プラン",
+  "counterPlural": "{count} / {limit} プロジェクト —{plan}プラン",
+  "noName": "名称未設定",
+  "revenue": "売上",
+  "open": "開く ↗",
+  "newProject": "新規プロジェクト",
+  "upsellTitle": "複数ショップ運営",
+  "upsellBasique": "上位プランなら複数のショップ(最大10件)を運営できるよ。",
+  "upsellLimit": "現在のプランのプロジェクト上限に達しちゃったみたい。",
+  "discoverPlans": "FLUXのプランを見てみる",
+  "activeProject": "アクティブなプロジェクト",
+  "activating": "…",
+  "activate": "このプロジェクトを有効化",
+  "domain": {
+    "title": "独自ドメイン",
+    "text": "アクティブなプロジェクトのサイトに、自分だけのドメイン(例:{example})を接続しよう。",
+    "soon": "Proプラン以上で利用可能",
+    "placeholder": "ma-boutique.fr",
+    "saving": "…",
+    "save": "保存",
+    "saved": "ドメインを保存したよ。",
+    "comingSoon": "この機能はまもなく本番環境に登場予定。ローカル環境ではすでにテストできるよ。"
+  },
+  "backToProjects": "← マイプロジェクト",
+  "errors": {
+    "feature_coming_soon": "この機能はまもなく利用可能になるよ。",
+    "not_authenticated": "ログインしていないよ。",
+    "plan_restricted": "Proプラン以上限定の機能だよ。",
+    "invalid_domain": "ドメイン名が無効だよ(例:ma-boutique.fr)。",
+    "save_failed": "保存できなかったよ(そのドメインはもう使われてるかも?)。",
+    "project_not_found": "プロジェクトが見つからないよ。",
+    "change_failed": "変更できなかったよ。",
+    "content_blocked": "ヘイトスピーチや過激なコンテンツはFLUXで禁止されていて、違反すると処罰の対象になるよ。自分と周りのみんなが安心できる環境を大切にしてね。利用規約違反が3回に達すると、アカウントは削除されるよ。",
+    "unknown": "エラーが発生しちゃった。少し時間をおいてもう一度試してみてね。"
+  }
+}

@@ -2,8 +2,10 @@
 
 import Image from "next/image";
 import { CalendarClock, Sparkles, Tag } from "lucide-react";
-import { getFont, getVertical } from "@/lib/verticals";
+import { getFont } from "@/lib/verticals";
+import type { LocalizedVertical } from "@/lib/verticals-i18n";
 import { DESIGN_KIT_BY_ID } from "@/lib/vitrine-design/registry";
+import type { TunnelDict } from "@/lib/i18n/get-dictionary";
 import styles from "./vitrine-preview.module.css";
 
 export type PreviewState = {
@@ -34,7 +36,7 @@ export type PreviewState = {
   dark: string;
 };
 
-const DAY_LABELS = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+const DAY_KEYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"] as const;
 
 function euros(value: string): string {
   const n = Number(value);
@@ -50,8 +52,16 @@ function euros(value: string): string {
 // Aucune dépendance d'animation (framer-motion n'est pas dans le projet) : les
 // couleurs transitionnent via des custom properties, et les blocs nouvellement
 // remplis passent par @keyframes previewPop, redéclenché par la `key` React.
-export function VitrinePreview({ state }: { state: PreviewState }) {
-  const vertical = state.vertical ? getVertical(state.vertical) : null;
+export function VitrinePreview({
+  state,
+  dict,
+  verticals,
+}: {
+  state: PreviewState;
+  dict: TunnelDict["preview"];
+  verticals: LocalizedVertical[];
+}) {
+  const vertical = state.vertical ? (verticals.find((v) => v.slug === state.vertical) ?? null) : null;
   // Le kit choisi prime sur la palette de la verticale : c'est exactement ce que
   // fait designKitPatch côté vitrine réelle, où theme écrase colors.
   const kit = state.theme ? DESIGN_KIT_BY_ID.get(state.theme) : undefined;
@@ -62,15 +72,15 @@ export function VitrinePreview({ state }: { state: PreviewState }) {
     ...(state.primary ? { primary: state.primary } : {}),
     ...(state.dark ? { dark: state.dark } : {}),
   };
-  const name = state.businessName.trim() || "Ton commerce";
-  const job = state.jobTitle.trim() || vertical?.jobTitles[0] || "Ton activité";
+  const name = state.businessName.trim() || dict.defaultBusinessName;
+  const job = state.jobTitle.trim() || vertical?.jobTitles[0] || dict.defaultJobTitle;
   const city = state.city.trim();
   const openDays = [...state.days].sort((a, b) => (a || 7) - (b || 7));
 
   return (
     <aside
       className={styles.preview}
-      aria-label="Aperçu de ta vitrine"
+      aria-label={dict.label}
       style={
         colors
           ? ({
@@ -94,7 +104,7 @@ export function VitrinePreview({ state }: { state: PreviewState }) {
           : undefined
       }
     >
-      <p className={styles.previewLabel}>Ta vitrine, en direct</p>
+      <p className={styles.previewLabel}>{dict.label}</p>
 
       <div className={styles.frame}>
         <div className={styles.top}>
@@ -107,7 +117,7 @@ export function VitrinePreview({ state }: { state: PreviewState }) {
               name.charAt(0).toUpperCase()
             )}
           </span>
-          <span>{city ? `Disponible à ${city}` : "Ton adresse en ligne"}</span>
+          <span>{city ? dict.availableIn.replace("{city}", city) : dict.addressOnline}</span>
         </div>
 
         <div
@@ -127,11 +137,11 @@ export function VitrinePreview({ state }: { state: PreviewState }) {
           </h2>
           <p>
             {state.tone
-              ? `Un savoir-faire local, raconté ${state.tone.toLowerCase()}.`
-              : "Un savoir-faire local, une expérience simple et un service qui fait la différence."}
+              ? dict.toneTagline.replace("{tone}", state.tone.toLowerCase())
+              : dict.defaultTagline}
           </p>
           <button type="button" tabIndex={-1}>
-            Prendre rendez-vous
+            {dict.bookCta}
           </button>
         </div>
 
@@ -149,7 +159,7 @@ export function VitrinePreview({ state }: { state: PreviewState }) {
           <div key={`product-${state.productName}`} className={`${styles.block} ${styles.pop}`}>
             <div className={styles.blockHead}>
               <Sparkles aria-hidden="true" />
-              <strong>{state.categoryName.trim() || "Ton catalogue"}</strong>
+              <strong>{state.categoryName.trim() || dict.defaultCategory}</strong>
             </div>
             <div className={styles.item}>
               <span>{state.productName}</span>
@@ -162,11 +172,11 @@ export function VitrinePreview({ state }: { state: PreviewState }) {
           <div key={`days-${openDays.join()}`} className={`${styles.block} ${styles.pop}`}>
             <div className={styles.blockHead}>
               <CalendarClock aria-hidden="true" />
-              <strong>Ouvert</strong>
+              <strong>{dict.open}</strong>
             </div>
             <div className={styles.days}>
               {openDays.map((day) => (
-                <i key={day}>{DAY_LABELS[day]}</i>
+                <i key={day}>{dict.days[DAY_KEYS[day]]}</i>
               ))}
               <span>
                 {state.openingTime} – {state.closingTime}

@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
+import Link from "next/link";
 import { ArrowRight, Check } from "lucide-react";
 import styles from "@/app/home.module.css";
+import type { LandingDict } from "@/lib/i18n/get-dictionary";
 
 type Status = "idle" | "sending" | "done" | "error";
 
-export function ContactForm() {
+export function ContactForm({ dict }: { dict: LandingDict["contact"] }) {
   const [status, setStatus] = useState<Status>("idle");
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -41,14 +43,12 @@ export function ContactForm() {
       <div className={`${styles.contactCard} ${styles.contactCardDone}`}>
         <p className={styles.formSuccess} role="status">
           <Check aria-hidden="true" />
-          Message bien reçu ! On te répond sous 24 h ouvrées, promis.
+          {dict.success}
         </p>
-        <p className={styles.contactDoneHint}>
-          En attendant, pourquoi ne pas prendre une longueur d&apos;avance ?
-        </p>
-        <a className={styles.textCta} href="/commencer">
-          Créer ma boutique maintenant
-        </a>
+        <p className={styles.contactDoneHint}>{dict.doneHint}</p>
+        <Link className={styles.textCta} href="/commencer">
+          {dict.doneCta}
+        </Link>
       </div>
     );
   }
@@ -56,30 +56,30 @@ export function ContactForm() {
   return (
     <form className={styles.contactCard} onSubmit={handleSubmit}>
       <div className={styles.contactField}>
-        <label htmlFor="contact-name">Ton prénom (ou ton commerce)</label>
+        <label htmlFor="contact-name">{dict.nameLabel}</label>
         <input
           id="contact-name"
           name="name"
           required
           minLength={2}
           maxLength={80}
-          placeholder="Ex. Sophie, Fleurs & Merveilles"
+          placeholder={dict.namePlaceholder}
           autoComplete="name"
         />
       </div>
       <div className={styles.contactField}>
-        <label htmlFor="contact-email">Ton email</label>
+        <label htmlFor="contact-email">{dict.emailLabel}</label>
         <input
           id="contact-email"
           name="email"
           type="email"
           required
-          placeholder="ton.email@commerce.fr"
+          placeholder={dict.emailPlaceholder}
           autoComplete="email"
         />
       </div>
       <div className={styles.contactField}>
-        <label htmlFor="contact-message">Ton message</label>
+        <label htmlFor="contact-message">{dict.messageLabel}</label>
         <textarea
           id="contact-message"
           name="message"
@@ -87,7 +87,7 @@ export function ContactForm() {
           minLength={10}
           maxLength={2000}
           rows={5}
-          placeholder="Raconte-nous ton projet, ta question, ton besoin… on lit tout."
+          placeholder={dict.messagePlaceholder}
         />
       </div>
       <button
@@ -95,12 +95,12 @@ export function ContactForm() {
         type="submit"
         disabled={status === "sending"}
       >
-        {status === "sending" ? "Envoi en cours…" : "Envoyer mon message"}
+        {status === "sending" ? dict.sending : dict.submit}
         <ArrowRight aria-hidden="true" />
       </button>
       {status === "error" && (
         <p className={styles.formError} role="alert">
-          L&apos;envoi a échoué. Réessaie, ou écris-nous directement par email.
+          {dict.error}
         </p>
       )}
     </form>

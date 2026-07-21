@@ -24,5 +24,14 @@ test("email changes require confirmations and are rate limited", async () => {
   assert.match(actions, /account-email-change:\$\{user\.id\}/);
   assert.match(actions, /supabase\.auth\.updateUser\(/);
   assert.match(actions, /emailRedirectTo:/);
-  assert.match(actions, /adresse actuelle et la nouvelle/);
+  // Le message vit désormais dans le dictionnaire i18n (fr = source de
+  // vérité) plutôt qu'en dur dans le code ; on vérifie les deux bouts.
+  assert.match(actions, /t\.messages\.email_change_requested/);
+  const accountDict = JSON.parse(
+    await readFile(
+      new URL("../../lib/i18n/dictionaries/fr/account.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  assert.match(accountDict.messages.email_change_requested, /adresse actuelle et la nouvelle/);
 });

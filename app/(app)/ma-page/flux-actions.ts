@@ -10,6 +10,7 @@ import { fluxIdentity, businessContext, learningsContext } from "@/lib/flux/pers
 import { applyFluxPatch } from "@/lib/flux/apply";
 import { buildGeneratedSection } from "@/lib/flux/guardrails";
 import { enforceKarlMada, KARLMADA_AI_POLICY } from "@/lib/karlmada";
+import { defaultLocale, hasLocale } from "@/lib/i18n/config";
 import {
   FluxPrefillOutputSchema,
   FluxSiteOutputSchema,
@@ -57,6 +58,7 @@ export async function fluxPrefill(
     .eq("user_id", user.id)
     .single();
   if (!page) return { error: "unknown" };
+  const locale = page.default_locale && hasLocale(page.default_locale) ? page.default_locale : defaultLocale;
 
   const access = await checkFluxAccess(user.id);
   if (!access.ok) return { error: access.reason };
@@ -95,7 +97,7 @@ export async function fluxPrefill(
     const system = [
       KARLMADA_AI_POLICY,
       fluxIdentity(),
-      ...businessContext({ page, services, voice }),
+      ...(await businessContext({ page, services, voice, locale })),
       ...(await learningsContext(page.vertical)),
       registryContext(),
       "Ta mission : pré-remplir la vitrine de ce commerçant à partir de son métier, sa ville et ses prestations. Écris des contenus concrets, directs, sans jargon marketing ni phrase creuse, directement utilisables. N'invente NI prix NI avis clients. Reste fidèle à son métier et à sa voix.",
@@ -234,6 +236,7 @@ export async function fluxGenerateSite(
     .eq("user_id", user.id)
     .single();
   if (!page) return { error: "unknown" };
+  const locale = page.default_locale && hasLocale(page.default_locale) ? page.default_locale : defaultLocale;
 
   const access = await checkFluxAccess(user.id);
   if (!access.ok) return { error: access.reason };
@@ -272,7 +275,7 @@ export async function fluxGenerateSite(
     const system = [
       KARLMADA_AI_POLICY,
       fluxIdentity(),
-      ...businessContext({ page, services, voice }),
+      ...(await businessContext({ page, services, voice, locale })),
       ...(await learningsContext(page.vertical)),
       "Ta mission : créer TOUTE la vitrine de ce commerçant à partir de son brief et de son métier. Pars du template de son métier et améliore-le : accroche, SEO, ambiance (thème + couleurs cohérentes), et 2 à 5 sections de contenu (à propos, texte, FAQ). Concret, direct, sans jargon marketing. N'invente NI prix NI avis clients. Reste fidèle à son métier et à sa voix.",
     ].join("\n\n");

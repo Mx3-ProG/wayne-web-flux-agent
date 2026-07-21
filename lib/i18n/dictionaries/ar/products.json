@@ -1,0 +1,179 @@
+{
+ "meta": {
+  "title": "منتجاتي",
+  "tunnelTitle": "إنشاء منتجاتي"
+ },
+ "page": {
+  "eyebrow": "متجرك",
+  "title": "منتجاتي",
+  "subtitle": "كتالوج التجارة الإلكترونية الخاص بك: أنشئ منتجاتك، تابع مخزونك (كل طلب مقبول = −1) وشاهد ما يدرّه عليك كل منتج. تظهر في «خدماتي» على واجهتك.",
+  "startHint": "ابدأ بإضافة فئة، ثم أضف منتجات بداخلها.",
+  "emptyStart": "أنشئ أولاً",
+  "emptyLink": "واجهتك",
+  "emptyEnd": "لإدارة منتجاتك."
+ },
+ "card": {
+  "namePlaceholder": "اسم المنتج",
+  "displayed": "معروض",
+  "hidden": "مخفي",
+  "reservation": "حجز",
+  "product": "منتج",
+  "deleteProduct": "حذف المنتج",
+  "price": "السعر (€)",
+  "duration": "المدة (دقيقة)",
+  "description": "الوصف",
+  "descriptionPlaceholder": "وصف قصير",
+  "changePhoto": "تغيير الصورة",
+  "addPhoto": "إضافة صورة",
+  "removePhoto": "إزالة الصورة",
+  "saved": "تم الحفظ",
+  "saving": "جارٍ الحفظ…",
+  "confirm": "تأكيد اختياراتي",
+  "confirmHintReservation": "الاسم · السعر · المدة · الوصف",
+  "confirmHintProduct": "الاسم · السعر · الوصف",
+  "inStock": "في المخزون",
+  "removeOne": "إنقاص واحدة",
+  "addOne": "إضافة واحدة",
+  "restockPlaceholder": "+ الكمية",
+  "restock": "إعادة التموين",
+  "setExact": "تحديد",
+  "stopTracking": "التوقف عن تتبع المخزون",
+  "trackStock": "تتبع المخزون",
+  "soldSingular": "مباع",
+  "soldPlural": "مباعة",
+  "noSales": "لا مبيعات"
+ },
+ "category": {
+  "save": "حفظ",
+  "deleteCategory": "حذف الفئة",
+  "otherProducts": "منتجات أخرى",
+  "defaultName": "فئة جديدة",
+  "addProduct": "إضافة منتج · {cost} رصيد",
+  "addReservation": "إضافة حجز · {cost} رصيد"
+ },
+ "manager": {
+  "addCategory": "إضافة فئة ·",
+  "free": "مجانية",
+  "productNoCategory": "منتج بلا فئة · {cost} رصيد",
+  "reservationNoCategory": "حجز بلا فئة · {cost} رصيد",
+  "defaultProductName": "منتج جديد",
+  "defaultReservationName": "حجز جديد",
+  "reservationsFamilyName": "الحجوزات"
+ },
+ "errors": {
+  "not_authenticated": "يجب أن تكون متصلاً لمتابعة العملية.",
+  "no_active_page": "أنشئ أولاً واجهتك.",
+  "creation_failed": "تعذّر الإنشاء.",
+  "category_not_found": "الفئة غير موجودة.",
+  "category_name_required": "أعطِ اسمًا لفئتك.",
+  "at_least_one_product": "أضف منتجًا واحدًا على الأقل.",
+  "category_creation_failed": "تعذّر إنشاء الفئة.",
+  "products_creation_failed": "تعذّر إنشاء المنتجات.",
+  "product_not_found": "المنتج غير موجود.",
+  "save_failed": "تعذّر الحفظ.",
+  "delete_failed": "تعذّر الحذف.",
+  "content_blocked": "خطاب الكراهية أو المحتوى الصريح ممنوع ويُعاقَب عليه على {FLUX}؛ يُرجى احترام بيئتك وبيئة الآخرين. بعد 3 مخالفات لشروط الاستخدام، يُحذف الحساب.",
+  "insufficientCredits": "تكلف هذه العملية {cost} رصيد ورصيدك غير كافٍ. اشحن أرصدتك من صفحة الأرصدة.",
+  "insufficientCreditsPlural": "تكلف هذه العملية {cost} أرصدة ورصيدك غير كافٍ. اشحن أرصدتك من صفحة الأرصدة.",
+  "subscriptionRequired": "انتهت فترة تجربتك على {FLUX} ورصيدك فارغ. اختر باقة للمتابعة.",
+  "unknown": "حدث خطأ ما. أعد المحاولة بعد لحظة."
+ },
+ "tunnel": {
+  "myProducts": "منتجاتي",
+  "step": "الخطوة {current} من 8",
+  "intro": {
+   "kicker": "إنشاء منتج {FLUX}",
+   "title": "حوّل خبرتك إلى منتجات",
+   "titleEm": "جاهزة للبيع.",
+   "text": "فئة واحدة، منتج أو أكثر، ثم يتكفّل {Flux} بتنظيم كل شيء في واجهتك.",
+   "cta": "إنشاء منتجاتي"
+  },
+  "category": {
+   "kicker": "فئتك",
+   "titleStart": "كيف تريد",
+   "titleEm": "تنظيمها؟",
+   "subtitle": "سمِّ الفئة، ثم أضف كل المنتجات التي تريد إنشاءها الآن.",
+   "nameLabel": "اسم الفئة",
+   "namePlaceholder": "مثال: العناية بالوجه",
+   "productLabel": "المنتج {index}",
+   "productPlaceholder": "مثال: عناية مشرقة",
+   "removeProduct": "إزالة المنتج {index}",
+   "addAnother": "إضافة منتج آخر"
+  },
+  "price": {
+   "title": "ما هو سعرها؟",
+   "kicker": "السعر المناسب",
+   "subtitle": "حدّد سعرًا لكل منتج. يمكنك تعديله في أي وقت.",
+   "defaultName": "المنتج {index}",
+   "priceLabel": "السعر بالـ €",
+   "placeholder": "مثال: 20"
+  },
+  "description": {
+   "title": "ما الذي يجعلها مرغوبة؟",
+   "kicker": "الوصف",
+   "subtitle": "جملة بسيطة تكفي لمساعدة العميل على الاختيار.",
+   "placeholder": "ما يحصل عليه العميل، يشعر به أو يكسبه…"
+  },
+  "photo": {
+   "kicker": "الصورة",
+   "titleStart": "امنحها حضورًا",
+   "titleEm": "بصريًا.",
+   "subtitle": "صورة واحدة لكل منتج. هذه الخطوة تبقى اختيارية.",
+   "change": "تغيير الصورة",
+   "add": "إضافة صورة"
+  },
+  "stock": {
+   "kicker": "المخزون",
+   "title": "هل تريد تتبع الكميات؟",
+   "subtitle": "فعّل التتبع ثم حدّد عدد الوحدات المتوفرة اليوم.",
+   "trackedHint": "سيُخبرك {Flux} عندما يصل المخزون إلى الصفر.",
+   "untrackedHint": "لن يُعرض أي حد للكمية.",
+   "tracked": "المخزون متابَع",
+   "track": "تتبع المخزون",
+   "quantityLabel": "الكمية المتوفرة",
+   "unitSingular": "وحدة",
+   "unitPlural": "وحدات"
+  },
+  "visibility": {
+   "kicker": "النشر",
+   "title": "هل هي جاهزة لتكون مرئية؟",
+   "subtitle": "يبقى المنتج المخفي محفوظًا دون أن يظهر على واجهتك.",
+   "yes": "نشر",
+   "no": "الاحتفاظ كمسودة",
+   "toggleAria": "تغيير إعداد {name}"
+  },
+  "confirm": {
+   "kicker": "التأكيد",
+   "titleStart": "كل شيء جاهز لـ",
+   "titleEm": "متجرك.",
+   "subtitle": "تحقّق من اختياراتك: بعد الإنشاء، ينتقل {Flux} مباشرة إلى مواعيدك (مشمولة في السعر).",
+   "category": "الفئة",
+   "products": "المنتجات",
+   "productSingular": "منتج",
+   "productPlural": "منتجات",
+   "online": "منشور",
+   "draft": "مسودة",
+   "inStock": "في المخزون",
+   "totalCost": "التكلفة الإجمالية (المنتجات + الأجندة)",
+   "costValue": "{cost} رصيد · الرصيد: {balance} رصيد",
+   "missingSingular": "ينقصك {count} رصيد.",
+   "missingPlural": "ينقصك {count} أرصدة.",
+   "recharge": "اشحن أرصدتك",
+   "edit": "تعديل",
+   "creating": "جارٍ الإنشاء…",
+   "create": "تأكيد وضبط مواعيدي ({cost} رصيد)"
+  },
+  "credits": {
+   "trialTitle": "انتهت التجربة والرصيد فارغ",
+   "insufficientTitle": "لم يعد هناك رصيد كافٍ",
+   "trial": "انتهت فترة تجربتك ولم يتبقَّ لديك أي رصيد. باقة {FLUX} تشحن رصيدك كل شهر وتفتح مجددًا التوليدات بالذكاء الاصطناعي — لا شيء يضيع.",
+   "insufficient": "إنشاء منتجاتك يكلف {cost} رصيد. اشحن أرصدتك لإتمام العملية — لا شيء يضيع.",
+   "later": "لاحقًا",
+   "choosePlan": "اختيار باقة {FLUX}",
+   "rechargeCredits": "شحن أرصدتي"
+  },
+  "successToast": "منتجاتك جاهزة. الخطوة الأخيرة: مواعيدك.",
+  "back": "رجوع",
+  "continue": "متابعة"
+ }
+}

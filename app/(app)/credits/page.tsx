@@ -1,7 +1,9 @@
 import type { CSSProperties } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { defaultLocale } from "@/lib/i18n/config";
 import { TOOLS, PREFILL_COST } from "@/lib/tools-config";
 import {
   CATEGORY_CREATE_COST,
@@ -33,49 +35,58 @@ import {
 } from "lucide-react";
 import { CreditPacks } from "./credit-packs";
 import styles from "./credits.module.css";
+import { getAccountLocale } from "@/lib/i18n/locale.server";
+import { getDictionary, type BillingDict } from "@/lib/i18n/get-dictionary";
+import { formatDate } from "@/lib/i18n/format";
 
-export const metadata = { title: "Mes crédits" };
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const locale = user ? await getAccountLocale(supabase, user.id) : defaultLocale;
+  return { title: (await getDictionary(locale, "billing")).meta.creditsTitle };
+}
 
 const CREDIT_LEVELS = [100, 250, 500, 1000, 1500, 3000, 5000, 10000] as const;
 
-const REASON_LABELS: Record<string, string> = {
-  signup: "Crédits de bienvenue",
-  monthly: "Ancienne recharge mensuelle",
-  prefill: "Pré-remplissage IA",
-  "offer:create": "Création d'offre",
-  "offer:extra": "Création d'offre (au-delà de la formule)",
-  "product:create": "Création de produits (tunnel FLUX)",
-  "category:create": "Nouvelle catégorie de produits",
-  "product:add": "Ajout d'un produit",
-  "reservation:add": "Ajout d'une réservation",
-  "vitrine:guide": "Assistant vitrine FLUX",
-  "voice:update": "Changement de contexte FLUX",
-};
-
-function reasonLabel(reason: string): string {
-  if (REASON_LABELS[reason]) return REASON_LABELS[reason];
+function reasonLabel(t: BillingDict["credits"]["reasons"], reason: string): string {
+  const staticMap: Record<string, string> = {
+    signup: t.signup,
+    monthly: t.monthly,
+    prefill: t.prefill,
+    "offer:create": t.offerCreate,
+    "offer:extra": t.offerExtra,
+    "product:create": t.productCreate,
+    "category:create": t.categoryCreate,
+    "product:add": t.productAdd,
+    "reservation:add": t.reservationAdd,
+    "vitrine:guide": t.vitrineGuide,
+    "voice:update": t.voiceUpdate,
+  };
+  if (staticMap[reason]) return staticMap[reason];
   if (reason.startsWith("tool:")) {
-    const tool = TOOLS.find((t) => t.slug === reason.slice(5));
+    const tool = TOOLS.find((tl) => tl.slug === reason.slice(5));
     return tool?.name ?? reason.slice(5);
   }
   if (reason.startsWith("purchase:")) {
     const pack = getPack(reason.slice(9));
-    return pack ? `Achat ${pack.label} (+${pack.credits} cr.)` : "Achat de crédits";
+    return pack
+      ? t.purchasePack.replace("{label}", pack.label).replace("{credits}", String(pack.credits))
+      : t.purchase;
   }
-  if (reason.startsWith("refund:")) return "Remboursement (action échouée)";
+  if (reason.startsWith("refund:")) return t.refund;
   if (reason.startsWith("topup:")) {
     const plan = reason.slice(6) as Plan;
-    return `Recharge formule ${PLAN_LABEL[plan] ?? plan}`;
+    return t.topup.replace("{plan}", PLAN_LABEL[plan] ?? plan);
   }
   if (reason.startsWith("invoice:")) {
     const plan = reason.split(":topup:")[1] as Plan | undefined;
-    return plan ? `Recharge formule ${PLAN_LABEL[plan] ?? plan}` : "Recharge mensuelle";
+    return plan ? t.topup.replace("{plan}", PLAN_LABEL[plan] ?? plan) : t.monthlyTopup;
   }
   if (reason.startsWith("publish:")) {
     const version = reason.split(":v")[1];
-    return version
-      ? `Publication de la version ${version} du site`
-      : "Publication du site";
+    return version ? t.publishVersion.replace("{version}", version) : t.publishGeneric;
   }
   return reason;
 }
@@ -112,7 +123,7 @@ export default async function CreditsPage({
   const params = await searchParams;
   const achat = typeof params.achat === "string" ? params.achat : null;
 
-  const [{ data: balance }, { data: ledger }, { data: profile }] =
+  const [{ data: balance }, { data: ledger }, { data: profile }, locale] =
     await Promise.all([
       supabase.rpc("apply_plan_topup", { uid: user.id }),
       supabase
@@ -126,7 +137,9 @@ export default async function CreditsPage({
         .select("plan, trial_ends_at, subscribed_at, subscription_status, current_period_end")
         .eq("user_id", user.id)
         .single<Pick<Profile, "plan" | "trial_ends_at" | "subscribed_at" | "subscription_status" | "current_period_end">>(),
+      getAccountLocale(supabase, user.id),
     ]);
+  const t = (await getDictionary(locale, "billing")).credits;
 
   const plan = (profile?.plan ?? "basique") as Plan;
   const monthlyCredits = PLAN_LIMITS[plan].monthlyCredits;
@@ -144,7 +157,7 @@ export default async function CreditsPage({
   // topup de la formule courante.
   const nextRecharge =
     subscribed && profile?.current_period_end
-      ? new Date(profile.current_period_end).toLocaleDateString("fr-FR", { day: "numeric", month: "long" })
+      ? formatDate(locale, profile.current_period_end, { day: "numeric", month: "long" })
       : null;
 
   return (
@@ -153,70 +166,60 @@ export default async function CreditsPage({
         <div className={styles.heroGlow} aria-hidden="true" />
         <span className={styles.overline}>
           <LockKeyhole aria-hidden="true" />
-          Réserve personnelle
+          {t.eyebrow}
         </span>
         <div className={styles.heroMark} aria-hidden="true">
           <WalletCards />
         </div>
         <h1>
-          Ton capital <span>FLUX</span>
+          {t.titleStart} <span>{t.titleEm}</span>
         </h1>
-        <p>
-          Tes crédits sont ta réserve de création. Tu avances à ton rythme, avec
-          ton budget, et chaque dépense reste lisible avant de lancer une action.
-        </p>
+        <p>{t.text}</p>
         <div className={styles.heroTrust}>
           <Gem aria-hidden="true" />
-          <strong>1 crédit = 0,40 €</strong>
-          <span>dégressif selon les packs</span>
+          <strong>{t.trustRate}</strong>
+          <span>{t.trustHint}</span>
         </div>
       </header>
 
       {achat === "succes" && (
         <div className={styles.success}>
-          <strong>Paiement reçu.</strong> Tes crédits arrivent d&apos;ici
-          quelques secondes — recharge la page si le solde n&apos;a pas encore
-          bougé.
+          <strong>{t.paymentSuccessTitle}</strong> {t.paymentSuccessText}
         </div>
       )}
       {achat === "annule" && (
-        <div className={styles.notice}>
-          Paiement annulé — rien n&apos;a été débité.
-        </div>
+        <div className={styles.notice}>{t.paymentCancelled}</div>
       )}
 
       <section className={styles.balanceVault}>
         <div className={styles.balanceHead}>
           <div>
-            <p className={styles.goldLabel}>Solde disponible</p>
+            <p className={styles.goldLabel}>{t.balanceAvailable}</p>
             <strong className={styles.balance}>
               {currentBalance}
-              <span> crédits</span>
+              <span> {t.creditsUnit}</span>
             </strong>
           </div>
           <div className={styles.trialPill}>
             {nextRecharge ? (
-              <>Recharge : le {nextRecharge}</>
+              <>{t.nextRecharge.replace("{date}", nextRecharge)}</>
             ) : trialActive ? (
-              <>
-                Essai FLUX : {daysLeft} jour{daysLeft > 1 ? "s" : ""} restant
-                {daysLeft > 1 ? "s" : ""}
-              </>
+              <>{(daysLeft > 1 ? t.trialPlural : t.trial).replace("{days}", String(daysLeft))}</>
             ) : (
-              <>{subscribed ? `Formule ${PLAN_LABEL[plan]}` : "Essai terminé"}</>
+              <>{subscribed ? t.planLabel.replace("{plan}", PLAN_LABEL[plan]) : t.trialOver}</>
             )}
           </div>
         </div>
 
         <div className={styles.levelPanel}>
           <div className={styles.levelTop}>
-            <span>Niveau {rank.level}/8</span>
+            <span>{t.level.replace("{level}", String(rank.level))}</span>
             <strong>{currentBalance} / {rank.target} cr.</strong>
           </div>
           <div className={styles.progressTrack} style={progressStyle}>
             <span />
           </div>
-          <ol className={styles.levels} aria-label="Niveaux de crédits">
+          <ol className={styles.levels} aria-label={t.levelsAria}>
             {CREDIT_LEVELS.map((level, index) => (
               <li
                 key={level}
@@ -232,10 +235,8 @@ export default async function CreditsPage({
 
         {!subscribed && (
           <p className={styles.formulaHint}>
-            {trialActive
-              ? "Envie de continuer après l'essai ? "
-              : "Pour recharger et réactiver publications et IA : "}
-            <Link href="/formules">Découvre les formules FLUX</Link>.
+            {trialActive ? `${t.continueAfterTrial} ` : `${t.rechargeToReactivate} `}
+            <Link href="/formules">{t.discoverPlans}</Link>.
           </p>
         )}
       </section>
@@ -244,23 +245,20 @@ export default async function CreditsPage({
         <div className={styles.sectionHead}>
           <span>
             <Coins aria-hidden="true" />
-            Recharge
+            {t.rechargeSection.kicker}
           </span>
           <div>
-            <p className={styles.goldLabel}>Trésorerie créative</p>
-            <h2>Recharge tes crédits</h2>
-            <p>
-              Paiement sécurisé par Stripe. Les crédits s&apos;ajoutent à ton
-              solde et ne se perdent jamais.
-            </p>
+            <p className={styles.goldLabel}>{t.rechargeSection.eyebrow}</p>
+            <h2>{t.rechargeSection.title}</h2>
+            <p>{t.rechargeSection.text}</p>
           </div>
         </div>
         <div className={styles.sectionBody}>
-          <CreditPacks />
+          <CreditPacks t={t.packs} locale={locale} />
           {profile && !hasActiveAccess(profile) && (
             <p className={styles.smallNote}>
-              Tu as terminé ton essai — recharge pour profiter de FLUX à 100 %.{" "}
-              <Link href="/formules">Choisir une formule FLUX</Link>.
+              {t.rechargeSection.trialOverNote}{" "}
+              <Link href="/formules">{t.rechargeSection.choosePlan}</Link>.
             </p>
           )}
         </div>
@@ -270,51 +268,41 @@ export default async function CreditsPage({
         <div className={styles.sectionHead}>
           <span>
             <ShieldCheck aria-hidden="true" />
-            Confiance
+            {t.trustSection.kicker}
           </span>
           <div>
-            <p className={styles.goldLabel}>Rythme et budget</p>
-            <h2>La règle, en clair</h2>
+            <p className={styles.goldLabel}>{t.trustSection.eyebrow}</p>
+            <h2>{t.trustSection.title}</h2>
           </div>
         </div>
         <div className={styles.sectionBody}>
           <ul className={styles.ruleList}>
             <li>
-              <strong>100 crédits offerts</strong>{" "}
-              pendant ton essai de {TRIAL_DAYS} jours, pour créer ton site et
-              tout tester.
+              <strong>{t.trustSection.freeCredits}</strong>{" "}
+              {t.trustSection.freeCreditsText.replace("{days}", String(TRIAL_DAYS))}
             </li>
             <li>
-              <strong>1 crédit = 0,40 €</strong>{" "}
-              (dégressif sur les packs) : chaque création, publication ou
-              génération consomme des ressources réelles.
+              <strong>{t.trustSection.rate}</strong> {t.trustSection.rateText}
             </li>
             <li>
-              Chaque action a un coût affiché{" "}
-              <strong>avant</strong> de lancer quoi
-              que ce soit. Rien n&apos;est prélevé en douce.
+              {t.trustSection.costShown}{" "}
+              <strong>{t.trustSection.costShownBold}</strong> {t.trustSection.costShownText}
             </li>
-            <li>
-              Tes crédits ne se perdent jamais : ce qu&apos;il te reste
-              s&apos;ajoute aux recharges suivantes.
-            </li>
+            <li>{t.trustSection.neverLost}</li>
             <li>
               {subscribed ? (
                 <>
-                  Ta formule {PLAN_LABEL[plan]} recharge{" "}
+                  {t.trustSection.subscribedRecharge.replace("{plan}", PLAN_LABEL[plan])}{" "}
                   <strong>
-                    +{monthlyCredits} crédits à chaque facture mensuelle payée
+                    {t.trustSection.subscribedRechargeBold.replace("{credits}", String(monthlyCredits))}
                   </strong>
                   .
                 </>
               ) : (
                 <>
-                  Après l&apos;essai, les{" "}
-                  <Link href="/formules">
-                    formules FLUX
-                  </Link>{" "}
-                  rechargent de 100 à 3000 crédits par mois — plus de crédits,
-                  plus de possibilités.
+                  {t.trustSection.unsubscribedRecharge}{" "}
+                  <Link href="/formules">{t.trustSection.unsubscribedRechargeLink}</Link>{" "}
+                  {t.trustSection.unsubscribedRechargeText}
                 </>
               )}
             </li>
@@ -326,48 +314,49 @@ export default async function CreditsPage({
         <div className={styles.sectionHead}>
           <span>
             <Landmark aria-hidden="true" />
-            Barème
+            {t.pricingSection.kicker}
           </span>
           <div>
-            <p className={styles.goldLabel}>Transparence</p>
-            <h2>Ce que coûte chaque action</h2>
+            <p className={styles.goldLabel}>{t.pricingSection.eyebrow}</p>
+            <h2>{t.pricingSection.title}</h2>
           </div>
         </div>
         <div className={styles.sectionBody}>
           <ul className={styles.costList}>
             <li>
-              <span>Publication d&apos;une nouvelle version du site</span>
+              <span>{t.pricingSection.publish}</span>
               <strong>{PUBLISH_COST} cr.</strong>
             </li>
             <li>
-              <span>Création d&apos;offre (tunnel ou gestionnaire)</span>
+              <span>{t.pricingSection.offerCreate}</span>
               <strong>
-                {OFFER_CREATE_COST} cr. · {OFFER_EXTRA_COST} cr. au-delà de la
-                formule
+                {t.pricingSection.offerCreateValue
+                  .replace("{cost}", String(OFFER_CREATE_COST))
+                  .replace("{extra}", String(OFFER_EXTRA_COST))}
               </strong>
             </li>
             <li>
-              <span>Création de produits via le tunnel FLUX</span>
+              <span>{t.pricingSection.productCreate}</span>
               <strong>{PRODUCT_CREATE_COST} cr.</strong>
             </li>
             <li>
-              <span>Nouvelle catégorie de produits (1re du compte offerte)</span>
+              <span>{t.pricingSection.categoryCreate}</span>
               <strong>{CATEGORY_CREATE_COST} cr.</strong>
             </li>
             <li>
-              <span>Ajout d&apos;un produit</span>
+              <span>{t.pricingSection.productAdd}</span>
               <strong>{PRODUCT_ADD_COST} cr.</strong>
             </li>
             <li>
-              <span>Ajout d&apos;une réservation</span>
+              <span>{t.pricingSection.reservationAdd}</span>
               <strong>{RESERVATION_ADD_COST} cr.</strong>
             </li>
             <li>
-              <span>Assistant vitrine FLUX (éditeur complet gratuit)</span>
+              <span>{t.pricingSection.vitrineAssist}</span>
               <strong>{VITRINE_ASSIST_COST} cr.</strong>
             </li>
             <li>
-              <span>Changement de contexte FLUX (1re création offerte)</span>
+              <span>{t.pricingSection.contextChange}</span>
               <strong>{CONTEXT_CHANGE_COST} cr.</strong>
             </li>
             {TOOLS.map((tool) => (
@@ -377,7 +366,7 @@ export default async function CreditsPage({
               </li>
             ))}
             <li>
-              <span>Pré-remplissage IA de la vitrine (formules &amp; packs)</span>
+              <span>{t.pricingSection.prefill}</span>
               <strong>{PREFILL_COST} cr.</strong>
             </li>
           </ul>
@@ -388,16 +377,16 @@ export default async function CreditsPage({
         <div className={styles.sectionHead}>
           <span>
             <Sparkles aria-hidden="true" />
-            Grand livre
+            {t.historySection.kicker}
           </span>
           <div>
-            <p className={styles.goldLabel}>Historique</p>
-            <h2>Chaque mouvement, noir sur blanc</h2>
+            <p className={styles.goldLabel}>{t.historySection.eyebrow}</p>
+            <h2>{t.historySection.title}</h2>
           </div>
         </div>
         <div className={styles.sectionBody}>
           {entries.length === 0 ? (
-            <p className={styles.emptyHistory}>Rien pour l&apos;instant.</p>
+            <p className={styles.emptyHistory}>{t.historySection.empty}</p>
           ) : (
             <ul className={styles.historyList}>
               {entries
@@ -405,13 +394,13 @@ export default async function CreditsPage({
                 .map((e) => (
                   <li key={e.id}>
                     <span>
-                      {new Date(e.created_at).toLocaleDateString("fr-FR", {
+                      {formatDate(locale, e.created_at, {
                         day: "2-digit",
                         month: "2-digit",
                         year: "numeric",
                       })}
                     </span>
-                    <strong>{reasonLabel(e.reason)}</strong>
+                    <strong>{reasonLabel(t.reasons, e.reason)}</strong>
                     <span
                       className={e.delta > 0 ? styles.positive : styles.negative}
                     >

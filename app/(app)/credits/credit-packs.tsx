@@ -2,10 +2,13 @@ import Link from "next/link";
 import { Coins } from "lucide-react";
 import { CREDIT_PACKS, packUnitPrice } from "@/lib/credit-packs";
 import styles from "./credits.module.css";
+import type { BillingDict } from "@/lib/i18n/get-dictionary";
+import type { Locale } from "@/lib/i18n/config";
+import { formatNumber } from "@/lib/i18n/format";
 
 // Cartes d'achat de packs de crédits → Stripe Checkout.
 // Le crédit effectif est posé par le webhook, pas au retour de redirection.
-export function CreditPacks() {
+export function CreditPacks({ t, locale }: { t: BillingDict["credits"]["packs"]; locale: Locale }) {
   return (
     <div className={styles.packGrid}>
       {CREDIT_PACKS.map((pack) => (
@@ -26,10 +29,10 @@ export function CreditPacks() {
             <span> cr.</span>
           </p>
           <p className={styles.packPrice}>
-            {(pack.priceCents / 100).toLocaleString("fr-FR")} €
+            {formatNumber(locale, pack.priceCents / 100)} €
             <span>
               {" "}
-              · {packUnitPrice(pack)} €/cr
+              · {packUnitPrice(pack, locale)} €/cr
             </span>
           </p>
           <Link
@@ -37,7 +40,7 @@ export function CreditPacks() {
             className={`flux-button-smooth flux-button-smooth-gold ${pack.featured ? styles.buyFeatured : styles.buyButton}`}
           >
             <Coins aria-hidden="true" />
-            Acheter
+            {t.buy}
           </Link>
         </article>
       ))}

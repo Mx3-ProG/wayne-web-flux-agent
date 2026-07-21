@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "Meine Projekte",
+    "newTitle": "Neues Projekt"
+  },
+  "eyebrow": "Dein Konto",
+  "title": "Meine Projekte",
+  "subtitle": "Jedes Projekt ist ein kompletter Shop: seine Vitrine, seine Produkte, seine Bestellungen, sein Umsatz. Wähle das aktive Projekt, um deinen gesamten Bereich darüber zu steuern.",
+  "counter": "{count} / {limit} Projekt — Tarif {plan}",
+  "counterPlural": "{count} / {limit} Projekte — Tarif {plan}",
+  "noName": "Ohne Namen",
+  "revenue": "Umsatz",
+  "open": "Öffnen ↗",
+  "newProject": "Neues Projekt",
+  "upsellTitle": "Mehrere Shops",
+  "upsellBasique": "Verwalte mehrere Shops (bis zu 10) mit den höheren Tarifen.",
+  "upsellLimit": "Du hast das Projektlimit deines Tarifs erreicht.",
+  "discoverPlans": "FLUX-Tarife entdecken",
+  "activeProject": "Aktives Projekt",
+  "activating": "…",
+  "activate": "Dieses Projekt aktivieren",
+  "domain": {
+    "title": "Domainname",
+    "text": "Verbinde deine eigene Domain (z. B. {example}) mit der Vitrine des aktiven Projekts.",
+    "soon": "Ab dem Pro-Tarif",
+    "placeholder": "mein-shop.de",
+    "saving": "…",
+    "save": "Speichern",
+    "saved": "Domain gespeichert.",
+    "comingSoon": "Diese Funktion kommt bald live. Lokal kannst du sie schon testen."
+  },
+  "backToProjects": "← Meine Projekte",
+  "errors": {
+    "feature_coming_soon": "Funktion bald verfügbar.",
+    "not_authenticated": "Nicht angemeldet.",
+    "plan_restricted": "Nur für Pro-Tarif und höher.",
+    "invalid_domain": "Ungültiger Domainname (z. B. mein-shop.de).",
+    "save_failed": "Speichern nicht möglich (Domain schon vergeben?).",
+    "project_not_found": "Projekt nicht gefunden.",
+    "change_failed": "Änderung nicht möglich.",
+    "content_blocked": "Hassbotschaften oder anstößige Inhalte sind auf FLUX verboten und werden geahndet; bitte respektiere deine Umgebung und die der anderen. Nach 3 Verstößen gegen unsere Nutzungsbedingungen wird das Konto gelöscht.",
+    "unknown": "Ein Fehler ist aufgetreten. Versuch's gleich nochmal."
+  }
+}

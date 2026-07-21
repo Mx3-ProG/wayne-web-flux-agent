@@ -10,32 +10,47 @@ import { CONTEXT_CHANGE_COST } from "@/lib/plans";
 import { saveVoiceProfile } from "@/app/(app)/contexte/actions";
 import { EMPTY_VOICE, type VoiceDraft } from "./voice-options";
 import styles from "./voice-form.module.css";
-
-const SUMMARY: {
-  key: keyof VoiceDraft;
-  label: string;
-  fallback: string;
-  format?: (value: string) => string;
-}[] = [
-  { key: "tone", label: "Ton énergie", fallback: "À définir" },
-  { key: "address_form", label: "Ta façon de t’adresser aux clients", fallback: "À définir", format: (value: string) => value === "tu" ? "Tu tutoies tes clients" : "Tu vouvoies tes clients" },
-  { key: "emojis", label: "Ton usage des emojis", fallback: "À définir", format: (value: string) => value === "beaucoup" ? "Souvent, ils font partie de ton style" : value === "parfois" ? "Avec modération" : "Une communication sans emoji" },
-  { key: "specialty", label: "Ta signature", fallback: "À définir" },
-  { key: "often_told", label: "Ce que tes clients disent de toi", fallback: "À définir" },
-  { key: "story", label: "Ton histoire", fallback: "À définir" },
-  { key: "vals", label: "Tes valeurs", fallback: "À définir" },
-];
+import type { VoiceDict } from "@/lib/i18n/get-dictionary";
+import { KARLMADA_BLOCK_MESSAGE } from "@/lib/karlmada-constants";
 
 export function VoiceForm({
   initialVoice,
   preparedVoice,
   completion,
+  t,
 }: {
   initialVoice: VoiceProfile | null;
   preparedVoice: VoiceDraft | null;
   completion: number;
+  t: VoiceDict;
 }) {
   const router = useRouter();
+  const s = t.form.summary;
+  const SUMMARY: {
+    key: keyof VoiceDraft;
+    label: string;
+    fallback: string;
+    format?: (value: string) => string;
+  }[] = [
+    { key: "tone", label: s.tone, fallback: s.fallback },
+    {
+      key: "address_form",
+      label: s.addressForm,
+      fallback: s.fallback,
+      format: (value: string) => (value === "tu" ? s.addressTu : s.addressVous),
+    },
+    {
+      key: "emojis",
+      label: s.emojis,
+      fallback: s.fallback,
+      format: (value: string) =>
+        value === "beaucoup" ? s.emojisMuch : value === "parfois" ? s.emojisSome : s.emojisNone,
+    },
+    { key: "specialty", label: s.specialty, fallback: s.fallback },
+    { key: "often_told", label: s.oftenTold, fallback: s.fallback },
+    { key: "story", label: s.story, fallback: s.fallback },
+    { key: "vals", label: s.vals, fallback: s.fallback },
+  ];
   const [draft] = useState<VoiceDraft>({ ...EMPTY_VOICE, ...initialVoice, ...preparedVoice });
   const [isPending, startTransition] = useTransition();
   const isReview = Boolean(preparedVoice);
@@ -50,22 +65,19 @@ export function VoiceForm({
     startTransition(async () => {
       const result = await saveVoiceProfile(draft);
       if (result.error === "insufficient_credits") {
-        toast.error(
-          `Modifier ton contexte coûte ${CONTEXT_CHANGE_COST} crédits et ton solde est insuffisant. Recharge tes crédits depuis la page Crédits.`
-        );
+        toast.error(t.form.insufficientCredits.replace("{cost}", String(CONTEXT_CHANGE_COST)));
         return;
       }
       if (result.error === "subscription_required") {
-        toast.error(
-          "Ton essai FLUX est terminé et ton solde est vide. Choisis une formule pour continuer."
-        );
+        toast.error(t.form.subscriptionRequired);
         return;
       }
       if (result.error) {
-        toast.error(result.error);
+        const code = result.error === KARLMADA_BLOCK_MESSAGE ? "content_blocked" : result.error;
+        toast.error(t.errors[code as keyof typeof t.errors] ?? t.errors.unknown);
         return;
       }
-      toast.success("Ta voix est enregistrée. Flux peut maintenant parler comme toi.");
+      toast.success(t.form.saveSuccess);
       router.replace("/contexte");
       router.refresh();
     });
@@ -76,21 +88,17 @@ export function VoiceForm({
       <section className={styles.hero}>
         <span className={styles.heroIcon}><MessageSquareText aria-hidden="true" /></span>
         <div>
-          <p className={styles.kicker}>{isReview ? "Ta voix est prête" : "Ton identité éditoriale"}</p>
-          <h1>{isReview ? "Voici comment Flux va parler pour toi." : "Flux connaît ta voix."}</h1>
-          <p>
-            {isReview
-              ? "Vérifie le résumé. Si tout te ressemble, il ne reste plus qu’à l’enregistrer."
-              : "Retrouve ici les choix qui guident tous tes prochains contenus."}
-          </p>
+          <p className={styles.kicker}>{isReview ? t.form.reviewKicker : t.form.defaultKicker}</p>
+          <h1>{isReview ? t.form.reviewTitle : t.form.defaultTitle}</h1>
+          <p>{isReview ? t.form.reviewText : t.form.defaultText}</p>
         </div>
       </section>
 
-      <section className={styles.completion} aria-label={`Profil complété à ${profileCompletion}%`}>
+      <section className={styles.completion} aria-label={t.form.completionAria.replace("{percent}", String(profileCompletion))}>
         <span>
           <Sparkles aria-hidden="true" />
           <strong>{profileCompletion}%</strong>
-          <small>de ta voix comprise par Flux</small>
+          <small>{t.form.completionLabel}</small>
         </span>
         <div><i style={{ width: `${profileCompletion}%` }} /></div>
       </section>
@@ -98,11 +106,11 @@ export function VoiceForm({
       <section className={styles.summary}>
         <div className={styles.summaryHeader}>
           <div>
-            <p className={styles.kicker}>Ton profil</p>
-            <h2>Ce que Flux a retenu</h2>
+            <p className={styles.kicker}>{t.form.profileLabel}</p>
+            <h2>{t.form.profileTitle}</h2>
           </div>
           <Link href="/contexte/configurer" className={styles.editLink}>
-            <Pencil aria-hidden="true" /> Refaire le questionnaire
+            <Pencil aria-hidden="true" /> {t.form.redo}
           </Link>
         </div>
 
@@ -125,25 +133,25 @@ export function VoiceForm({
       {isReview ? (
         <div className={styles.saveBar}>
           <span>
-            <strong>Tout te ressemble ?</strong>
+            <strong>{t.form.allYou}</strong>
             <small>
               {isUpdate
-                ? `Mettre à jour ton contexte coûte ${CONTEXT_CHANGE_COST} cr.`
-                : "Tu pourras refaire ce questionnaire à tout moment."}
+                ? t.form.updateCost.replace("{cost}", String(CONTEXT_CHANGE_COST))
+                : t.form.redoAnytime}
             </small>
           </span>
           <button type="button" disabled={isPending} onClick={save}>
             <Save aria-hidden="true" />
             {isPending
-              ? "Enregistrement…"
+              ? t.form.saving
               : isUpdate
-                ? `Enregistrer ma voix (${CONTEXT_CHANGE_COST} cr.)`
-                : "Enregistrer ma voix"}
+                ? t.form.saveVoiceUpdate.replace("{cost}", String(CONTEXT_CHANGE_COST))
+                : t.form.saveVoice}
           </button>
         </div>
       ) : (
         <Link href="/contexte/configurer" className={styles.restart}>
-          <Pencil aria-hidden="true" /> Mettre à jour ma voix
+          <Pencil aria-hidden="true" /> {t.form.updateVoice}
         </Link>
       )}
     </div>

@@ -6,14 +6,22 @@ import styles from "@/app/home.module.css";
 
 // "Partage Flux autour de toi" : Web Share API quand elle existe
 // (mobile), sinon copie du lien dans le presse-papiers.
-export function ShareCta() {
+export function ShareCta({
+  idleLabel,
+  copiedLabel,
+  shareText,
+}: {
+  idleLabel: string;
+  copiedLabel: string;
+  shareText: string;
+}) {
   const [copied, setCopied] = useState(false);
 
   async function handleShare() {
     const url = window.location.origin;
     const payload = {
       title: "Wayne Web Flux",
-      text: "J'ai trouvé l'outil qui fait décoller les commerces. Regarde :",
+      text: shareText,
       url,
     };
     if (navigator.share) {
@@ -37,7 +45,7 @@ export function ShareCta() {
   return (
     <button type="button" className={styles.shareCta} onClick={handleShare}>
       {copied ? <Check aria-hidden="true" /> : <Share2 aria-hidden="true" />}
-      {copied ? "Lien copié !" : "Partage Flux à un commerçant que tu apprécies"}
+      {copied ? copiedLabel : idleLabel}
     </button>
   );
 }

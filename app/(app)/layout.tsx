@@ -18,6 +18,12 @@ import {
 import { healMissingProfile } from "@/lib/profile-heal";
 import type { Profile } from "@/lib/types";
 import { SessionTracker } from "@/components/session-tracker";
+import { getAccountLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { I18nProvider } from "@/components/i18n-provider";
+import { getLocalizedVerticals, getLocalizedFonts } from "@/lib/verticals-i18n";
+import { getPageTemplates, toPageTemplateMeta } from "@/lib/page-templates-i18n";
+import { DashboardLanguageSwitcher } from "@/components/dashboard-language-switcher";
 
 export default async function AppLayout({
   children,
@@ -32,7 +38,7 @@ export default async function AppLayout({
 
   // Recharge paresseuse selon la formule + solde à jour, affiché dans le
   // header. L'état d'essai alimente la bannière sous le header.
-  const [topupResult, profileResult, accountAccess] = await Promise.all([
+  const [topupResult, profileResult, accountAccess, locale] = await Promise.all([
     supabase.rpc("apply_plan_topup", { uid: user.id }),
     supabase
       .from("profiles")
@@ -48,7 +54,18 @@ export default async function AppLayout({
         >
       >(),
     loadAccountAccess(user.id),
+    getAccountLocale(supabase, user.id),
   ]);
+  const [dictionary, editorDict, offersDict, productsDict, verticals, fonts, pageTemplates] =
+    await Promise.all([
+      getDictionary(locale, "dashboard"),
+      getDictionary(locale, "editor"),
+      getDictionary(locale, "offers"),
+      getDictionary(locale, "products"),
+      getLocalizedVerticals(locale),
+      getLocalizedFonts(locale),
+      getPageTemplates(locale),
+    ]);
   let balance = topupResult.data;
   let trialProfile = profileResult.data;
 
@@ -112,6 +129,17 @@ export default async function AppLayout({
   }
 
   return (
+    <I18nProvider
+      locale={locale}
+      dictionary={dictionary}
+      editor={editorDict}
+      offers={offersDict}
+      products={productsDict}
+      verticals={verticals}
+      fonts={fonts}
+      pageTemplates={pageTemplates.map(toPageTemplateMeta)}
+      languageChangeFree={projects.length === 0}
+    >
     <div className={styles.shell}>
       <SessionTracker />
       <AppBadgeSync pendingOrders={pendingOrders ?? 0} />
@@ -130,6 +158,7 @@ export default async function AppLayout({
             <FluxBrand markOnly />
           </div>
           <div className={styles.mobileActions}>
+            <DashboardLanguageSwitcher />
             <CreditsLink balance={balance ?? 0} className={styles.credits} />
             <MobileAppMenu
               balance={balance ?? 0}
@@ -156,5 +185,6 @@ export default async function AppLayout({
       </main>
       <MobileBottomNavigation pendingOrders={pendingOrders} lowStock={lowStock} />
     </div>
+    </I18nProvider>
   );
 }

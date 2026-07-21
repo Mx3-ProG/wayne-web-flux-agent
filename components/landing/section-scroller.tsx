@@ -22,7 +22,13 @@ function DotArrow() {
   );
 }
 
-export function SectionScroller() {
+export function SectionScroller({
+  upAria = "Remonter à la section précédente",
+  downAria = "Descendre à la section suivante",
+}: {
+  upAria?: string;
+  downAria?: string;
+} = {}) {
   const [canUp, setCanUp] = useState(false);
   const [canDown, setCanDown] = useState(false);
   const [glitching, setGlitching] = useState<"up" | "down" | null>(null);
@@ -82,7 +88,7 @@ export function SectionScroller() {
     <div className={styles.scroller}>
       <button
         type="button"
-        aria-label="Remonter à la section précédente"
+        aria-label={upAria}
         className={[
           styles.scrollerBtn,
           styles.scrollerUp,
@@ -96,7 +102,7 @@ export function SectionScroller() {
       </button>
       <button
         type="button"
-        aria-label="Descendre à la section suivante"
+        aria-label={downAria}
         className={[
           styles.scrollerBtn,
           styles.scrollerDown,

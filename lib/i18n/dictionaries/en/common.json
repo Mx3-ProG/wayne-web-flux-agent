@@ -1,0 +1,70 @@
+{
+ "brandHomeAria": "Wayne Web Flux, home",
+ "nav": {
+  "aria": "Main navigation",
+  "solution": "The solution",
+  "tools": "The tools",
+  "pricing": "Pricing",
+  "story": "Our story",
+  "reviews": "Reviews",
+  "faq": "FAQ",
+  "contact": "Contact",
+  "home": "Home",
+  "login": "Log in",
+  "tryFree": "Try it for free"
+ },
+ "languageSwitcher": {
+  "aria": "Change language",
+  "label": "Language"
+ },
+ "footer": {
+  "tagline": "The digital presence that actually works for your business.",
+  "cta": "Try FLUX for free",
+  "product": "Product",
+  "resources": "Resources",
+  "helpCenter": "Help center",
+  "contactUs": "Contact us",
+  "legal": "Legal",
+  "legalNotice": "Legal notice",
+  "terms": "Terms of service",
+  "privacy": "Privacy",
+  "safety": "Infrastructure protected by KarlMada · Zero tolerance for adult content, drugs, weapons, fraud and illegal activities.",
+  "rights": "© 2026 Wayne Web. All rights reserved.",
+  "status": "All systems operational",
+  "linkedinAria": "Wayne Web on LinkedIn",
+  "instagramAria": "Wayne Web on Instagram"
+ },
+ "cookieConsent": {
+  "kicker": "Your choice, made simple",
+  "title": "Cookies for a service that keeps improving.",
+  "description": "We use optional cookies to understand what's useful to you, improve Flux and build its reach. You stay in control.",
+  "categories": {
+   "necessary": {
+    "title": "Necessary",
+    "description": "Login, security and the service running."
+   },
+   "analytics": {
+    "title": "Audience measurement",
+    "description": "Understand usage and improve service quality."
+   },
+   "personalization": {
+    "title": "Personalization",
+    "description": "Adapt the experience and content to your preferences."
+   },
+   "marketing": {
+    "title": "Awareness",
+    "description": "Measure our campaigns and promote our services."
+   }
+  },
+  "preferencesAria": "Cookie preferences",
+  "toggleAria": "{title}: {state}",
+  "enabled": "enabled",
+  "disabled": "disabled",
+  "legalPrefix": "Necessary cookies stay active. Check our",
+  "privacyPolicy": "privacy policy",
+  "acceptAll": "Accept all",
+  "saveChoices": "Save my choices",
+  "customize": "Customize",
+  "declineOptional": "Continue without accepting"
+ }
+}

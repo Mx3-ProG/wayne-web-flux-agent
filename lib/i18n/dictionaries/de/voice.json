@@ -1,0 +1,285 @@
+{
+ "meta": {
+  "title": "Meine Stimme",
+  "tunnelTitle": "Meine Stimme erstellen"
+ },
+ "form": {
+  "summary": {
+   "tone": "Deine Energie",
+   "addressForm": "Deine Art, Kunden anzusprechen",
+   "emojis": "Dein Umgang mit Emojis",
+   "specialty": "Deine Signatur",
+   "oftenTold": "Was deine Kunden über dich sagen",
+   "story": "Deine Geschichte",
+   "vals": "Deine Werte",
+   "fallback": "Noch festzulegen",
+   "addressTu": "Du duzt deine Kunden",
+   "addressVous": "Du siezt deine Kunden",
+   "emojisMuch": "Oft, sie gehören zu deinem Stil",
+   "emojisSome": "Mit Maß",
+   "emojisNone": "Eine Kommunikation ohne Emoji"
+  },
+  "reviewKicker": "Deine Stimme ist bereit",
+  "defaultKicker": "Deine redaktionelle Identität",
+  "reviewTitle": "So wird Flux für dich sprechen.",
+  "defaultTitle": "Flux kennt deine Stimme.",
+  "reviewText": "Prüfe die Zusammenfassung. Wenn dir alles ähnlich sieht, musst du es nur noch speichern.",
+  "defaultText": "Hier findest du die Entscheidungen, die all deine zukünftigen Inhalte leiten.",
+  "completionAria": "Profil zu {percent}% vervollständigt",
+  "completionLabel": "deiner Stimme von Flux verstanden",
+  "profileLabel": "Dein Profil",
+  "profileTitle": "Was Flux gemerkt hat",
+  "redo": "Fragebogen wiederholen",
+  "allYou": "Sieht dir alles ähnlich?",
+  "updateCost": "Dein Kontext zu aktualisieren kostet {cost} Cr.",
+  "redoAnytime": "Du kannst diesen Fragebogen jederzeit wiederholen.",
+  "saving": "Wird gespeichert…",
+  "saveVoiceUpdate": "Meine Stimme speichern ({cost} Cr.)",
+  "saveVoice": "Meine Stimme speichern",
+  "updateVoice": "Meine Stimme aktualisieren",
+  "insufficientCredits": "Deinen Kontext zu ändern kostet {cost} Credits und dein Guthaben reicht nicht aus. Lade deine Credits auf der Seite Credits wieder auf.",
+  "subscriptionRequired": "Deine FLUX-Testphase ist beendet und dein Guthaben ist leer. Wähle einen Tarif, um weiterzumachen.",
+  "saveSuccess": "Deine Stimme ist gespeichert. Flux kann jetzt wie du sprechen."
+ },
+ "tunnel": {
+  "exit": "Verlassen",
+  "question": "Frage {current} von {total}",
+  "introKicker": "Deine Marken-Intelligenz",
+  "introTitleStart": "FLUX, die Intelligenz der Entwickler im Dienst der",
+  "introTitleEm": "engagierten Unternehmer.",
+  "introText": "Kein Text zu schreiben. Wähle einfach, was zu dir passt, Flux komponiert deine Stimme und bereitet eine stimmige Kommunikation vor.",
+  "createVoice": "Meine Stimme erstellen",
+  "introHint": "7 Entscheidungen · weniger als 2 Minuten · jederzeit änderbar",
+  "back": "Zurück",
+  "seeSummary": "Meine Zusammenfassung ansehen",
+  "continue": "Weiter"
+ },
+ "errors": {
+  "not_authenticated": "Du musst angemeldet sein, um fortzufahren.",
+  "no_active_page": "Erstelle zuerst deine Vitrine.",
+  "save_failed": "Speichern nicht möglich.",
+  "content_blocked": "Hassbotschaften oder explizite Inhalte sind auf FLUX verboten und werden geahndet; bitte respektiere deine Umgebung und die der anderen. Nach 3 Verstößen gegen unsere Nutzungsbedingungen wird das Konto gelöscht.",
+  "unknown": "Ein Fehler ist aufgetreten. Versuche es gleich noch einmal."
+ },
+ "steps": {
+  "tone": {
+   "kicker": "Deine Persönlichkeit",
+   "title": "Welche Energie soll man in deinen Worten spüren?",
+   "subtitle": "Wähle, wie Flux mit deinen Kunden sprechen soll.",
+   "options": {
+    "complice_chaleureux": {
+     "title": "Herzlich & nah",
+     "text": "Persönlich, menschlich, wie bei einem Stammkunden.",
+     "value": "Herzlich und nah"
+    },
+    "pro_expert": {
+     "title": "Professionell & fachkundig",
+     "text": "Klar, beruhigend und immer glaubwürdig.",
+     "value": "Professionell und fachkundig"
+    },
+    "doux_pose": {
+     "title": "Sanft & gelassen",
+     "text": "Ruhig, aufmerksam und ohne Druck.",
+     "value": "Sanft und gelassen"
+    },
+    "solaire_petillant": {
+     "title": "Strahlend & spritzig",
+     "text": "Positiv, lebendig und voller Schwung.",
+     "value": "Strahlend und spritzig"
+    },
+    "chic_raffine": {
+     "title": "Schick & raffiniert",
+     "text": "Elegant, präzise und hochwertig.",
+     "value": "Schick und raffiniert"
+    },
+    "direct_efficace": {
+     "title": "Direkt & effizient",
+     "text": "Kein Geschwafel, ein klares Versprechen.",
+     "value": "Direkt und ohne Umschweife"
+    }
+   }
+  },
+  "address_form": {
+   "kicker": "Deine Kundenbeziehung",
+   "title": "Duzt oder siezt du?",
+   "subtitle": "Flux hält diese Regel in all deinen Inhalten ein.",
+   "options": {
+    "tu": {
+     "title": "Ich duze",
+     "text": "Eine direkte, einfache und vertraute Beziehung."
+    },
+    "vous": {
+     "title": "Ich sieze",
+     "text": "Eine professionelle und respektvolle Beziehung."
+    }
+   }
+  },
+  "emojis": {
+   "kicker": "Dein Stil",
+   "title": "Wie viel Platz für Emojis?",
+   "subtitle": "Gerade genug, um dir zu ähneln, nie künstlich.",
+   "options": {
+    "beaucoup": {
+     "title": "Ich nutze sie oft",
+     "text": "Sie gehören zu meiner Art zu kommunizieren."
+    },
+    "parfois": {
+     "title": "Mit Maß",
+     "text": "Ein Emoji nur, wenn es etwas beiträgt."
+    },
+    "jamais": {
+     "title": "Keine Emojis",
+     "text": "Ich bevorzuge eine schlichte, klare Kommunikation."
+    }
+   }
+  },
+  "specialty": {
+   "kicker": "Deine Handschrift",
+   "title": "Warum kommt man zu dir?",
+   "subtitle": "Wähle die Stärke, die deine Kunden zuerst erinnern sollen.",
+   "options": {
+    "resultat_naturel": {
+     "title": "Das natürliche Ergebnis",
+     "text": "Saubere Arbeit, nichts Aufgesetztes.",
+     "value": "Das natürliche Ergebnis, man sieht nur das Resultat"
+    },
+    "precision": {
+     "title": "Die Präzision",
+     "text": "Jedes Detail zählt bis zum Feinschliff.",
+     "value": "Präzision, saubere Arbeit"
+    },
+    "qualite_durable": {
+     "title": "Die dauerhafte Qualität",
+     "text": "Ein Ergebnis, das langfristig hält.",
+     "value": "Qualität, die hält"
+    },
+    "sur_mesure": {
+     "title": "Maßgeschneidert",
+     "text": "Jeder Kunde erhält eine wirklich persönliche Antwort.",
+     "value": "Maßgeschneidert, nie zweimal gleich"
+    },
+    "juste_prix": {
+     "title": "Der faire Preis",
+     "text": "Echter Wert, klar und ohne böse Überraschungen.",
+     "value": "Unschlagbares Preis-Leistungs-Verhältnis"
+    },
+    "reactivite": {
+     "title": "Die Reaktionsschnelligkeit",
+     "text": "Schnell sein und dabei makellos bleiben.",
+     "value": "Schnelligkeit ohne Abstriche"
+    }
+   }
+  },
+  "often_told": {
+   "kicker": "Der Beweis",
+   "title": "Was sagen deine Kunden oft?",
+   "subtitle": "Wähle den Satz, der nach einer Erfahrung mit dir am häufigsten fällt.",
+   "options": {
+    "prend_le_temps": {
+     "title": "„Du nimmst dir Zeit“",
+     "text": "Deine Kunden fühlen sich gehört und wertgeschätzt.",
+     "value": "Man merkt, dass du dir wirklich Zeit nimmst."
+    },
+    "impeccable": {
+     "title": "„Es ist immer tadellos“",
+     "text": "Die Beständigkeit deiner Arbeit beruhigt sofort.",
+     "value": "Es ist immer tadellos."
+    },
+    "a_laise": {
+     "title": "„Man fühlt sich sofort wohl“",
+     "text": "Dein Empfang verwandelt die Erfahrung.",
+     "value": "Man fühlt sich sofort wohl."
+    },
+    "trouve_solution": {
+     "title": "„Du findest immer eine Lösung“",
+     "text": "Du beruhigst selbst bei komplizierten Anliegen.",
+     "value": "Du findest immer eine Lösung."
+    },
+    "mieux_que_prevu": {
+     "title": "„Noch besser als erwartet“",
+     "text": "Das Endergebnis löst echte Emotionen aus.",
+     "value": "Das Ergebnis übertrifft meine Erwartungen."
+    },
+    "compter_sur_toi": {
+     "title": "„Man kann sich auf dich verlassen“",
+     "text": "Deine Zuverlässigkeit bringt Kunden zurück.",
+     "value": "Man kann sich wirklich auf dich verlassen."
+    }
+   }
+  },
+  "story": {
+   "kicker": "Deine Geschichte",
+   "title": "Was hat dich zu diesem Beruf geführt?",
+   "subtitle": "Flux macht daraus eine menschliche, glaubwürdige Geschichte.",
+   "options": {
+    "passion": {
+     "title": "Eine Leidenschaft wurde Beruf",
+     "text": "Du hast dich entschieden, das, was dich antrieb, voll auszuleben.",
+     "value": "Eine Leidenschaft, die mit der Zeit zum Beruf wurde."
+    },
+    "reconversion": {
+     "title": "Eine bewusste Neuorientierung",
+     "text": "Du hast den Weg gewechselt, um dem Wesentlichen näherzukommen.",
+     "value": "Eine bewusste Neuorientierung hin zu einem sinnvollen Beruf."
+    },
+    "savoir_faire_transmis": {
+     "title": "Ein weitergegebenes Können",
+     "text": "Dein Beruf ist Teil einer größeren Geschichte.",
+     "value": "Ein Können, das über die Jahre weitergegeben und verfeinert wurde."
+    },
+    "aventure_familiale": {
+     "title": "Ein Familienabenteuer",
+     "text": "Verbundenheit und Weitergabe sind Teil deiner Identität.",
+     "value": "Ein Familienabenteuer rund um ein gemeinsames Können."
+    },
+    "envie_de_mieux": {
+     "title": "Der Wunsch, es besser zu machen",
+     "text": "Du hast die Erfahrung geschaffen, die du anderswo nicht fandest.",
+     "value": "Der Wunsch, in meinem Bereich eine bessere Vorgehensweise anzubieten."
+    },
+    "entreprendre_localement": {
+     "title": "Lokal unternehmen",
+     "text": "Dein Geschäft ist tief mit seiner Region verbunden.",
+     "value": "Der Wunsch, lokal zu unternehmen und in meinem Umfeld nützlich zu sein."
+    }
+   }
+  },
+  "vals": {
+   "kicker": "Deine Werte",
+   "title": "Was zählt für dich wirklich?",
+   "subtitle": "Wähle bis zu drei Werte. Sie leiten jeden Inhalt.",
+   "options": {
+    "qualite": {
+     "title": "Qualität",
+     "text": "Nie etwas liefern, wozu du nicht stehst.",
+     "value": "Qualität"
+    },
+    "ecoute": {
+     "title": "Zuhören",
+     "text": "Verstehen, bevor man vorschlägt.",
+     "value": "Zuhören"
+    },
+    "confiance": {
+     "title": "Vertrauen",
+     "text": "Eine dauerhafte Beziehung aufbauen.",
+     "value": "Vertrauen"
+    },
+    "authenticite": {
+     "title": "Authentizität",
+     "text": "Echt bleiben, auch in der Kommunikation.",
+     "value": "Authentizität"
+    },
+    "fiabilite": {
+     "title": "Zuverlässigkeit",
+     "text": "Wort halten, die Zeit anderer respektieren.",
+     "value": "Pünktlichkeit"
+    },
+    "proximite": {
+     "title": "Nähe",
+     "text": "Eine menschliche, lokale Beziehung leben.",
+     "value": "Nähe"
+    }
+   }
+  }
+ }
+}

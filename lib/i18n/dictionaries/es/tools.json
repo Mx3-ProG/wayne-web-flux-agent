@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "Mi cofre"
+  },
+  "toolPage": {
+    "howItWorks": "Cómo funciona",
+    "voicePrefix": "Escribo como tú en",
+    "improveVoice": "Mejorar mi voz",
+    "myVoice": "Mi voz"
+  },
+  "runner": {
+    "choosePlaceholder": "— elegir —",
+    "costLabel": "Coste:",
+    "costCredits": "{cost} créditos",
+    "balanceLabel": "Saldo: {balance}",
+    "running": "La IA está escribiendo para ti…",
+    "generate": "Generar mi resultado ({cost} cr.)",
+    "missingCredits": "Te faltan créditos.",
+    "discoverPlans": "Descubrir los planes FLUX",
+    "waiting": "Un poco de paciencia, la IA está pensando por ti…",
+    "copy": "Copiar",
+    "copied": "¡Copiado!",
+    "viewInVault": "Ver en mi cofre →",
+    "errors": {
+      "ai_window_expired": "Tu ventana de acceso a las herramientas IA ha terminado. Elige un plan para reactivarla.",
+      "subscription_required": "Tu prueba FLUX ha terminado. Elige un plan para seguir generando.",
+      "insufficient_credits": "No tienes suficientes créditos. Pásate a un plan FLUX para recargar.",
+      "generation_failed": "La generación ha fallado.",
+      "generation_interrupted": "La generación se ha interrumpido."
+    }
+  },
+  "vault": {
+    "overline": "Cámara acorazada personal",
+    "titleStart": "Tu cofre-",
+    "titleEm": "fuerte",
+    "emptySubtitle": "Cada creación preciosa tendrá su lugar aquí.",
+    "treasureSingular": "tesoro creado por FLUX, guardado para siempre.",
+    "treasurePlural": "tesoros creados por FLUX, guardados para siempre.",
+    "creationSingular": "creación a buen recaudo",
+    "creationPlural": "creaciones a buen recaudo",
+    "emptyKicker": "El primer tesoro te espera",
+    "emptyTitle": "Tu talento merece su joyero.",
+    "emptyText": "Crea tu primer contenido con FLUX. Se guardará aquí, listo para releer, copiar y compartir.",
+    "createFirst": "Crear mi primer contenido",
+    "collectionLabel": "Tu colección",
+    "collectionTitle": "Piezas únicas, listas para brillar.",
+    "sortedHint": "Ordenadas de la más reciente a la más antigua",
+    "creationLabel": "Creación FLUX",
+    "creditsSpent": "{cost} créditos",
+    "close": "Cerrar",
+    "discover": "Descubrir",
+    "copyCreation": "Copiar esta creación",
+    "copiedToast": "¡Creación copiada!"
+  }
+}

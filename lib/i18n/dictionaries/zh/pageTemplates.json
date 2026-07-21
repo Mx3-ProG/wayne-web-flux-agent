@@ -1,0 +1,43 @@
+{
+  "a-propos": {
+    "label": "关于我们",
+    "description": "你的故事、你的历程、一张照片。",
+    "defaultTitle": "关于我们",
+    "aProposHistoryTitle": "我的故事",
+    "aProposHistoryBody": "在这里讲述你的历程、你的热情，以及是什么让你的工作与众不同。",
+    "aProposMethodTitle": "我的工作方式",
+    "aProposMethodBody": "描述你的方法、你的理念，以及客户可以期待什么。"
+  },
+  "tarifs": {
+    "label": "价格",
+    "description": "你的价格，清晰呈现。",
+    "defaultTitle": "价格",
+    "tarifsTitle": "我的价格",
+    "tarifsBody": "在这里展示你的价格以及包含的内容。",
+    "tarifsFaqTitle": "常见问题",
+    "tarifsFaqQuestion": "你们接受哪些支付方式？"
+  },
+  "contact": {
+    "label": "联系方式",
+    "description": "地图、营业时间和联系信息。",
+    "defaultTitle": "联系方式",
+    "contactTitle": "联系我",
+    "contactBody": "在这里说明联系你的最佳方式。"
+  },
+  "galerie": {
+    "label": "作品集",
+    "description": "你的作品照片展示。",
+    "defaultTitle": "作品集"
+  },
+  "faq": {
+    "label": "常见问题",
+    "description": "常见问题的解答。",
+    "defaultTitle": "常见问题",
+    "faqTitle": "常见问题"
+  },
+  "libre": {
+    "label": "自由页面",
+    "description": "一个空白页面，由你自己来编排。",
+    "defaultTitle": "新页面"
+  }
+}

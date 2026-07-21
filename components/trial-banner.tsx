@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { Sparkles, Lock, Coins } from "lucide-react";
 import {
@@ -6,6 +8,7 @@ import {
   trialDaysLeft,
 } from "@/lib/plans";
 import type { Profile } from "@/lib/types";
+import { useI18n } from "@/components/i18n-provider";
 
 type Props = {
   profile: Pick<Profile, "trial_ends_at" | "subscription_status">;
@@ -18,6 +21,8 @@ type Props = {
 // expiré et solde vide → lecture seule (bloqué côté SQL). Dans tous les cas
 // non souscrits, le CTA mène à /formules.
 export function TrialBanner({ profile, balance }: Props) {
+  const { dictionary } = useI18n();
+  const t = dictionary.trialBanner;
   if (isActiveSubscriptionStatus(profile.subscription_status)) return null;
 
   const active = hasActiveAccess(profile);
@@ -29,11 +34,10 @@ export function TrialBanner({ profile, balance }: Props) {
       <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-primary/10 px-4 py-2 text-xs text-foreground">
         <Sparkles aria-hidden="true" className="h-3.5 w-3.5" />
         <span>
-          Essai FLUX : {days} jour{days > 1 ? "s" : ""} restant
-          {days > 1 ? "s" : ""} pour tout tester.
+          {(days > 1 ? t.activePlural : t.activeSingular).replace("{days}", String(days))}
         </span>
         <Link href="/formules" className="font-semibold underline underline-offset-4">
-          Voir les formules
+          {t.viewPlans}
         </Link>
       </div>
     );
@@ -44,12 +48,13 @@ export function TrialBanner({ profile, balance }: Props) {
       <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-primary/10 px-4 py-2 text-xs text-foreground">
         <Coins aria-hidden="true" className="h-3.5 w-3.5" />
         <span>
-          Tu as terminé ton essai — tes {balance} crédit
-          {balance > 1 ? "s" : ""} restant{balance > 1 ? "s" : ""} font toujours
-          tourner FLUX. Recharge pour en profiter à 100 %.
+          {(balance > 1 ? t.creditsActivePlural : t.creditsActiveSingular).replace(
+            "{credits}",
+            String(balance)
+          )}
         </span>
         <Link href="/formules" className="font-semibold underline underline-offset-4">
-          Voir les formules
+          {t.viewPlans}
         </Link>
       </div>
     );
@@ -58,12 +63,9 @@ export function TrialBanner({ profile, balance }: Props) {
   return (
     <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 bg-destructive/15 px-4 py-2 text-xs text-foreground">
       <Lock aria-hidden="true" className="h-3.5 w-3.5" />
-      <span>
-        Essai terminé et solde vide — ton site reste en ligne, mais les
-        modifications sont en pause.
-      </span>
+      <span>{t.expiredNoCredits}</span>
       <Link href="/formules" className="font-semibold underline underline-offset-4">
-        Choisir ma formule FLUX
+        {t.choosePlan}
       </Link>
     </div>
   );

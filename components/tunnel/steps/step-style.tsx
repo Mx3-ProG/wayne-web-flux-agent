@@ -4,6 +4,7 @@ import { Check } from "lucide-react";
 import { DESIGN_KITS } from "@/lib/vitrine-design/registry";
 import { Question } from "@/components/tunnel/question";
 import styles from "@/app/commencer/tunnel.module.css";
+import type { TunnelDict } from "@/lib/i18n/get-dictionary";
 
 // Avant-dernier écran : la bibliothèque de design complète (lib/vitrine-design),
 // la même que celle de l'éditeur. Aucun filtre « premium » ici : les thèmes
@@ -12,17 +13,19 @@ import styles from "@/app/commencer/tunnel.module.css";
 // Pas de `gain` : contrairement aux autres écrans, le style n'est pas une des 8
 // étapes du Parcours (lib/journey.ts) — il n'a donc pas de bénéfice à afficher.
 export function StepStyle({
+  dict,
   value,
   onChange,
 }: {
+  dict: TunnelDict["style"];
   value: string;
   onChange: (kitId: string) => void;
 }) {
   return (
     <Question
-      kicker="Ton style"
-      title={<>Choisis ton <em>style.</em></>}
-      subtitle="Chaque style pose les couleurs, les typos et la mise en page de ta vitrine. L'aperçu suit ton choix, et tout reste modifiable ensuite."
+      kicker={dict.kicker}
+      title={<>{dict.titleStart} <em>{dict.titleEm}</em></>}
+      subtitle={dict.subtitle}
     >
       <div className={styles.styleGrid}>
         {DESIGN_KITS.map((kit) => (

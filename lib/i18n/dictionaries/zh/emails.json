@@ -1,0 +1,93 @@
+{
+  "footer": {
+    "default": "此邮件为系统自动发送的事务性邮件，请勿直接回复。",
+    "tagline": "— 你的橱窗，你的订单，你的营业额。"
+  },
+  "total": "总计",
+  "order": {
+    "buyerConfirmation": {
+      "subject": "你在 {shopName} 的订单已确认",
+      "title": "订单已确认",
+      "preheader": "订单 #{orderId} · {total}",
+      "greeting": "你好 {firstName}，",
+      "body": "你在 <strong>{shopName}</strong> 的订单 <strong>#{orderId}</strong> 已成功登记。商家会尽快处理，如有需要会再联系你。",
+      "addressLabel": "填写的地址：{address}",
+      "paymentNote": "付款直接与商家进行。"
+    },
+    "sellerNewOrder": {
+      "subject": "新订单 — {firstName} · {total}",
+      "title": "新订单",
+      "preheader": "{firstName} · {total}",
+      "body": "你收到了一笔新订单 <strong>#{orderId}</strong>。",
+      "contactTitle": "客户联系信息",
+      "contactName": "姓名：{value}",
+      "contactPhone": "电话：{value}",
+      "contactEmail": "邮箱：{value}",
+      "contactAddress": "地址：{value}",
+      "contactNote": "备注：{value}",
+      "viewOrders": "查看我的订单",
+      "footerReply": "直接回复此邮件即可联系你的客户。",
+      "footerAuto": "此邮件为系统自动发送的事务性邮件。"
+    },
+    "buyerAccepted": {
+      "subject": "订单已接受 ✓ — {shopName}",
+      "title": "订单已接受",
+      "greeting": "你好 {firstName}，",
+      "body": "好消息：你在 <strong>{shopName}</strong> 的订单 <strong>#{orderId}</strong> 已被接受，正在准备中。",
+      "note": "如有需要，商家会就后续事宜与你联系。"
+    },
+    "buyerReady": {
+      "subject": "你的订单已准备就绪 ✓ — {shopName}",
+      "title": "订单已就绪",
+      "preheader": "订单 #{orderId} 已准备好可供取货",
+      "greeting": "你好 {firstName}，",
+      "body": "你在 <strong>{shopName}</strong> 的订单 <strong>#{orderId}</strong> 已经<strong>准备就绪</strong>！你可以前来取货了。",
+      "note": "如有需要，商家会告知你具体的取货方式。"
+    },
+    "buyerCancelled": {
+      "subject": "订单已取消 — {shopName}",
+      "title": "订单已取消",
+      "greeting": "你好 {firstName}，",
+      "body": "你在 <strong>{shopName}</strong> 的订单 <strong>#{orderId}</strong> 已被取消。",
+      "note": "如有任何疑问，请直接联系商家。"
+    },
+    "defaultShopName": "你的商家"
+  },
+  "account": {
+    "passwordChanged": {
+      "subject": "你的 FLUX 密码已修改",
+      "title": "密码已修改",
+      "preheader": "安全确认 — 你的密码已变更",
+      "greeting": "你好 {firstName}，",
+      "body": "你的 FLUX 账户密码刚刚被<strong>修改</strong>。如果是你本人操作，无需采取任何行动。",
+      "note": "如果这不是你的操作？请立即重置密码，并检查你邮箱账户的安全性。",
+      "cta": "保护我的账户"
+    },
+    "friendInvite": {
+      "subject": "{fromName} 邀请你体验 FLUX",
+      "title": "重新掌控你的生意",
+      "preheader": "{fromName} 认为 FLUX 能帮你省下宝贵的时间",
+      "intro": "<strong>{fromName}</strong> 邀请你来了解一下 <strong>FLUX</strong>。",
+      "pitch": "FLUX 把你的在线橱窗、订单、预约和内容都集中在同一个地方。再也不用在十几个工具间来回切换：一次登录，你的整个生意尽收眼底。",
+      "gainsIntro": "{fromName} 因此获得了：",
+      "gain1": "每周在管理工作上节省下来的大把时间",
+      "gain2": "几分钟内就能上线的专业橱窗",
+      "gain3": "订单和营业额一目了然",
+      "cta": "2 分钟创建我的橱窗",
+      "trial": "赠送 7 天试用，无需承诺。",
+      "footer": "你收到这封邮件是因为一位 FLUX 用户邀请了你。如果你不感兴趣，无需采取任何行动。"
+    }
+  },
+  "verification": {
+    "subject": "验证你的邮箱地址 — FLUX",
+    "title": "验证你的邮箱地址",
+    "preheader": "解锁你的橱窗发布功能",
+    "body": "你的 FLUX 空间已经准备就绪，现在就可以使用。只需确认这个地址确实属于你，即可解锁橱窗发布和收款功能。",
+    "cta": "验证我的邮箱",
+    "note": "如果这次注册并非你本人所为，请直接忽略此邮件即可。"
+  },
+  "hints": {
+    "spamSelf": "如果没看到邮件，记得检查一下垃圾邮件箱。",
+    "spamOther": "邮件可能会被归入垃圾邮件，记得提醒对方查看。"
+  }
+}

@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "title": "Tarifs et crédits",
+    "description": "Découvre les abonnements FLUX et les packs de crédits pour développer la présence digitale de ton commerce."
+  },
+  "header": {
+    "tryFree": "Essayer gratuitement"
+  },
+  "hero": {
+    "eyebrow": "Des tarifs nets. Aucun coût caché.",
+    "titleLine1": "Choisis le rythme de",
+    "titleEm": "ta croissance.",
+    "text": "Un abonnement pour faire tourner ton espace. Des crédits pour créer, publier et accélérer quand tu en as besoin.",
+    "fact1": "jours d’essai",
+    "fact2": "Résiliable à tout moment",
+    "fact3": "Paiement sécurisé par Stripe"
+  },
+  "plans": {
+    "kicker": "Abonnements mensuels",
+    "title": "Une formule pour chaque ambition.",
+    "note": "Les crédits mensuels non utilisés s’additionnent.",
+    "featured": "Le plus choisi",
+    "perMonth": "/ mois",
+    "creditsIncluded": "crédits inclus / mois",
+    "showcase": "vitrine",
+    "showcases": "vitrines",
+    "activeOffers": "offres actives",
+    "subpages": "sous-pages par vitrine",
+    "choose": "Choisir",
+    "checkoutNote": "Tu te connecteras ou créeras ton compte avant le paiement. L’abonnement est activé après confirmation Stripe."
+  },
+  "planNames": {
+    "basique": "Basique",
+    "pro": "Pro",
+    "business": "Business",
+    "entreprise": "Entreprise"
+  },
+  "features": {
+    "basique": ["Personnalisation essentielle", "Adresse FLUX incluse", "Outils FLUX inclus"],
+    "pro": ["Personnalisation avancée", "Thèmes premium", "Outils FLUX inclus"],
+    "business": ["Domaine personnalisé", "Thèmes premium", "Outils FLUX inclus"],
+    "entreprise": ["10 vitrines professionnelles", "Domaine personnalisé", "Signature Wayne Web masquable"]
+  },
+  "credits": {
+    "kicker": "Recharges ponctuelles",
+    "title": "Besoin d’un coup d’accélérateur ?",
+    "note": "Sans abonnement supplémentaire. Sans renouvellement automatique.",
+    "creditsWord": "crédits",
+    "perCredit": "/ crédit",
+    "buy": "Acheter ce pack"
+  },
+  "explainer": {
+    "kicker": "Comment ça marche ?",
+    "titleLine1": "L’abonnement donne accès.",
+    "titleLine2": "Les crédits font avancer.",
+    "step1Title": "Choisis ta formule",
+    "step1Text": "Elle détermine le nombre de vitrines, d’offres et les fonctionnalités disponibles.",
+    "step2Title": "Utilise tes crédits",
+    "step2Text": "Ils servent aux générations, publications et actions qui mobilisent les outils FLUX.",
+    "step3Title": "Recharge si nécessaire",
+    "step3Text": "Ajoute un pack ponctuel à ton solde, sans modifier ton abonnement."
+  }
+}

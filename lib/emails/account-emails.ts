@@ -1,4 +1,5 @@
 import { rateLimit } from "@/lib/rate-limit";
+import type { Locale } from "@/lib/i18n/config";
 import { sendEmail } from "./send";
 import { friendInvite, passwordChangedSecurity } from "./templates";
 
@@ -12,12 +13,13 @@ const replyTo = () => process.env.EMAIL_REPLY_TO || null;
 
 export async function sendPasswordChangedEmail(
   to: string,
-  firstName: string
+  firstName: string,
+  locale: Locale = "fr"
 ): Promise<void> {
   if (!to) return;
   // Un email de confirmation suffit ; on borne pour éviter les rafales.
   if (!rateLimit(`pwd-changed:${to.toLowerCase()}`, 3, 3_600_000)) return;
-  const tpl = passwordChangedSecurity({ firstName: firstName || "" });
+  const tpl = await passwordChangedSecurity({ firstName: firstName || "" }, locale);
   await sendEmail({
     to,
     subject: tpl.subject,
@@ -28,7 +30,8 @@ export async function sendPasswordChangedEmail(
 
 export async function sendFriendInvite(
   toEmail: string,
-  fromName: string
+  fromName: string,
+  locale: Locale = "fr"
 ): Promise<void> {
   if (!toEmail) return;
   // Anti-abus : un même expéditeur ne peut pas spammer la même adresse.
@@ -36,7 +39,7 @@ export async function sendFriendInvite(
   // Page d'accueil dédiée aux invités (pitch + CTA vers le tunnel) plutôt que
   // le tunnel brut : le destinataire ne connaît pas encore FLUX.
   const signupUrl = `${process.env.NEXT_PUBLIC_SITE_URL || ""}/invitation`;
-  const tpl = friendInvite({ fromName: fromName || "Un ami", signupUrl });
+  const tpl = await friendInvite({ fromName: fromName || "Un ami", signupUrl }, locale);
   await sendEmail({
     to: toEmail,
     subject: tpl.subject,

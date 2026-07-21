@@ -19,9 +19,13 @@ import { buildPlan } from "./render-plan";
 import { SectionShell } from "./section-shell";
 import { VitrineShell } from "./vitrine-shell";
 import { VitrineHeader } from "./vitrine-header";
+import { LanguageGlobe } from "./language-globe";
 import { isDarkTheme, useVisitorMode } from "./visitor-mode";
 import type { CategoryWithProducts, FamilyWithServices } from "./vitrine-view";
 import styles from "./vitrine.module.css";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
+import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
+import type { Locale } from "@/lib/i18n/config";
 
 type Props = {
   page: Page;
@@ -36,6 +40,9 @@ type Props = {
   onOpenCart?: () => void;
   poweredBy?: boolean;
   preview?: boolean;
+  t?: StorefrontDict;
+  locale?: Locale;
+  availableLocales?: Locale[];
 };
 
 export function VitrineSubpage({
@@ -51,6 +58,9 @@ export function VitrineSubpage({
   onOpenCart,
   poweredBy = true,
   preview = false,
+  t = frStorefront,
+  locale,
+  availableLocales,
 }: Props) {
   const { effectiveDark, toggleMode } = useVisitorMode(isDarkTheme(page.theme));
 
@@ -76,6 +86,7 @@ export function VitrineSubpage({
     preview,
     onBook,
     onAddToCart,
+    t: t.sections,
   };
 
   const homeHref = `/p/${page.slug}`;
@@ -86,6 +97,7 @@ export function VitrineSubpage({
       poweredBy={poweredBy}
       cartCount={cartCount}
       onOpenCart={onOpenCart}
+      t={t.shell}
     >
       {/* Mini-hero : header + titre de la sous-page */}
       <header
@@ -111,6 +123,9 @@ export function VitrineSubpage({
             page={page}
             currentPath={sitePage.path}
             preview={preview}
+            t={t.header}
+            locale={locale}
+            availableLocales={availableLocales}
           />
         ) : (
         <div className={styles.storeNav}>
@@ -121,7 +136,7 @@ export function VitrineSubpage({
               ) : (
                 <i>{(page.business_name || "M").charAt(0).toUpperCase()}</i>
               )}
-              <b>{page.business_name || "Mon commerce"}</b>
+              <b>{page.business_name || t.header.defaultBusinessName}</b>
             </span>
           ) : (
             <Link className={styles.storeNavName} href={homeHref}>
@@ -130,19 +145,27 @@ export function VitrineSubpage({
               ) : (
                 <i>{(page.business_name || "M").charAt(0).toUpperCase()}</i>
               )}
-              <b>{page.business_name || "Mon commerce"}</b>
+              <b>{page.business_name || t.header.defaultBusinessName}</b>
             </Link>
           )}
           <span className={styles.storeNavActions}>
+            {!preview && locale && availableLocales && (
+              <LanguageGlobe
+                slug={page.slug}
+                currentPath={sitePage.path}
+                locale={locale}
+                availableLocales={availableLocales}
+              />
+            )}
             <button
               type="button"
               className={styles.modeToggle}
               onClick={toggleMode}
-              aria-label={effectiveDark ? "Passer en mode clair" : "Passer en mode sombre"}
+              aria-label={effectiveDark ? t.header.lightMode : t.header.darkMode}
             >
               {effectiveDark ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
             </button>
-            {!preview && <Link href={homeHref}>Accueil</Link>}
+            {!preview && <Link href={homeHref}>{t.subpage.home}</Link>}
           </span>
         </div>
         )}
@@ -156,7 +179,7 @@ export function VitrineSubpage({
 
       {plan.map((item, planIndex) => {
         if (item.kind === "promo") {
-          return <PromoBanner key="promo" page={page} accent={accent} />;
+          return <PromoBanner key="promo" page={page} accent={accent} t={t.sections.promo} />;
         }
         if (item.kind === "offres") {
           const settings = item.section.settings as
@@ -170,6 +193,7 @@ export function VitrineSubpage({
               onAddOffer={onAddOffer}
               title={settings?.title}
               subtitle={settings?.subtitle}
+              t={t.sections.offers}
             />
           );
         }
@@ -202,6 +226,7 @@ export function VitrineSubpage({
                   onAddToCart={onAddToCart}
                   showEmpty
                   first={entryIndex === 0}
+                  t={t.sections.catalog}
                 />
               ) : (
                 // Ancre stable pour le menu de navigation (#s-<sectionId>).
@@ -219,7 +244,7 @@ export function VitrineSubpage({
       })}
       {sections.length === 0 && (
         <section className={styles.services}>
-          <p className={styles.address}>Cette page est en cours de rédaction.</p>
+          <p className={styles.address}>{t.subpage.draftNotice}</p>
         </section>
       )}
     </VitrineShell>

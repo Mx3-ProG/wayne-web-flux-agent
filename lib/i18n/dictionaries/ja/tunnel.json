@@ -1,0 +1,369 @@
+{
+ "accountGate": {
+  "backHome": "ホームに戻る",
+  "alreadyAccount": "すでにアカウントを持っている",
+  "kicker": "パーソナル設定",
+  "titleLine1": "きみだけの",
+  "titleEm": "成長エンジンを作ろう。",
+  "text": "まずはアクセスを作成、そのあといくつか質問に答えてね。話してくれたことは順番にきみの空間に反映されていくよ — 途中で何も失われない。",
+  "nameLabel": "きみの名前",
+  "namePlaceholder": "太郎",
+  "emailLabel": "仕事用メールアドレス",
+  "emailPlaceholder": "taro@monshop.jp",
+  "passwordLabel": "パスワードを選んで",
+  "passwordPlaceholder": "8文字以上",
+  "submit": "自分の空間を作成",
+  "submitting": "空間を作成中…",
+  "trialValue": "7日間無料トライアル、カード登録不要",
+  "creditsValue": "スタート時に100クレジットプレゼント",
+  "legalPrefix": "空間を作成することで、以下に同意したことになります",
+  "legalLink": "利用規約"
+ },
+ "errors": {
+  "fillAll": "すべての項目を入力してね。",
+  "passwordTooShort": "パスワードは8文字以上にしてね。",
+  "accountExists": "このメールアドレスはすでに登録されています。",
+  "createFailed": "アカウントを作成できませんでした。もう一度試してね。",
+  "createdSignInFailed": "アカウントは作成されましたが、ログインできませんでした。ログインを試してね。",
+  "notConnected": "接続されていません。",
+  "createPageFirst": "先にきみのサイトを作成してね。",
+  "twoFieldsRequired": "両方の項目を入力してね。",
+  "catalogCreateFailed": "作成できませんでした。",
+  "offerTitleRequired": "オファーにタイトルをつけてね。",
+  "offerCreateFailed": "オファーを作成できませんでした。",
+  "noAgendaForVertical": "きみの業種は予約カレンダーを使いません。",
+  "chooseOneDay": "少なくとも1日を選んでね。",
+  "closingAfterOpening": "閉店時間は開店時間より後にしてね。",
+  "unknownStyle": "不明なスタイルです。",
+  "not_authenticated": "続けるにはログインが必要です。",
+  "business_name_required": "サイトに名前をつけてね。",
+  "project_limit_reached": "きみのプランのプロジェクト上限に達しました。",
+  "creation_failed": "ページを作成できませんでした。",
+  "content_blocked": "誹謗中傷や露骨な内容はFLUXで禁止されており、違反には制裁があります。自分と他の人の環境を大切にしてね。利用規約違反が3回続くと、アカウントは削除されます。",
+  "unknown": "エラーが発生しました。少し時間をおいてもう一度試してね。"
+ },
+ "shell": {
+  "espaceAria": "自分の空間へ移動",
+  "chapterProgress": "第{chapter}章・{title} — {done}/{total}",
+  "trialDays": "残り{days}日"
+ },
+ "chapterIntro": {
+  "kicker": "第{chapter}章・{title}",
+  "cta": "始める"
+ },
+ "chapterDone": {
+  "kicker": "第{chapter}章 完了",
+  "defaultCta": "続ける",
+  "pending": "少々お待ちを…"
+ },
+ "chapters": {
+  "1": {
+   "title": "きみの住所",
+   "whyTitle": "お客さんはきみを探しているのに、見つけられない。",
+   "whyBody": "きみだけのリンクを用意するよ。一生ものだし、Googleにも読み取ってもらえる。",
+   "doneTitle": "きみの住所ができた。",
+   "doneBody": "これはきみのもの。そしてAIはもう、きみの言葉で書けるようになったよ。"
+  },
+  "2": {
+   "title": "きみが売るもの",
+   "whyTitle": "空っぽのサイトは何も売れない。",
+   "whyBody": "カタログ、オファー、そして予約可能な日時で埋めていこう。",
+   "doneTitle": "お客さんは何を買えばいいか分かった。",
+   "doneBody": "きみが仕事をしている間も、サイトはリクエストを受け付けられるようになったよ。"
+  },
+  "3": {
+   "title": "きみの認知度",
+   "whyTitle": "最高のサイトも、誰も訪れなければ意味がない。",
+   "whyBody": "最初のコンテンツを作って、きみのリンクを広めよう。",
+   "doneTitle": "きみの道のりは完了した。",
+   "doneBody": "きみのお店はオンラインになり、中身も整い、シェアできる状態になったよ。"
+  }
+ },
+ "achievements": {
+  "storeCreated": "サイト「{name}」が作成されました",
+  "defaultStore": "きみのお店",
+  "voiceLearned": "AIがきみの口調と仕事を学習しました",
+  "firstService": "最初のサービスが公開されました",
+  "firstProduct": "最初の商品オファーが公開されました",
+  "offerReady": "きみの目玉オファーの準備ができました",
+  "bookingReady": "お客さんが時間枠を予約できるようになりました"
+ },
+ "footer": {
+  "back": "戻る",
+  "continue": "続ける",
+  "pending": "少々お待ちを…"
+ },
+ "finalCta": "自分の空間に入る",
+ "vertical": {
+  "kicker": "きみの業種",
+  "titleStart": "一番得意なのは",
+  "titleEm": "何",
+  "titleEnd": "？",
+  "subtitle": "きみの世界を選んでね。Fluxがきみのサイトのツール、言葉づかい、色を自動で調整するよ。"
+ },
+ "goals": {
+  "kicker": "きみの目標",
+  "titleStart": "今、きみを",
+  "titleEm": "止めている",
+  "titleEnd": "ものは？",
+  "subtitle": "当てはまるものを全部選んでね。ここで話したことを、AIがきみの代わりに文章に活かすよ。",
+  "items": {
+   "temps": {
+    "title": "時間が足りない",
+    "text": "コンテンツやお客さんへの返信で夜が消えていく。"
+   },
+   "google": {
+    "title": "見つけてもらえない",
+    "text": "Googleや地元の検索で上位に出たい。"
+   },
+   "leads": {
+    "title": "もっとお客さんが欲しい",
+    "text": "安定した質の高い問い合わせが必要。"
+   },
+   "tout": {
+    "title": "全部を一箇所にまとめたい",
+    "text": "5つのツールを行き来するのをやめたい。"
+   }
+  }
+ },
+ "identity": {
+  "kicker": "ステップ1・きみのサイト",
+  "titleStart": "きみのサイトに",
+  "titleEm": "住所を作ろう。",
+  "subtitle": "この情報でサイトが作られ、地域での検索対策が整うよ。あとからいつでも変更できる。",
+  "nameLabel": "お店の名前",
+  "nameHint": "自分の名前でもOK",
+  "namePlaceholder": "例：アトリエ・ルイーズ",
+  "jobLabel": "きみの仕事",
+  "jobHint": "選ぶか、自分で入力してね",
+  "jobPlaceholder": "例：フローリスト職人",
+  "cityLabel": "きみの街",
+  "cityPlaceholder": "例：東京"
+ },
+ "voice": {
+  "kicker": "ステップ2・きみの声",
+  "titleStart": "Fluxは",
+  "titleEm": "きみのように話す。",
+  "subtitle": "きみのお店に一番近いトーンを選んでね。AIがすべてのコンテンツでそれを真似するよ。",
+  "tones": {
+   "Direct et efficace": {
+    "title": "ストレート＆効率的",
+    "sample": "結果に直行しよう。"
+   },
+   "Chaleureux et proche": {
+    "title": "温かくて親しみやすい",
+    "sample": "大切なお客さんに話しかけるように。"
+   },
+   "Premium et expert": {
+    "title": "上質＆専門的",
+    "sample": "落ち着いて、正確で、高級感。"
+   },
+   "Dynamique et audacieux": {
+    "title": "元気＆大胆",
+    "sample": "エネルギーと個性を全開に。"
+   }
+  }
+ },
+ "catalog": {
+  "kicker": "ステップ3・きみのカタログ",
+  "titleStart": "まず何を",
+  "titleEm": "売りたい？",
+  "subtitle": "{categoryWord}と、最初の{itemWord}をひとつ。お客さんがきみの提供内容を理解するのに最低限必要なものだよ。",
+  "freeBadge": "この道のり中は無料・15クレジット節約",
+  "categoryLabel": "{categoryWord}の名前",
+  "itemLabel": "{itemWord}の名前",
+  "itemLabelWithCategory": "「{category}」内の{itemWord}の名前",
+  "priceLabel": "税込価格",
+  "trackStock": "在庫を管理する",
+  "trackStockHint": "在庫がなくなったらFLUXが知らせるよ。",
+  "stockLabel": "在庫数",
+  "noStockHint": "サービスには在庫管理は不要：お客さんは時間枠を予約するだけ。それはあとの予約カレンダーのステップで設定するよ。"
+ },
+ "offer": {
+  "kicker": "ステップ4・きみのオファー",
+  "titleStart": "今すぐ来てもらう",
+  "titleEm": "理由",
+  "titleEnd": "を用意しよう。",
+  "subtitle": "サイトの上部に目立たせるオファー：初回特典、パック、開店記念割引など。",
+  "freeBadge": "この道のり中は無料・15クレジット節約",
+  "titleLabel": "オファーのタイトル",
+  "titlePlaceholder": "例：初回来店で20%オフ",
+  "titleHint": "具体的に：お客さんが今すぐ得られるものを書こう。",
+  "descriptionLabel": "一言で（任意）",
+  "descriptionPlaceholder": "例：月末まで有効、要予約。",
+  "priceLabel": "オファー価格",
+  "compareAtLabel": "元の価格（取り消し線・任意）"
+ },
+ "agenda": {
+  "kicker": "ステップ5・きみの予約カレンダー",
+  "titleStart": "いつなら",
+  "titleEm": "対応できる？",
+  "subtitle": "曜日と最初の時間帯を選んでね。きみが返信できないときも、お客さんは自分で予約できるようになるよ。",
+  "weekdays": {
+   "mon": "月",
+   "tue": "火",
+   "wed": "水",
+   "thu": "木",
+   "fri": "金",
+   "sat": "土",
+   "sun": "日"
+  },
+  "from": "から",
+  "to": "まで"
+ },
+ "content": {
+  "kicker": "ステップ6・最初のコンテンツ",
+  "titleStart": "きみの最初の",
+  "titleEm": "投稿",
+  "titleEnd": "が待っている。",
+  "subtitle": "AIはもう、きみの仕事、街、カタログ、トーンを知っている。何を作るか見てみよう。",
+  "costBadge": "残り{balance}クレジットのうち{cost}クレジットを使用・この道のりで唯一有料のステップ",
+  "formatLabel": "コンテンツの種類",
+  "formats": {
+   "reel": "リール／短編動画",
+   "carrousel": "カルーセル",
+   "post": "シンプルな投稿"
+  },
+  "goalLabel": "この投稿の目的は？",
+  "goals": {
+   "visibilite": "できるだけ多くの人に届ける",
+   "expertise": "専門性を証明する",
+   "conversion": "予約したくさせる"
+  },
+  "topicLabel": "テーマ（任意）",
+  "topicPlaceholder": "例：一番人気のサービス、コツ、ビフォーアフターなど…",
+  "generating": "AIが執筆中…",
+  "generate": "最初のコンテンツを生成",
+  "outputLabel": "きみのコンテンツ — すでにコフレに保存済み。",
+  "outputNote": "いつでもコフレから見返せるよ。",
+  "errors": {
+   "insufficientCredits": "この生成にはクレジットが足りません。",
+   "trialExpired": "トライアルが終了しました — チャージしてFLUXを100%活用しよう。",
+   "contentBlocked": "このテーマはモデレーションを通過できません。表現を変えてね。",
+   "generic": "生成に失敗しました。少し時間をおいてもう一度試してね。"
+  }
+ },
+ "results": {
+  "kicker": "ステップ7・きみの成果",
+  "titleStart": "今のきみの本当の姿は",
+  "titleEm": "こうだよ。",
+  "subtitle": "これはデモではなく、きみの本当の数字。毎朝、この画面をきみの空間で見ることになるよ。",
+  "creditsLeft": "残りクレジット",
+  "creditsLeftHint": "コンテンツや投稿のたびに消費されるよ。",
+  "creation": "コフレ内の作品",
+  "creations": "コフレ内の作品",
+  "creationsHint": "きみのコンテンツはずっとアクセスできるよ。",
+  "upcomingBookings": "今後の予約",
+  "upcomingBookingsHint": "きみのリンクが広まれば、自然と増えていくよ。"
+ },
+ "style": {
+  "kicker": "きみのスタイル",
+  "titleStart": "きみの",
+  "titleEm": "スタイルを選ぼう。",
+  "subtitle": "各スタイルが、サイトの色・フォント・レイアウトを決めるよ。プレビューはきみの選択に合わせて変わり、あとからいつでも変更できる。"
+ },
+ "images": {
+  "kicker": "きみのスタイル・きみの画像",
+  "titleStart": "どんなイメージを",
+  "titleEm": "残したい？",
+  "subtitle": "ロゴと、訪問者を迎える大きな写真。どちらも任意 — あとでエディターから追加できるよ。",
+  "logoLabel": "ロゴまたはポートレート",
+  "logoChange": "ロゴを変更",
+  "logoAdd": "ロゴを追加",
+  "heroLabel": "大きなカバー写真",
+  "heroChange": "写真を変更",
+  "heroAdd": "写真を追加",
+  "uploading": "送信中…",
+  "tooLarge": "ファイルが大きすぎます（最大{max}MB）。",
+  "failed": "送信に失敗しました。もう一度お試しください。"
+ },
+ "details": {
+  "kicker": "きみのスタイル・詳細",
+  "titleStart": "細部を調整して、みんなに",
+  "titleEm": "連絡先",
+  "subtitle": "きみの文章、色、連絡先。さっき選んだスタイルがすでに大部分を設定済みだよ。",
+  "fontLabel": "文字のスタイル",
+  "primaryLabel": "メインカラー",
+  "darkLabel": "ダークカラー",
+  "phoneLabel": "電話番号",
+  "optional": "任意",
+  "phonePlaceholder": "例：090-1234-5678",
+  "addressLabel": "住所",
+  "addressPlaceholder": "例：東京都渋谷区1-2-3"
+ },
+ "publish": {
+  "kicker": "きみのスタイル・公開",
+  "titleStart": "オンラインに",
+  "titleEm": "公開する？",
+  "subtitle": "設定したことはすべて下書きの状態にあるよ。公開することで、サイトがお客さんに見えるようになり、次のステップのリンクにも意味が生まれるんだ。",
+  "done": "サイトが公開されました。",
+  "cost": "公開には{cost}クレジットかかります・残高：{balance}クレジット",
+  "publishing": "公開中…",
+  "cta": "サイトを公開する",
+  "missingCredits": "公開にはあと{missing}クレジット必要です。",
+  "missingCreditsPlural": "あと{missing}クレジット足りません。このまま進んで、あとで自分の空間から公開することもできるよ。",
+  "errors": {
+   "insufficientCredits": "公開には{cost}クレジットが必要です。",
+   "subscriptionRequired": "トライアルが終了しました：公開するにはプランを選んでね。",
+   "alreadyUpToDate": "サイトはすでに最新の状態です。",
+   "contentBlocked": "誹謗中傷や露骨な内容はFLUXで禁止されており、違反には制裁があります。自分と他の人の環境を大切にしてね。利用規約違反が3回続くと、アカウントは削除されます。",
+   "generic": "公開できませんでした。少し時間をおいてもう一度試してね。",
+   "success": "サイトが公開されました！残高：{balance}クレジット"
+  }
+ },
+ "share": {
+  "kicker": "ステップ8・きみのリンク",
+  "titleStart": "みんなに",
+  "titleEm": "広めよう。",
+  "subtitle": "Instagramのプロフィール、WhatsAppのステータス、Googleビジネスプロフィール、メールの署名。みんなが飛ばしがちなステップだけど、予約でいっぱいにしてくれるのはここなんだ。",
+  "copied": "コピーしました",
+  "copy": "コピー",
+  "whatsappText": "オンラインで予約：{url}",
+  "whatsappShare": "WhatsAppでシェア",
+  "iosTitle": "iPhoneの場合",
+  "iosStep1": "Safariで「共有」をタップ",
+  "iosStep2": "「ホーム画面に追加」を選択",
+  "androidTitle": "Androidの場合",
+  "androidStep1": "Chromeのメニューを開く",
+  "androidStep2": "「アプリをインストール」を選択",
+  "installNow": "今すぐFLUXをインストール"
+ },
+ "emailVerify": {
+  "title": "公開するにはメールアドレスを確認してね",
+  "description": "{email}宛に確認リンクを送ったよ。クリックしてから、ここに戻ってきてね：サイトが公開されるよ。",
+  "spamHint": "見当たらない場合は、迷惑メールフォルダも確認してみてね。",
+  "openWebmail": "{label}を開く",
+  "resend": "メールを再送する",
+  "resending": "送信中…",
+  "sent": "メールを送信しました。受信ボックスを確認してね。",
+  "errors": {
+   "not_authenticated": "続けるにはログインが必要です。",
+   "already_verified": "このメールアドレスはすでに確認済みです。",
+   "rate_limited": "再送する前に1分待ってね。",
+   "update_failed": "メールを送信できませんでした。あとでもう一度試してね。",
+   "send_failed": "メールの送信に失敗しました。少し時間をおいてもう一度試してね。",
+   "unknown": "エラーが発生しました。少し時間をおいてもう一度試してね。"
+  }
+ },
+ "preview": {
+  "label": "きみのサイト、リアルタイム",
+  "availableIn": "{city}で利用可能",
+  "addressOnline": "オンラインになったきみの住所",
+  "defaultBusinessName": "きみのお店",
+  "defaultJobTitle": "きみの仕事",
+  "defaultCategory": "きみのカタログ",
+  "toneTagline": "地元の技術を、{tone}に語る。",
+  "defaultTagline": "地元ならではの技術、シンプルな体験、そして違いを生むサービス。",
+  "bookCta": "予約する",
+  "open": "営業中",
+  "days": {
+   "sun": "日",
+   "mon": "月",
+   "tue": "火",
+   "wed": "水",
+   "thu": "木",
+   "fri": "金",
+   "sat": "土"
+  }
+ }
+}

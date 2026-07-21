@@ -14,39 +14,22 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { useI18n } from "@/components/i18n-provider";
 
-const COPY: Record<
-  Exclude<AccountStatus, "subscribed">,
-  { title: string; description: string }
-> = {
-  trial: {
-    title: "Donne à FLUX les moyens d’aller plus loin",
-    description:
-      "Ton essai te permet de découvrir les outils IA. Une formule débloque la création complète de vitrine et recharge tes crédits chaque mois.",
-  },
-  trial_expired: {
-    title: "Tu as terminé ton essai",
-    description:
-      "Ton solde est vide et ton site reste en ligne. Recharge pour profiter de FLUX à 100 % : modifications, publications et générations.",
-  },
-  credits_active: {
-    title: "Passe d’un pack ponctuel à un rythme régulier",
-    description:
-      "Ton pack te donne encore accès à l’IA. Une formule ajoute une recharge mensuelle et garde FLUX disponible sans attendre un nouvel achat.",
-  },
-  credits_expired: {
-    title: "Ta fenêtre IA est terminée, pas tes crédits",
-    description:
-      "Tes crédits restants servent toujours à publier et gérer ta vitrine. Une formule réactive les générations IA et installe un rythme mensuel.",
-  },
-};
+type UpsellCopyKey = Exclude<AccountStatus, "subscribed"> | "trial_expired_with_credits";
+type UpsellCopyDictKey =
+  | "trial"
+  | "trialExpired"
+  | "creditsActive"
+  | "creditsExpired"
+  | "trialExpiredWithCredits";
 
-// Essai expiré avec des crédits au compteur : tout tourne encore, ce n'est donc
-// pas la même promesse que le solde vide traité dans COPY.
-const TRIAL_EXPIRED_WITH_CREDITS = {
-  title: "Tu as terminé ton essai",
-  description:
-    "Tes crédits restants font toujours tourner FLUX — générations comprises. Recharge pour en profiter à 100 %, avec un solde qui se renouvelle chaque mois.",
+const COPY_KEY: Record<UpsellCopyKey, UpsellCopyDictKey> = {
+  trial: "trial",
+  trial_expired: "trialExpired",
+  credits_active: "creditsActive",
+  credits_expired: "creditsExpired",
+  trial_expired_with_credits: "trialExpiredWithCredits",
 };
 
 export function AccountUpsellDialog({
@@ -56,12 +39,15 @@ export function AccountUpsellDialog({
   status: Exclude<AccountStatus, "subscribed">;
   balance: number;
 }) {
+  const { dictionary } = useI18n();
+  const t = dictionary.upsellDialog;
   const [open, setOpen] = useState(true);
   const timestamped = useRef(false);
-  const copy =
-    status === "trial_expired" && balance > 0
-      ? TRIAL_EXPIRED_WITH_CREDITS
-      : COPY[status];
+  // Essai expiré avec des crédits au compteur : tout tourne encore, ce n'est
+  // donc pas la même promesse que le solde vide (trialExpired).
+  const copyKey: UpsellCopyKey =
+    status === "trial_expired" && balance > 0 ? "trial_expired_with_credits" : status;
+  const copy = t[COPY_KEY[copyKey]];
 
   useEffect(() => {
     if (timestamped.current) return;
@@ -84,10 +70,10 @@ export function AccountUpsellDialog({
         </DialogHeader>
         <DialogFooter>
           <Button variant="ghost" onClick={() => setOpen(false)}>
-            Plus tard
+            {t.later}
           </Button>
           <Button asChild>
-            <Link href="/formules">Découvrir les formules</Link>
+            <Link href="/formules">{t.discoverPlans}</Link>
           </Button>
         </DialogFooter>
       </DialogContent>

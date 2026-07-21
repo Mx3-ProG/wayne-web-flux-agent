@@ -281,7 +281,7 @@
 .heroFoot div { flex: 1; height: 1px; background: rgb(255 255 255 / 7%); }
 
 .manifesto, .liveShowcase, .pillars, .toolsSection, .story,
-.testimonials, .faq, .newsletter, .contact {
+.notForYou, .testimonials, .faq, .newsletter, .contact {
   width: min(1240px, calc(100% - 40px));
   margin: 0 auto;
   padding: 120px 0;
@@ -748,6 +748,56 @@
 .storyProofs { display: flex; margin-top: 36px; gap: 36px; }
 .storyProofs span { display: flex; flex-direction: column; color: #8e8a8d; font-size: 10px; text-transform: uppercase; }
 .storyProofs strong { margin-bottom: 5px; color: #fff; font-family: var(--font-fraunces), serif; font-size: 24px; font-weight: 540; text-transform: none; }
+
+.notForYou { border-top: 1px solid rgb(255 255 255 / 8%); }
+.notForYouGrid {
+  display: grid;
+  margin-top: 65px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 22px;
+}
+.notForYouCard {
+  display: flex;
+  flex-direction: column;
+  padding: 34px 30px;
+  border: 1px solid rgb(255 255 255 / 9%);
+  border-radius: 20px;
+  background: rgb(255 255 255 / 2%);
+}
+.notForYouNum {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--red-soft, #ff8797);
+}
+.notForYouNum svg {
+  width: 24px;
+  height: 24px;
+  padding: 6px;
+  border: 1px solid rgb(255 135 151 / 35%);
+  border-radius: 10px;
+  box-sizing: content-box;
+}
+.notForYouNum small {
+  font-family: var(--font-fraunces), serif;
+  font-size: 22px;
+  letter-spacing: -.02em;
+}
+.notForYouCard h3 {
+  margin-top: 22px;
+  color: #fff;
+  font-family: var(--font-fraunces), serif;
+  font-size: 22px;
+  font-weight: 520;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+}
+.notForYouCard p {
+  margin-top: 12px;
+  color: #aaa6a9;
+  font-size: 15px;
+  line-height: 1.65;
+}
 
 .testimonials { border-top: 1px solid rgb(255 255 255 / 8%); }
 .testimonialGrid {
@@ -1249,6 +1299,7 @@
   .storyCard { padding: 50px; grid-template-columns: 1fr; }
   .storyStamp { display: none; }
   .testimonialGrid { grid-template-columns: repeat(2, 1fr); }
+  .notForYouGrid { grid-template-columns: repeat(2, 1fr); }
   .faq { grid-template-columns: 1fr; gap: 50px; }
   .newsletterCard { padding: 50px; grid-template-columns: 1fr; gap: 40px; }
   .contactGrid { grid-template-columns: 1fr; gap: 50px; }
@@ -1261,7 +1312,7 @@
   .navCta { min-height: 36px; padding: 0 13px; font-size: 11px; }
   .hero { padding-top: 130px; }
   .heroGrid, .manifesto, .liveShowcase, .pillars, .toolsSection, .story,
-  .testimonials, .faq, .newsletter, .contact { width: min(100% - 32px, 1240px); }
+  .notForYou, .testimonials, .faq, .newsletter, .contact { width: min(100% - 32px, 1240px); }
   .hero h1 { font-size: clamp(48px, 14vw, 68px); }
   .heroText { font-size: 15px; }
   .heroActions { flex-direction: column; gap: 18px; }
@@ -1270,9 +1321,10 @@
   .floatingCard { right: -25px; }
   .leadCard { left: -25px; }
   .manifesto, .liveShowcase, .pillars, .toolsSection, .story,
-  .testimonials, .faq { padding: 85px 0; }
+  .notForYou, .testimonials, .faq { padding: 85px 0; }
   .newsletter, .contact { padding: 0 0 85px; }
   .testimonialGrid { margin-top: 45px; grid-template-columns: 1fr; }
+  .notForYouGrid { margin-top: 45px; grid-template-columns: 1fr; }
   .testimonialCtaRow { margin-top: 45px; flex-direction: column; gap: 18px; }
   .newsletterCard { padding: 36px 25px; border-radius: 24px; }
   .contactCard { padding: 28px 22px; }

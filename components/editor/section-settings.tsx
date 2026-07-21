@@ -14,6 +14,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useI18n } from "@/components/i18n-provider";
 
 type Props = {
   section: BlockSection;
@@ -25,6 +26,8 @@ type Props = {
 // Mini-formulaire de réglages d'un bloc de contenu. Chaque modification
 // remonte la section complète (autosavée via patch({ sections })).
 export function SectionSettings({ section, userId, pageAddress, onChange }: Props) {
+  const { editor, dictionary } = useI18n();
+  const t = editor.sectionSettings;
   const set = (settings: BlockSection["settings"]) =>
     onChange({ ...section, settings } as BlockSection);
 
@@ -33,7 +36,7 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
       return (
         <div className="space-y-3">
           <div className="space-y-2">
-            <Label>Titre</Label>
+            <Label>{t.texte.title}</Label>
             <Input
               value={section.settings.title}
               maxLength={SECTION_LIMITS.maxTitleLength}
@@ -41,7 +44,7 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
             />
           </div>
           <div className="space-y-2">
-            <Label>Texte (saute une ligne pour un nouveau paragraphe)</Label>
+            <Label>{t.texte.body}</Label>
             <Textarea
               value={section.settings.body}
               rows={5}
@@ -56,11 +59,12 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
       return (
         <div className="space-y-3">
           <div className="space-y-2">
-            <Label>Image</Label>
+            <Label>{t.imageTexte.image}</Label>
             <div className="flex items-center gap-3">
               <PhotoUpload
                 userId={userId}
-                label={section.settings.imageUrl ? "Changer l'image" : "Choisir une image"}
+                label={section.settings.imageUrl ? t.imageTexte.changeImage : t.imageTexte.chooseImage}
+                messages={dictionary.photoUpload}
                 onUploaded={(url) => set({ ...section.settings, imageUrl: url })}
               />
               {section.settings.imageUrl && (
@@ -69,13 +73,13 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
                   size="sm"
                   onClick={() => set({ ...section.settings, imageUrl: null })}
                 >
-                  Retirer
+                  {t.remove}
                 </Button>
               )}
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Côté de l&apos;image</Label>
+            <Label>{t.imageTexte.imageSide}</Label>
             <Select
               value={section.settings.imageSide}
               onValueChange={(imageSide) =>
@@ -86,13 +90,13 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="left">À gauche</SelectItem>
-                <SelectItem value="right">À droite</SelectItem>
+                <SelectItem value="left">{t.imageTexte.left}</SelectItem>
+                <SelectItem value="right">{t.imageTexte.right}</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Titre</Label>
+            <Label>{t.imageTexte.title}</Label>
             <Input
               value={section.settings.title}
               maxLength={SECTION_LIMITS.maxTitleLength}
@@ -100,7 +104,7 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
             />
           </div>
           <div className="space-y-2">
-            <Label>Texte</Label>
+            <Label>{t.imageTexte.body}</Label>
             <Textarea
               value={section.settings.body}
               rows={4}
@@ -115,11 +119,11 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
       return (
         <div className="space-y-3">
           <div className="space-y-2">
-            <Label>Titre (facultatif)</Label>
+            <Label>{t.faq.titleOptional}</Label>
             <Input
               value={section.settings.title ?? ""}
               maxLength={SECTION_LIMITS.maxTitleLength}
-              placeholder="FAQ"
+              placeholder={t.faq.titlePlaceholder}
               onChange={(e) => set({ ...section.settings, title: e.target.value })}
             />
           </div>
@@ -128,7 +132,7 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
               <Input
                 value={item.question}
                 maxLength={160}
-                placeholder="La question"
+                placeholder={t.faq.questionPlaceholder}
                 onChange={(e) => {
                   const items = [...section.settings.items];
                   items[i] = { ...items[i], question: e.target.value };
@@ -139,7 +143,7 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
                 value={item.answer}
                 rows={3}
                 maxLength={SECTION_LIMITS.maxBodyLength}
-                placeholder="Ta réponse"
+                placeholder={t.faq.answerPlaceholder}
                 onChange={(e) => {
                   const items = [...section.settings.items];
                   items[i] = { ...items[i], answer: e.target.value };
@@ -156,7 +160,7 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
                   })
                 }
               >
-                Retirer
+                {t.remove}
               </Button>
             </div>
           ))}
@@ -171,7 +175,7 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
                 })
               }
             >
-              + Ajouter une question
+              {t.faq.addQuestion}
             </Button>
           )}
         </div>
@@ -181,11 +185,12 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
       return (
         <div className="space-y-3">
           <div className="space-y-2">
-            <Label>Ta photo</Label>
+            <Label>{t.aPropos.photo}</Label>
             <div className="flex items-center gap-3">
               <PhotoUpload
                 userId={userId}
-                label={section.settings.photoUrl ? "Changer la photo" : "Choisir une photo"}
+                label={section.settings.photoUrl ? t.aPropos.changePhoto : t.aPropos.choosePhoto}
+                messages={dictionary.photoUpload}
                 onUploaded={(url) => set({ ...section.settings, photoUrl: url })}
               />
               {section.settings.photoUrl && (
@@ -194,22 +199,22 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
                   size="sm"
                   onClick={() => set({ ...section.settings, photoUrl: null })}
                 >
-                  Retirer
+                  {t.remove}
                 </Button>
               )}
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Titre</Label>
+            <Label>{t.aPropos.title}</Label>
             <Input
               value={section.settings.title}
               maxLength={SECTION_LIMITS.maxTitleLength}
-              placeholder="Ex : Derrière les ciseaux, moi"
+              placeholder={t.aPropos.titlePlaceholder}
               onChange={(e) => set({ ...section.settings, title: e.target.value })}
             />
           </div>
           <div className="space-y-2">
-            <Label>Ton histoire</Label>
+            <Label>{t.aPropos.story}</Label>
             <Textarea
               value={section.settings.body}
               rows={5}
@@ -225,8 +230,8 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
         <div className="space-y-3">
           {(
             [
-              ["beforeUrl", "Photo « avant »"],
-              ["afterUrl", "Photo « après »"],
+              ["beforeUrl", t.avantApres.before],
+              ["afterUrl", t.avantApres.after],
             ] as const
           ).map(([key, label]) => (
             <div key={key} className="space-y-2">
@@ -234,7 +239,8 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
               <div className="flex items-center gap-3">
                 <PhotoUpload
                   userId={userId}
-                  label={section.settings[key] ? "Changer" : "Choisir"}
+                  label={section.settings[key] ? t.avantApres.change : t.avantApres.choose}
+                  messages={dictionary.photoUpload}
                   onUploaded={(url) => set({ ...section.settings, [key]: url })}
                 />
                 {section.settings[key] && (
@@ -243,14 +249,14 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
                     size="sm"
                     onClick={() => set({ ...section.settings, [key]: null })}
                   >
-                    Retirer
+                    {t.remove}
                   </Button>
                 )}
               </div>
             </div>
           ))}
           <div className="space-y-2">
-            <Label>Légende (facultatif)</Label>
+            <Label>{t.avantApres.captionOptional}</Label>
             <Input
               value={section.settings.caption ?? ""}
               maxLength={SECTION_LIMITS.maxTitleLength}
@@ -263,14 +269,12 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
     case "carte":
       return (
         <div className="space-y-2 rounded-lg border border-border p-3">
-          <Label>Adresse affichée sur Google Maps</Label>
+          <Label>{t.carte.label}</Label>
           <p className="text-sm font-medium">
-            {pageAddress.trim() || "Aucune adresse renseignée"}
+            {pageAddress.trim() || t.carte.noAddress}
           </p>
           <p className="text-xs text-muted-foreground">
-            {pageAddress.trim()
-              ? "La carte reste automatiquement reliée à l'adresse renseignée dans « Identité »."
-              : "Renseigne ton adresse dans « Identité » pour activer cette section."}
+            {pageAddress.trim() ? t.carte.linked : t.carte.needsAddress}
           </p>
         </div>
       );
@@ -279,34 +283,32 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
       return (
         <div className="space-y-3">
           <div className="space-y-2">
-            <Label>Lien de ta fiche Google Business Profile</Label>
+            <Label>{t.googleBusiness.linkLabel}</Label>
             <Input
               type="url"
               value={section.settings.url}
               maxLength={500}
-              placeholder="https://g.page/r/… ou https://maps.app.goo.gl/…"
+              placeholder={t.googleBusiness.linkPlaceholder}
               onChange={(e) => set({ ...section.settings, url: e.target.value })}
             />
-            <p className="text-xs text-muted-foreground">
-              Dans Google Business Profile, choisis « Demander des avis » puis colle le lien ici.
-            </p>
+            <p className="text-xs text-muted-foreground">{t.googleBusiness.linkHint}</p>
           </div>
           <div className="space-y-2">
-            <Label>Titre (facultatif)</Label>
+            <Label>{t.googleBusiness.titleOptional}</Label>
             <Input
               value={section.settings.title ?? ""}
               maxLength={SECTION_LIMITS.maxTitleLength}
-              placeholder="Ton avis compte pour nous"
+              placeholder={t.googleBusiness.titlePlaceholder}
               onChange={(e) => set({ ...section.settings, title: e.target.value })}
             />
           </div>
           <div className="space-y-2">
-            <Label>Message (facultatif)</Label>
+            <Label>{t.googleBusiness.messageOptional}</Label>
             <Textarea
               value={section.settings.description ?? ""}
               rows={3}
               maxLength={300}
-              placeholder="Découvre nos avis ou partage ton expérience en quelques secondes."
+              placeholder={t.googleBusiness.messagePlaceholder}
               onChange={(e) => set({ ...section.settings, description: e.target.value })}
             />
           </div>
@@ -317,44 +319,40 @@ export function SectionSettings({ section, userId, pageAddress, onChange }: Prop
       return (
         <div className="space-y-3">
           <div className="space-y-2">
-            <Label>Titre (facultatif)</Label>
+            <Label>{t.newsletter.titleOptional}</Label>
             <Input
               value={section.settings.title ?? ""}
               maxLength={SECTION_LIMITS.maxTitleLength}
-              placeholder="Reste informé"
+              placeholder={t.newsletter.titlePlaceholder}
               onChange={(e) => set({ ...section.settings, title: e.target.value })}
             />
           </div>
           <div className="space-y-2">
-            <Label>Petit texte (facultatif)</Label>
+            <Label>{t.newsletter.textOptional}</Label>
             <Input
               value={section.settings.description ?? ""}
               maxLength={200}
-              placeholder="Reçois mes offres et mes nouveautés, sans spam."
+              placeholder={t.newsletter.textPlaceholder}
               onChange={(e) =>
                 set({ ...section.settings, description: e.target.value })
               }
             />
           </div>
-          <p className="text-xs text-muted-foreground">
-            Les emails récoltés se retrouvent dans « Statistiques ».
-          </p>
+          <p className="text-xs text-muted-foreground">{t.newsletter.hint}</p>
         </div>
       );
 
     case "video":
       return (
         <div className="space-y-2">
-          <Label>Lien de la vidéo</Label>
+          <Label>{t.video.linkLabel}</Label>
           <Input
             value={section.settings.url}
             maxLength={300}
-            placeholder="https://www.youtube.com/watch?v=…"
+            placeholder={t.video.linkPlaceholder}
             onChange={(e) => set({ url: e.target.value })}
           />
-          <p className="text-xs text-muted-foreground">
-            YouTube, Vimeo ou un lien direct vers un fichier vidéo.
-          </p>
+          <p className="text-xs text-muted-foreground">{t.video.hint}</p>
         </div>
       );
   }

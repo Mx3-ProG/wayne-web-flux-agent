@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "title": "我的日程"
+  },
+  "weekdaysShort": {
+    "0": "周日",
+    "1": "周一",
+    "2": "周二",
+    "3": "周三",
+    "4": "周四",
+    "5": "周五",
+    "6": "周六"
+  },
+  "weekdaysLong": {
+    "0": "星期日",
+    "1": "星期一",
+    "2": "星期二",
+    "3": "星期三",
+    "4": "星期四",
+    "5": "星期五",
+    "6": "星期六"
+  },
+  "rhythms": {
+    "classic": "常规一天",
+    "extended": "延长营业",
+    "split": "含午休时段",
+    "morning": "偏爱上午",
+    "afternoon": "偏爱下午",
+    "evening": "傍晚 & 晚间"
+  },
+  "tunnel": {
+    "myAgenda": "我的日程",
+    "step": "第 {current} 步，共 4 步",
+    "intro": {
+      "kicker": "让你的时间井井有条",
+      "titleStart": "FLUX，为",
+      "titleEm": "你的需求服务的日程表。",
+      "text": "选好你的营业日和节奏，Flux 会自动生成客户可以在你的展示页预约的时间段。",
+      "cta": "创建我的时间表",
+      "shortcutText": "我已经定好营业时间了",
+      "shortcutCta": "返回日程"
+    },
+    "days": {
+      "kicker": "你的营业日",
+      "titleStart": "哪些日子你想开放",
+      "titleEm": "预约？",
+      "subtitle": "选择所有可以让客户预约的日子。"
+    },
+    "rhythm": {
+      "kicker": "你的节奏",
+      "titleStart": "你在什么时段工作",
+      "titleEm": "状态最佳？",
+      "subtitle": "该节奏将应用于所选日子，之后你还能在日程中细调。"
+    },
+    "variable": {
+      "kicker": "灵活时间安排",
+      "titleStart": "有些日子的节奏",
+      "titleEm": "不太一样？",
+      "subtitle": "可以沿用主节奏，也可以为每一天单独调整，不需要填写任何内容。"
+    },
+    "review": {
+      "kicker": "你的日程已准备就绪",
+      "title": "以下是提供给客户的时间段。",
+      "closed": "休息",
+      "open": "营业",
+      "unavailable": "不可用",
+      "saving": "正在创建你的日程…",
+      "save": "保存并开启我的日程",
+      "editAria": "修改我的时间表"
+    },
+    "back": "返回",
+    "continue": "继续",
+    "successToast": "你的时间表已就绪。日程已在合适的时段开放。"
+  },
+  "empty": {
+    "title": "先创建你的展示页",
+    "text": "只要你的页面存在，日程就会自动激活：客户可以直接在上面预约。",
+    "cta": "创建我的展示页"
+  },
+  "view": {
+    "eyebrow": "你的 Flux 日程",
+    "greeting": "你好{name}。",
+    "noUpcoming": "本周比较清闲，你的时间段仍然开放，展示页在为你持续工作。",
+    "upcomingCount": "还有 {count} 个待到访的预约。一切准备就绪，随时迎接客户。",
+    "viewStorefront": "查看我的展示页",
+    "statsAria": "日程概览",
+    "upcomingLabel": "即将到来的预约",
+    "syncedHint": "日程已同步",
+    "registeredClients": "已登记客户",
+    "listFillsItself": "名单会自动增加",
+    "bookableDays": "可预约天数",
+    "outOf7": "共 7 天",
+    "myWeek": "我的一周",
+    "weekHint": "点击某天查看当天安排。红点 = 有预约。",
+    "noBookingToday": "这一天暂时还没有预约。",
+    "cancel": "取消",
+    "bookingCancelled": "预约已取消。",
+    "myClients": "我的客户",
+    "clientsHint": "每次预约都会自动更新此列表。点击客户可查看历史记录和你的私人备注。",
+    "searchPlaceholder": "搜索姓名或号码…",
+    "firstClientHint": "你的第一位客户预约后会显示在这里。",
+    "noClientMatch": "没有找到该名字的客户。",
+    "visitSingular": "次到访",
+    "visitPlural": "次到访",
+    "orderSingular": "笔订单",
+    "orderPlural": "笔订单",
+    "clientRevenue": "客户营收",
+    "email": "邮箱",
+    "hisAppointments": "他的预约",
+    "myNote": "我的备注（仅你可见）",
+    "save": "保存",
+    "noteSaved": "备注已保存。",
+    "variableHours": "灵活时间安排",
+    "variableHoursHint": "每一天都可以有自己的节奏。将鼠标悬停在某一行上可将其置顶显示。",
+    "removeRange": "移除该时段",
+    "addBreak": "+ 休息时段",
+    "saveVariableHours": "保存我的灵活时间安排",
+    "variableHoursSaved": "已保存。客户已经能看到正确的时间段了。",
+    "blockPeriod": "锁定一段时间",
+    "blockPeriodHint": "休假、私人安排：这段时间内没人能预约。",
+    "from": "从",
+    "to": "至",
+    "block": "锁定",
+    "periodBlocked": "时间段已锁定。",
+    "fromTo": "从 {start} 至 {end}",
+    "unblock": "解锁",
+    "googleAgenda": "同步到你的 Google 日历",
+    "googleAgendaHint": "把这个链接粘贴到 Google 日历里一次即可（+ → “从网址订阅”），之后你的预约会自动显示在里面。仅供查看——请妥善保管，不要外传。",
+    "copy": "复制",
+    "linkCopied": "链接已复制。"
+  },
+  "errors": {
+    "not_authenticated": "请先登录再继续。",
+    "save_failed": "保存失败。",
+    "invalid_dates": "日期无效。",
+    "end_before_start": "结束时间必须晚于开始时间。",
+    "block_failed": "无法锁定该时间段。",
+    "note_save_failed": "备注未能保存。",
+    "cancel_failed": "无法取消。",
+    "unknown": "出现了一个错误，请稍后重试。"
+  }
+}

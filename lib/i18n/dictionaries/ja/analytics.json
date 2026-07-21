@@ -1,0 +1,53 @@
+{
+ "meta": {
+  "title": "統計"
+ },
+ "hero": {
+  "kicker": "データセンター",
+  "titleStart": "きみの",
+  "titleEm": "ダッシュボード",
+  "textStart": "",
+  "textLink": "きみのサイト",
+  "textEnd": "で今起きていること：訪問数、問い合わせ、登録者数をリアルタイムで。",
+  "visitSingular": "過去30日間の訪問",
+  "visitPlural": "過去30日間の訪問"
+ },
+ "cards": {
+  "visits7": "訪問数（7日間）",
+  "visits30": "訪問数（30日間）",
+  "phoneClicks30": "電話クリック数（30日間）",
+  "whatsappClicks30": "WhatsAppクリック数（30日間）",
+  "socialClicks30": "SNSクリック数（30日間）",
+  "newsletterSubscribers": "ニュースレター登録者数"
+ },
+ "chart": {
+  "title": "過去14日間の訪問数",
+  "empty": "まだデータがないよ：きみのサイトに最初の訪問があり次第、表示されるよ。",
+  "tooltipSingular": "{label}：{count}件の訪問",
+  "tooltipPlural": "{label}：{count}件の訪問"
+ },
+ "subscribers": {
+  "title": "きみのニュースレター登録者",
+  "hint": "サイトの「ニュースレター」ブロックで集められたよ。",
+  "export": "エクスポート（CSV）",
+  "empty": "まだ誰もいないよ。サイトエディターの「ページのセクション」から「ニュースレター」ブロックを追加して、メールアドレスを集めよう。",
+  "csvHeader": "email;登録日"
+ },
+ "tunnel": {
+  "step": "ステップ {current}/{total}",
+  "exit": "マイ統計",
+  "kicker1": "リンクを広めよう",
+  "title1Start": "あなたの統計は",
+  "title1Em": "共有から始まります。",
+  "subtitle1": "あなたの仕事を評価し、価値や安らぎを見出してくれる人にリンクを共有しましょう。訪問・クリック・フォロワーのすべてがここに表示されます — リンクが広まるほど、数字があなたの物語を語ります。",
+  "uniqueLink": "あなた専用のリンク",
+  "copyLink": "リンクをコピー",
+  "continueCta": "続ける",
+  "fromTeam": "チーム一同より",
+  "title2Start": "FLUXを",
+  "title2Em": "あなたのビジネスに使ってくれてありがとう。",
+  "text2": "あなたの商売は、見られ、選ばれ、勧められる価値があります。大きな成果を上げられますように — そして私たちはこれからも、一つひとつの勝利をあなたと一緒に数えていきます。",
+  "back": "戻る",
+  "viewStats": "統計を見る"
+ }
+}

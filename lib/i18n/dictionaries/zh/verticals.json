@@ -1,0 +1,348 @@
+{
+  "beaute": {
+    "label": "美容 & 美学护理",
+    "jobTitles": [
+      "美容师",
+      "美甲师",
+      "睫毛师",
+      "皮肤纹绣师"
+    ],
+    "clientWord": "顾客",
+    "promptContext": "美容院 / 美学护理：护肤、美甲、睫毛、眉毛。以女性顾客为主，语气温暖且让人安心。",
+    "families": {
+      "soins-visage": {
+        "name": "面部护理",
+        "services": {
+          "soin-eclat": "焕亮护理",
+          "soin-anti-age": "抗衰老护理"
+        }
+      },
+      "ongles": {
+        "name": "美甲",
+        "services": {
+          "pose-gel": "光疗甲",
+          "remplissage": "补甲",
+          "vernis-semi-permanent": "半永久甲油"
+        }
+      },
+      "cils-sourcils": {
+        "name": "睫毛 & 眉毛",
+        "services": {
+          "extension-cils": "睫毛嫁接（全套）",
+          "rehaussement-cils": "睫毛提拉",
+          "restructuration-sourcils": "眉形重塑"
+        }
+      }
+    }
+  },
+  "coiffure": {
+    "label": "美发 & 理发",
+    "jobTitles": [
+      "女发型师",
+      "男发型师",
+      "理发师",
+      "染发师"
+    ],
+    "clientWord": "顾客",
+    "promptContext": "美发沙龙或理发店：剪发、染色、护发。语气活力十足，充满亲近感。",
+    "families": {
+      "coupes": {
+        "name": "剪发",
+        "services": {
+          "coupe-femme": "女士剪发",
+          "coupe-homme": "男士剪发",
+          "coupe-barbe": "剪发 + 胡须修剪"
+        }
+      },
+      "couleur": {
+        "name": "染色",
+        "services": {
+          "coloration-complete": "全头染色",
+          "balayage": "挑染"
+        }
+      }
+    }
+  },
+  "restaurant": {
+    "label": "餐厅 & 餐饮外烩",
+    "jobTitles": [
+      "餐厅老板（男）",
+      "餐厅老板（女）",
+      "私厨",
+      "外烩师"
+    ],
+    "clientWord": "宾客",
+    "promptContext": "餐厅、外烩或私厨：预订餐桌或活动。语气美味诱人、热情好客，突出食材与手工制作。",
+    "families": {
+      "reservations": {
+        "name": "预订",
+        "services": {
+          "table-dejeuner": "午餐餐桌",
+          "table-diner": "晚餐餐桌"
+        }
+      },
+      "evenements": {
+        "name": "活动",
+        "services": {
+          "privatisation": "包场（定金）",
+          "menu-degustation": "品鉴菜单"
+        }
+      }
+    }
+  },
+  "auto": {
+    "label": "汽车 & 车库",
+    "jobTitles": [
+      "车库老板",
+      "机械师",
+      "汽车美容师",
+      "钣金师"
+    ],
+    "clientWord": "顾客",
+    "promptContext": "车库、机械维修或汽车美容。语气直接可信：价格透明、专业严谨、按时交付。",
+    "families": {
+      "entretien": {
+        "name": "保养",
+        "services": {
+          "vidange-filtres": "换油 + 换滤芯",
+          "revision-complete": "全面检修",
+          "plaquettes-frein": "刹车片更换（一轴）"
+        }
+      },
+      "esthetique": {
+        "name": "美容护理",
+        "services": {
+          "lavage-int-ext": "内外清洗",
+          "polish-ceramique": "抛光 + 镀晶"
+        }
+      }
+    },
+    "productCategories": {
+      "pieces-accessoires": {
+        "name": "零件 & 配件",
+        "products": {
+          "roue": "车轮（单个）",
+          "balais-essuie-glace": "雨刷套装",
+          "batterie-12v": "12V电瓶"
+        }
+      },
+      "produits-entretien": {
+        "name": "保养用品",
+        "products": {
+          "huile-moteur-5l": "5L装机油",
+          "kit-lavage-auto": "汽车清洗套装"
+        }
+      }
+    }
+  },
+  "artisan": {
+    "label": "工匠 & 建筑装修",
+    "jobTitles": [
+      "水管工",
+      "电工",
+      "油漆工",
+      "木工",
+      "多面手"
+    ],
+    "clientWord": "客户",
+    "promptContext": "建筑行业工匠：紧急维修与工程项目。语气可靠、不说行话：报价清晰、准时、工作细致。",
+    "families": {
+      "interventions": {
+        "name": "上门服务",
+        "services": {
+          "diagnostic-devis": "上门诊断 / 报价",
+          "depannage-urgent": "紧急维修",
+          "petits-travaux": "小型工程（按小时计费）"
+        }
+      }
+    }
+  },
+  "commerce": {
+    "label": "商店 & 零售",
+    "jobTitles": [
+      "商人（男）",
+      "商人（女）",
+      "店长",
+      "销售员（男）",
+      "销售员（女）"
+    ],
+    "clientWord": "顾客",
+    "promptContext": "零售商店 / 商铺：店内销售及线上下单店内自提。语气商业化且亲近顾客，突出新品、促销与库存情况。",
+    "families": {},
+    "productCategories": {
+      "nouveautes": {
+        "name": "新品",
+        "products": {
+          "article-vedette": "明星单品",
+          "coup-de-coeur": "心头好"
+        }
+      },
+      "best-sellers": {
+        "name": "畅销款",
+        "products": {
+          "produit-populaire": "热门产品",
+          "pack-decouverte": "体验套装"
+        }
+      }
+    }
+  },
+  "alimentation": {
+    "label": "食品 & 食杂店",
+    "jobTitles": [
+      "面包师（男）",
+      "面包师（女）",
+      "甜点师",
+      "果蔬商",
+      "食杂店主",
+      "奶酪商",
+      "酒商"
+    ],
+    "clientWord": "顾客",
+    "promptContext": "餐饮零售（面包房、甜点店、果蔬店、精品食杂）：新鲜产品销售及预订/线上下单店内自提。语气美味诱人、手工匠心且贴近本地，强调新鲜与自制。",
+    "families": {},
+    "productCategories": {
+      "boulangerie": {
+        "name": "面包类",
+        "products": {
+          "baguette-tradition": "传统法棍",
+          "pain-campagne": "乡村面包",
+          "croissant": "牛角包"
+        }
+      },
+      "patisserie": {
+        "name": "甜点类",
+        "products": {
+          "eclair": "闪电泡芙",
+          "tarte-du-jour": "今日塔（份）",
+          "gateau-a-commander": "预订蛋糕"
+        }
+      }
+    }
+  },
+  "mode": {
+    "label": "时尚 & 配饰",
+    "jobTitles": [
+      "设计师（男）",
+      "设计师（女）",
+      "造型师",
+      "珠宝商（男）",
+      "珠宝商（女）",
+      "皮具师"
+    ],
+    "clientWord": "顾客",
+    "promptContext": "成衣、珠宝或配饰：原创设计与精选商品店铺。语气优雅且富有吸引力，围绕材质、尺码与限量款讲故事。",
+    "families": {},
+    "productCategories": {
+      "vetements": {
+        "name": "服装",
+        "products": {
+          "t-shirt": "T恤",
+          "robe": "连衣裙",
+          "veste": "外套"
+        }
+      },
+      "accessoires": {
+        "name": "配饰",
+        "products": {
+          "collier": "项链",
+          "sac": "包袋",
+          "carte-cadeau": "礼品卡"
+        }
+      }
+    }
+  },
+  "bienetre": {
+    "label": "健康养生 & 教练",
+    "jobTitles": [
+      "运动教练",
+      "自然疗法师",
+      "摄影师",
+      "催眠治疗师",
+      "健康顾问"
+    ],
+    "clientWord": "客户",
+    "promptContext": "健康养生、教练或摄影：预约服务 + 套餐、疗程或产品销售（课程、电子书、计划）。语气温暖、激励人心且专业，注重转变与效果。",
+    "families": {
+      "seances": {
+        "name": "课程",
+        "services": {
+          "seance-decouverte": "体验课程",
+          "seance-individuelle": "单独课程",
+          "bilan-complet": "全面评估"
+        }
+      }
+    },
+    "productCategories": {
+      "forfaits-programmes": {
+        "name": "套餐 & 计划",
+        "products": {
+          "forfait-5-seances": "5次课程套餐",
+          "forfait-10-seances": "10次课程套餐",
+          "programme-en-ligne": "线上计划"
+        }
+      }
+    }
+  },
+  "autre": {
+    "label": "其他活动",
+    "jobTitles": [
+      "自由职业者（男）",
+      "自由职业者（女）"
+    ],
+    "clientWord": "客户",
+    "promptContext": "本地商店或独立经营活动。语气专业且平易近人。",
+    "families": {
+      "prestations": {
+        "name": "服务项目",
+        "services": {
+          "rendez-vous-decouverte": "体验预约",
+          "prestation-standard": "标准服务"
+        }
+      }
+    }
+  },
+  "catalogWording": {
+    "service": {
+      "categoryWord": "服务分类",
+      "itemWord": "服务项目",
+      "categoryPlaceholder": "例如：面部护理",
+      "itemPlaceholder": "例如：60分钟焕亮护理",
+      "categoryHint": "一类服务，就像你在价目表上归类的那样。",
+      "itemHint": "你最受欢迎的服务项目。这是顾客最先来预约的项目。"
+    },
+    "product": {
+      "categoryWord": "分类",
+      "itemWord": "产品",
+      "categoryPlaceholder": "例如：花束",
+      "itemPlaceholder": "例如：时令花束",
+      "categoryHint": "你店铺的一个货架分类，就像顾客搜索时那样。",
+      "itemHint": "你的招牌产品，卖得最好的那款。"
+    },
+    "hybrid": {
+      "categoryWord": "分类",
+      "itemWord": "产品或服务",
+      "categoryPlaceholder": "例如：剪发 & 染色",
+      "itemPlaceholder": "例如：剪吹造型",
+      "categoryHint": "你可以在这里同时归类产品和预约服务。",
+      "itemHint": "顾客最常向你要求的项目。"
+    }
+  },
+  "fontLabels": {
+    "fraunces": "Fraunces — 编辑感，高端（默认）",
+    "inter": "Inter — 现代，中性（默认）",
+    "playfair": "Playfair Display — 别致，优雅",
+    "montserrat": "Montserrat — 简洁，专业",
+    "lora": "Lora — 精致，柔和衬线",
+    "cormorant": "Cormorant Garamond — 奢华，精致",
+    "quicksand": "Quicksand — 圆润，柔和",
+    "poppins": "Poppins — 现代，柔和",
+    "space-grotesk": "Space Grotesk — 科技感，个性十足",
+    "sora": "Sora — 当代，简洁利落",
+    "manrope": "Manrope — 朴素，易读",
+    "libre-baskerville": "Libre Baskerville — 经典，文学感",
+    "dm-serif": "DM Serif Display — 醒目，编辑感",
+    "marcellus": "Marcellus — 古典，尊贵",
+    "josefin": "Josefin Sans — 几何感，复古时尚",
+    "bebas": "Bebas Neue — 大写字体，冲击力强"
+  }
+}

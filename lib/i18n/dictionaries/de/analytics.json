@@ -1,0 +1,53 @@
+{
+ "meta": {
+  "title": "Statistiken"
+ },
+ "hero": {
+  "kicker": "Datenzentrale",
+  "titleStart": "Dein",
+  "titleEm": "Dashboard",
+  "textStart": "Was auf",
+  "textLink": "deiner Website",
+  "textEnd": "passiert: Besuche, Kontakte und Abonnenten, in Echtzeit.",
+  "visitSingular": "Besuch in den letzten 30 Tagen",
+  "visitPlural": "Besuche in den letzten 30 Tagen"
+ },
+ "cards": {
+  "visits7": "Besuche (7 T.)",
+  "visits30": "Besuche (30 T.)",
+  "phoneClicks30": "Telefon-Klicks (30 T.)",
+  "whatsappClicks30": "WhatsApp-Klicks (30 T.)",
+  "socialClicks30": "Social-Klicks (30 T.)",
+  "newsletterSubscribers": "Newsletter-Abonnenten"
+ },
+ "chart": {
+  "title": "Besuche der letzten 14 Tage",
+  "empty": "Noch keine Daten: Sie erscheinen, sobald deine Website ihre ersten Besuche bekommt.",
+  "tooltipSingular": "{label}: {count} Besuch",
+  "tooltipPlural": "{label}: {count} Besuche"
+ },
+ "subscribers": {
+  "title": "Deine Newsletter-Abonnenten",
+  "hint": "Gesammelt über den Baustein „Newsletter“ deiner Website.",
+  "export": "Exportieren (CSV)",
+  "empty": "Noch niemand da. Füge den Baustein „Newsletter“ im Editor deiner Website hinzu (Bereich „Abschnitte meiner Seite“), um E-Mails zu sammeln.",
+  "csvHeader": "email;angemeldet_am"
+ },
+ "tunnel": {
+  "step": "Schritt {current} von {total}",
+  "exit": "Meine Statistiken",
+  "kicker1": "Bring deinen Link in Umlauf",
+  "title1Start": "Deine Statistiken beginnen mit einem",
+  "title1Em": "Teilen.",
+  "subtitle1": "Teile deinen Link mit Menschen, die deine Arbeit schätzen, darin einen Mehrwert oder Trost finden. Jeder Besuch, jeder Klick und jeder Follower erscheint hier — je mehr dein Link kursiert, desto mehr erzählen deine Zahlen deine Geschichte.",
+  "uniqueLink": "Dein einzigartiger Link",
+  "copyLink": "Meinen Link kopieren",
+  "continueCta": "Weiter",
+  "fromTeam": "Vom ganzen Team",
+  "title2Start": "Danke, dass du FLUX für",
+  "title2Em": "dein Geschäft nutzt.",
+  "text2": "Dein Geschäft verdient es, gesehen, gewählt und empfohlen zu werden. Wir wünschen dir großartige Erfolge — und wir sind da, um jeden Sieg mit dir zu zählen.",
+  "back": "Zurück",
+  "viewStats": "Meine Statistiken ansehen"
+ }
+}

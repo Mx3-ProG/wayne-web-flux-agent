@@ -15,6 +15,9 @@ import type { Booking, OfferKind, Order, OrderItem, ProductKind } from "@/lib/ty
 import { formatPrice } from "@/lib/types";
 import { acceptOrder, cancelOrder, fulfillOrder } from "./actions";
 import styles from "./commandes.module.css";
+import type { OrdersDict } from "@/lib/i18n/get-dictionary";
+import type { Locale } from "@/lib/i18n/config";
+import { formatDate as formatDateIntl } from "@/lib/i18n/format";
 
 type OrderItemWithCatalog = OrderItem & {
   products: { kind: ProductKind } | null;
@@ -34,13 +37,6 @@ type ClientProfile = {
   history: ClientHistory;
 };
 
-const STATUS_LABEL: Record<Order["status"], string> = {
-  pending: "À traiter",
-  accepted: "Acceptée",
-  fulfilled: "Terminée",
-  cancelled: "Annulée",
-};
-
 const STATUS_CLASS: Record<Order["status"], string> = {
   pending: styles.badgePending,
   accepted: styles.badgeAccepted,
@@ -48,22 +44,22 @@ const STATUS_CLASS: Record<Order["status"], string> = {
   cancelled: styles.badgeCancelled,
 };
 
-function formatDate(iso: string): string {
-  return new Intl.DateTimeFormat("fr-FR", {
+function formatDate(locale: Locale, iso: string): string {
+  return formatDateIntl(locale, iso, {
     day: "numeric",
     month: "short",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(new Date(iso));
+  });
 }
 
-function formatBookingDate(booking: Booking): string {
-  return new Intl.DateTimeFormat("fr-FR", {
+function formatBookingDate(locale: Locale, booking: Booking): string {
+  return formatDateIntl(locale, `${booking.date}T${booking.start_time}`, {
     day: "numeric",
     month: "short",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(new Date(`${booking.date}T${booking.start_time}`));
+  });
 }
 
 function sameCustomer(
@@ -83,10 +79,10 @@ function customerKey(contact: Pick<Order, "phone" | "email">): string {
   return phone || email || "client-sans-contact";
 }
 
-function itemKindLabel(item: OrderItemWithCatalog): string {
-  if (item.offer_id) return "Offre";
-  if (item.products?.kind === "reservation") return "Réservation";
-  return "Produit";
+function itemKindLabel(t: OrdersDict, item: OrderItemWithCatalog): string {
+  if (item.offer_id) return t.itemKind.offer;
+  if (item.products?.kind === "reservation") return t.itemKind.reservation;
+  return t.itemKind.product;
 }
 
 function ClientSheet({
@@ -95,38 +91,40 @@ function ClientSheet({
   email,
   address,
   interactions,
+  t,
 }: {
   firstName?: string;
   phone: string;
   email: string | null;
   address: string;
   interactions: number;
+  t: OrdersDict;
 }) {
   return (
-    <section className={styles.clientSheet} aria-label="Fiche client">
+    <section className={styles.clientSheet} aria-label={t.clientSheet.aria}>
       <div className={styles.sheetHead}>
-        <h3>{firstName ? `Fiche client · ${firstName}` : "Fiche client"}</h3>
-        <span>{interactions} interaction(s)</span>
+        <h3>{firstName ? t.clientSheet.titleWithName.replace("{name}", firstName) : t.clientSheet.titleDefault}</h3>
+        <span>{t.clientSheet.interactions.replace("{count}", String(interactions))}</span>
       </div>
       <dl className={styles.contactGrid}>
         <div>
-          <dt>Téléphone</dt>
-          <dd>{phone || "Non renseigné"}</dd>
+          <dt>{t.clientSheet.phone}</dt>
+          <dd>{phone || t.clientSheet.notProvided}</dd>
         </div>
         <div>
-          <dt>Email</dt>
-          <dd>{email || "Non renseigné"}</dd>
+          <dt>{t.clientSheet.email}</dt>
+          <dd>{email || t.clientSheet.notProvided}</dd>
         </div>
         <div className={styles.contactWide}>
-          <dt>Adresse physique</dt>
-          <dd>{address || "Non renseignée"}</dd>
+          <dt>{t.clientSheet.address}</dt>
+          <dd>{address || t.clientSheet.addressNotProvided}</dd>
         </div>
       </dl>
     </section>
   );
 }
 
-function ClientHistoryList({ history }: { history: ClientHistory }) {
+function ClientHistoryList({ history, locale, t }: { history: ClientHistory; locale: Locale; t: OrdersDict }) {
   const allOrderItems = history.orders.flatMap((clientOrder) =>
     clientOrder.order_items.map((item) => ({
       ...item,
@@ -138,29 +136,29 @@ function ClientHistoryList({ history }: { history: ClientHistory }) {
   return (
     <div className={styles.history}>
       <div className={styles.historyHead}>
-        <h3>Historique client</h3>
-        <span>{allOrderItems.length + history.bookings.length} achat(s)</span>
+        <h3>{t.history.title}</h3>
+        <span>{t.history.purchases.replace("{count}", String(allOrderItems.length + history.bookings.length))}</span>
       </div>
       <div className={styles.historyList}>
         {allOrderItems.map((item) => (
           <div key={`item-${item.id}`} className={styles.historyRow}>
-            <span className={styles.historyType}>{itemKindLabel(item)}</span>
+            <span className={styles.historyType}>{itemKindLabel(t, item)}</span>
             <span className={styles.historyName}>
               {item.quantity}x {item.name}
             </span>
             <span className={styles.historyMeta}>
-              {STATUS_LABEL[item.orderStatus]} · {formatDate(item.orderDate)} ·{" "}
-              {formatPrice(item.line_total_cents)}
+              {t.status[item.orderStatus]} · {formatDate(locale, item.orderDate)} ·{" "}
+              {formatPrice(item.line_total_cents, locale)}
             </span>
           </div>
         ))}
         {history.bookings.map((booking) => (
           <div key={`booking-${booking.id}`} className={styles.historyRow}>
-            <span className={styles.historyType}>Réservation</span>
+            <span className={styles.historyType}>{t.history.reservation}</span>
             <span className={styles.historyName}>{booking.service_name}</span>
             <span className={styles.historyMeta}>
-              {booking.status === "cancelled" ? "Annulée" : "Confirmée"} ·{" "}
-              {formatBookingDate(booking)} · {formatPrice(booking.price_cents)}
+              {booking.status === "cancelled" ? t.bookingStatus.cancelled : t.bookingStatus.confirmed} ·{" "}
+              {formatBookingDate(locale, booking)} · {formatPrice(booking.price_cents, locale)}
             </span>
           </div>
         ))}
@@ -169,7 +167,17 @@ function ClientHistoryList({ history }: { history: ClientHistory }) {
   );
 }
 
-function OrderCard({ order, history }: { order: OrderWithItems; history: ClientHistory }) {
+function OrderCard({
+  order,
+  history,
+  locale,
+  t,
+}: {
+  order: OrderWithItems;
+  history: ClientHistory;
+  locale: Locale;
+  t: OrdersDict;
+}) {
   const address =
     order.address?.trim() ||
     history.orders.find((clientOrder) => clientOrder.address?.trim())?.address?.trim() ||
@@ -184,19 +192,19 @@ function OrderCard({ order, history }: { order: OrderWithItems; history: ClientH
           <ReceiptText aria-hidden="true" />
         </span>
         <span className={styles.entryMain}>
-          <small>Transaction FLUX</small>
-          <strong>{order.first_name || "Client"}</strong>
+          <small>{t.orderCard.transaction}</small>
+          <strong>{order.first_name || t.orderCard.defaultClient}</strong>
           <span>
             {order.phone}
-            {order.email ? ` · ${order.email}` : ""} · {formatDate(order.created_at)}
+            {order.email ? ` · ${order.email}` : ""} · {formatDate(locale, order.created_at)}
           </span>
         </span>
         <span className={styles.entryStats}>
           <span className={`${styles.badge} ${STATUS_CLASS[order.status]}`}>
-            {STATUS_LABEL[order.status]}
+            {t.status[order.status]}
           </span>
-          <strong>{formatPrice(order.total_cents)}</strong>
-          <small>{orderItemsCount} article{orderItemsCount > 1 ? "s" : ""}</small>
+          <strong>{formatPrice(order.total_cents, locale)}</strong>
+          <small>{orderItemsCount} {orderItemsCount > 1 ? t.orderCard.itemPlural : t.orderCard.itemSingular}</small>
         </span>
         <span className={styles.chevron}>
           <ChevronDown aria-hidden="true" />
@@ -209,6 +217,7 @@ function OrderCard({ order, history }: { order: OrderWithItems; history: ClientH
           email={order.email}
           address={address}
           interactions={history.orders.length + history.bookings.length}
+          t={t}
         />
 
         <div className={styles.items}>
@@ -216,9 +225,9 @@ function OrderCard({ order, history }: { order: OrderWithItems; history: ClientH
             <div key={item.id} className={styles.item}>
               <span>
                 <b>{item.quantity}x</b> {item.name}{" "}
-                <small className={styles.itemKind}>{itemKindLabel(item)}</small>
+                <small className={styles.itemKind}>{itemKindLabel(t, item)}</small>
               </span>
-              <span>{formatPrice(item.line_total_cents)}</span>
+              <span>{formatPrice(item.line_total_cents, locale)}</span>
             </div>
           ))}
         </div>
@@ -231,7 +240,7 @@ function OrderCard({ order, history }: { order: OrderWithItems; history: ClientH
               <form action={acceptOrder.bind(null, order.id)}>
                 <button type="submit" className={`flux-button-smooth ${styles.btn} ${styles.btnPrimary}`}>
                   <ShieldCheck aria-hidden="true" />
-                  Accepter
+                  {t.orderCard.accept}
                 </button>
               </form>
             )}
@@ -239,25 +248,25 @@ function OrderCard({ order, history }: { order: OrderWithItems; history: ClientH
               <form action={fulfillOrder.bind(null, order.id)}>
                 <button type="submit" className={`flux-button-smooth ${styles.btn} ${styles.btnPrimary}`}>
                   <Banknote aria-hidden="true" />
-                  Marquer comme terminée
+                  {t.orderCard.markDone}
                 </button>
               </form>
             )}
             <form action={cancelOrder.bind(null, order.id)}>
               <button type="submit" className={`${styles.btn} ${styles.btnGhost}`}>
-                {order.status === "pending" ? "Refuser" : "Annuler"}
+                {order.status === "pending" ? t.orderCard.refuse : t.orderCard.cancel}
               </button>
             </form>
           </div>
         )}
 
-        <ClientHistoryList history={history} />
+        <ClientHistoryList history={history} locale={locale} t={t} />
       </div>
     </details>
   );
 }
 
-function ClientProfileCard({ profile }: { profile: ClientProfile }) {
+function ClientProfileCard({ profile, locale, t }: { profile: ClientProfile; locale: Locale; t: OrdersDict }) {
   const interactions = profile.history.orders.length + profile.history.bookings.length;
   const clientRevenue = profile.history.orders
     .filter((order) => order.status !== "cancelled")
@@ -270,16 +279,16 @@ function ClientProfileCard({ profile }: { profile: ClientProfile }) {
           <ContactRound aria-hidden="true" />
         </span>
         <span className={styles.entryMain}>
-          <small>Dossier client</small>
-          <strong>{profile.firstName || "Client"}</strong>
+          <small>{t.clientProfile.dossier}</small>
+          <strong>{profile.firstName || t.orderCard.defaultClient}</strong>
           <span>
             {profile.phone}
             {profile.email ? ` · ${profile.email}` : ""}
           </span>
         </span>
         <span className={styles.entryStats}>
-          <strong>{formatPrice(clientRevenue)}</strong>
-          <small>{interactions} interaction{interactions > 1 ? "s" : ""}</small>
+          <strong>{formatPrice(clientRevenue, locale)}</strong>
+          <small>{interactions} {interactions > 1 ? t.clientProfile.interactionPlural : t.clientProfile.interactionSingular}</small>
         </span>
         <span className={styles.chevron}>
           <ChevronDown aria-hidden="true" />
@@ -292,8 +301,9 @@ function ClientProfileCard({ profile }: { profile: ClientProfile }) {
           email={profile.email}
           address={profile.address}
           interactions={interactions}
+          t={t}
         />
-        <ClientHistoryList history={profile.history} />
+        <ClientHistoryList history={profile.history} locale={locale} t={t} />
       </div>
     </details>
   );
@@ -303,10 +313,14 @@ export function CommandesLedger({
   pageExists,
   orders,
   bookings,
+  locale,
+  t,
 }: {
   pageExists: boolean;
   orders: OrderWithItems[];
   bookings: Booking[];
+  locale: Locale;
+  t: OrdersDict;
 }) {
   const pending = orders.filter((o) => o.status === "pending");
   const accepted = orders.filter((o) => o.status === "accepted");
@@ -358,41 +372,38 @@ export function CommandesLedger({
       <header className={styles.hero}>
         <span className={styles.overline}>
           <Landmark aria-hidden="true" />
-          Portefeuille FLUX
+          {t.hero.kicker}
         </span>
         <div className={styles.vaultMark} aria-hidden="true">
           <WalletCards />
         </div>
         <h1>
-          Centre d&apos;<span>affaires</span>
+          {t.hero.titleStart}<span>{t.hero.titleEm}</span>
         </h1>
-        <p>
-          Pilote les commandes, retrouve chaque client, puis transforme ta vitrine
-          en carnet d&apos;encaissements propre et lisible.
-        </p>
+        <p>{t.hero.text}</p>
         <div className={styles.vaultCount}>
           <Sparkles aria-hidden="true" />
-          <strong>{formatPrice(portfolioTotal)}</strong>
-          <span>{orders.length} mouvement{orders.length > 1 ? "s" : ""} suivis</span>
+          <strong>{formatPrice(portfolioTotal, locale)}</strong>
+          <span>{orders.length} {orders.length > 1 ? t.hero.movementPlural : t.hero.movementSingular}</span>
         </div>
       </header>
 
       {pageExists && (orders.length > 0 || bookings.length > 0) && (
-        <section className={styles.metrics} aria-label="Indicateurs commandes">
+        <section className={styles.metrics} aria-label={t.metrics.aria}>
           <div>
-            <span>À traiter</span>
+            <span>{t.metrics.toProcess}</span>
             <strong>{pending.length}</strong>
           </div>
           <div>
-            <span>Acceptées</span>
+            <span>{t.metrics.accepted}</span>
             <strong>{accepted.length}</strong>
           </div>
           <div>
-            <span>Historique</span>
+            <span>{t.metrics.history}</span>
             <strong>{past.length}</strong>
           </div>
           <div>
-            <span>Fiches clients</span>
+            <span>{t.metrics.clientSheets}</span>
             <strong>{clientProfiles.length}</strong>
           </div>
         </section>
@@ -400,15 +411,15 @@ export function CommandesLedger({
 
       {!pageExists && (
         <div className={styles.empty}>
-          Crée d&apos;abord ta <Link href="/ma-page">vitrine</Link> pour recevoir des
-          commandes.
+          {t.empty.noPageStart} <Link href="/ma-page">{t.empty.noPageLink}</Link>{" "}
+          {t.empty.noPageEnd}
         </div>
       )}
 
       {pageExists && orders.length === 0 && bookings.length === 0 && (
         <div className={styles.empty}>
-          Aucune commande pour l&apos;instant. Ajoute des produits dans ta{" "}
-          <Link href="/ma-page">vitrine</Link> et partage ton lien.
+          {t.empty.noOrdersStart}{" "}
+          <Link href="/ma-page">{t.empty.noOrdersLink}</Link> {t.empty.noOrdersEnd}
         </div>
       )}
 
@@ -416,14 +427,14 @@ export function CommandesLedger({
         <section className={styles.collection}>
           <div className={styles.collectionHead}>
             <div>
-              <p className={styles.greenLabel}>Transactions entrantes</p>
-              <h2>À traiter</h2>
+              <p className={styles.greenLabel}>{t.sections.incoming}</p>
+              <h2>{t.sections.toProcess}</h2>
             </div>
-            <span>{pending.length} dossier{pending.length > 1 ? "s" : ""} à valider</span>
+            <span>{t.sections.toProcessCount.replace("{count}", String(pending.length))}</span>
           </div>
           <div className={styles.grid}>
             {pending.map((order) => (
-              <OrderCard key={order.id} order={order} history={historyFor(order)} />
+              <OrderCard key={order.id} order={order} history={historyFor(order)} locale={locale} t={t} />
             ))}
           </div>
         </section>
@@ -433,14 +444,14 @@ export function CommandesLedger({
         <section className={styles.collection}>
           <div className={styles.collectionHead}>
             <div>
-              <p className={styles.greenLabel}>Dossiers ouverts</p>
-              <h2>Acceptées</h2>
+              <p className={styles.greenLabel}>{t.sections.openLabel}</p>
+              <h2>{t.sections.accepted}</h2>
             </div>
-            <span>{accepted.length} encaissement{accepted.length > 1 ? "s" : ""} en cours</span>
+            <span>{t.sections.acceptedCount.replace("{count}", String(accepted.length))}</span>
           </div>
           <div className={styles.grid}>
             {accepted.map((order) => (
-              <OrderCard key={order.id} order={order} history={historyFor(order)} />
+              <OrderCard key={order.id} order={order} history={historyFor(order)} locale={locale} t={t} />
             ))}
           </div>
         </section>
@@ -450,14 +461,14 @@ export function CommandesLedger({
         <section className={styles.collection}>
           <div className={styles.collectionHead}>
             <div>
-              <p className={styles.greenLabel}>Grand livre</p>
-              <h2>Historique</h2>
+              <p className={styles.greenLabel}>{t.sections.ledger}</p>
+              <h2>{t.sections.history}</h2>
             </div>
-            <span>{past.length} transaction{past.length > 1 ? "s" : ""} classée{past.length > 1 ? "s" : ""}</span>
+            <span>{t.sections.historyCount.replace("{count}", String(past.length))}</span>
           </div>
           <div className={styles.grid}>
             {past.map((order) => (
-              <OrderCard key={order.id} order={order} history={historyFor(order)} />
+              <OrderCard key={order.id} order={order} history={historyFor(order)} locale={locale} t={t} />
             ))}
           </div>
         </section>
@@ -467,14 +478,14 @@ export function CommandesLedger({
         <section className={styles.collection}>
           <div className={styles.collectionHead}>
             <div>
-              <p className={styles.greenLabel}>Carnet d&apos;affaires</p>
-              <h2>Fiches clients</h2>
+              <p className={styles.greenLabel}>{t.sections.book}</p>
+              <h2>{t.sections.clientSheets}</h2>
             </div>
-            <span>{clientProfiles.length} relation{clientProfiles.length > 1 ? "s" : ""} conservée{clientProfiles.length > 1 ? "s" : ""}</span>
+            <span>{t.sections.clientSheetsCount.replace("{count}", String(clientProfiles.length))}</span>
           </div>
           <div className={styles.grid}>
             {clientProfiles.map((profile) => (
-              <ClientProfileCard key={profile.key} profile={profile} />
+              <ClientProfileCard key={profile.key} profile={profile} locale={locale} t={t} />
             ))}
           </div>
         </section>

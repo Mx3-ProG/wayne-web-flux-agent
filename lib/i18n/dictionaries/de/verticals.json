@@ -1,0 +1,348 @@
+{
+  "beaute": {
+    "label": "Beauty & Ästhetik",
+    "jobTitles": [
+      "Kosmetikerin",
+      "Nageldesignerin",
+      "Wimpernstylistin",
+      "Permanent-Make-up-Künstlerin"
+    ],
+    "clientWord": "Kundinnen",
+    "promptContext": "Kosmetikinstitut / Beauty-Salon: Pflege, Nägel, Wimpern, Augenbrauen. Überwiegend weibliche Kundschaft, warmer und beruhigender Ton.",
+    "families": {
+      "soins-visage": {
+        "name": "Gesichtsbehandlungen",
+        "services": {
+          "soin-eclat": "Glow-Behandlung",
+          "soin-anti-age": "Anti-Aging-Behandlung"
+        }
+      },
+      "ongles": {
+        "name": "Nägel",
+        "services": {
+          "pose-gel": "Gel-Modellage",
+          "remplissage": "Auffüllen",
+          "vernis-semi-permanent": "Semi-permanenter Lack"
+        }
+      },
+      "cils-sourcils": {
+        "name": "Wimpern & Augenbrauen",
+        "services": {
+          "extension-cils": "Wimpernverlängerung Komplettset",
+          "rehaussement-cils": "Wimpernlifting",
+          "restructuration-sourcils": "Augenbrauenkorrektur"
+        }
+      }
+    }
+  },
+  "coiffure": {
+    "label": "Friseur & Barbier",
+    "jobTitles": [
+      "Friseurin",
+      "Friseur",
+      "Barbier",
+      "Coloristin"
+    ],
+    "clientWord": "Kunden",
+    "promptContext": "Friseursalon oder Barbershop: Schnitte, Farben, Haarpflege. Dynamischer, bodenständiger Ton.",
+    "families": {
+      "coupes": {
+        "name": "Schnitte",
+        "services": {
+          "coupe-femme": "Damenschnitt",
+          "coupe-homme": "Herrenschnitt",
+          "coupe-barbe": "Schnitt + Bart"
+        }
+      },
+      "couleur": {
+        "name": "Farbe",
+        "services": {
+          "coloration-complete": "Komplette Coloration",
+          "balayage": "Balayage"
+        }
+      }
+    }
+  },
+  "restaurant": {
+    "label": "Restaurant & Catering",
+    "jobTitles": [
+      "Restaurantbetreiber",
+      "Restaurantbetreiberin",
+      "Privatkoch",
+      "Caterer"
+    ],
+    "clientWord": "Gäste",
+    "promptContext": "Restaurant, Catering oder privater Koch: Tisch- oder Event-Reservierung. Genussvoller, geselliger Ton, Fokus auf Produkte und Hausgemachtes.",
+    "families": {
+      "reservations": {
+        "name": "Reservierungen",
+        "services": {
+          "table-dejeuner": "Tisch Mittagessen",
+          "table-diner": "Tisch Abendessen"
+        }
+      },
+      "evenements": {
+        "name": "Events",
+        "services": {
+          "privatisation": "Exklusivmiete (Anzahlung)",
+          "menu-degustation": "Degustationsmenü"
+        }
+      }
+    }
+  },
+  "auto": {
+    "label": "Auto & Werkstatt",
+    "jobTitles": [
+      "Werkstattbesitzer",
+      "Mechaniker",
+      "Auto-Detailer",
+      "Karosseriebauer"
+    ],
+    "clientWord": "Kunden",
+    "promptContext": "Werkstatt, Mechanik oder Fahrzeugaufbereitung. Direkter, vertrauensvoller Ton: transparente Preise, Zuverlässigkeit, eingehaltene Termine.",
+    "families": {
+      "entretien": {
+        "name": "Wartung",
+        "services": {
+          "vidange-filtres": "Ölwechsel + Filter",
+          "revision-complete": "Komplettinspektion",
+          "plaquettes-frein": "Bremsbeläge (Achse)"
+        }
+      },
+      "esthetique": {
+        "name": "Aufbereitung",
+        "services": {
+          "lavage-int-ext": "Innen-/Außenreinigung",
+          "polish-ceramique": "Politur + Keramikversiegelung"
+        }
+      }
+    },
+    "productCategories": {
+      "pieces-accessoires": {
+        "name": "Teile & Zubehör",
+        "products": {
+          "roue": "Rad (Stück)",
+          "balais-essuie-glace": "Scheibenwischer-Set",
+          "batterie-12v": "12V-Batterie"
+        }
+      },
+      "produits-entretien": {
+        "name": "Pflegeprodukte",
+        "products": {
+          "huile-moteur-5l": "Motoröl-Kanister 5L",
+          "kit-lavage-auto": "Auto-Waschset"
+        }
+      }
+    }
+  },
+  "artisan": {
+    "label": "Handwerk & Bau",
+    "jobTitles": [
+      "Klempner",
+      "Elektriker",
+      "Maler",
+      "Schreiner",
+      "Multi-Service"
+    ],
+    "clientWord": "Kunden",
+    "promptContext": "Handwerksbetrieb: Reparaturen und Baustellen. Zuverlässiger, unkomplizierter Ton: klarer Kostenvoranschlag, Pünktlichkeit, saubere Arbeit.",
+    "families": {
+      "interventions": {
+        "name": "Einsätze",
+        "services": {
+          "diagnostic-devis": "Diagnose / Kostenvoranschlag vor Ort",
+          "depannage-urgent": "Notdienst",
+          "petits-travaux": "Kleinarbeiten (pro Stunde)"
+        }
+      }
+    }
+  },
+  "commerce": {
+    "label": "Handel & Boutique",
+    "jobTitles": [
+      "Händler",
+      "Händlerin",
+      "Boutique-Betreiber",
+      "Verkäufer",
+      "Verkäuferin"
+    ],
+    "clientWord": "Kunden",
+    "promptContext": "Einzelhandel / Boutique: Verkauf von Produkten im Laden und per Click & Collect. Kommerzieller, bodenständiger Ton, Fokus auf Neuheiten, Aktionen und Verfügbarkeit.",
+    "families": {},
+    "productCategories": {
+      "nouveautes": {
+        "name": "Neuheiten",
+        "products": {
+          "article-vedette": "Highlight-Artikel",
+          "coup-de-coeur": "Lieblingsstück"
+        }
+      },
+      "best-sellers": {
+        "name": "Bestseller",
+        "products": {
+          "produit-populaire": "Beliebtes Produkt",
+          "pack-decouverte": "Entdeckerpaket"
+        }
+      }
+    }
+  },
+  "alimentation": {
+    "label": "Lebensmittel & Feinkost",
+    "jobTitles": [
+      "Bäcker",
+      "Bäckerin",
+      "Konditor",
+      "Obst- und Gemüsehändler",
+      "Feinkosthändler",
+      "Käsehändler",
+      "Weinhändler"
+    ],
+    "clientWord": "Kunden",
+    "promptContext": "Feinkostgeschäft (Bäckerei, Konditorei, Obst- und Gemüsehandel, Delikatessen): Verkauf frischer Produkte und Vorbestellung / Click & Collect. Genussvoller, handwerklicher und lokaler Ton, betont Frische und Hausgemachtes.",
+    "families": {},
+    "productCategories": {
+      "boulangerie": {
+        "name": "Bäckerei",
+        "products": {
+          "baguette-tradition": "Baguette Tradition",
+          "pain-campagne": "Landbrot",
+          "croissant": "Croissant"
+        }
+      },
+      "patisserie": {
+        "name": "Konditorei",
+        "products": {
+          "eclair": "Eclair",
+          "tarte-du-jour": "Tarte des Tages (Stück)",
+          "gateau-a-commander": "Torte auf Bestellung"
+        }
+      }
+    }
+  },
+  "mode": {
+    "label": "Mode & Accessoires",
+    "jobTitles": [
+      "Designer",
+      "Designerin",
+      "Stylist",
+      "Juwelier",
+      "Juwelierin",
+      "Lederwarenhersteller"
+    ],
+    "clientWord": "Kunden",
+    "promptContext": "Prêt-à-porter, Schmuck oder Accessoires: Boutique mit eigenen Kreationen und ausgewählten Stücken. Eleganter, begehrenswerter Ton, Storytelling rund um Materialien, Größen und limitierte Editionen.",
+    "families": {},
+    "productCategories": {
+      "vetements": {
+        "name": "Kleidung",
+        "products": {
+          "t-shirt": "T-Shirt",
+          "robe": "Kleid",
+          "veste": "Jacke"
+        }
+      },
+      "accessoires": {
+        "name": "Accessoires",
+        "products": {
+          "collier": "Halskette",
+          "sac": "Tasche",
+          "carte-cadeau": "Geschenkkarte"
+        }
+      }
+    }
+  },
+  "bienetre": {
+    "label": "Wellness & Coaching",
+    "jobTitles": [
+      "Personal Trainer",
+      "Heilpraktiker",
+      "Fotograf",
+      "Sophrologe",
+      "Wellness-Praktiker"
+    ],
+    "clientWord": "Kunden",
+    "promptContext": "Wellness, Coaching oder Fotografie: Leistungen nach Termin UND Verkauf von Paketen, Kuren oder Produkten (Sitzungen, E-Books, Programme). Wohlwollender, motivierender und fachkundiger Ton, ausgerichtet auf Transformation und Ergebnisse.",
+    "families": {
+      "seances": {
+        "name": "Sitzungen",
+        "services": {
+          "seance-decouverte": "Schnuppersitzung",
+          "seance-individuelle": "Einzelsitzung",
+          "bilan-complet": "Komplette Bestandsaufnahme"
+        }
+      }
+    },
+    "productCategories": {
+      "forfaits-programmes": {
+        "name": "Pakete & Programme",
+        "products": {
+          "forfait-5-seances": "Paket 5 Sitzungen",
+          "forfait-10-seances": "Paket 10 Sitzungen",
+          "programme-en-ligne": "Online-Programm"
+        }
+      }
+    }
+  },
+  "autre": {
+    "label": "Andere Tätigkeit",
+    "jobTitles": [
+      "Selbstständig (m.)",
+      "Selbstständig (w.)"
+    ],
+    "clientWord": "Kunden",
+    "promptContext": "Lokales Geschäft oder selbstständige Tätigkeit. Professioneller und zugänglicher Ton.",
+    "families": {
+      "prestations": {
+        "name": "Leistungen",
+        "services": {
+          "rendez-vous-decouverte": "Schnuppertermin",
+          "prestation-standard": "Standardleistung"
+        }
+      }
+    }
+  },
+  "catalogWording": {
+    "service": {
+      "categoryWord": "Leistungskategorie",
+      "itemWord": "Leistung",
+      "categoryPlaceholder": "Z. B.: Gesichtsbehandlungen",
+      "itemPlaceholder": "Z. B.: Glow-Behandlung 60 Min.",
+      "categoryHint": "Eine Gruppe von Leistungen, so wie du sie auf deiner Preisliste zusammenfassen würdest.",
+      "itemHint": "Deine gefragteste Leistung. Die, die deine Kunden zuerst buchen werden."
+    },
+    "product": {
+      "categoryWord": "Kategorie",
+      "itemWord": "Produkt",
+      "categoryPlaceholder": "Z. B.: Blumensträuße",
+      "itemPlaceholder": "Z. B.: Saisonaler Blumenstrauß",
+      "categoryHint": "Ein Bereich deiner Boutique, so wie deine Kunden ihn suchen würden.",
+      "itemHint": "Dein Vorzeigeprodukt, das, was du am meisten verkaufst."
+    },
+    "hybrid": {
+      "categoryWord": "Kategorie",
+      "itemWord": "Produkt oder Leistung",
+      "categoryPlaceholder": "Z. B.: Schnitt & Farbe",
+      "itemPlaceholder": "Z. B.: Schnitt Föhnen",
+      "categoryHint": "Hier kannst du sowohl Produkte als auch Leistungen nach Termin einordnen.",
+      "itemHint": "Das, was deine Kunden am häufigsten nachfragen."
+    }
+  },
+  "fontLabels": {
+    "fraunces": "Fraunces — editoriell, premium (Standard)",
+    "inter": "Inter — modern, neutral (Standard)",
+    "playfair": "Playfair Display — schick, elegant",
+    "montserrat": "Montserrat — schlicht, professionell",
+    "lora": "Lora — raffiniert, sanfte Serife",
+    "cormorant": "Cormorant Garamond — luxuriös, anspruchsvoll",
+    "quicksand": "Quicksand — rund, sanft",
+    "poppins": "Poppins — modern, sanft",
+    "space-grotesk": "Space Grotesk — tech, markant",
+    "sora": "Sora — zeitgemäß, klar",
+    "manrope": "Manrope — dezent, gut lesbar",
+    "libre-baskerville": "Libre Baskerville — klassisch, literarisch",
+    "dm-serif": "DM Serif Display — auffällig, editoriell",
+    "marcellus": "Marcellus — antik, prestigeträchtig",
+    "josefin": "Josefin Sans — geometrisch, retro-schick",
+    "bebas": "Bebas Neue — großgeschrieben, wirkungsvoll"
+  }
+}

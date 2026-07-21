@@ -1,10 +1,31 @@
+import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
 import { COMPANY } from "@/lib/company";
+import { getRequestLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { languageAlternates } from "@/lib/i18n/seo";
 
-export const metadata = { title: "Conditions générales de vente et d’utilisation" };
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  const dict = await getDictionary(locale, "legal");
+  return {
+    title: dict.titles.terms,
+    alternates: languageAlternates(locale, "/cgv"),
+  };
+}
 
-export default function TermsPage() {
-  return <LegalPage title="Conditions générales de vente et d’utilisation">
+export default async function TermsPage() {
+  const locale = await getRequestLocale();
+  const [legal, common] = await Promise.all([
+    getDictionary(locale, "legal"),
+    getDictionary(locale, "common"),
+  ]);
+  return <LegalPage
+    title={legal.titles.terms}
+    locale={locale}
+    chrome={legal.chrome}
+    footer={common.footer}
+  >
     <section><h2>1. Objet et clientèle</h2><p>Les présentes conditions encadrent l’utilisation de Wayne Web Flux et l’achat de ses abonnements et crédits. Le service est destiné aux professionnels agissant pour les besoins de leur activité. Toute commande implique leur acceptation.</p></section>
     <section><h2>2. Service</h2><p>Wayne Web Flux fournit des outils de création de vitrine, de gestion commerciale et d’assistance par intelligence artificielle. Les résultats générés doivent être relus et validés par l’utilisateur avant publication.</p></section>
     <section><h2>3. Essai</h2><p>Un essai de 7 jours et 100 crédits de bienvenue peuvent être accordés sans carte bancaire. À son expiration, aucune souscription n’est déclenchée automatiquement. Certaines actions deviennent indisponibles jusqu’au choix d’une formule payante.</p></section>

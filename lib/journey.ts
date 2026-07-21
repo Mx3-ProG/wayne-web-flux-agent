@@ -30,100 +30,55 @@ export type JourneySignals = {
   verticalKind: VerticalKind;
 };
 
+// Le texte (titres, gains, écrans-charnière) vit dans le dictionnaire i18n
+// "journey" (lib/i18n/dictionaries/{locale}/journey.json), sous les mêmes
+// identifiants numériques. Ce module ne garde que la structure invariante :
+// numéros, chapitres et règles métier (appliesTo/isDone).
 export type JourneyChapter = {
   id: JourneyChapterId;
-  title: string;
-  // Écran-charnière joué avant le chapitre : l'enjeu concret, pas la mécanique.
-  whyTitle: string;
-  whyBody: string;
-  // Écran de célébration joué après le chapitre.
-  doneTitle: string;
-  doneBody: string;
 };
 
 export const JOURNEY_CHAPTERS: Record<JourneyChapterId, JourneyChapter> = {
-  1: {
-    id: 1,
-    title: "Ton adresse",
-    whyTitle: "Aujourd'hui, tes clients te cherchent et ne te trouvent pas.",
-    whyBody:
-      "Un client sur deux qui ne trouve pas d'adresse claire appelle le concurrent d'à côté. On va te donner un lien à toi, que tu gardes à vie, et que Google peut enfin lire.",
-    doneTitle: "Ton adresse existe.",
-    doneBody:
-      "Elle est à toi. Plus personne ne peut te la reprendre — et l'IA sait maintenant écrire avec tes mots.",
-  },
-  2: {
-    id: 2,
-    title: "Ce que tu vends",
-    whyTitle: "Une vitrine vide ne vend rien.",
-    whyBody:
-      "Un visiteur décide en 8 secondes. S'il ne voit ni prix, ni offre, ni créneau, il repart. On va remplir ta vitrine maintenant — pas « plus tard ».",
-    doneTitle: "Tes clients savent quoi acheter.",
-    doneBody:
-      "Un catalogue, une offre mise en avant, et de vrais créneaux. Ta vitrine peut encaisser une demande pendant que tu travailles.",
-  },
-  3: {
-    id: 3,
-    title: "Ta visibilité",
-    whyTitle: "La plus belle vitrine du monde ne sert à rien si personne n'y passe.",
-    whyBody:
-      "C'est l'étape que tout le monde saute — et c'est exactement celle qui remplit un agenda. On va créer ton premier contenu et faire circuler ton lien.",
-    doneTitle: "Ton parcours est terminé.",
-    doneBody:
-      "Ton commerce est en ligne, rempli et partageable. Tout ce que tu ajoutes à partir de maintenant ne fait que creuser l'écart.",
-  },
+  1: { id: 1 },
+  2: { id: 2 },
+  3: { id: 3 },
 };
 
 export type JourneyStepDef = {
   n: JourneyStepId;
-  title: string;
   chapter: JourneyChapterId;
-  // Le gain concret, affiché sur l'étape. Formulé en bénéfice, pas en feature.
-  gain: string;
   appliesTo: (kind: VerticalKind) => boolean;
   isDone: (signals: JourneySignals) => boolean;
 };
 
-// Les titres reprennent à l'identique ceux du dashboard : ils sont déjà connus
-// des utilisateurs et servent d'ancres (#etape-n).
 export const JOURNEY_STEPS: JourneyStepDef[] = [
   {
     n: 1,
-    title: "Crée ta vitrine",
     chapter: 1,
-    gain: "Une adresse à toi, lisible par Google, prête en 30 secondes.",
     appliesTo: () => true,
     isDone: (s) => s.hasPage,
   },
   {
     n: 2,
-    title: "Apprends-lui à parler comme toi",
     chapter: 1,
-    gain: "L'IA arrête d'écrire comme un robot et commence à écrire comme toi.",
     appliesTo: () => true,
     isDone: (s) => s.voiceCompletion >= 70,
   },
   {
     n: 3,
-    title: "Crée ton produit",
     chapter: 2,
-    gain: "Sans prix affiché, un visiteur sur deux repart sans te contacter.",
     appliesTo: () => true,
     isDone: (s) => s.productCount > 0,
   },
   {
     n: 4,
-    title: "Crée tes offres",
     chapter: 2,
-    gain: "L'offre mise en avant est le premier truc que voit un client. C'est elle qui déclenche.",
     appliesTo: () => true,
     isDone: (s) => s.offerCount > 0,
   },
   {
     n: 5,
-    title: "Crée ton agenda",
     chapter: 2,
-    gain: "Tes clients réservent la nuit, le dimanche, pendant que tu bosses.",
     // Réservé aux métiers de service : une boutique pure n'a pas de créneaux à
     // proposer. L'étape sort alors complètement du Parcours (total 7, pas 8).
     appliesTo: (kind) => kind !== "product",
@@ -131,25 +86,19 @@ export const JOURNEY_STEPS: JourneyStepDef[] = [
   },
   {
     n: 6,
-    title: "Crée ton premier contenu",
     chapter: 3,
-    gain: "Un post régulier, c'est ce qui fait revenir les gens sur ta vitrine.",
     appliesTo: () => true,
     isDone: (s) => s.generationCount > 0,
   },
   {
     n: 7,
-    title: "Regarde tes résultats",
     chapter: 3,
-    gain: "Ce que tu ne mesures pas, tu ne peux pas l'améliorer.",
     appliesTo: () => true,
     isDone: (s) => s.upcomingBookings > 0 || s.manualSteps.includes(7),
   },
   {
     n: 8,
-    title: "Partage ton business partout",
     chapter: 3,
-    gain: "Plus ton lien circule, plus ton agenda se remplit tout seul.",
     appliesTo: () => true,
     isDone: (s) => s.manualSteps.includes(8),
   },
@@ -157,9 +106,7 @@ export const JOURNEY_STEPS: JourneyStepDef[] = [
 
 export type JourneyStepState = {
   n: JourneyStepId;
-  title: string;
   chapter: JourneyChapterId;
-  gain: string;
   done: boolean;
 };
 
@@ -179,9 +126,7 @@ export function journeyState(signals: JourneySignals): JourneyState {
     step.appliesTo(signals.verticalKind)
   ).map((step) => ({
     n: step.n,
-    title: step.title,
     chapter: step.chapter,
-    gain: step.gain,
     done: step.isDone(signals),
   }));
 

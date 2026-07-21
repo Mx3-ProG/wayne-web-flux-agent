@@ -10,20 +10,70 @@ import {
   MessageSquareText,
   Sparkles,
 } from "lucide-react";
-import { EMPTY_VOICE, VOICE_STEPS, type VoiceDraft } from "./voice-options";
+import {
+  EMPTY_VOICE,
+  INVARIANT_VALUE_STEPS,
+  STEP_MULTIPLE,
+  STEP_OPTION_IDS,
+  VOICE_STEP_KEYS,
+  type VoiceDraft,
+} from "./voice-options";
 import { FluxBrand } from "@/components/flux-brand";
 import styles from "./voice-tunnel.module.css";
+import type { VoiceDict } from "@/lib/i18n/get-dictionary";
 
-export function VoiceTunnel({ initialVoice }: { initialVoice: VoiceDraft | null }) {
+type LocalizedOption = { id: string; title: string; text: string; value: string };
+type LocalizedStep = {
+  key: (typeof VOICE_STEP_KEYS)[number];
+  kicker: string;
+  title: string;
+  subtitle: string;
+  multiple: boolean;
+  options: LocalizedOption[];
+};
+
+// Fusionne la structure invariante (ids, ordre) avec le texte traduit du
+// dictionnaire "voice" (steps.*) — voir voice-options.ts pour le pourquoi de
+// cette séparation. Casse au build si une clé attendue manque (dictionnaire
+// typé contre le français).
+function buildLocalizedSteps(t: VoiceDict): LocalizedStep[] {
+  return VOICE_STEP_KEYS.map((key) => {
+    const stepDict = t.steps[key];
+    const invariant = INVARIANT_VALUE_STEPS.has(key);
+    return {
+      key,
+      kicker: stepDict.kicker,
+      title: stepDict.title,
+      subtitle: stepDict.subtitle,
+      multiple: STEP_MULTIPLE[key] === true,
+      options: STEP_OPTION_IDS[key].map((id) => {
+        const option = (stepDict.options as Record<string, { title: string; text: string; value?: string }>)[id];
+        return { id, title: option.title, text: option.text, value: invariant ? id : (option.value ?? id) };
+      }),
+    };
+  });
+}
+
+export function VoiceTunnel({
+  initialVoice,
+  t,
+}: {
+  initialVoice: VoiceDraft | null;
+  t: VoiceDict;
+}) {
   const router = useRouter();
   const [step, setStep] = useState(-1);
   const [draft, setDraft] = useState<VoiceDraft>({ ...EMPTY_VOICE, ...initialVoice });
+  const steps = useMemo(() => buildLocalizedSteps(t), [t]);
 
-  const current = step >= 0 ? VOICE_STEPS[step] : null;
-  const progress = step < 0 ? 0 : ((step + 1) / VOICE_STEPS.length) * 100;
-  const isMultiple = current ? "multiple" in current && current.multiple : false;
+  const current = step >= 0 ? steps[step] : null;
+  const progress = step < 0 ? 0 : ((step + 1) / steps.length) * 100;
+  // Un profil enregistré avant un changement de langue peut encore contenir
+  // l'ancienne phrase française : on la garde affichée telle quelle (aucune
+  // perte de données), mais elle ne correspondra à aucune option traduite —
+  // l'utilisateur la remplace simplement en choisissant à nouveau.
   const selectedValues = current
-    ? isMultiple
+    ? current.multiple
       ? draft[current.key].split(", ").filter(Boolean)
       : [draft[current.key]].filter(Boolean)
     : [];
@@ -38,7 +88,7 @@ export function VoiceTunnel({ initialVoice }: { initialVoice: VoiceDraft | null 
 
   function choose(value: string) {
     if (!current) return;
-    if (isMultiple) {
+    if (current.multiple) {
       const values = selectedValues.includes(value)
         ? selectedValues.filter((item) => item !== value)
         : selectedValues.length < 3
@@ -51,7 +101,7 @@ export function VoiceTunnel({ initialVoice }: { initialVoice: VoiceDraft | null 
   }
 
   function next() {
-    if (step === VOICE_STEPS.length - 1) {
+    if (step === steps.length - 1) {
       router.push(reviewUrl);
       return;
     }
@@ -66,30 +116,27 @@ export function VoiceTunnel({ initialVoice }: { initialVoice: VoiceDraft | null 
         </Link>
         {step >= 0 && (
           <div className={styles.progressMeta}>
-            <span>Question {step + 1} sur {VOICE_STEPS.length}</span>
+            <span>{t.tunnel.question.replace("{current}", String(step + 1)).replace("{total}", String(steps.length))}</span>
             <div className={styles.progress}><i style={{ width: `${progress}%` }} /></div>
           </div>
         )}
-        <Link href="/contexte" className={styles.exit}>Quitter</Link>
+        <Link href="/contexte" className={styles.exit}>{t.tunnel.exit}</Link>
       </header>
 
       <main className={styles.stage}>
         {step === -1 ? (
           <section className={styles.intro}>
             <span className={styles.introIcon}><MessageSquareText aria-hidden="true" /></span>
-            <p className={styles.kicker}>Ton intelligence de marque</p>
+            <p className={styles.kicker}>{t.tunnel.introKicker}</p>
             <h1>
-              FLUX, l’intelligence des développeurs au service des{" "}
-              <em>Business porteurs.</em>
+              {t.tunnel.introTitleStart}{" "}
+              <em>{t.tunnel.introTitleEm}</em>
             </h1>
-            <p>
-              Aucun texte à rédiger. Choisis simplement ce qui te ressemble,
-              Flux compose ta voix et prépare une communication cohérente.
-            </p>
+            <p>{t.tunnel.introText}</p>
             <button type="button" className={`flux-button-smooth ${styles.primary}`} onClick={() => setStep(0)}>
-              Créer ma voix <ArrowRight aria-hidden="true" />
+              {t.tunnel.createVoice} <ArrowRight aria-hidden="true" />
             </button>
-            <small>7 choix · moins de 2 minutes · modifiable à tout moment</small>
+            <small>{t.tunnel.introHint}</small>
           </section>
         ) : current ? (
           <section className={styles.question}>
@@ -102,7 +149,7 @@ export function VoiceTunnel({ initialVoice }: { initialVoice: VoiceDraft | null 
                 return (
                   <button
                     type="button"
-                    key={option.value}
+                    key={option.id}
                     className={selected ? styles.optionActive : styles.option}
                     aria-pressed={selected}
                     onClick={() => choose(option.value)}
@@ -125,10 +172,10 @@ export function VoiceTunnel({ initialVoice }: { initialVoice: VoiceDraft | null 
       {step >= 0 && (
         <footer className={styles.controls}>
           <button type="button" onClick={() => setStep((value) => value - 1)}>
-            <ArrowLeft aria-hidden="true" /> Retour
+            <ArrowLeft aria-hidden="true" /> {t.tunnel.back}
           </button>
           <button type="button" className={`flux-button-smooth ${styles.primary}`} disabled={!canContinue} onClick={next}>
-            {step === VOICE_STEPS.length - 1 ? "Voir mon résumé" : "Continuer"}
+            {step === steps.length - 1 ? t.tunnel.seeSummary : t.tunnel.continue}
             <ArrowRight aria-hidden="true" />
           </button>
         </footer>

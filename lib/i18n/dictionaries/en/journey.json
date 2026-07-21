@@ -1,0 +1,59 @@
+{
+  "chapters": {
+    "1": {
+      "title": "Your address",
+      "whyTitle": "Right now, your customers are looking for you and can't find you.",
+      "whyBody": "One in two customers who can't find a clear address calls the competitor next door. We're going to give you a link of your own, one you keep for life, that Google can finally read.",
+      "doneTitle": "Your address exists.",
+      "doneBody": "It's yours. No one can ever take it from you — and the AI now knows how to write in your words."
+    },
+    "2": {
+      "title": "What you sell",
+      "whyTitle": "An empty storefront sells nothing.",
+      "whyBody": "A visitor decides in 8 seconds. If they see no price, no offer, no time slot, they leave. Let's fill up your storefront now — not \"later\".",
+      "doneTitle": "Your customers know what to buy.",
+      "doneBody": "A catalog, a featured offer, and real time slots. Your storefront can take a request while you're working."
+    },
+    "3": {
+      "title": "Your visibility",
+      "whyTitle": "The world's most beautiful storefront is useless if nobody walks by it.",
+      "whyBody": "This is the step everyone skips — and it's exactly the one that fills up a schedule. Let's create your first piece of content and get your link out there.",
+      "doneTitle": "Your journey is complete.",
+      "doneBody": "Your business is online, filled in, and shareable. Everything you add from here on out only widens the gap."
+    }
+  },
+  "steps": {
+    "1": {
+      "title": "Create your storefront",
+      "gain": "An address of your own, readable by Google, ready in 30 seconds."
+    },
+    "2": {
+      "title": "Teach it to talk like you",
+      "gain": "The AI stops writing like a robot and starts writing like you."
+    },
+    "3": {
+      "title": "Create your product",
+      "gain": "Without a visible price, one in two visitors leaves without contacting you."
+    },
+    "4": {
+      "title": "Create your offers",
+      "gain": "The featured offer is the first thing a customer sees. It's what makes them act."
+    },
+    "5": {
+      "title": "Create your schedule",
+      "gain": "Your customers book at night, on Sundays, while you're at work."
+    },
+    "6": {
+      "title": "Create your first content",
+      "gain": "Regular posts are what bring people back to your storefront."
+    },
+    "7": {
+      "title": "Check your results",
+      "gain": "What you don't measure, you can't improve."
+    },
+    "8": {
+      "title": "Share your business everywhere",
+      "gain": "The more your link circulates, the more your schedule fills up on its own."
+    }
+  }
+}

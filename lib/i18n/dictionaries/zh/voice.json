@@ -1,0 +1,285 @@
+{
+ "meta": {
+  "title": "我的语气",
+  "tunnelTitle": "创建我的语气"
+ },
+ "form": {
+  "summary": {
+   "tone": "你的能量调性",
+   "addressForm": "你对客户的称呼方式",
+   "emojis": "你使用表情符号的习惯",
+   "specialty": "你的招牌特色",
+   "oftenTold": "客户对你的评价",
+   "story": "你的故事",
+   "vals": "你的价值观",
+   "fallback": "待设定",
+   "addressTu": "你用「你」称呼客户",
+   "addressVous": "你用「您」称呼客户",
+   "emojisMuch": "经常使用，是你风格的一部分",
+   "emojisSome": "适度使用",
+   "emojisNone": "不使用表情符号沟通"
+  },
+  "reviewKicker": "你的语气已准备好",
+  "defaultKicker": "你的编辑身份",
+  "reviewTitle": "看看 Flux 将如何为你发声。",
+  "defaultTitle": "Flux 已了解你的语气。",
+  "reviewText": "检查一下这份总结。如果都符合你的风格，只需保存即可。",
+  "defaultText": "在这里查看指导你所有后续内容的选择。",
+  "completionAria": "档案完成度 {percent}%",
+  "completionLabel": "Flux 已理解你的语气",
+  "profileLabel": "你的档案",
+  "profileTitle": "Flux 记住的内容",
+  "redo": "重新填写问卷",
+  "allYou": "都符合你的风格吗？",
+  "updateCost": "更新你的背景资料需要 {cost} 积分。",
+  "redoAnytime": "你可以随时重新填写这份问卷。",
+  "saving": "保存中…",
+  "saveVoiceUpdate": "保存我的语气（{cost} 积分）",
+  "saveVoice": "保存我的语气",
+  "updateVoice": "更新我的语气",
+  "insufficientCredits": "修改你的背景资料需要 {cost} 积分，但你的余额不足。请前往「积分」页面充值。",
+  "subscriptionRequired": "你的 FLUX 试用已结束，且余额为零。请选择一个套餐以继续使用。",
+  "saveSuccess": "你的语气已保存。Flux 现在能像你一样说话了。"
+ },
+ "tunnel": {
+  "exit": "退出",
+  "question": "第 {current} 题，共 {total} 题",
+  "introKicker": "你的品牌智能",
+  "introTitleStart": "FLUX，开发者的智能，为",
+  "introTitleEm": "有担当的企业主服务。",
+  "introText": "无需撰写任何文字。只需选择最符合你风格的选项，Flux 会为你打造语气，并准备一致连贯的内容传播。",
+  "createVoice": "创建我的语气",
+  "introHint": "7 个选择 · 不到 2 分钟 · 随时可修改",
+  "back": "返回",
+  "seeSummary": "查看我的总结",
+  "continue": "继续"
+ },
+ "errors": {
+  "not_authenticated": "你需要登录才能继续。",
+  "no_active_page": "请先创建你的展示网站。",
+  "save_failed": "保存失败。",
+  "content_blocked": "仇恨言论或露骨内容在 FLUX 上是禁止且会受到处罚的；请尊重你自己和他人的环境。违反我们使用条款满 3 次后，账户将被删除。",
+  "unknown": "发生了一个错误，请稍后再试。"
+ },
+ "steps": {
+  "tone": {
+   "kicker": "你的个性",
+   "title": "你的话语应该传递怎样的能量？",
+   "subtitle": "选择 FLUX 与你客户对话的方式。",
+   "options": {
+    "complice_chaleureux": {
+     "title": "亲切温暖",
+     "text": "亲近、有人情味，就像对待老顾客一样。",
+     "value": "亲切温暖"
+    },
+    "pro_expert": {
+     "title": "专业权威",
+     "text": "清晰、令人安心且始终可信。",
+     "value": "专业权威"
+    },
+    "doux_pose": {
+     "title": "温和沉稳",
+     "text": "平静、专注，没有压力感。",
+     "value": "温和沉稳"
+    },
+    "solaire_petillant": {
+     "title": "阳光活泼",
+     "text": "积极、生动、充满活力。",
+     "value": "阳光活泼"
+    },
+    "chic_raffine": {
+     "title": "高雅精致",
+     "text": "优雅、精准、高端。",
+     "value": "高雅精致"
+    },
+    "direct_efficace": {
+     "title": "直接高效",
+     "text": "不啰嗦，承诺清晰明确。",
+     "value": "直接了当"
+    }
+   }
+  },
+  "address_form": {
+   "kicker": "你与客户的关系",
+   "title": "亲切随和还是正式尊敬？",
+   "subtitle": "FLUX 会在你所有的内容中保持这一风格。",
+   "options": {
+    "tu": {
+     "title": "亲切随和",
+     "text": "直接、简单、亲近的关系。"
+    },
+    "vous": {
+     "title": "正式尊敬",
+     "text": "专业且有礼貌的关系。"
+    }
+   }
+  },
+  "emojis": {
+   "kicker": "你的风格",
+   "title": "表情符号占多大比重？",
+   "subtitle": "恰到好处地展现自我，绝不显得刻意。",
+   "options": {
+    "beaucoup": {
+     "title": "我经常使用",
+     "text": "它们是我表达方式的一部分。"
+    },
+    "parfois": {
+     "title": "适度使用",
+     "text": "只在有意义时才用一个表情符号。"
+    },
+    "jamais": {
+     "title": "完全不用",
+     "text": "我更喜欢简洁明了的表达方式。"
+    }
+   }
+  },
+  "specialty": {
+   "kicker": "你的招牌",
+   "title": "顾客为什么选择你？",
+   "subtitle": "选择你希望客户首先记住的优势。",
+   "options": {
+    "resultat_naturel": {
+     "title": "自然的效果",
+     "text": "扎实的工作，不刻意做作。",
+     "value": "自然的效果，只看得到成果"
+    },
+    "precision": {
+     "title": "精益求精",
+     "text": "每个细节都力求完美。",
+     "value": "精准细致的工作"
+    },
+    "qualite_durable": {
+     "title": "经久耐用的品质",
+     "text": "为长久保持而打造的成果。",
+     "value": "经久不衰的品质"
+    },
+    "sur_mesure": {
+     "title": "量身定制",
+     "text": "每位客户都能获得真正个性化的回应。",
+     "value": "量身定制，从不重复"
+    },
+    "juste_prix": {
+     "title": "合理的价格",
+     "text": "真实的价值，透明且无意外惊吓。",
+     "value": "无可比拟的性价比"
+    },
+    "reactivite": {
+     "title": "高效响应",
+     "text": "又快又不失完美。",
+     "value": "快速且一丝不苟"
+    }
+   }
+  },
+  "often_told": {
+   "kicker": "有力证明",
+   "title": "你的客户常说什么？",
+   "subtitle": "选择与你合作后最常被提到的一句话。",
+   "options": {
+    "prend_le_temps": {
+     "title": "「你很用心花时间」",
+     "text": "你的客户感到被倾听和重视。",
+     "value": "能感受到你真的花了时间。"
+    },
+    "impeccable": {
+     "title": "「总是无可挑剔」",
+     "text": "你工作的稳定性让人立刻安心。",
+     "value": "总是无可挑剔。"
+    },
+    "a_laise": {
+     "title": "「一下子就感到自在」",
+     "text": "你的接待改变了整个体验。",
+     "value": "一下子就感到很自在。"
+    },
+    "trouve_solution": {
+     "title": "「你总能找到解决办法」",
+     "text": "即使需求复杂，你也能让人安心。",
+     "value": "你总能找到解决办法。"
+    },
+    "mieux_que_prevu": {
+     "title": "「比预期还要好」",
+     "text": "最终效果带来真实的感动。",
+     "value": "结果超出了我的预期。"
+    },
+    "compter_sur_toi": {
+     "title": "「真的可以信赖你」",
+     "text": "你的可靠让客户不断回来。",
+     "value": "真的可以信赖你。"
+    }
+   }
+  },
+  "story": {
+   "kicker": "你的故事",
+   "title": "是什么让你走上这条路？",
+   "subtitle": "FLUX 会把这个起点变成一个有人情味、可信的故事。",
+   "options": {
+    "passion": {
+     "title": "热爱变成了事业",
+     "text": "你选择全力投入让你热血沸腾的事情。",
+     "value": "一份随着时间成为事业的热爱。"
+    },
+    "reconversion": {
+     "title": "主动转行",
+     "text": "你换了条路，去追求真正重要的东西。",
+     "value": "为从事一份有意义的工作而主动转行。"
+    },
+    "savoir_faire_transmis": {
+     "title": "代代相传的手艺",
+     "text": "你的手艺属于一段更宏大的历史。",
+     "value": "多年传承并不断精进的手艺。"
+    },
+    "aventure_familiale": {
+     "title": "家族事业",
+     "text": "情感纽带与传承是你身份的一部分。",
+     "value": "围绕共同手艺打造的家族事业。"
+    },
+    "envie_de_mieux": {
+     "title": "追求更好的渴望",
+     "text": "你创造了自己曾经找不到的体验。",
+     "value": "希望在我所在的行业里提供更好的做法。"
+    },
+    "entreprendre_localement": {
+     "title": "扎根本地创业",
+     "text": "你的生意与所在社区紧密相连。",
+     "value": "希望在本地创业并对周围有所帮助。"
+    }
+   }
+  },
+  "vals": {
+   "kicker": "你的价值观",
+   "title": "什么对你来说才是真正重要的？",
+   "subtitle": "最多选择三项价值观，它们将指引每一份内容。",
+   "options": {
+    "qualite": {
+     "title": "品质",
+     "text": "绝不交付自己都不认可的东西。",
+     "value": "品质"
+    },
+    "ecoute": {
+     "title": "倾听",
+     "text": "先理解，再提议。",
+     "value": "倾听"
+    },
+    "confiance": {
+     "title": "信任",
+     "text": "建立长久的关系。",
+     "value": "信任"
+    },
+    "authenticite": {
+     "title": "真诚",
+     "text": "即使在沟通中也保持真实。",
+     "value": "真诚"
+    },
+    "fiabilite": {
+     "title": "可靠",
+     "text": "信守承诺，尊重他人的时间。",
+     "value": "守时"
+    },
+    "proximite": {
+     "title": "亲近",
+     "text": "培养有人情味的本地关系。",
+     "value": "亲近"
+    }
+   }
+  }
+ }
+}

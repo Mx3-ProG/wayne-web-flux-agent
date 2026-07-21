@@ -1,0 +1,179 @@
+{
+ "meta": {
+  "title": "我的产品",
+  "tunnelTitle": "创建我的产品"
+ },
+ "page": {
+  "eyebrow": "你的店铺",
+  "title": "我的产品",
+  "subtitle": "你的电商目录：创建产品，追踪库存（订单被接受 = −1），看看每样东西给你带来了多少收益。它们会显示在你店面的「我的服务」里。",
+  "startHint": "先添加一个分类，然后在里面添加产品吧。",
+  "emptyStart": "先创建你的",
+  "emptyLink": "店面",
+  "emptyEnd": "才能管理你的产品哦。"
+ },
+ "card": {
+  "namePlaceholder": "产品名称",
+  "displayed": "已显示",
+  "hidden": "已隐藏",
+  "reservation": "预约",
+  "product": "产品",
+  "deleteProduct": "删除产品",
+  "price": "价格（€）",
+  "duration": "时长（分钟）",
+  "description": "描述",
+  "descriptionPlaceholder": "简短描述",
+  "changePhoto": "更换照片",
+  "addPhoto": "添加照片",
+  "removePhoto": "移除照片",
+  "saved": "已保存",
+  "saving": "保存中…",
+  "confirm": "确认我的选择",
+  "confirmHintReservation": "名称 · 价格 · 时长 · 描述",
+  "confirmHintProduct": "名称 · 价格 · 描述",
+  "inStock": "件库存",
+  "removeOne": "减少一件",
+  "addOne": "增加一件",
+  "restockPlaceholder": "+ 数量",
+  "restock": "补货",
+  "setExact": "设定",
+  "stopTracking": "不再追踪库存",
+  "trackStock": "追踪库存",
+  "soldSingular": "件已售",
+  "soldPlural": "件已售",
+  "noSales": "暂无销售"
+ },
+ "category": {
+  "save": "保存",
+  "deleteCategory": "删除分类",
+  "otherProducts": "其他产品",
+  "defaultName": "新分类",
+  "addProduct": "添加一个产品 · {cost} 积分",
+  "addReservation": "添加一个预约 · {cost} 积分"
+ },
+ "manager": {
+  "addCategory": "添加分类 ·",
+  "free": "免费",
+  "productNoCategory": "无分类产品 · {cost} 积分",
+  "reservationNoCategory": "无分类预约 · {cost} 积分",
+  "defaultProductName": "新产品",
+  "defaultReservationName": "新预约",
+  "reservationsFamilyName": "预约"
+ },
+ "errors": {
+  "not_authenticated": "你需要登录才能继续。",
+  "no_active_page": "先创建你的店面吧。",
+  "creation_failed": "创建失败。",
+  "category_not_found": "找不到该分类。",
+  "category_name_required": "请给你的分类起个名字。",
+  "at_least_one_product": "请至少添加一个产品。",
+  "category_creation_failed": "分类创建失败。",
+  "products_creation_failed": "产品创建失败。",
+  "product_not_found": "找不到该产品。",
+  "save_failed": "保存失败。",
+  "delete_failed": "删除失败。",
+  "content_blocked": "仇恨言论或露骨内容在 FLUX 上是被禁止且会受到处罚的；请尊重你自己和他人所处的环境。违反我们使用条款满 3 次后，账号将被删除。",
+  "insufficientCredits": "此操作需要 {cost} 积分，而你的余额不足。请前往「积分」页面充值。",
+  "insufficientCreditsPlural": "此操作需要 {cost} 积分，而你的余额不足。请前往「积分」页面充值。",
+  "subscriptionRequired": "你的 FLUX 试用期已结束，余额也已用完。选择一个套餐以继续使用。",
+  "unknown": "出了点问题。请稍后再试。"
+ },
+ "tunnel": {
+  "myProducts": "我的产品",
+  "step": "第 {current} 步，共 8 步",
+  "intro": {
+   "kicker": "FLUX 产品创建",
+   "title": "把你的专业技能变成",
+   "titleEm": "随时可售的产品。",
+   "text": "一个分类，一个或多个产品，接下来 Flux 会帮你把一切安排进店面。",
+   "cta": "创建我的产品"
+  },
+  "category": {
+   "kicker": "你的分类",
+   "titleStart": "你想怎么",
+   "titleEm": "组织它们？",
+   "subtitle": "给分类起个名字，然后添加你现在想创建的所有产品。",
+   "nameLabel": "分类名称",
+   "namePlaceholder": "例如：面部护理",
+   "productLabel": "产品 {index}",
+   "productPlaceholder": "例如：焕彩护理",
+   "removeProduct": "移除产品 {index}",
+   "addAnother": "再添加一个产品"
+  },
+  "price": {
+   "title": "它们的价格是多少？",
+   "kicker": "合适的价格",
+   "subtitle": "为每个产品设定一个价格。你随时都可以修改。",
+   "defaultName": "产品 {index}",
+   "priceLabel": "价格（€）",
+   "placeholder": "例如：20"
+  },
+  "description": {
+   "title": "是什么让它们更吸引人？",
+   "kicker": "描述",
+   "subtitle": "一句简单的话就足以帮助客户做出选择。",
+   "placeholder": "客户会得到什么、感受到什么、获得什么…"
+  },
+  "photo": {
+   "kicker": "照片",
+   "titleStart": "给它们赋予",
+   "titleEm": "视觉存在感。",
+   "subtitle": "每个产品一张照片。这一步是可选的。",
+   "change": "更换照片",
+   "add": "添加照片"
+  },
+  "stock": {
+   "kicker": "库存",
+   "title": "你想追踪数量吗？",
+   "subtitle": "启用追踪功能，然后填写今天可用的单位数量。",
+   "trackedHint": "库存归零时 Flux 会提醒你。",
+   "untrackedHint": "不会显示任何数量限制。",
+   "tracked": "已追踪库存",
+   "track": "追踪库存",
+   "quantityLabel": "可用数量",
+   "unitSingular": "件",
+   "unitPlural": "件"
+  },
+  "visibility": {
+   "kicker": "上线",
+   "title": "它们准备好展示了吗？",
+   "subtitle": "被隐藏的产品仍会保存，但不会出现在你的店面上。",
+   "yes": "立即上线",
+   "no": "保持草稿状态",
+   "toggleAria": "更改 {name} 的设置"
+  },
+  "confirm": {
+   "kicker": "确认",
+   "titleStart": "一切都已准备好，迎接你的",
+   "titleEm": "店铺。",
+   "subtitle": "确认你的选择：创建完成后，Flux 会接着帮你设置营业时间（已包含在价格内）。",
+   "category": "分类",
+   "products": "产品",
+   "productSingular": "个产品",
+   "productPlural": "个产品",
+   "online": "已上线",
+   "draft": "草稿",
+   "inStock": "件库存",
+   "totalCost": "总费用（产品 + 日程）",
+   "costValue": "{cost} 积分 · 余额：{balance} 积分",
+   "missingSingular": "你还差 {count} 积分。",
+   "missingPlural": "你还差 {count} 积分。",
+   "recharge": "充值你的积分",
+   "edit": "修改",
+   "creating": "创建中…",
+   "create": "确认并设置我的营业时间（{cost} 积分）"
+  },
+  "credits": {
+   "trialTitle": "试用已结束且余额为空",
+   "insufficientTitle": "积分不足",
+   "trial": "你的试用期已过，且积分余额已用完。FLUX 套餐每月都会为你的余额充值，并重新开放 AI 生成功能——一切都不会丢失。",
+   "insufficient": "创建你的产品需要 {cost} 积分。充值你的积分以完成操作——一切都不会丢失。",
+   "later": "稍后再说",
+   "choosePlan": "选择我的 FLUX 套餐",
+   "rechargeCredits": "充值我的积分"
+  },
+  "successToast": "你的产品已准备就绪。最后一步：设置你的营业时间。",
+  "back": "返回",
+  "continue": "继续"
+ }
+}

@@ -1,63 +1,67 @@
 import type { Metadata } from "next";
-import { Fraunces, Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { CookieConsent } from "@/components/cookie-consent";
 import { FluxLoader } from "@/components/flux-loader";
 import { ServiceWorkerRegistration } from "@/components/service-worker-registration";
+import { getRequestLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { LOCALE_BCP47, LOCALE_OG, isRtl } from "@/lib/i18n/config";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
+// Polices système auto-hébergées (voir les variables --font-* dans
+// globals.css) : aucun appel à next/font/google, donc aucune requête de
+// compilation vers fonts.googleapis.com/gstatic.com.
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
-  subsets: ["latin"],
-});
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  const dict = await getDictionary(locale, "landing");
+  return {
+    metadataBase: new URL(
+      process.env.NEXT_PUBLIC_SITE_URL || "https://www.flux-wayne.com"
+    ),
+    title: {
+      default: dict.meta.title,
+      template: "%s · Wayne Web Flux",
+    },
+    description: dict.meta.description,
+    applicationName: "Wayne Web Flux",
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: "black-translucent",
+      title: "Wayne Flux",
+    },
+    formatDetection: {
+      telephone: false,
+    },
+    openGraph: {
+      title: dict.meta.ogTitle,
+      description: dict.meta.ogDescription,
+      siteName: "Wayne Web Flux",
+      locale: LOCALE_OG[locale],
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: dict.meta.ogTitle,
+      description: dict.meta.ogDescription,
+    },
+  };
+}
 
-export const metadata: Metadata = {
-  metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://www.flux-wayne.com"
-  ),
-  title: {
-    default: "Wayne Web Flux — Visibilité, leads et outils pour ton commerce",
-    template: "%s · Wayne Web Flux",
-  },
-  description:
-    "Gagne du temps, booste ta visibilité Google et génère plus de prospects avec la solution tout-en-un de Wayne Web pour les professionnels.",
-  applicationName: "Wayne Web Flux",
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: "black-translucent",
-    title: "Wayne Flux",
-  },
-  formatDetection: {
-    telephone: false,
-  },
-  openGraph: {
-    title: "Wayne Web Flux — Ton commerce, vu partout",
-    description:
-      "Visibilité, prospects, rendez-vous et outils réunis dans un seul espace pensé pour les professionnels.",
-    siteName: "Wayne Web Flux",
-    locale: "fr_FR",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Wayne Web Flux — Ton commerce, vu partout",
-    description:
-      "Visibilité, prospects, rendez-vous et outils réunis dans un seul espace pensé pour les professionnels.",
-  },
-};
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getRequestLocale();
+
   return (
-    <html lang="fr" data-scroll-behavior="smooth" className={`${inter.variable} ${fraunces.variable} h-full antialiased`}>
+    <html
+      lang={LOCALE_BCP47[locale]}
+      dir={isRtl(locale) ? "rtl" : "ltr"}
+      data-scroll-behavior="smooth"
+      className="h-full antialiased"
+    >
       <body className="min-h-full flex flex-col">
         <FluxLoader />
         <ServiceWorkerRegistration />

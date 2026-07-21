@@ -1,0 +1,379 @@
+{
+ "nav": {
+  "menu": "Menu",
+  "open": "Open navigation",
+  "close": "Close navigation",
+  "homeAria": "WayneWeb FLUX Home",
+  "mainAria": "Main navigation",
+  "mobileAria": "Mobile navigation",
+  "title": "Navigation",
+  "activeProject": "Active project",
+  "workspace": "My workspace",
+  "tagline": "Your business. One single space.",
+  "manageCredits": "Manage my credits",
+  "credits": "credits",
+  "pending": "{count} pending",
+  "groups": {
+   "control": "Control",
+   "sell": "Sell",
+   "grow": "Grow",
+   "essential": "The essentials",
+   "business": "My business",
+   "account": "My account"
+  },
+  "items": {
+   "home": "Home",
+   "stats": "My stats",
+   "statsShort": "Stats",
+   "orders": "My orders",
+   "ordersShort": "Orders",
+   "offers": "My offers",
+   "offersShort": "Offers",
+   "projects": "My projects",
+   "storefront": "My storefront",
+   "products": "My products",
+   "agenda": "My schedule",
+   "content": "My content",
+   "ai": "FLUX – AI",
+   "install": "Install the app",
+   "profile": "My profile",
+   "viewProfile": "View my profile"
+  }
+ },
+ "language": {
+  "aria": "Workspace language",
+  "title": "Your workspace language",
+  "description": "This language follows your dashboard and becomes the source language for your new pages.",
+  "firstChoice": "The first choice in the funnel is free.",
+  "change": "Change · {cost} credits",
+  "changing": "Changing…",
+  "success": "Workspace language changed.",
+  "error": "Unable to change the language right now.",
+  "insufficient": "You need {cost} credits to change your account language.",
+  "laterChangeCost": "Changing it later, once your storefront is live, costs {cost} credits (re-translation included)."
+ },
+ "vitrineGuide": {
+  "step": "Step {current} of {total}",
+  "fullEditor": "Full editor",
+  "back": "Back",
+  "continue": "Continue",
+  "edit": "Edit",
+  "saving": "Saving…",
+  "draftSaved": "Draft saved.",
+  "errors": {
+   "blocked": "This content doesn't comply with FLUX's rules.",
+   "rate": "You've launched several generations back to back. Try again in a few minutes.",
+   "generation": "Generation failed — your credits haven't been charged.",
+   "brief": "Describe your business in a few words first."
+  },
+  "intro": {
+   "kicker": "FLUX storefront assistant",
+   "titleStart": "Evolve your storefront,",
+   "titleEm": "one decision at a time.",
+   "text": "FLUX picks up your current information and guides you step by step. Nothing changes before your final confirmation.",
+   "placeholder": "Describe your business in a few sentences: what you offer, your style, what sets you apart… FLUX takes care of the rest.",
+   "creating": "FLUX is creating your storefront…",
+   "create": "FLUX creates my whole storefront ({cost} cr.)",
+   "recharge": "FLUX creates my whole storefront — top up your credits",
+   "working": "FLUX is working…",
+   "prefill": "Just pre-fill the texts ({cost} cr.)",
+   "stepByStep": "Or edit step by step",
+   "direct": "Go straight to the editor",
+   "prefillSuccess": "FLUX has pre-filled your draft. Review it, then publish.",
+   "generateSuccess": "FLUX has created your storefront. Review your draft, then publish."
+  },
+  "identity": {
+   "kicker": "Your identity",
+   "title": "What should your customers remember?",
+   "subtitle": "The name, the trade and the promise that appear first.",
+   "business": "Business name",
+   "job": "Your trade",
+   "tagline": "Your tagline",
+   "taglinePlaceholder": "What makes people want to choose you",
+   "city": "Your city"
+  },
+  "images": {
+   "kicker": "Your images",
+   "title": "What impression do you want to leave?",
+   "subtitle": "Add your logo and the big photo that welcomes your visitors.",
+   "logo": "Logo or portrait",
+   "logoChange": "Change the logo",
+   "logoAdd": "Add my logo",
+   "hero": "Big cover photo",
+   "heroChange": "Change the photo",
+   "heroAdd": "Add a photo"
+  },
+  "mood": {
+   "kicker": "Your mood",
+   "title": "Which vibe best tells your business's story?",
+   "subtitle": "The layout stays accessible and responsive, only the atmosphere changes."
+  },
+  "details": {
+   "kicker": "The details",
+   "title": "How can people recognize and reach you?",
+   "subtitle": "Choose your typography, your colors and double-check your contact info.",
+   "font": "Writing style",
+   "primary": "Primary color",
+   "dark": "Dark color",
+   "phone": "Phone",
+   "phonePlaceholder": "E.g.: 555-123-4567",
+   "address": "Address",
+   "optional": "Optional"
+  },
+  "confirmation": {
+   "kicker": "Confirmation",
+   "title": "Your storefront is ready to evolve.",
+   "subtitle": "Check the essentials: your changes go to draft, then you decide when to publish.",
+   "business": "Business",
+   "positioning": "Positioning",
+   "mood": "Mood",
+   "images": "Images",
+   "imagesCount": "{count} of 2 added",
+   "cost": "Assistant cost",
+   "costValue": "{cost} credits · balance: {balance} cr.",
+   "missing": "You're short {count} credits.",
+   "recharge": "Top up your credits",
+   "freeEditor": "or go through the full editor, it's free.",
+   "confirm": "Confirm my changes ({cost} cr.)"
+  },
+  "publish": {
+   "kicker": "Publishing",
+   "title": "Your draft is ready. Shall we put it online?",
+   "subtitle": "Your public site still shows the old version. Publishing a new version replaces it for your customers.",
+   "later": "Later — go to the editor"
+  },
+  "credits": {
+   "expiredTitle": "Your 6-month AI window has ended",
+   "trialTitle": "You've finished your trial",
+   "insufficientTitle": "Not enough credits",
+   "expired": "Your purchase gave you AI access for 6 months. Your remaining credits are still available to publish and manage your storefront; choose a plan to reactivate AI generations.",
+   "trial": "You've finished your trial — top up to enjoy FLUX at 100%.",
+   "insufficient": "The storefront assistant costs {cost} credits. Top up your credits, or use the full editor (free).",
+   "template": "Start from a template",
+   "recharge": "Top up my credits",
+   "plan": "Choose my FLUX plan"
+  },
+  "preview": {
+   "aria": "Current preview of your storefront",
+   "live": "Live preview",
+   "job": "Your trade",
+   "city": "Your city",
+   "business": "Your business",
+   "tagline": "Your tagline will appear here.",
+   "discover": "Discover",
+   "whatsapp": "WhatsApp enabled"
+  }
+ },
+ "offerTunnel": {
+  "step": "Step {current} of 8",
+  "myOffers": "My offers",
+  "back": "Back",
+  "continue": "Continue",
+  "creation": "FLUX offer creation",
+  "create": "Create my offer",
+  "success": "Your offer is ready. Publish a new version of your site to put it online.",
+  "intro": {
+   "title": "Create an offer that makes people want to take action.",
+   "text": "FLUX helps you present the right promise, at the right price, straight on your storefront."
+  },
+  "format": {
+   "kicker": "The format",
+   "title": "What do you want to highlight?",
+   "subtitle": "Choose the type that best fits your offer.",
+   "kinds": {
+    "produit": {
+     "title": "A product offer",
+     "text": "An item or a pack to order."
+    },
+    "service": {
+     "title": "A service offer",
+     "text": "A featured service."
+    },
+    "evenement": {
+     "title": "An event",
+     "text": "An experience with a date or a capacity."
+    }
+   }
+  },
+  "promise": {
+   "kicker": "The promise",
+   "title": "What's your offer called?",
+   "subtitle": "A short title that's instantly clear.",
+   "label": "Offer title",
+   "placeholder": "E.g.: Discovery pack"
+  },
+  "price": {
+   "kicker": "The price",
+   "title": "What value do you want to show?",
+   "subtitle": "Only add a crossed-out price if the offer is a genuine promotion.",
+   "offer": "Offer price ($)",
+   "offerPlaceholder": "E.g.: 49",
+   "compare": "Original crossed-out price ($) · optional",
+   "comparePlaceholder": "E.g.: 120"
+  },
+  "benefit": {
+   "kicker": "The benefit",
+   "title": "Why should your customer choose it?",
+   "subtitle": "Simply describe what's included and what the customer gets out of it.",
+   "label": "Description",
+   "placeholder": "What the offer includes, its advantage, its limit…"
+  },
+  "photo": {
+   "kicker": "The photo",
+   "title": "Give your offer a strong image.",
+   "subtitle": "The photo is optional, but it helps the offer stand out.",
+   "change": "Change the photo",
+   "add": "Add a photo"
+  },
+  "visibility": {
+   "kicker": "Going live",
+   "title": "Is your offer ready to go out?",
+   "subtitle": "You can publish it now or keep it as a draft.",
+   "online": "Put online",
+   "onlineHint": "Visible on your storefront at the next publication.",
+   "draft": "Keep as draft",
+   "draftHint": "Ready to be reworked later."
+  },
+  "confirm": {
+   "kicker": "Confirmation",
+   "title": "Your offer is ready to convert.",
+   "subtitle": "Check the details before creating it.",
+   "type": "Type",
+   "status": "Status",
+   "offer": "Offer",
+   "price": "Price",
+   "cost": "Creation cost",
+   "online": "Online",
+   "draft": "Draft",
+   "instead": "instead of",
+   "costValue": "{cost} credits · balance: {balance} cr.",
+   "extra": "beyond your plan",
+   "missing": "You're short {count} credits to create this offer.",
+   "recharge": "Top up your credits",
+   "edit": "Edit",
+   "creating": "Creating…",
+   "create": "Confirm and create ({cost} cr.)"
+  },
+  "limit": {
+   "overTitle": "You're exceeding your plan's limit",
+   "reachedTitle": "Your plan's limit is reached",
+   "over": "Your plan includes {limit} offers and you already have {count}. You can still create this one: it will cost {extra} credits instead of {normal}.",
+   "reached": "Your plan includes {limit} offers and you already have {count}. Top up your credits to continue: an extra offer costs {extra} credits and you have {balance} left.",
+   "view": "View my offers",
+   "continue": "Continue ({cost} cr.)",
+   "recharge": "Top up my credits"
+  },
+  "credits": {
+   "trialTitle": "Trial finished and balance empty",
+   "insufficientTitle": "Not enough credits",
+   "trial": "Your trial is finished and you have no credits left. A FLUX plan tops up your balance every month; your offer is ready, nothing is lost.",
+   "insufficient": "Creating this offer costs {cost} credits. Top up your credits to finalize; your offer is ready, nothing is lost.",
+   "later": "Later",
+   "plan": "Choose my FLUX plan",
+   "recharge": "Top up my credits"
+  },
+  "errors": {
+   "not_authenticated": "You need to be logged in to continue.",
+   "no_active_page": "First create your storefront.",
+   "offer_creation_failed": "Unable to create the offer.",
+   "content_blocked": "Hate speech or explicit content is forbidden and penalized on FLUX; please respect your environment and that of others. After 3 violations of our terms of use, the account is deleted.",
+   "unknown": "Something went wrong. Try again in a moment."
+  }
+ },
+ "installer": {
+  "metaTitle": "Install the application",
+  "eyebrow": "Always within reach",
+  "title": "Install Wayne Web Flux",
+  "subtitle": "Add the app to your home screen to open your dashboard like a real app and see the number of orders to process on its icon, when your device supports badges.",
+  "noteTitle": "Good to know",
+  "note": "The badge updates when the app opens and disappears as soon as there's no order left to process. Its display depends on the phone and browser.",
+  "installed": "The app is installed",
+  "oneMinute": "One-minute install",
+  "installedHint": "You can find it on your home screen.",
+  "chooseDevice": "Choose the steps matching your phone.",
+  "installNow": "Install now",
+  "iphonePlatform": "iPhone · Safari",
+  "fromSafari": "From Safari",
+  "iphoneSteps": [
+   "Open this page in Safari.",
+   "Tap Share.",
+   "Choose Add to Home Screen, then Add."
+  ],
+  "androidPlatform": "Android · Chrome",
+  "fromChrome": "From Chrome",
+  "androidSteps": [
+   "Open this page in Chrome.",
+   "Tap the menu in the top right.",
+   "Choose Install app or Add to Home screen."
+  ]
+ },
+ "emailVerification": {
+  "banner": "Verify your email address to publish your storefront and collect payments from your customers.",
+  "resend": "Resend the email",
+  "resending": "Sending…",
+  "sent": "Email sent. Check your inbox.",
+  "spamHint": "If you don't see it, remember to check your spam folder.",
+  "errors": {
+   "not_authenticated": "You need to be logged in to continue.",
+   "already_verified": "Your address is already verified.",
+   "rate_limited": "Wait a minute before requesting another email.",
+   "update_failed": "Unable to send the email. Try again later.",
+   "send_failed": "The email didn't go out. Try again in a moment.",
+   "unknown": "Something went wrong. Try again in a moment."
+  }
+ },
+ "trialBanner": {
+  "activeSingular": "FLUX trial: {days} day left to try everything.",
+  "activePlural": "FLUX trial: {days} days left to try everything.",
+  "viewPlans": "View plans",
+  "creditsActiveSingular": "Your trial has ended — your {credits} remaining credit still keeps FLUX running. Top up to unlock it 100%.",
+  "creditsActivePlural": "Your trial has ended — your {credits} remaining credits still keep FLUX running. Top up to unlock it 100%.",
+  "expiredNoCredits": "Trial ended and balance empty — your site stays online, but edits are paused.",
+  "choosePlan": "Choose my FLUX plan"
+ },
+ "revenueCounter": {
+  "aria": "Revenue generated",
+  "eyebrow": "Your revenue",
+  "milestoneReached": "🎉 {amount} milestone reached",
+  "caption": "Your know-how deserves to be shared. Here's what your FLUX storefront has already generated from honored appointments and accepted orders.",
+  "nextMilestone": "Next milestone: {amount}",
+  "remaining": "Only {amount} to go 💪",
+  "maxed": "You're smashing every milestone 🚀 Keep it up!"
+ },
+ "upsellDialog": {
+  "later": "Later",
+  "discoverPlans": "Discover plans",
+  "trial": {
+   "title": "Give FLUX the means to go further",
+   "description": "Your trial lets you discover the AI tools. A plan unlocks full storefront creation and refills your credits every month."
+  },
+  "trialExpired": {
+   "title": "Your trial has ended",
+   "description": "Your balance is empty and your site stays online. Top up to enjoy FLUX 100%: edits, publishing and generations."
+  },
+  "trialExpiredWithCredits": {
+   "title": "Your trial has ended",
+   "description": "Your remaining credits still keep FLUX running — generations included. Top up to enjoy it 100%, with a balance that renews every month."
+  },
+  "creditsActive": {
+   "title": "Move from a one-off pack to a steady rhythm",
+   "description": "Your pack still gives you access to AI. A plan adds a monthly refill and keeps FLUX available without waiting for a new purchase."
+  },
+  "creditsExpired": {
+   "title": "Your AI window has ended, not your credits",
+   "description": "Your remaining credits still let you publish and manage your storefront. A plan reactivates AI generations and sets a monthly rhythm."
+  }
+ },
+ "photoUpload": {
+  "uploading": "Uploading…",
+  "tooLarge": "File too large ({max} MB max).",
+  "failed": "Upload failed. Try again."
+ },
+ "copyButton": {
+  "copy": "Copy",
+  "copied": "Link copied."
+ },
+ "creditsLink": {
+  "aria": "{credits} credits — view my credits"
+ }
+}

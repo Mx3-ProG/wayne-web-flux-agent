@@ -24,6 +24,8 @@ import {
 import { FluxBrand } from "@/components/flux-brand";
 import { ProjectSwitcher } from "@/components/project-switcher";
 import { CreditsLink } from "@/components/credits-link";
+import { DashboardLanguageSwitcher } from "@/components/dashboard-language-switcher";
+import { useI18n } from "@/components/i18n-provider";
 import styles from "@/components/desktop-app-navigation.module.css";
 
 type Project = { id: string; business_name: string; slug: string };
@@ -35,36 +37,6 @@ type DesktopNavItem = {
   badge?: "orders" | "stock";
   activeRoot?: string;
 };
-
-const GROUPS: { label: string; items: DesktopNavItem[] }[] = [
-  {
-    label: "Piloter",
-    items: [
-      { href: "/espace", label: "Accueil", icon: LayoutDashboard },
-      { href: "/projets", label: "Mes projets", icon: Layers },
-      { href: "/ma-page", label: "Ma vitrine", icon: Store },
-      { href: "/commandes", label: "Mes commandes", icon: ShoppingBag, badge: "orders" },
-    ],
-  },
-  {
-    label: "Vendre",
-    items: [
-      { href: "/offres/configurer", label: "Mes offres", icon: BadgePercent, activeRoot: "/offres" },
-      { href: "/produits/configurer", label: "Mes produits", icon: Boxes, badge: "stock", activeRoot: "/produits" },
-      { href: "/agenda", label: "Mon agenda", icon: CalendarDays },
-      { href: "/statistiques", label: "Mes statistiques", icon: ChartLine },
-    ],
-  },
-  {
-    label: "Développer",
-    items: [
-      { href: "/resultats", label: "Mes contenus", icon: FolderOpen },
-      { href: "/contexte/configurer", label: "FLUX – IA", icon: MessageSquareText, activeRoot: "/contexte" },
-      { href: "/installer", label: "Installer l’app", icon: Smartphone },
-      { href: "/compte", label: "Mon profil", icon: UserRound },
-    ],
-  },
-];
 
 function isActive(pathname: string, item: DesktopNavItem) {
   const activePath = item.activeRoot ?? item.href;
@@ -94,6 +66,28 @@ export function DesktopAppNavigation({
   projects: Project[];
   activeProjectId: string | null;
 }) {
+  const { dictionary } = useI18n();
+  const t = dictionary.nav;
+  const groups: { label: string; items: DesktopNavItem[] }[] = [
+    { label: t.groups.control, items: [
+      { href: "/espace", label: t.items.home, icon: LayoutDashboard },
+      { href: "/projets", label: t.items.projects, icon: Layers },
+      { href: "/ma-page", label: t.items.storefront, icon: Store },
+      { href: "/commandes", label: t.items.orders, icon: ShoppingBag, badge: "orders" },
+    ] },
+    { label: t.groups.sell, items: [
+      { href: "/offres/configurer", label: t.items.offers, icon: BadgePercent, activeRoot: "/offres" },
+      { href: "/produits/configurer", label: t.items.products, icon: Boxes, badge: "stock", activeRoot: "/produits" },
+      { href: "/agenda", label: t.items.agenda, icon: CalendarDays },
+      { href: "/statistiques", label: t.items.stats, icon: ChartLine },
+    ] },
+    { label: t.groups.grow, items: [
+      { href: "/resultats", label: t.items.content, icon: FolderOpen },
+      { href: "/contexte/configurer", label: t.items.ai, icon: MessageSquareText, activeRoot: "/contexte" },
+      { href: "/installer", label: t.items.install, icon: Smartphone },
+      { href: "/compte", label: t.items.profile, icon: UserRound },
+    ] },
+  ];
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -130,23 +124,24 @@ export function DesktopAppNavigation({
           type="button"
           className={styles.menuButton}
           aria-expanded={open}
-          aria-label={open ? "Fermer la navigation" : "Ouvrir la navigation"}
+          aria-label={open ? t.close : t.open}
           onClick={() => setOpen((value) => !value)}
         >
           {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
-          <span>Menu</span>
+          <span>{t.menu}</span>
         </button>
 
-        <Link href="/espace" className={styles.logo} aria-label="Accueil WayneWeb FLUX">
+        <Link href="/espace" className={styles.logo} aria-label={t.homeAria}>
           <FluxBrand markOnly />
         </Link>
 
         <div className={styles.actions}>
+          <DashboardLanguageSwitcher />
           <CreditsLink balance={balance} className={styles.credits} />
           <Link
             href="/compte"
             className={pathname.startsWith("/compte") ? styles.profileActive : styles.profile}
-            aria-label="Mon profil"
+            aria-label={t.items.profile}
           >
             <UserRound aria-hidden="true" />
           </Link>
@@ -154,23 +149,23 @@ export function DesktopAppNavigation({
       </div>
 
       {open && (
-        <div className={styles.megaMenu} aria-label="Navigation principale">
+        <div className={styles.megaMenu} aria-label={t.mainAria}>
           <div className={styles.megaInner}>
             <div className={styles.intro}>
               <div>
                 <span className={styles.eyebrow}>WayneWeb FLUX</span>
-                <h1>Navigation</h1>
+                <h1>{t.title}</h1>
               </div>
               {projects.length > 0 && (
                 <div className={styles.projectContext}>
-                  <span>Projet actif</span>
+                  <span>{t.activeProject}</span>
                   <ProjectSwitcher projects={projects} activeId={activeProjectId} />
                 </div>
               )}
             </div>
 
             <nav className={styles.grid}>
-              {GROUPS.map((group) => (
+              {groups.map((group) => (
                 <section className={styles.group} key={group.label}>
                   <h2>{group.label}</h2>
                   {group.items.map((item) => {
@@ -198,8 +193,8 @@ export function DesktopAppNavigation({
             </nav>
 
             <footer className={styles.footer}>
-              <span>Ton commerce. Un seul espace.</span>
-              <Link href="/credits" onClick={() => setOpen(false)}>Gérer mes crédits</Link>
+              <span>{t.tagline}</span>
+              <Link href="/credits" onClick={() => setOpen(false)}>{t.manageCredits}</Link>
             </footer>
           </div>
         </div>

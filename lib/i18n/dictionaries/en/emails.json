@@ -1,0 +1,93 @@
+{
+  "footer": {
+    "default": "Automated transactional email, please do not reply.",
+    "tagline": "— your storefront, your orders, your revenue."
+  },
+  "total": "Total",
+  "order": {
+    "buyerConfirmation": {
+      "subject": "Your order at {shopName} is confirmed",
+      "title": "Order confirmed",
+      "preheader": "Order #{orderId} · {total}",
+      "greeting": "Hi {firstName},",
+      "body": "Your order <strong>#{orderId}</strong> at <strong>{shopName}</strong> has been successfully recorded. The seller will process it and reach out if needed.",
+      "addressLabel": "Address provided: {address}",
+      "paymentNote": "Payment is made directly with the seller."
+    },
+    "sellerNewOrder": {
+      "subject": "New order — {firstName} · {total}",
+      "title": "New order",
+      "preheader": "{firstName} · {total}",
+      "body": "You've received a new order <strong>#{orderId}</strong>.",
+      "contactTitle": "Customer details",
+      "contactName": "First name: {value}",
+      "contactPhone": "Phone: {value}",
+      "contactEmail": "Email: {value}",
+      "contactAddress": "Address: {value}",
+      "contactNote": "Note: {value}",
+      "viewOrders": "View my orders",
+      "footerReply": "Reply to this email to contact your customer directly.",
+      "footerAuto": "Automated transactional email."
+    },
+    "buyerAccepted": {
+      "subject": "Order accepted ✓ — {shopName}",
+      "title": "Order accepted",
+      "greeting": "Hi {firstName},",
+      "body": "Good news: your order <strong>#{orderId}</strong> at <strong>{shopName}</strong> has been accepted and is being prepared.",
+      "note": "The seller will get in touch if there's anything else you need."
+    },
+    "buyerReady": {
+      "subject": "Your order is ready ✓ — {shopName}",
+      "title": "Order ready",
+      "preheader": "Order #{orderId} ready for pickup",
+      "greeting": "Hi {firstName},",
+      "body": "Your order <strong>#{orderId}</strong> at <strong>{shopName}</strong> is <strong>ready</strong>! You can come pick it up.",
+      "note": "The seller will let you know the pickup details if needed."
+    },
+    "buyerCancelled": {
+      "subject": "Order cancelled — {shopName}",
+      "title": "Order cancelled",
+      "greeting": "Hi {firstName},",
+      "body": "Your order <strong>#{orderId}</strong> at <strong>{shopName}</strong> has been cancelled.",
+      "note": "For any questions, please contact the seller directly."
+    },
+    "defaultShopName": "your merchant"
+  },
+  "account": {
+    "passwordChanged": {
+      "subject": "Your FLUX password has been changed",
+      "title": "Password changed",
+      "preheader": "Security confirmation — your password has changed",
+      "greeting": "Hi {firstName},",
+      "body": "The password for your FLUX account has just been <strong>changed</strong>. If you made this change, no action is needed.",
+      "note": "Don't recognize this action? Reset your password immediately and check the security of your inbox.",
+      "cta": "Secure my account"
+    },
+    "friendInvite": {
+      "subject": "{fromName} invites you to try FLUX",
+      "title": "Take back control of your business",
+      "preheader": "{fromName} thinks FLUX could save you precious time",
+      "intro": "<strong>{fromName}</strong> invites you to discover <strong>FLUX</strong>.",
+      "pitch": "FLUX brings your online storefront, orders, appointments, and content together in one place. No more juggling dozens of scattered tools: one single login, your whole business right in front of you.",
+      "gainsIntro": "What {fromName} gained from it:",
+      "gain1": "Hours saved every week on admin work",
+      "gain2": "A pro online storefront set up in minutes",
+      "gain3": "Orders and revenue tracked at a glance",
+      "cta": "Create my storefront in 2 minutes",
+      "trial": "7-day free trial, no commitment.",
+      "footer": "You're receiving this email because a FLUX user invited you. No action is required if you're not interested."
+    }
+  },
+  "verification": {
+    "subject": "Verify your email — FLUX",
+    "title": "Verify your email",
+    "preheader": "Unlock publishing for your storefront",
+    "body": "Your FLUX workspace is ready and you can already start using it. Just confirm this email address is yours to unlock publishing your storefront and payments.",
+    "cta": "Verify my email",
+    "note": "If you didn't sign up for this, simply ignore this email."
+  },
+  "hints": {
+    "spamSelf": "If you don't see it, check your spam folder.",
+    "spamOther": "The email might land in spam: give them a heads-up."
+  }
+}

@@ -4,9 +4,11 @@ import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getVertical, type VerticalKind } from "@/lib/verticals";
+import type { LocalizedVertical, CatalogWording, LocalizedFont } from "@/lib/verticals-i18n";
 import { DESIGN_KIT_BY_ID } from "@/lib/vitrine-design/registry";
 import { JOURNEY_STEPS, type JourneyChapterId, type JourneyStepState } from "@/lib/journey";
 import type { TunnelDraft } from "@/lib/types";
+import type { TunnelDict, JourneyDict } from "@/lib/i18n/get-dictionary";
 import { completeJourneyStep } from "@/app/(app)/espace/actions";
 import {
   finishTunnel,
@@ -114,6 +116,11 @@ const PREVIEW_SCREENS: number[] = [
 ];
 
 type Props = {
+  dict: TunnelDict;
+  journeyDict: JourneyDict;
+  verticals: LocalizedVertical[];
+  catalogWordingByKind: Record<VerticalKind, CatalogWording>;
+  fonts: LocalizedFont[];
   firstName: string;
   // Adresse du compte : le pop-up de vérification a besoin de la nommer et d'en
   // déduire le webmail à ouvrir.
@@ -145,12 +152,16 @@ type Props = {
   upcomingBookings: number;
 };
 
-function gainOf(n: number): string {
-  return JOURNEY_STEPS.find((step) => step.n === n)?.gain ?? "";
-}
-
 export function Tunnel(props: Props) {
   const router = useRouter();
+  function gainOf(n: number): string {
+    const exists = JOURNEY_STEPS.some((step) => step.n === n);
+    if (!exists) return "";
+    return props.journeyDict.steps[String(n) as keyof typeof props.journeyDict.steps]?.gain ?? "";
+  }
+  function localizedVertical(slug: string): LocalizedVertical | null {
+    return props.verticals.find((v) => v.slug === slug) ?? null;
+  }
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
 
@@ -313,7 +324,8 @@ export function Tunnel(props: Props) {
       }
 
       if (result.error) {
-        setError(result.error);
+        const errors = props.dict.errors as Record<string, string>;
+        setError(errors[result.error] ?? errors.unknown ?? result.error);
         return;
       }
 
@@ -332,18 +344,20 @@ export function Tunnel(props: Props) {
   }
 
   const chapter1Achievements = [
-    `Ta vitrine « ${businessName.trim() || "ton commerce"} » est créée`,
-    "L'IA a appris ton ton et ton métier",
+    props.dict.achievements.storeCreated.replace("{name}", businessName.trim() || props.dict.achievements.defaultStore),
+    props.dict.achievements.voiceLearned,
   ];
   const chapter2Achievements = [
-    `Ta première ${kind === "service" ? "prestation" : "offre produit"} est en ligne`,
-    "Ton offre d'accroche est prête",
-    ...(hasAgenda ? ["Tes clients peuvent réserver un créneau"] : []),
+    kind === "service" ? props.dict.achievements.firstService : props.dict.achievements.firstProduct,
+    props.dict.achievements.offerReady,
+    ...(hasAgenda ? [props.dict.achievements.bookingReady] : []),
   ];
 
   return (
     <main className={styles.page}>
       <TunnelShell
+        dict={props.dict.shell}
+        chapters={props.dict.chapters}
         chapter={chapter}
         completedCount={props.completedCount}
         total={props.total}
@@ -352,11 +366,13 @@ export function Tunnel(props: Props) {
         <section className={showPreview ? styles.stageSplit : styles.stage}>
           <div className={styles.stageMain}>
             {screen === SCREEN.whyChapter1 && (
-              <ChapterIntro chapter={1} onNext={() => goTo(nextScreen(screen))} />
+              <ChapterIntro dict={props.dict.chapterIntro} content={props.dict.chapters["1"]} chapter={1} onNext={() => goTo(nextScreen(screen))} />
             )}
 
             {screen === SCREEN.vertical && (
               <StepVertical
+                dict={props.dict.vertical}
+                verticals={props.verticals}
                 value={vertical}
                 onChange={(slug) => {
                   // Le métier le plus courant de la verticale, pré-rempli : une
@@ -367,17 +383,18 @@ export function Tunnel(props: Props) {
                   // l'aperçu. On ne remplace donc que ce que l'utilisateur n'a
                   // pas écrit lui-même — un métier absent des listes (« Artisan
                   // fleuriste ») survit à tous les changements d'univers.
-                  const previous = vertical ? getVertical(vertical) : null;
+                  const previous = vertical ? localizedVertical(vertical) : null;
                   const wasSuggested =
                     !jobTitle.trim() || (previous?.jobTitles.includes(jobTitle) ?? false);
                   setVertical(slug);
-                  if (wasSuggested) setJobTitle(getVertical(slug).jobTitles[0]);
+                  if (wasSuggested) setJobTitle(localizedVertical(slug)?.jobTitles[0] ?? "");
                 }}
               />
             )}
 
             {screen === SCREEN.goals && (
               <StepGoals
+                dict={props.dict.goals}
                 value={goals}
                 onToggle={(id) =>
                   setGoals((current) =>
@@ -391,7 +408,8 @@ export function Tunnel(props: Props) {
 
             {screen === SCREEN.identity && (
               <StepIdentity
-                vertical={vertical}
+                dict={props.dict.identity}
+                vertical={vertical ? localizedVertical(vertical) : null}
                 businessName={businessName}
                 jobTitle={jobTitle}
                 city={city}
@@ -405,11 +423,13 @@ export function Tunnel(props: Props) {
             )}
 
             {screen === SCREEN.voice && (
-              <StepVoice value={tone} gain={gainOf(2)} onChange={setTone} />
+              <StepVoice dict={props.dict.voice} value={tone} gain={gainOf(2)} onChange={setTone} />
             )}
 
             {screen === SCREEN.doneChapter1 && (
               <ChapterDone
+                dict={props.dict.chapterDone}
+                content={props.dict.chapters["1"]}
                 chapter={1}
                 achievements={chapter1Achievements}
                 onNext={() => goTo(nextScreen(screen))}
@@ -417,12 +437,13 @@ export function Tunnel(props: Props) {
             )}
 
             {screen === SCREEN.whyChapter2 && (
-              <ChapterIntro chapter={2} onNext={() => goTo(nextScreen(screen))} />
+              <ChapterIntro dict={props.dict.chapterIntro} content={props.dict.chapters["2"]} chapter={2} onNext={() => goTo(nextScreen(screen))} />
             )}
 
             {screen === SCREEN.catalog && (
               <StepCatalog
-                kind={kind}
+                dict={props.dict.catalog}
+                words={props.catalogWordingByKind[kind]}
                 state={catalog}
                 gain={gainOf(3)}
                 onChange={(patch) => setCatalog((current) => ({ ...current, ...patch }))}
@@ -431,6 +452,7 @@ export function Tunnel(props: Props) {
 
             {screen === SCREEN.offer && (
               <StepOffer
+                dict={props.dict.offer}
                 state={offer}
                 gain={gainOf(4)}
                 onChange={(patch) => setOffer((current) => ({ ...current, ...patch }))}
@@ -439,6 +461,7 @@ export function Tunnel(props: Props) {
 
             {screen === SCREEN.agenda && hasAgenda && (
               <StepAgenda
+                dict={props.dict.agenda}
                 days={days}
                 openingTime={openingTime}
                 closingTime={closingTime}
@@ -453,6 +476,8 @@ export function Tunnel(props: Props) {
 
             {screen === SCREEN.doneChapter2 && (
               <ChapterDone
+                dict={props.dict.chapterDone}
+                content={props.dict.chapters["2"]}
                 chapter={2}
                 achievements={chapter2Achievements}
                 onNext={() => goTo(nextScreen(screen))}
@@ -460,11 +485,12 @@ export function Tunnel(props: Props) {
             )}
 
             {screen === SCREEN.whyChapter3 && (
-              <ChapterIntro chapter={3} onNext={() => goTo(nextScreen(screen))} />
+              <ChapterIntro dict={props.dict.chapterIntro} content={props.dict.chapters["3"]} chapter={3} onNext={() => goTo(nextScreen(screen))} />
             )}
 
             {screen === SCREEN.content && (
               <StepContent
+                dict={props.dict.content}
                 gain={gainOf(6)}
                 balance={props.balance}
                 done={props.generationCount > 0}
@@ -474,6 +500,7 @@ export function Tunnel(props: Props) {
 
             {screen === SCREEN.results && (
               <StepResults
+                dict={props.dict.results}
                 balance={props.balance}
                 generationCount={props.generationCount}
                 upcomingBookings={props.upcomingBookings}
@@ -483,6 +510,7 @@ export function Tunnel(props: Props) {
 
             {screen === SCREEN.style && (
               <StepStyle
+                dict={props.dict.style}
                 value={theme}
                 onChange={(kitId) => {
                   setTheme(kitId);
@@ -505,6 +533,7 @@ export function Tunnel(props: Props) {
 
             {screen === SCREEN.images && (
               <StepImages
+                dict={props.dict.images}
                 userId={props.userId}
                 logoUrl={logoUrl}
                 heroUrl={heroUrl}
@@ -517,6 +546,8 @@ export function Tunnel(props: Props) {
 
             {screen === SCREEN.details && (
               <StepDetails
+                dict={props.dict.details}
+                fonts={props.fonts}
                 state={details}
                 onChange={(patch) => setDetails((current) => ({ ...current, ...patch }))}
               />
@@ -524,6 +555,8 @@ export function Tunnel(props: Props) {
 
             {screen === SCREEN.publish && (
               <StepPublish
+                dict={props.dict.publish}
+                emailVerifyDict={props.dict.emailVerify}
                 email={props.email}
                 balance={props.balance}
                 published={props.page?.published ?? false}
@@ -533,6 +566,7 @@ export function Tunnel(props: Props) {
 
             {screen === SCREEN.share && (
               <StepShare
+                dict={props.dict.share}
                 pageUrl={props.pageUrl}
                 gain={gainOf(8)}
                 onShared={() => {
@@ -546,9 +580,13 @@ export function Tunnel(props: Props) {
 
             {screen === SCREEN.doneChapter3 && (
               <ChapterDone
+                dict={props.dict.chapterDone}
+                content={props.dict.chapters["3"]}
                 chapter={3}
-                achievements={props.steps.filter((s) => s.done).map((s) => s.title)}
-                ctaLabel="Entrer dans mon espace"
+                achievements={props.steps
+                  .filter((s) => s.done)
+                  .map((s) => props.journeyDict.steps[String(s.n) as keyof typeof props.journeyDict.steps]?.title ?? "")}
+                ctaLabel={props.dict.finalCta}
                 pending={pending}
                 onNext={() => startTransition(() => finishTunnel())}
               />
@@ -559,13 +597,15 @@ export function Tunnel(props: Props) {
 
           {/* Monté hors du switch : le remonter à chaque écran tuerait les
               transitions CSS qui font toute la révélation vivante. */}
-          {showPreview && <VitrinePreview state={preview} />}
+          {showPreview && (
+            <VitrinePreview state={preview} dict={props.dict.preview} verticals={props.verticals} />
+          )}
         </section>
 
         {FOOTER_SCREENS.includes(screen) && (
           <footer className={styles.controls}>
             <button type="button" onClick={() => goTo(prevScreen(screen))} disabled={pending}>
-              <ArrowLeft aria-hidden="true" /> Retour
+              <ArrowLeft aria-hidden="true" /> {props.dict.footer.back}
             </button>
             <button
               className={`flux-button-smooth ${styles.primary}`}
@@ -573,7 +613,7 @@ export function Tunnel(props: Props) {
               onClick={advance}
               disabled={!canContinue || pending}
             >
-              {pending ? "Un instant…" : "Continuer"}
+              {pending ? props.dict.footer.pending : props.dict.footer.continue}
               {!pending && <ArrowRight aria-hidden="true" />}
             </button>
           </footer>

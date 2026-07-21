@@ -99,7 +99,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "content_blocked", message: moderation.error }, { status: 422 });
   }
 
-  const { system, user: userPrompt } = buildPrompt({
+  const { system, user: userPrompt } = await buildPrompt({
     tool,
     inputs,
     page,

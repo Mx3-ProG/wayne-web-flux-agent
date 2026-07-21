@@ -1,0 +1,348 @@
+{
+  "beaute": {
+    "label": "Beauty & aesthetics",
+    "jobTitles": [
+      "Esthetician",
+      "Nail technician",
+      "Lash technician",
+      "Dermographer"
+    ],
+    "clientWord": "clients",
+    "promptContext": "Beauty institute / aesthetics: skincare, nails, lashes, brows. Mostly female clientele, warm and reassuring tone.",
+    "families": {
+      "soins-visage": {
+        "name": "Facial care",
+        "services": {
+          "soin-eclat": "Radiance treatment",
+          "soin-anti-age": "Anti-aging treatment"
+        }
+      },
+      "ongles": {
+        "name": "Nails",
+        "services": {
+          "pose-gel": "Gel application",
+          "remplissage": "Refill",
+          "vernis-semi-permanent": "Semi-permanent polish"
+        }
+      },
+      "cils-sourcils": {
+        "name": "Lashes & brows",
+        "services": {
+          "extension-cils": "Full set lash extensions",
+          "rehaussement-cils": "Lash lift",
+          "restructuration-sourcils": "Brow restructuring"
+        }
+      }
+    }
+  },
+  "coiffure": {
+    "label": "Hair & barber",
+    "jobTitles": [
+      "Hairstylist (female)",
+      "Hairstylist (male)",
+      "Barber",
+      "Colorist"
+    ],
+    "clientWord": "clients",
+    "promptContext": "Hair salon or barbershop: cuts, color, hair treatments. Dynamic and neighborly tone.",
+    "families": {
+      "coupes": {
+        "name": "Cuts",
+        "services": {
+          "coupe-femme": "Women's cut",
+          "coupe-homme": "Men's cut",
+          "coupe-barbe": "Cut + beard"
+        }
+      },
+      "couleur": {
+        "name": "Color",
+        "services": {
+          "coloration-complete": "Full coloring",
+          "balayage": "Balayage"
+        }
+      }
+    }
+  },
+  "restaurant": {
+    "label": "Restaurant & catering",
+    "jobTitles": [
+      "Restaurant owner (male)",
+      "Restaurant owner (female)",
+      "Private chef",
+      "Caterer"
+    ],
+    "clientWord": "guests",
+    "promptContext": "Restaurant, caterer or chef: table or event bookings. Foodie and convivial tone, highlighting products and homemade quality.",
+    "families": {
+      "reservations": {
+        "name": "Reservations",
+        "services": {
+          "table-dejeuner": "Lunch table",
+          "table-diner": "Dinner table"
+        }
+      },
+      "evenements": {
+        "name": "Events",
+        "services": {
+          "privatisation": "Private hire (deposit)",
+          "menu-degustation": "Tasting menu"
+        }
+      }
+    }
+  },
+  "auto": {
+    "label": "Auto & garage",
+    "jobTitles": [
+      "Garage owner",
+      "Mechanic",
+      "Auto detailer",
+      "Bodywork specialist"
+    ],
+    "clientWord": "clients",
+    "promptContext": "Garage, mechanics or auto detailing. Direct and trustworthy tone: transparent pricing, seriousness, deadlines met.",
+    "families": {
+      "entretien": {
+        "name": "Maintenance",
+        "services": {
+          "vidange-filtres": "Oil change + filters",
+          "revision-complete": "Full service",
+          "plaquettes-frein": "Brake pads (axle)"
+        }
+      },
+      "esthetique": {
+        "name": "Detailing",
+        "services": {
+          "lavage-int-ext": "Interior/exterior wash",
+          "polish-ceramique": "Polish + ceramic coating"
+        }
+      }
+    },
+    "productCategories": {
+      "pieces-accessoires": {
+        "name": "Parts & accessories",
+        "products": {
+          "roue": "Wheel (unit)",
+          "balais-essuie-glace": "Wiper blade set",
+          "batterie-12v": "12V battery"
+        }
+      },
+      "produits-entretien": {
+        "name": "Maintenance products",
+        "products": {
+          "huile-moteur-5l": "5L engine oil canister",
+          "kit-lavage-auto": "Car wash kit"
+        }
+      }
+    }
+  },
+  "artisan": {
+    "label": "Tradesperson & construction",
+    "jobTitles": [
+      "Plumber",
+      "Electrician",
+      "Painter",
+      "Carpenter",
+      "Multi-service handyman"
+    ],
+    "clientWord": "clients",
+    "promptContext": "Building tradesperson: repairs and job sites. Reliable and jargon-free tone: clear quotes, punctuality, careful work.",
+    "families": {
+      "interventions": {
+        "name": "Call-outs",
+        "services": {
+          "diagnostic-devis": "On-site diagnostic / quote",
+          "depannage-urgent": "Emergency repair",
+          "petits-travaux": "Small jobs (hourly)"
+        }
+      }
+    }
+  },
+  "commerce": {
+    "label": "Retail & shop",
+    "jobTitles": [
+      "Shopkeeper (male)",
+      "Shopkeeper (female)",
+      "Store manager",
+      "Salesman",
+      "Saleswoman"
+    ],
+    "clientWord": "clients",
+    "promptContext": "Retail / shop: in-store product sales and click-and-collect. Sales-driven and neighborly tone, highlighting new arrivals, promos and availability.",
+    "families": {},
+    "productCategories": {
+      "nouveautes": {
+        "name": "New arrivals",
+        "products": {
+          "article-vedette": "Featured item",
+          "coup-de-coeur": "Staff pick"
+        }
+      },
+      "best-sellers": {
+        "name": "Best-sellers",
+        "products": {
+          "produit-populaire": "Popular product",
+          "pack-decouverte": "Discovery pack"
+        }
+      }
+    }
+  },
+  "alimentation": {
+    "label": "Food & grocery",
+    "jobTitles": [
+      "Baker (male)",
+      "Baker (female)",
+      "Pastry chef",
+      "Greengrocer",
+      "Grocer",
+      "Cheesemonger",
+      "Wine merchant"
+    ],
+    "clientWord": "clients",
+    "promptContext": "Food shop (bakery, pastry shop, greengrocer, fine grocery): fresh product sales and pre-order / click-and-collect. Foodie, artisanal and local tone, emphasizing freshness and homemade quality.",
+    "families": {},
+    "productCategories": {
+      "boulangerie": {
+        "name": "Bakery",
+        "products": {
+          "baguette-tradition": "Traditional baguette",
+          "pain-campagne": "Country bread",
+          "croissant": "Croissant"
+        }
+      },
+      "patisserie": {
+        "name": "Pastry",
+        "products": {
+          "eclair": "Éclair",
+          "tarte-du-jour": "Tart of the day (slice)",
+          "gateau-a-commander": "Cake to order"
+        }
+      }
+    }
+  },
+  "mode": {
+    "label": "Fashion & accessories",
+    "jobTitles": [
+      "Designer (male)",
+      "Designer (female)",
+      "Stylist",
+      "Jeweler (male)",
+      "Jeweler (female)",
+      "Leather goods maker"
+    ],
+    "clientWord": "clients",
+    "promptContext": "Ready-to-wear, jewelry or accessories: boutique of original designs and curated pieces. Elegant and desirable tone, storytelling around materials, sizes and limited editions.",
+    "families": {},
+    "productCategories": {
+      "vetements": {
+        "name": "Clothing",
+        "products": {
+          "t-shirt": "T-shirt",
+          "robe": "Dress",
+          "veste": "Jacket"
+        }
+      },
+      "accessoires": {
+        "name": "Accessories",
+        "products": {
+          "collier": "Necklace",
+          "sac": "Bag",
+          "carte-cadeau": "Gift card"
+        }
+      }
+    }
+  },
+  "bienetre": {
+    "label": "Wellness & coaching",
+    "jobTitles": [
+      "Sports coach",
+      "Naturopath",
+      "Photographer",
+      "Sophrologist",
+      "Wellness practitioner"
+    ],
+    "clientWord": "clients",
+    "promptContext": "Wellness, coaching or photography: appointment-based services AND sales of packages, programs or products (sessions, ebooks, programs). Caring, motivating and expert tone, focused on transformation and results.",
+    "families": {
+      "seances": {
+        "name": "Sessions",
+        "services": {
+          "seance-decouverte": "Discovery session",
+          "seance-individuelle": "One-on-one session",
+          "bilan-complet": "Full assessment"
+        }
+      }
+    },
+    "productCategories": {
+      "forfaits-programmes": {
+        "name": "Packages & programs",
+        "products": {
+          "forfait-5-seances": "5-session package",
+          "forfait-10-seances": "10-session package",
+          "programme-en-ligne": "Online program"
+        }
+      }
+    }
+  },
+  "autre": {
+    "label": "Other activity",
+    "jobTitles": [
+      "Freelancer (male)",
+      "Freelancer (female)"
+    ],
+    "clientWord": "clients",
+    "promptContext": "Local independent business or activity. Professional and approachable tone.",
+    "families": {
+      "prestations": {
+        "name": "Services",
+        "services": {
+          "rendez-vous-decouverte": "Discovery appointment",
+          "prestation-standard": "Standard service"
+        }
+      }
+    }
+  },
+  "catalogWording": {
+    "service": {
+      "categoryWord": "service category",
+      "itemWord": "service",
+      "categoryPlaceholder": "E.g.: Facial care",
+      "itemPlaceholder": "E.g.: 60-min radiance treatment",
+      "categoryHint": "A family of services, the way you'd group them on your displayed price list.",
+      "itemHint": "Your most requested service. It's the one your clients will book first."
+    },
+    "product": {
+      "categoryWord": "category",
+      "itemWord": "product",
+      "categoryPlaceholder": "E.g.: Bouquets",
+      "itemPlaceholder": "E.g.: Seasonal bouquet",
+      "categoryHint": "A section of your shop, the way your clients would look for it.",
+      "itemHint": "Your flagship product, the one you sell the most."
+    },
+    "hybrid": {
+      "categoryWord": "category",
+      "itemWord": "product or service",
+      "categoryPlaceholder": "E.g.: Cut & color",
+      "itemPlaceholder": "E.g.: Cut & blow-dry",
+      "categoryHint": "You can file both products and appointment-based services here.",
+      "itemHint": "What your clients ask you for most often."
+    }
+  },
+  "fontLabels": {
+    "fraunces": "Fraunces — editorial, premium (default)",
+    "inter": "Inter — modern, neutral (default)",
+    "playfair": "Playfair Display — chic, elegant",
+    "montserrat": "Montserrat — clean, professional",
+    "lora": "Lora — refined, soft serif",
+    "cormorant": "Cormorant Garamond — luxurious, sophisticated",
+    "quicksand": "Quicksand — round, soft",
+    "poppins": "Poppins — modern, soft",
+    "space-grotesk": "Space Grotesk — tech, bold",
+    "sora": "Sora — contemporary, crisp",
+    "manrope": "Manrope — clean, readable",
+    "libre-baskerville": "Libre Baskerville — classic, literary",
+    "dm-serif": "DM Serif Display — bold display, editorial",
+    "marcellus": "Marcellus — antique, prestigious",
+    "josefin": "Josefin Sans — geometric, retro-chic",
+    "bebas": "Bebas Neue — all-caps, striking"
+  }
+}

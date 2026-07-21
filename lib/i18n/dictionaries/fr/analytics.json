@@ -1,0 +1,53 @@
+{
+ "meta": {
+  "title": "Statistiques"
+ },
+ "hero": {
+  "kicker": "Centre de données",
+  "titleStart": "Ton tableau de",
+  "titleEm": "bord",
+  "textStart": "Ce qui se passe sur",
+  "textLink": "ta vitrine",
+  "textEnd": ": visites, contacts et abonnés, en temps réel.",
+  "visitSingular": "visite sur les 30 derniers jours",
+  "visitPlural": "visites sur les 30 derniers jours"
+ },
+ "cards": {
+  "visits7": "Visites (7 j)",
+  "visits30": "Visites (30 j)",
+  "phoneClicks30": "Clics téléphone (30 j)",
+  "whatsappClicks30": "Clics WhatsApp (30 j)",
+  "socialClicks30": "Clics réseaux (30 j)",
+  "newsletterSubscribers": "Abonnés newsletter"
+ },
+ "chart": {
+  "title": "Visites des 14 derniers jours",
+  "empty": "Pas encore de données : elles arrivent dès que ta vitrine reçoit ses premières visites.",
+  "tooltipSingular": "{label} : {count} visite",
+  "tooltipPlural": "{label} : {count} visites"
+ },
+ "subscribers": {
+  "title": "Tes abonnés newsletter",
+  "hint": "Récoltés par le bloc « Newsletter » de ta vitrine.",
+  "export": "Exporter (CSV)",
+  "empty": "Personne pour l'instant. Ajoute le bloc « Newsletter » dans l'éditeur de ta vitrine (section « Sections de ma page ») pour récolter des emails.",
+  "csvHeader": "email;inscrit_le"
+ },
+ "tunnel": {
+  "step": "Étape {current} sur {total}",
+  "exit": "Mes statistiques",
+  "kicker1": "Fais circuler ton lien",
+  "title1Start": "Tes statistiques commencent par un",
+  "title1Em": "partage.",
+  "subtitle1": "Partage ton lien aux personnes qui apprécient ton travail, y trouvent de la valeur ou du réconfort. Chaque visite, chaque clic et chaque abonné apparaîtra ici — plus ton lien circule, plus tes chiffres racontent ton histoire.",
+  "uniqueLink": "Ton lien unique",
+  "copyLink": "Copier mon lien",
+  "continueCta": "Continuer",
+  "fromTeam": "De la part de toute l'équipe",
+  "title2Start": "Merci d'utiliser FLUX pour",
+  "title2Em": "tes affaires.",
+  "text2": "Ton commerce mérite d'être vu, choisi et recommandé. On te souhaite d'accomplir de grandes choses — et on sera là pour compter chaque victoire avec toi.",
+  "back": "Retour",
+  "viewStats": "Voir mes statistiques"
+ }
+}

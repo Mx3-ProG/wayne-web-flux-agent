@@ -5,6 +5,8 @@ import { getActivePageId } from "@/lib/active-project";
 import { getTool, TOOLS } from "@/lib/tools-config";
 import { voiceCompletion } from "@/lib/voice";
 import type { VoiceProfile } from "@/lib/types";
+import { getAccountLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { ToolRunner } from "@/components/tools/tool-runner";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -27,10 +29,12 @@ export default async function ToolPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: balance }, pageId] = await Promise.all([
+  const [{ data: balance }, pageId, locale] = await Promise.all([
     supabase.rpc("credit_balance", { uid: user.id }),
     getActivePageId(supabase, user.id),
+    getAccountLocale(supabase, user.id),
   ]);
+  const t = await getDictionary(locale, "tools");
   const { data: voice } = pageId
     ? await supabase
         .from("voice_profiles")
@@ -55,7 +59,7 @@ export default async function ToolPage({
 
       <Card>
         <CardContent className="pt-1 space-y-3">
-          <p className="font-medium">Comment ça marche</p>
+          <p className="font-medium">{t.toolPage.howItWorks}</p>
           <ol className="space-y-2 text-sm text-muted-foreground list-decimal list-inside">
             {tool.steps.map((step, i) => (
               <li key={i}>{step}</li>
@@ -66,15 +70,15 @@ export default async function ToolPage({
 
       <div className="rounded-xl border border-border px-4 py-3 flex items-center justify-between text-sm">
         <span>
-          J&apos;écris comme toi à{" "}
+          {t.toolPage.voicePrefix}{" "}
           <strong className="text-red-bright">{completion}%</strong>
         </span>
         <Link href="/contexte" className="underline underline-offset-4">
-          {completion < 100 ? "Améliorer ma voix" : "Ma voix"}
+          {completion < 100 ? t.toolPage.improveVoice : t.toolPage.myVoice}
         </Link>
       </div>
 
-      <ToolRunner tool={tool} balance={balance ?? 0} />
+      <ToolRunner tool={tool} balance={balance ?? 0} t={t} />
     </div>
   );
 }

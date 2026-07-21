@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "title": "Preise und Guthaben",
+    "description": "Entdecke die FLUX-Abos und Guthaben-Pakete, um die digitale Präsenz deines Betriebs auszubauen."
+  },
+  "header": {
+    "tryFree": "Kostenlos testen"
+  },
+  "hero": {
+    "eyebrow": "Klare Preise. Keine versteckten Kosten.",
+    "titleLine1": "Wähle das Tempo",
+    "titleEm": "deines Wachstums.",
+    "text": "Ein Abo, um deinen Bereich am Laufen zu halten. Guthaben, um zu erstellen, zu veröffentlichen und Gas zu geben, wenn du es brauchst.",
+    "fact1": "Testtage",
+    "fact2": "Jederzeit kündbar",
+    "fact3": "Sichere Zahlung über Stripe"
+  },
+  "plans": {
+    "kicker": "Monatliche Abos",
+    "title": "Ein Paket für jeden Ehrgeiz.",
+    "note": "Nicht genutzte Monatsguthaben summieren sich.",
+    "featured": "Am häufigsten gewählt",
+    "perMonth": "/ Monat",
+    "creditsIncluded": "Guthaben inklusive / Monat",
+    "showcase": "Vitrine",
+    "showcases": "Vitrinen",
+    "activeOffers": "aktive Angebote",
+    "subpages": "Unterseiten pro Vitrine",
+    "choose": "Auswählen",
+    "checkoutNote": "Du meldest dich an oder erstellst dein Konto vor der Zahlung. Das Abo wird nach der Stripe-Bestätigung aktiviert."
+  },
+  "planNames": {
+    "basique": "Basis",
+    "pro": "Pro",
+    "business": "Business",
+    "entreprise": "Enterprise"
+  },
+  "features": {
+    "basique": [
+      "Wesentliche Anpassungen",
+      "FLUX-Adresse inklusive",
+      "FLUX-Tools inklusive"
+    ],
+    "pro": [
+      "Erweiterte Anpassungen",
+      "Premium-Themes",
+      "FLUX-Tools inklusive"
+    ],
+    "business": [
+      "Eigene Domain",
+      "Premium-Themes",
+      "FLUX-Tools inklusive"
+    ],
+    "entreprise": [
+      "10 professionelle Vitrinen",
+      "Eigene Domain",
+      "Wayne Web-Signatur ausblendbar"
+    ]
+  },
+  "credits": {
+    "kicker": "Einmalige Aufladungen",
+    "title": "Brauchst du einen Extra-Schub?",
+    "note": "Ohne zusätzliches Abo. Ohne automatische Verlängerung.",
+    "creditsWord": "Guthaben",
+    "perCredit": "/ Guthaben",
+    "buy": "Dieses Paket kaufen"
+  },
+  "explainer": {
+    "kicker": "Wie funktioniert das?",
+    "titleLine1": "Das Abo verschafft dir Zugang.",
+    "titleLine2": "Die Guthaben bringen dich voran.",
+    "step1Title": "Wähle dein Paket",
+    "step1Text": "Es bestimmt die Anzahl der Vitrinen, Angebote und verfügbaren Funktionen.",
+    "step2Title": "Nutze deine Guthaben",
+    "step2Text": "Sie dienen für Generierungen, Veröffentlichungen und Aktionen, die die FLUX-Tools nutzen.",
+    "step3Title": "Lade bei Bedarf auf",
+    "step3Text": "Füge deinem Guthaben ein einmaliges Paket hinzu, ohne dein Abo zu ändern."
+  }
+}

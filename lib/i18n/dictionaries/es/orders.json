@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "title": "Mis pedidos"
+  },
+  "status": {
+    "pending": "Por tramitar",
+    "accepted": "Aceptado",
+    "fulfilled": "Terminado",
+    "cancelled": "Cancelado"
+  },
+  "bookingStatus": {
+    "cancelled": "Cancelada",
+    "confirmed": "Confirmada"
+  },
+  "itemKind": {
+    "offer": "Oferta",
+    "reservation": "Reserva",
+    "product": "Producto"
+  },
+  "clientSheet": {
+    "aria": "Ficha cliente",
+    "titleWithName": "Ficha cliente · {name}",
+    "titleDefault": "Ficha cliente",
+    "interactions": "{count} interacción(es)",
+    "phone": "Teléfono",
+    "email": "Email",
+    "notProvided": "No indicado",
+    "address": "Dirección física",
+    "addressNotProvided": "No indicada"
+  },
+  "history": {
+    "title": "Historial cliente",
+    "purchases": "{count} compra(s)",
+    "reservation": "Reserva"
+  },
+  "orderCard": {
+    "transaction": "Transacción FLUX",
+    "defaultClient": "Cliente",
+    "itemSingular": "artículo",
+    "itemPlural": "artículos",
+    "accept": "Aceptar",
+    "markDone": "Marcar como terminada",
+    "cancel": "Cancelar",
+    "refuse": "Rechazar"
+  },
+  "clientProfile": {
+    "dossier": "Expediente cliente",
+    "interactionSingular": "interacción",
+    "interactionPlural": "interacciones"
+  },
+  "hero": {
+    "kicker": "Cartera FLUX",
+    "titleStart": "Centro de",
+    "titleEm": "negocio",
+    "text": "Gestiona los pedidos, encuentra a cada cliente y convierte tu escaparate en un libro de cobros claro y ordenado.",
+    "movementSingular": "movimiento registrado",
+    "movementPlural": "movimientos registrados"
+  },
+  "metrics": {
+    "aria": "Indicadores de pedidos",
+    "toProcess": "Por tramitar",
+    "accepted": "Aceptados",
+    "history": "Historial",
+    "clientSheets": "Fichas de clientes"
+  },
+  "empty": {
+    "noPageStart": "Crea primero tu",
+    "noPageLink": "escaparate",
+    "noPageEnd": "para recibir pedidos.",
+    "noOrdersStart": "Todavía no hay pedidos. Añade productos en tu",
+    "noOrdersLink": "escaparate",
+    "noOrdersEnd": "y comparte tu enlace."
+  },
+  "sections": {
+    "incoming": "Transacciones entrantes",
+    "toProcess": "Por tramitar",
+    "toProcessCount": "{count} expediente(s) por validar",
+    "openLabel": "Expedientes abiertos",
+    "accepted": "Aceptadas",
+    "acceptedCount": "{count} cobro(s) en curso",
+    "ledger": "Libro mayor",
+    "history": "Historial",
+    "historyCount": "{count} transacción(es) archivada(s)",
+    "book": "Libro de negocio",
+    "clientSheets": "Fichas de clientes",
+    "clientSheetsCount": "{count} relación(es) conservada(s)"
+  },
+  "errors": {
+    "not_authenticated": "Tienes que estar conectado para continuar.",
+    "action_failed": "Acción no disponible.",
+    "unknown": "Se ha producido un error. Inténtalo de nuevo en un momento."
+  }
+}

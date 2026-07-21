@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -22,29 +23,18 @@ import {
   WalletCards,
 } from "lucide-react";
 import styles from "./formules.module.css";
+import { getAccountLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { defaultLocale } from "@/lib/i18n/config";
 
-export const metadata = { title: "Formules FLUX" };
-
-// Fonctionnalités marketing par palier (en plus des limites chiffrées).
-const PLAN_FEATURES: Record<Plan, string[]> = {
-  basique: ["Personnalisation de base", "Outils FLUX inclus"],
-  pro: [
-    "Personnalisation avancée (sections, blocs)",
-    "Thèmes premium",
-    "Outils FLUX inclus",
-  ],
-  business: [
-    "Personnalisation avancée (sections, blocs)",
-    "Thèmes premium",
-    "Outils FLUX inclus",
-  ],
-  entreprise: [
-    "Toute la personnalisation, sans limite d'ambition",
-    "Thèmes premium",
-    "Signature Wayne Web masquable",
-    "Outils FLUX inclus",
-  ],
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const locale = user ? await getAccountLocale(supabase, user.id) : defaultLocale;
+  return { title: (await getDictionary(locale, "billing")).meta.plansTitle };
+}
 
 // Pricing des formules FLUX. Les CTA créent une session Stripe Checkout côté
 // serveur; l'activation effective reste exclusivement pilotée par les webhooks.
@@ -57,11 +47,18 @@ export default async function FormulesPage({ searchParams }: {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("plan, trial_ends_at, subscribed_at, subscription_status")
-    .eq("user_id", user.id)
-    .single<Pick<Profile, "plan" | "trial_ends_at" | "subscribed_at" | "subscription_status">>();
+  const [{ data: profile }, locale] = await Promise.all([
+    supabase
+      .from("profiles")
+      .select("plan, trial_ends_at, subscribed_at, subscription_status")
+      .eq("user_id", user.id)
+      .single<Pick<Profile, "plan" | "trial_ends_at" | "subscribed_at" | "subscription_status">>(),
+    getAccountLocale(supabase, user.id),
+  ]);
+  const t = (await getDictionary(locale, "billing")).plans;
+  // Fonctionnalités marketing par palier (en plus des limites chiffrées),
+  // traduites : la structure vit dans billing.json (plans.features).
+  const PLAN_FEATURES = t.features as Record<Plan, string[]>;
   const params = await searchParams;
   const payment = typeof params.paiement === "string" ? params.paiement : null;
   const plan = (profile?.plan ?? "basique") as Plan;
@@ -75,46 +72,41 @@ export default async function FormulesPage({ searchParams }: {
         <div className={styles.heroGlow} aria-hidden="true" />
         <span className={styles.overline}>
           <LockKeyhole aria-hidden="true" />
-          Salon privé FLUX
+          {t.eyebrow}
         </span>
         <div className={styles.heroMark} aria-hidden="true">
           <Crown />
         </div>
         <h1>
-          Choisis ton <span>rang</span>
+          {t.titleStart} <span>{t.titleEm}</span>
         </h1>
-        <p>
-          Une formule fixe ton rythme de création : plus de crédits, plus de
-          vitrines, plus d&apos;offres et plus de liberté pour construire une
-          présence qui mérite l&apos;attention.
-        </p>
+        <p>{t.text}</p>
         <div className={styles.heroFacts}>
           <span>
             <Sparkles aria-hidden="true" />
-            {TRIAL_DAYS} jours offerts
+            {t.trialDays.replace("{days}", String(TRIAL_DAYS))}
           </span>
           <span>
             <Gem aria-hidden="true" />
-            Crédits mensuels inclus
+            {t.monthlyCredits}
           </span>
           <span>
             <WalletCards aria-hidden="true" />
-            Sans prélèvement surprise
+            {t.noSurprise}
           </span>
         </div>
         {trialActive && (
           <strong className={styles.trialStatus}>
-            Ton essai est en cours : encore {daysLeft} jour
-            {daysLeft > 1 ? "s" : ""}.
+            {(daysLeft > 1 ? t.trialActivePlural : t.trialActive).replace("{days}", String(daysLeft))}
           </strong>
         )}
       </header>
 
       {payment === "annule" && (
-        <div className={styles.checkoutNotice}>Paiement annulé — rien n&apos;a été débité.</div>
+        <div className={styles.checkoutNotice}>{t.paymentCancelled}</div>
       )}
       {payment && payment !== "annule" && (
-        <div className={styles.checkoutNotice}>Le paiement est momentanément indisponible. Réessaie ou contacte-nous.</div>
+        <div className={styles.checkoutNotice}>{t.paymentUnavailable}</div>
       )}
 
       <div className={styles.grid}>
@@ -131,29 +123,29 @@ export default async function FormulesPage({ searchParams }: {
               <div className={styles.planTop}>
                 <span>{PLAN_LABEL[item]}</span>
                 {isCurrent ? (
-                  <small>Formule actuelle</small>
+                  <small>{t.currentPlan}</small>
                 ) : item === "business" ? (
-                  <small>Recommandée</small>
+                  <small>{t.recommended}</small>
                 ) : null}
               </div>
               <strong className={styles.price}>
-                {limits.priceEur} €<small> /mois</small>
+                {limits.priceEur} €<small> {t.perMonth}</small>
               </strong>
               <p className={styles.credits}>
-                {limits.monthlyCredits} crédits chaque mois
+                {t.creditsPerMonth.replace("{credits}", String(limits.monthlyCredits))}
               </p>
               <div className={styles.planDivider} />
               <ul className={styles.features}>
                 <li>
-                  <Check aria-hidden="true" /> {limits.projects} vitrine
-                  {limits.projects > 1 ? "s" : ""}
+                  <Check aria-hidden="true" /> {limits.projects}{" "}
+                  {limits.projects > 1 ? t.storefrontPlural : t.storefrontSingular}
                 </li>
                 <li>
-                  <Check aria-hidden="true" /> {limits.offers} offres mises en avant
+                  <Check aria-hidden="true" /> {limits.offers} {t.offersHighlighted}
                 </li>
                 <li>
                   <Check aria-hidden="true" />{" "}
-                  {limits.customDomain ? "Domaine personnalisé" : "Adresse FLUX incluse"}
+                  {limits.customDomain ? t.customDomain : t.fluxAddress}
                 </li>
                 {PLAN_FEATURES[item].map((feature) => (
                   <li key={feature}>
@@ -161,15 +153,14 @@ export default async function FormulesPage({ searchParams }: {
                   </li>
                 ))}
                 <li>
-                  <Check aria-hidden="true" /> Les crédits non utilisés
-                  s&apos;additionnent
+                  <Check aria-hidden="true" /> {t.creditsAccumulate}
                 </li>
               </ul>
               {isCurrent ? (
-                <span className={styles.cta}>Ta formule</span>
+                <span className={styles.cta}>{t.yourPlan}</span>
               ) : (
                 <Link className={`flux-button-smooth flux-button-smooth-gold ${styles.cta}`} href={`/checkout/formule/${item}`}>
-                    Choisir {PLAN_LABEL[item]}
+                    {t.choose.replace("{plan}", PLAN_LABEL[item])}
                     <ArrowRight aria-hidden="true" />
                 </Link>
               )}
@@ -183,15 +174,11 @@ export default async function FormulesPage({ searchParams }: {
           <WalletCards aria-hidden="true" />
         </span>
         <div>
-          <p className={styles.noteKicker}>Crédits et liberté</p>
-          <h2>Comment marchent les crédits ?</h2>
+          <p className={styles.noteKicker}>{t.note.kicker}</p>
+          <h2>{t.note.title}</h2>
           <p>
-            Chaque action qui mobilise nos serveurs consomme des crédits :
-            publier une nouvelle version de ton site ({PUBLISH_COST} cr.),
-            générer du contenu avec l&apos;IA, pré-remplir ta vitrine. Plus ta
-            formule monte, plus tu peux modifier, publier et personnaliser. Le
-            détail des coûts est sur <Link href="/credits">ta page crédits</Link>{" "}
-            — rien n&apos;est prélevé sans confirmation.
+            {t.note.text.replace("{cost}", String(PUBLISH_COST))}{" "}
+            <Link href="/credits">{t.note.link}</Link> {t.note.textEnd}
           </p>
         </div>
       </div>

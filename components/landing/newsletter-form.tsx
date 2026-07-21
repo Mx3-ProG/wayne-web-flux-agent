@@ -3,10 +3,11 @@
 import { useState, type FormEvent } from "react";
 import { ArrowRight, Check } from "lucide-react";
 import styles from "@/app/home.module.css";
+import type { LandingDict } from "@/lib/i18n/get-dictionary";
 
 type Status = "idle" | "sending" | "done" | "error";
 
-export function NewsletterForm() {
+export function NewsletterForm({ dict }: { dict: LandingDict["newsletter"] }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<Status>("idle");
 
@@ -30,7 +31,7 @@ export function NewsletterForm() {
     return (
       <p className={styles.formSuccess} role="status">
         <Check aria-hidden="true" />
-        C&apos;est noté ! Le prochain conseil arrive directement dans ta boîte.
+        {dict.success}
       </p>
     );
   }
@@ -38,13 +39,13 @@ export function NewsletterForm() {
   return (
     <form className={styles.newsletterForm} onSubmit={handleSubmit}>
       <label className="sr-only" htmlFor="newsletter-email">
-        Ton adresse email
+        {dict.emailLabel}
       </label>
       <input
         id="newsletter-email"
         type="email"
         required
-        placeholder="ton.email@commerce.fr"
+        placeholder={dict.emailPlaceholder}
         autoComplete="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}
@@ -54,12 +55,12 @@ export function NewsletterForm() {
         type="submit"
         disabled={status === "sending"}
       >
-        {status === "sending" ? "Un instant…" : "Je m'abonne"}
+        {status === "sending" ? dict.sending : dict.submit}
         <ArrowRight aria-hidden="true" />
       </button>
       {status === "error" && (
         <p className={styles.formError} role="alert">
-          Oups, ça n&apos;est pas passé. Vérifie ton adresse et réessaie.
+          {dict.error}
         </p>
       )}
     </form>

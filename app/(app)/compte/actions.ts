@@ -8,6 +8,17 @@ import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
 import { sendFriendInvite } from "@/lib/emails/account-emails";
 import { withSpamHint } from "@/lib/email-hints";
+import { getAccountLocale, getRequestLocale } from "@/lib/i18n/locale.server";
+import { getDictionary, type AccountDict } from "@/lib/i18n/get-dictionary";
+import type { Locale } from "@/lib/i18n/config";
+import type { SupabaseClient } from "@supabase/supabase-js";
+
+// Pas encore d'utilisateur résolu (session expirée) : on retombe sur le
+// cookie NEXT_LOCALE plutôt que sur le français, pour rester traduit même
+// dans ce cas limite.
+async function fallbackDict(): Promise<AccountDict> {
+  return getDictionary(await getRequestLocale(), "account");
+}
 
 type ActionState = { error?: string; message?: string };
 
@@ -18,6 +29,17 @@ function clean(value: FormDataEntryValue | null, max: number): string | null {
   return text || null;
 }
 
+// Les server actions ne connaissent la locale que via le profil : ce helper la
+// résout une fois, pour renvoyer error/message déjà traduits au client
+// (useActionState affiche state.error/state.message tels quels).
+async function accountDict(
+  supabase: SupabaseClient,
+  userId: string
+): Promise<{ t: AccountDict; locale: Locale }> {
+  const locale = await getAccountLocale(supabase, userId);
+  return { t: await getDictionary(locale, "account"), locale };
+}
+
 export async function updateProfile(
   _prev: ActionState,
   formData: FormData
@@ -26,10 +48,11 @@ export async function updateProfile(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Ta session a expiré." };
+  if (!user) return { error: (await fallbackDict()).errors.session_expired };
+  const { t } = await accountDict(supabase, user.id);
 
   const name = clean(formData.get("name"), 80);
-  if (!name) return { error: "Indique au moins ton nom." };
+  if (!name) return { error: t.errors.name_required };
 
   const { error } = await supabase
     .from("profiles")
@@ -44,9 +67,9 @@ export async function updateProfile(
     })
     .eq("user_id", user.id);
 
-  if (error) return { error: "Impossible d’enregistrer le profil." };
+  if (error) return { error: t.errors.save_failed };
   revalidatePath("/compte");
-  return { message: "Profil enregistré." };
+  return { message: t.messages.profile_saved };
 }
 
 export async function requestAccountPasswordReset(
@@ -60,11 +83,12 @@ export async function requestAccountPasswordReset(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user?.email) return { error: "Ta session a expiré." };
+  if (!user?.email) return { error: (await fallbackDict()).errors.session_expired };
+  const { t, locale } = await accountDict(supabase, user.id);
 
   if (!rateLimit(`account-password-reset:${user.id}`, 3, 3_600_000)) {
     return {
-      message: withSpamHint("Un email a déjà été envoyé."),
+      message: await withSpamHint(t.messages.reset_email_sent, "self", locale),
     };
   }
 
@@ -73,12 +97,10 @@ export async function requestAccountPasswordReset(
   const { error } = await supabase.auth.resetPasswordForEmail(user.email, {
     redirectTo: `${siteUrl}/auth/confirm?next=/reinitialiser-mot-de-passe`,
   });
-  if (error) return { error: "Impossible d’envoyer l’email pour le moment." };
+  if (error) return { error: t.errors.email_send_failed };
 
   return {
-    message: withSpamHint(
-      "Email envoyé à ton adresse actuelle. Le lien est temporaire et à usage unique."
-    ),
+    message: await withSpamHint(t.messages.reset_email_sent_fresh, "self", locale),
   };
 }
 
@@ -91,20 +113,21 @@ export async function changeEmail(
   formData: FormData
 ): Promise<ActionState> {
   const email = String(formData.get("email") ?? "").trim();
-  if (!EMAIL_RE.test(email)) return { error: "Adresse email invalide." };
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Ta session a expiré." };
+  if (!user) return { error: (await fallbackDict()).errors.session_expired };
+  const { t, locale } = await accountDict(supabase, user.id);
+
+  if (!EMAIL_RE.test(email)) return { error: t.errors.invalid_email };
   if (user.email?.toLowerCase() === email.toLowerCase())
-    return { error: "C’est déjà ton adresse actuelle." };
+    return { error: t.errors.already_current_email };
 
   if (!rateLimit(`account-email-change:${user.id}`, 3, 3_600_000)) {
     return {
-      message:
-        "Une demande est déjà en cours. Vérifie tes deux boîtes de réception.",
+      message: t.messages.email_change_pending,
     };
   }
 
@@ -116,12 +139,10 @@ export async function changeEmail(
       emailRedirectTo: `${siteUrl}/auth/confirm?next=/compte`,
     }
   );
-  if (error) return { error: "Impossible de lancer le changement d’email." };
+  if (error) return { error: t.errors.email_change_failed };
 
   return {
-    message: withSpamHint(
-      "Demande envoyée. Ton adresse ne changera qu’après confirmation depuis ton adresse actuelle et la nouvelle."
-    ),
+    message: await withSpamHint(t.messages.email_change_requested, "self", locale),
   };
 }
 
@@ -131,40 +152,45 @@ export async function inviteFriend(
   formData: FormData
 ): Promise<ActionState> {
   const email = String(formData.get("email") ?? "").trim();
-  if (!EMAIL_RE.test(email)) return { error: "Adresse email invalide." };
 
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Ta session a expiré." };
+  if (!user) return { error: (await fallbackDict()).errors.session_expired };
+  const { t, locale } = await accountDict(supabase, user.id);
+
+  if (!EMAIL_RE.test(email)) return { error: t.errors.invalid_email };
 
   const fromName = String(user.user_metadata?.name ?? "").trim() || "Un ami";
   after(() =>
-    sendFriendInvite(email, fromName).catch((e) =>
+    sendFriendInvite(email, fromName, locale).catch((e) =>
       console.error("account: invite email failed", e)
     )
   );
-  return { message: withSpamHint(`Invitation envoyée à ${email}.`, "other") };
+  return {
+    message: await withSpamHint(t.messages.invite_sent.replace("{email}", email), "other", locale),
+  };
 }
 
 export async function deleteAccount(
   _prev: ActionState,
   formData: FormData
 ): Promise<ActionState> {
-  if (String(formData.get("confirmation") ?? "").trim() !== "SUPPRIMER") {
-    return { error: "Écris SUPPRIMER pour confirmer." };
-  }
-
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Ta session a expiré." };
+  if (!user) return { error: (await fallbackDict()).errors.session_expired };
+  const { t } = await accountDict(supabase, user.id);
+
+  if (String(formData.get("confirmation") ?? "").trim() !== t.danger.confirmWord) {
+    return { error: t.errors.confirmation_mismatch };
+  }
 
   const admin = createAdminClient();
   const { error } = await admin.auth.admin.deleteUser(user.id);
-  if (error) return { error: "La suppression a échoué. Réessaie plus tard." };
+  if (error) return { error: t.errors.deletion_failed };
 
   redirect("/login");
 }

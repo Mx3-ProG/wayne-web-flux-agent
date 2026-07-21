@@ -11,7 +11,7 @@ import {
 } from "@/lib/email-verification";
 import { sendEmailWithResult } from "@/lib/emails/send";
 import { emailVerificationEmail } from "@/lib/emails/auth-templates";
-import { withSpamHint } from "@/lib/email-hints";
+import { defaultLocale, hasLocale } from "@/lib/i18n/config";
 
 /**
  * Renvoie le lien de vérification d'adresse (bandeau du dashboard).
@@ -25,20 +25,21 @@ export async function resendVerificationEmail(): Promise<{
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user?.email) return { error: "Non connecté." };
+  if (!user?.email) return { error: "not_authenticated" };
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("email_verified_at, email_verify_sent_at")
+    .select("email_verified_at, email_verify_sent_at, locale")
     .eq("user_id", user.id)
     .maybeSingle<{
       email_verified_at: string | null;
       email_verify_sent_at: string | null;
+      locale: string | null;
     }>();
 
-  if (profile?.email_verified_at) return { message: "Ton adresse est déjà vérifiée." };
+  if (profile?.email_verified_at) return { message: "already_verified" };
   if (!canResendVerification(profile?.email_verify_sent_at ?? null)) {
-    return { error: "Patiente une minute avant de redemander un email." };
+    return { error: "rate_limited" };
   }
 
   const { token, hash } = createVerificationToken();
@@ -54,19 +55,20 @@ export async function resendVerificationEmail(): Promise<{
     .eq("user_id", user.id);
   if (updateError) {
     console.error("verification: token update failed", updateError.message);
-    return { error: "Impossible d'envoyer l'email. Réessaie plus tard." };
+    return { error: "update_failed" };
   }
 
-  const mail = emailVerificationEmail(verificationUrl(token));
+  const locale = profile?.locale && hasLocale(profile.locale) ? profile.locale : defaultLocale;
+  const mail = await emailVerificationEmail(verificationUrl(token), locale);
   const sent = await sendEmailWithResult({
     to: user.email,
     subject: mail.subject,
     html: mail.html,
   });
-  if (!sent) return { error: "L'email n'est pas parti. Réessaie dans un instant." };
+  if (!sent) return { error: "send_failed" };
 
   revalidatePath("/", "layout");
-  return { message: withSpamHint("Email envoyé. Regarde ta boîte de réception.") };
+  return { message: "sent" };
 }
 
 /** Ferme la session de l'utilisateur sur cet appareil. */

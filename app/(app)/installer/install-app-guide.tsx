@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Check, MoreVertical, Share, Smartphone } from "lucide-react";
 import styles from "./installer.module.css";
+import { useI18n } from "@/components/i18n-provider";
 
 type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -10,6 +11,8 @@ type InstallPromptEvent = Event & {
 };
 
 export function InstallAppGuide() {
+  const { dictionary } = useI18n();
+  const t = dictionary.installer;
   const [installPrompt, setInstallPrompt] = useState<InstallPromptEvent | null>(
     null
   );
@@ -55,17 +58,16 @@ export function InstallAppGuide() {
         </span>
         <span>
           <strong>
-            {installed ? "L’application est installée" : "Installation en une minute"}
+            {installed ? t.installed : t.oneMinute}
           </strong>
           <small>
             {installed
-              ? "Tu peux la retrouver sur ton écran d’accueil."
-              : "Choisis les étapes correspondant à ton téléphone."}
+              ? t.installedHint : t.chooseDevice}
           </small>
         </span>
         {installPrompt && !installed && (
           <button type="button" className={`flux-button-smooth ${styles.installButton}`} onClick={install}>
-            Installer maintenant
+            {t.installNow}
           </button>
         )}
       </div>
@@ -73,25 +75,19 @@ export function InstallAppGuide() {
       <div className={styles.guides}>
         <section className={styles.guide}>
           <div className={styles.guideHeading}>
-            <span className={styles.platform}>iPhone · Safari</span>
-            <h2>Depuis Safari</h2>
+            <span className={styles.platform}>{t.iphonePlatform}</span><h2>{t.fromSafari}</h2>
           </div>
           <ol>
-            <li><span>1</span><p>Ouvre cette page dans <strong>Safari</strong>.</p></li>
-            <li><span>2</span><p>Appuie sur <Share aria-hidden="true" /> <strong>Partager</strong>.</p></li>
-            <li><span>3</span><p>Choisis <strong>Sur l’écran d’accueil</strong>, puis « Ajouter ».</p></li>
+            {t.iphoneSteps.map((step, index) => <li key={step}><span>{index + 1}</span><p>{index === 1 && <Share aria-hidden="true" />}{step}</p></li>)}
           </ol>
         </section>
 
         <section className={styles.guide}>
           <div className={styles.guideHeading}>
-            <span className={styles.platform}>Android · Chrome</span>
-            <h2>Depuis Chrome</h2>
+            <span className={styles.platform}>{t.androidPlatform}</span><h2>{t.fromChrome}</h2>
           </div>
           <ol>
-            <li><span>1</span><p>Ouvre cette page dans <strong>Chrome</strong>.</p></li>
-            <li><span>2</span><p>Appuie sur <MoreVertical aria-hidden="true" /> en haut à droite.</p></li>
-            <li><span>3</span><p>Choisis <strong>Installer l’application</strong> ou « Ajouter à l’écran d’accueil ».</p></li>
+            {t.androidSteps.map((step, index) => <li key={step}><span>{index + 1}</span><p>{index === 1 && <MoreVertical aria-hidden="true" />}{step}</p></li>)}
           </ol>
         </section>
       </div>

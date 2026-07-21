@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "title": "Precios y créditos",
+    "description": "Descubre las suscripciones FLUX y los packs de créditos para desarrollar la presencia digital de tu negocio."
+  },
+  "header": {
+    "tryFree": "Probar gratis"
+  },
+  "hero": {
+    "eyebrow": "Precios claros. Ningún coste oculto.",
+    "titleLine1": "Elige el ritmo de",
+    "titleEm": "tu crecimiento.",
+    "text": "Una suscripción para hacer funcionar tu espacio. Créditos para crear, publicar y acelerar cuando lo necesites.",
+    "fact1": "días de prueba",
+    "fact2": "Cancelable en cualquier momento",
+    "fact3": "Pago seguro con Stripe"
+  },
+  "plans": {
+    "kicker": "Suscripciones mensuales",
+    "title": "Un plan para cada ambición.",
+    "note": "Los créditos mensuales no utilizados se acumulan.",
+    "featured": "El más elegido",
+    "perMonth": "/ mes",
+    "creditsIncluded": "créditos incluidos / mes",
+    "showcase": "escaparate",
+    "showcases": "escaparates",
+    "activeOffers": "ofertas activas",
+    "subpages": "subpáginas por escaparate",
+    "choose": "Elegir",
+    "checkoutNote": "Iniciarás sesión o crearás tu cuenta antes del pago. La suscripción se activa tras la confirmación de Stripe."
+  },
+  "planNames": {
+    "basique": "Básico",
+    "pro": "Pro",
+    "business": "Business",
+    "entreprise": "Enterprise"
+  },
+  "features": {
+    "basique": ["Personalización esencial", "Dirección FLUX incluida", "Herramientas FLUX incluidas"],
+    "pro": ["Personalización avanzada", "Temas premium", "Herramientas FLUX incluidas"],
+    "business": ["Dominio personalizado", "Temas premium", "Herramientas FLUX incluidas"],
+    "entreprise": ["10 escaparates profesionales", "Dominio personalizado", "Firma Wayne Web ocultable"]
+  },
+  "credits": {
+    "kicker": "Recargas puntuales",
+    "title": "¿Necesitas un empujón?",
+    "note": "Sin suscripción adicional. Sin renovación automática.",
+    "creditsWord": "créditos",
+    "perCredit": "/ crédito",
+    "buy": "Comprar este pack"
+  },
+  "explainer": {
+    "kicker": "¿Cómo funciona?",
+    "titleLine1": "La suscripción da acceso.",
+    "titleLine2": "Los créditos te hacen avanzar.",
+    "step1Title": "Elige tu plan",
+    "step1Text": "Determina el número de escaparates, ofertas y funcionalidades disponibles.",
+    "step2Title": "Usa tus créditos",
+    "step2Text": "Sirven para las generaciones, publicaciones y acciones que utilizan las herramientas FLUX.",
+    "step3Title": "Recarga si hace falta",
+    "step3Text": "Añade un pack puntual a tu saldo, sin modificar tu suscripción."
+  }
+}

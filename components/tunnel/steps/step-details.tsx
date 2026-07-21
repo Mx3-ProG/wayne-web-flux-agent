@@ -1,9 +1,10 @@
 "use client";
 
 import { MapPin, Phone } from "lucide-react";
-import { FONTS } from "@/lib/verticals";
+import type { LocalizedFont } from "@/lib/verticals-i18n";
 import { Question } from "@/components/tunnel/question";
 import styles from "@/app/commencer/tunnel.module.css";
+import type { TunnelDict } from "@/lib/i18n/get-dictionary";
 
 export type DetailsState = {
   font: string;
@@ -17,28 +18,32 @@ export type DetailsState = {
 // couleurs partent de celles du style choisi à l'écran précédent : on affine,
 // on ne repart pas d'une page blanche.
 export function StepDetails({
+  dict,
+  fonts,
   state,
   onChange,
 }: {
+  dict: TunnelDict["details"];
+  fonts: LocalizedFont[];
   state: DetailsState;
   onChange: (patch: Partial<DetailsState>) => void;
 }) {
   return (
     <Question
-      kicker="Ton style · Les détails"
-      title={<>Affine, et dis-leur comment te <em>joindre.</em></>}
-      subtitle="Ton écriture, tes couleurs et tes coordonnées. Le style que tu viens de choisir a déjà tout pré-réglé."
+      kicker={dict.kicker}
+      title={<>{dict.titleStart} <em>{dict.titleEm}</em></>}
+      subtitle={dict.subtitle}
     >
       <div className={styles.fields}>
         <label>
-          <span>Style d&apos;écriture</span>
+          <span>{dict.fontLabel}</span>
           <div>
             <select
               className={styles.select}
               value={state.font}
               onChange={(event) => onChange({ font: event.target.value })}
             >
-              {FONTS.map((font) => (
+              {fonts.map((font) => (
                 <option key={font.id} value={font.id}>
                   {font.label}
                 </option>
@@ -49,7 +54,7 @@ export function StepDetails({
 
         <div className={styles.colorFields}>
           <label>
-            <span>Couleur principale</span>
+            <span>{dict.primaryLabel}</span>
             <input
               type="color"
               value={state.primary || "#ef233c"}
@@ -57,7 +62,7 @@ export function StepDetails({
             />
           </label>
           <label>
-            <span>Couleur foncée</span>
+            <span>{dict.darkLabel}</span>
             <input
               type="color"
               value={state.dark || "#111114"}
@@ -68,7 +73,7 @@ export function StepDetails({
 
         <label>
           <span>
-            Téléphone <small>Facultatif</small>
+            {dict.phoneLabel} <small>{dict.optional}</small>
           </span>
           <div>
             <Phone aria-hidden="true" />
@@ -76,7 +81,7 @@ export function StepDetails({
               value={state.phone}
               onChange={(event) => onChange({ phone: event.target.value })}
               maxLength={30}
-              placeholder="Ex : 06 12 34 56 78"
+              placeholder={dict.phonePlaceholder}
               autoComplete="tel"
             />
           </div>
@@ -84,7 +89,7 @@ export function StepDetails({
 
         <label>
           <span>
-            Adresse <small>Facultatif</small>
+            {dict.addressLabel} <small>{dict.optional}</small>
           </span>
           <div>
             <MapPin aria-hidden="true" />
@@ -92,7 +97,7 @@ export function StepDetails({
               value={state.address}
               onChange={(event) => onChange({ address: event.target.value })}
               maxLength={120}
-              placeholder="Ex : 12 rue des Lilas"
+              placeholder={dict.addressPlaceholder}
               autoComplete="street-address"
             />
           </div>

@@ -9,16 +9,23 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { subpageLimit } from "@/lib/plans";
 import { validateSections } from "@/lib/sections";
-import { getPageTemplate } from "@/lib/page-templates";
+import { getPageTemplate } from "@/lib/page-templates-i18n";
 import { slugify } from "@/lib/slug";
 import type { Plan, SitePage, SitePageDraftFields } from "@/lib/types";
 import { enforceKarlMada } from "@/lib/karlmada";
+import { defaultLocale, hasLocale, locales } from "@/lib/i18n/config";
 
 const MAX_PATH_LENGTH = 48;
 const MAX_TITLE_LENGTH = 80;
 
+// Les 9 codes de langue sont réservés dans /p/{slug}/{...}: un chemin de
+// sous-page ne doit jamais pouvoir être confondu avec un segment de langue
+// par le routeur public (voir app/p/[slug]/[[...segments]]/page.tsx).
+const RESERVED_PATHS = new Set<string>(locales);
+
 function normalizePath(input: string): string {
-  return slugify(input).slice(0, MAX_PATH_LENGTH);
+  const path = slugify(input).slice(0, MAX_PATH_LENGTH);
+  return RESERVED_PATHS.has(path) ? `${path}-page` : path;
 }
 
 // Vérifie que le projet appartient bien à l'utilisateur connecté.
@@ -30,7 +37,7 @@ async function ownedPage(pageId: string) {
   if (!user) return { supabase, user: null, page: null };
   const { data: page } = await supabase
     .from("pages")
-    .select("id, slug")
+    .select("id, slug, default_locale")
     .eq("id", pageId)
     .eq("user_id", user.id)
     .single();
@@ -44,7 +51,7 @@ export async function createSitePage(
   input: { templateId: string; title?: string; path?: string }
 ): Promise<{ error?: string; sitePage?: SitePage }> {
   const { supabase, user, page } = await ownedPage(pageId);
-  if (!user || !page) return { error: "Page introuvable." };
+  if (!user || !page) return { error: "page_not_found" };
 
   const moderation = await enforceKarlMada(input, {
     userId: user.id,
@@ -62,10 +69,13 @@ export async function createSitePage(
   ]);
   const rows = existing ?? [];
   if (rows.length >= subpageLimit((profile?.plan as Plan) ?? "basique")) {
-    return { error: "Limite de pages atteinte pour ton forfait." };
+    return { error: "subpage_limit_reached" };
   }
 
-  const template = getPageTemplate(input.templateId);
+  // La sous-page naît dans la langue principale du projet, pas en français
+  // par défaut.
+  const locale = page.default_locale && hasLocale(page.default_locale) ? page.default_locale : defaultLocale;
+  const template = await getPageTemplate(input.templateId, locale);
   const title = (input.title?.trim() || template.defaultTitle).slice(0, MAX_TITLE_LENGTH);
   let path = normalizePath(input.path?.trim() || input.title?.trim() || template.defaultPath);
   if (!path) path = template.defaultPath;
@@ -97,7 +107,7 @@ export async function createSitePage(
     })
     .select("*")
     .single<SitePage>();
-  if (error || !sitePage) return { error: "Impossible de créer la page." };
+  if (error || !sitePage) return { error: "subpage_creation_failed" };
 
   revalidatePath("/ma-page");
   return { sitePage };
@@ -128,7 +138,7 @@ export async function saveSitePageFields(
     .select("page_id")
     .eq("id", sitePageId)
     .maybeSingle();
-  if (!moderationPage) return { error: "Page introuvable." };
+  if (!moderationPage) return { error: "page_not_found" };
   const moderation = await enforceKarlMada(fields, {
     pageId: moderationPage.page_id,
     surface: "site-page:save",
@@ -141,12 +151,12 @@ export async function saveSitePageFields(
       .select("page_id, draft_status")
       .eq("id", sitePageId)
       .single();
-    if (!row) return { error: "Page introuvable." };
+    if (!row) return { error: "page_not_found" };
     if (row.draft_status !== "new") {
-      return { error: "L'adresse d'une page publiée ne peut plus changer." };
+      return { error: "path_locked" };
     }
     const path = normalizePath(fields.path);
-    if (!path) return { error: "Adresse de page invalide." };
+    if (!path) return { error: "invalid_path" };
     const { data: conflict } = await supabase
       .from("site_pages")
       .select("id")
@@ -154,7 +164,7 @@ export async function saveSitePageFields(
       .eq("path", path)
       .neq("id", sitePageId)
       .maybeSingle();
-    if (conflict) return { error: "Cette adresse est déjà utilisée." };
+    if (conflict) return { error: "path_taken" };
     fields.path = path;
   }
 
@@ -162,7 +172,7 @@ export async function saveSitePageFields(
     spid: sitePageId,
     fields,
   });
-  if (error) return { error: "Enregistrement impossible." };
+  if (error) return { error: "save_failed" };
   revalidatePath("/ma-page");
   return {};
 }
@@ -178,7 +188,7 @@ export async function deleteSitePage(
     .select("id, draft_status")
     .eq("id", sitePageId)
     .single();
-  if (!row) return { error: "Page introuvable." };
+  if (!row) return { error: "page_not_found" };
 
   const { error } =
     row.draft_status === "new"
@@ -187,7 +197,7 @@ export async function deleteSitePage(
           .from("site_pages")
           .update({ draft_status: "deleted" })
           .eq("id", sitePageId);
-  if (error) return { error: "Suppression impossible." };
+  if (error) return { error: "delete_failed" };
   revalidatePath("/ma-page");
   return {};
 }
@@ -202,7 +212,7 @@ export async function restoreSitePage(
     .update({ draft_status: null })
     .eq("id", sitePageId)
     .eq("draft_status", "deleted");
-  if (error) return { error: "Restauration impossible." };
+  if (error) return { error: "restore_failed" };
   revalidatePath("/ma-page");
   return {};
 }
@@ -213,7 +223,7 @@ export async function reorderSitePages(
   orderedIds: string[]
 ): Promise<{ error?: string }> {
   const { user, page, supabase } = await ownedPage(pageId);
-  if (!user || !page) return { error: "Page introuvable." };
+  if (!user || !page) return { error: "page_not_found" };
   for (let i = 0; i < orderedIds.length; i++) {
     await supabase
       .from("site_pages")

@@ -1,0 +1,186 @@
+{
+  "verifiedBadge": {
+    "label": "Negozio verificato",
+    "title": "Questa versione del negozio è stata controllata da FLUX."
+  },
+  "header": {
+    "navAria": "Navigazione del sito",
+    "lightMode": "Passa alla modalità chiara",
+    "darkMode": "Passa alla modalità scura",
+    "openMenu": "Apri il menu",
+    "closeMenu": "Chiudi il menu",
+    "defaultBusinessName": "La mia attività"
+  },
+  "hero": {
+    "viewOffers": "Vedi le offerte",
+    "book": "Prenota",
+    "discover": "Scopri",
+    "viewServices": "Vedi i servizi",
+    "discoverShop": "Scopri il negozio",
+    "onlineBooking": "Prenotazione online",
+    "onlineOrder": "Ordine online"
+  },
+  "shell": {
+    "scrollTop": "Torna in cima alla pagina",
+    "whatsapp": "Scrivi su WhatsApp",
+    "call": "Chiama",
+    "viewCart": "Vedi il carrello",
+    "stayInTouch": "Restiamo in contatto",
+    "legalNotice": "Note legali",
+    "terms": "CGV",
+    "termsFull": "Condizioni generali di vendita",
+    "privacy": "Privacy",
+    "privacyFull": "Informativa sulla privacy",
+    "close": "Chiudi",
+    "poweredBy": "Creato con"
+  },
+  "subpage": {
+    "home": "Home",
+    "draftNotice": "Questa pagina è in fase di redazione."
+  },
+  "booking": {
+    "loadAvailabilityError": "Impossibile caricare le disponibilità.",
+    "loadSlotsError": "Impossibile caricare gli orari disponibili.",
+    "slotTakenError": "Questo orario è appena stato preso. Scegline un altro.",
+    "genericError": "La prenotazione non è stata registrata. Riprova.",
+    "close": "Chiudi",
+    "chooseDay": "Scegli un giorno",
+    "loading": "Un istante…",
+    "closed": "chiuso",
+    "full": "completo",
+    "slotsCount": "{count} orari disponibili",
+    "changeDay": "← cambia giorno",
+    "changeTime": "← cambia orario",
+    "yourDetails": "I tuoi dati",
+    "firstNamePlaceholder": "Il tuo nome",
+    "phonePlaceholder": "Il tuo telefono",
+    "emailPlaceholder": "La tua email (facoltativo)",
+    "confirmationHint": "Per ricevere la conferma del tuo appuntamento.",
+    "confirm": "Conferma l'appuntamento",
+    "booked": "Prenotato!",
+    "seeYouSoon": "A prestissimo.",
+    "at": "alle"
+  },
+  "order": {
+    "orderSent": "Ordine inviato",
+    "myOrder": "Il mio ordine",
+    "close": "Chiudi",
+    "itemSingular": "articolo",
+    "itemPlural": "articoli",
+    "cartEmpty": "Il tuo carrello è vuoto.",
+    "continue": "Continua",
+    "removeOne": "Rimuovi uno",
+    "addOne": "Aggiungi uno",
+    "backToCart": "← torna al carrello",
+    "yourDetails": "I tuoi dati",
+    "firstNamePlaceholder": "Il tuo nome",
+    "phonePlaceholder": "Il tuo telefono",
+    "emailPlaceholder": "La tua email (facoltativo)",
+    "addressPlaceholder": "Il tuo indirizzo (facoltativo)",
+    "notePlaceholder": "Una precisazione? (facoltativo)",
+    "contactHint": "Il commerciante ti ricontatta per confermare e concordare il pagamento.",
+    "sendOrder": "Invia l'ordine",
+    "sending": "Un istante…",
+    "thanks": "Grazie, è tutto annotato!",
+    "transmitted": "Il tuo ordine è stato trasmesso con successo.",
+    "willContact": "Il commerciante ti ricontatterà molto presto.",
+    "submitError": "L'ordine non è stato registrato. Riprova tra un istante."
+  },
+  "sections": {
+    "about": {
+      "eyebrow": "La mia storia",
+      "defaultAlt": "Ritratto"
+    },
+    "beforeAfter": {
+      "eyebrow": "La prova in immagini",
+      "title": "Prima / dopo",
+      "before": "Prima",
+      "after": "Dopo",
+      "compareAria": "Confronta prima e dopo"
+    },
+    "catalog": {
+      "eyebrow": "Cosa propongo",
+      "comboTitle": "I miei servizi",
+      "comboSubtitle": "Prodotti da ordinare e appuntamenti da prenotare.",
+      "shopOnlyTitle": "Prodotti",
+      "shopOnlySubtitle": "Prodotti da ordinare.",
+      "servicesOnlyTitle": "Prenotazioni",
+      "servicesOnlySubtitle": "Appuntamenti da prenotare.",
+      "shopTitle": "Il mio negozio",
+      "shopSubtitle": "Prodotti da ordinare.",
+      "servicesTitle": "I miei servizi",
+      "servicesSubtitle": "Appuntamenti da prenotare.",
+      "productsHeading": "Prodotti",
+      "reservationsHeading": "Prenotazioni",
+      "soldOut": "Esaurito",
+      "add": "Aggiungi",
+      "free": "Gratuito",
+      "book": "Prenota",
+      "emptyCatalog": "Il catalogo arriva presto."
+    },
+    "faq": {
+      "eyebrow": "Domande frequenti",
+      "title": "FAQ",
+      "subtitle": "Le risposte alle domande che mi vengono fatte più spesso."
+    },
+    "gallery": {
+      "eyebrow": "In immagini",
+      "title": "Il mio lavoro",
+      "subtitle": "Alcuni dettagli che raccontano il mio universo.",
+      "photoAlt": "Foto {index}"
+    },
+    "googleBusiness": {
+      "eyebrow": "Recensioni Google",
+      "defaultTitle": "La tua recensione conta per noi",
+      "defaultDescription": "Consulta le recensioni dei nostri clienti o condividi la tua esperienza in pochi secondi.",
+      "leaveReview": "Lascia una recensione",
+      "viewProfile": "Vedi la scheda Google"
+    },
+    "hours": {
+      "eyebrow": "Quando venire",
+      "title": "I miei orari",
+      "subtitle": "Trovami al momento giusto."
+    },
+    "map": {
+      "eyebrow": "Dove trovarmi",
+      "title": "Vieni a trovarmi",
+      "mapTitle": "Mappa: {query}"
+    },
+    "newsletter": {
+      "eyebrow": "Restiamo in contatto",
+      "title": "Resta informato",
+      "subtitle": "Ricevi le mie offerte e le novità, senza spam.",
+      "emailPlaceholder": "tua@email.it",
+      "emailAria": "Il tuo indirizzo email",
+      "subscribe": "Iscriviti",
+      "sending": "…",
+      "done": "Grazie! È tutto annotato. ✨",
+      "error": "Impossibile iscriverti al momento. Riprova più tardi."
+    },
+    "offers": {
+      "eyebrow": "Da non perdere",
+      "title": "Le mie offerte",
+      "subtitle": "Offerte da cogliere subito.",
+      "kindProduit": "Prodotto",
+      "kindService": "Servizio",
+      "kindEvenement": "Evento",
+      "orderProduct": "Ordina",
+      "grabOffer": "Ne approfitto"
+    },
+    "promo": {
+      "remainingDays": "{days} gg {hours} h",
+      "remainingHours": "{hours} h {minutes} min",
+      "countdownPrefix": "⏳ Ancora {countdown}",
+      "codeCopied": "Copiato!",
+      "codeLabel": "Codice: {code}"
+    },
+    "reviews": {
+      "eyebrow": "Si fidano di me",
+      "title": "Cosa dicono di me",
+      "subtitle": "Parole vere, lasciate dai miei clienti."
+    },
+    "video": {
+      "title": "Video"
+    }
+  }
+}

@@ -1,0 +1,348 @@
+{
+  "beaute": {
+    "label": "التجميل والعناية بالبشرة",
+    "jobTitles": [
+      "أخصائية تجميل",
+      "أخصائية تركيب الأظافر",
+      "أخصائية تركيب الرموش",
+      "أخصائية الوشم التجميلي"
+    ],
+    "clientWord": "الزبونات",
+    "promptContext": "معهد تجميل / عناية بالبشرة: عناية، أظافر، رموش، حواجب. زبائن غالبيتهم نساء، بنغمة دافئة ومطمئنة.",
+    "families": {
+      "soins-visage": {
+        "name": "عناية بالبشرة",
+        "services": {
+          "soin-eclat": "عناية بالإشراقة",
+          "soin-anti-age": "عناية مضادة للشيخوخة"
+        }
+      },
+      "ongles": {
+        "name": "الأظافر",
+        "services": {
+          "pose-gel": "تركيب الجل",
+          "remplissage": "إعادة التعبئة",
+          "vernis-semi-permanent": "طلاء شبه دائم"
+        }
+      },
+      "cils-sourcils": {
+        "name": "الرموش والحواجب",
+        "services": {
+          "extension-cils": "تركيب رموش كامل",
+          "rehaussement-cils": "رفع الرموش",
+          "restructuration-sourcils": "إعادة تشكيل الحواجب"
+        }
+      }
+    }
+  },
+  "coiffure": {
+    "label": "الحلاقة وصالونات الرجال",
+    "jobTitles": [
+      "مصففة شعر",
+      "مصفف شعر",
+      "حلاق",
+      "أخصائية تلوين"
+    ],
+    "clientWord": "الزبائن",
+    "promptContext": "صالون حلاقة نسائي أو رجالي: قصات، صبغات، عناية بالشعر. نغمة حيوية وقريبة من الزبائن.",
+    "families": {
+      "coupes": {
+        "name": "القصات",
+        "services": {
+          "coupe-femme": "قصة نسائية",
+          "coupe-homme": "قصة رجالية",
+          "coupe-barbe": "قصة + لحية"
+        }
+      },
+      "couleur": {
+        "name": "الصبغة",
+        "services": {
+          "coloration-complete": "صبغة كاملة",
+          "balayage": "بالياج"
+        }
+      }
+    }
+  },
+  "restaurant": {
+    "label": "المطاعم والضيافة",
+    "jobTitles": [
+      "صاحب مطعم",
+      "صاحبة مطعم",
+      "طاهٍ منزلي",
+      "متعهد ضيافة"
+    ],
+    "clientWord": "الضيوف",
+    "promptContext": "مطعم، متعهد ضيافة أو طاهٍ: حجز طاولات أو فعاليات. نغمة شهية وودية، تسليط الضوء على المنتجات والطبق المنزلي.",
+    "families": {
+      "reservations": {
+        "name": "الحجوزات",
+        "services": {
+          "table-dejeuner": "طاولة غداء",
+          "table-diner": "طاولة عشاء"
+        }
+      },
+      "evenements": {
+        "name": "الفعاليات",
+        "services": {
+          "privatisation": "حجز خاص (دفعة أولى)",
+          "menu-degustation": "قائمة تذوّق"
+        }
+      }
+    }
+  },
+  "auto": {
+    "label": "السيارات والورش",
+    "jobTitles": [
+      "صاحب ورشة",
+      "ميكانيكي",
+      "أخصائي تلميع سيارات",
+      "حداد سيارات"
+    ],
+    "clientWord": "الزبائن",
+    "promptContext": "ورشة سيارات، ميكانيك أو تجميل سيارات. نغمة مباشرة وموثوقة: شفافية في الأسعار، جدية، احترام المواعيد.",
+    "families": {
+      "entretien": {
+        "name": "الصيانة",
+        "services": {
+          "vidange-filtres": "تغيير الزيت + الفلاتر",
+          "revision-complete": "فحص شامل",
+          "plaquettes-frein": "تيل الفرامل (محور)"
+        }
+      },
+      "esthetique": {
+        "name": "التجميل",
+        "services": {
+          "lavage-int-ext": "غسيل داخلي/خارجي",
+          "polish-ceramique": "تلميع + طلاء سيراميك"
+        }
+      }
+    },
+    "productCategories": {
+      "pieces-accessoires": {
+        "name": "قطع وملحقات",
+        "products": {
+          "roue": "عجلة (وحدة)",
+          "balais-essuie-glace": "طقم مساحات زجاج",
+          "batterie-12v": "بطارية 12 فولت"
+        }
+      },
+      "produits-entretien": {
+        "name": "منتجات الصيانة",
+        "products": {
+          "huile-moteur-5l": "عبوة زيت محرك 5 لتر",
+          "kit-lavage-auto": "طقم غسيل سيارات"
+        }
+      }
+    }
+  },
+  "artisan": {
+    "label": "الحرفيون والبناء",
+    "jobTitles": [
+      "سباك",
+      "كهربائي",
+      "صباغ",
+      "نجار",
+      "متعدد الخدمات"
+    ],
+    "clientWord": "الزبائن",
+    "promptContext": "حرفي في مجال البناء: تدخلات عاجلة وورش عمل. نغمة موثوقة وبدون تعقيد: عرض سعر واضح، احترام المواعيد، عمل متقن.",
+    "families": {
+      "interventions": {
+        "name": "التدخلات",
+        "services": {
+          "diagnostic-devis": "تشخيص / عرض سعر منزلي",
+          "depannage-urgent": "تدخل عاجل",
+          "petits-travaux": "أعمال صغيرة (بالساعة)"
+        }
+      }
+    }
+  },
+  "commerce": {
+    "label": "التجارة والمتاجر",
+    "jobTitles": [
+      "تاجر",
+      "تاجرة",
+      "مدير متجر",
+      "بائع",
+      "بائعة"
+    ],
+    "clientWord": "الزبائن",
+    "promptContext": "تجارة تجزئة / متجر: بيع منتجات في المحل وعبر الاستلام من المتجر. نغمة تجارية وقريبة من الزبائن، تسليط الضوء على المنتجات الجديدة والعروض والتوفر.",
+    "families": {},
+    "productCategories": {
+      "nouveautes": {
+        "name": "منتجات جديدة",
+        "products": {
+          "article-vedette": "منتج مميز",
+          "coup-de-coeur": "اختيارنا المفضل"
+        }
+      },
+      "best-sellers": {
+        "name": "الأكثر مبيعًا",
+        "products": {
+          "produit-populaire": "منتج رائج",
+          "pack-decouverte": "باقة تجريبية"
+        }
+      }
+    }
+  },
+  "alimentation": {
+    "label": "التغذية والبقالة",
+    "jobTitles": [
+      "خباز",
+      "خبازة",
+      "معجناتي",
+      "بائع خضار وفواكه",
+      "بقال",
+      "بائع أجبان",
+      "بائع نبيذ"
+    ],
+    "clientWord": "الزبائن",
+    "promptContext": "تجارة المأكولات (مخبزة، حلويات، خضار وفواكه، بقالة راقية): بيع منتجات طازجة وحجز مسبق / استلام من المتجر. نغمة شهية، حرفية ومحلية، تركز على الطراوة والصنع اليدوي.",
+    "families": {},
+    "productCategories": {
+      "boulangerie": {
+        "name": "المخبزة",
+        "products": {
+          "baguette-tradition": "باغيت تقليدي",
+          "pain-campagne": "خبز ريفي",
+          "croissant": "كرواسون"
+        }
+      },
+      "patisserie": {
+        "name": "الحلويات",
+        "products": {
+          "eclair": "إكلير",
+          "tarte-du-jour": "تارت اليوم (قطعة)",
+          "gateau-a-commander": "كعكة بالطلب"
+        }
+      }
+    }
+  },
+  "mode": {
+    "label": "الأزياء والإكسسوارات",
+    "jobTitles": [
+      "مصمم",
+      "مصممة",
+      "ستايليست",
+      "صائغ مجوهرات",
+      "صائغة مجوهرات",
+      "حرفي الجلود"
+    ],
+    "clientWord": "الزبائن",
+    "promptContext": "ملابس جاهزة، مجوهرات أو إكسسوارات: متجر تصاميم وقطع مختارة. نغمة أنيقة وجاذبة، سرد قصصي حول الخامات، المقاسات والإصدارات المحدودة.",
+    "families": {},
+    "productCategories": {
+      "vetements": {
+        "name": "الملابس",
+        "products": {
+          "t-shirt": "تيشيرت",
+          "robe": "فستان",
+          "veste": "سترة"
+        }
+      },
+      "accessoires": {
+        "name": "الإكسسوارات",
+        "products": {
+          "collier": "عقد",
+          "sac": "حقيبة",
+          "carte-cadeau": "بطاقة هدية"
+        }
+      }
+    }
+  },
+  "bienetre": {
+    "label": "العافية والتدريب",
+    "jobTitles": [
+      "مدرب رياضي",
+      "معالج طبيعي",
+      "مصور",
+      "أخصائي استرخاء",
+      "ممارس عافية"
+    ],
+    "clientWord": "الزبائن",
+    "promptContext": "عافية، تدريب أو تصوير فوتوغرافي: خدمات بالموعد وأيضًا بيع باقات، برامج علاجية أو منتجات (جلسات، كتب إلكترونية، برامج). نغمة متعاطفة، محفزة وخبيرة، موجهة نحو التحول والنتائج.",
+    "families": {
+      "seances": {
+        "name": "الجلسات",
+        "services": {
+          "seance-decouverte": "جلسة تجريبية",
+          "seance-individuelle": "جلسة فردية",
+          "bilan-complet": "تقييم شامل"
+        }
+      }
+    },
+    "productCategories": {
+      "forfaits-programmes": {
+        "name": "باقات وبرامج",
+        "products": {
+          "forfait-5-seances": "باقة 5 جلسات",
+          "forfait-10-seances": "باقة 10 جلسات",
+          "programme-en-ligne": "برنامج عبر الإنترنت"
+        }
+      }
+    }
+  },
+  "autre": {
+    "label": "نشاط آخر",
+    "jobTitles": [
+      "مستقل",
+      "مستقلة"
+    ],
+    "clientWord": "الزبائن",
+    "promptContext": "نشاط تجاري أو مستقل قريب من الزبائن. نغمة مهنية وسهلة التواصل.",
+    "families": {
+      "prestations": {
+        "name": "الخدمات",
+        "services": {
+          "rendez-vous-decouverte": "موعد تجريبي",
+          "prestation-standard": "خدمة قياسية"
+        }
+      }
+    }
+  },
+  "catalogWording": {
+    "service": {
+      "categoryWord": "فئة خدمات",
+      "itemWord": "خدمة",
+      "categoryPlaceholder": "مثال: العناية بالبشرة",
+      "itemPlaceholder": "مثال: عناية بالإشراقة 60 دقيقة",
+      "categoryHint": "مجموعة من الخدمات، كما تنظّمها في قائمة أسعارك المعروضة.",
+      "itemHint": "خدمتك الأكثر طلبًا. هذه هي التي سيأتي زبائنك لحجزها أولًا."
+    },
+    "product": {
+      "categoryWord": "فئة",
+      "itemWord": "منتج",
+      "categoryPlaceholder": "مثال: باقات الزهور",
+      "itemPlaceholder": "مثال: باقة موسمية",
+      "categoryHint": "رفّ من متجرك، كما يبحث عنه زبائنك.",
+      "itemHint": "منتجك الأبرز، الذي تبيعه الأكثر."
+    },
+    "hybrid": {
+      "categoryWord": "فئة",
+      "itemWord": "منتج أو خدمة",
+      "categoryPlaceholder": "مثال: قصة وصبغة",
+      "itemPlaceholder": "مثال: قصة مع تصفيف",
+      "categoryHint": "يمكنك أن تصنّف فيها منتجات وخدمات بالموعد على حد سواء.",
+      "itemHint": "ما يطلبه زبائنك منك أكثر من أي شيء آخر."
+    }
+  },
+  "fontLabels": {
+    "fraunces": "Fraunces — تحريرية، فاخرة (افتراضي)",
+    "inter": "Inter — عصرية، محايدة (افتراضي)",
+    "playfair": "Playfair Display — أنيقة، راقية",
+    "montserrat": "Montserrat — نقية، مهنية",
+    "lora": "Lora — رفيعة، سيريف ناعمة",
+    "cormorant": "Cormorant Garamond — فاخرة، متطورة",
+    "quicksand": "Quicksand — مدوّرة، ناعمة",
+    "poppins": "Poppins — عصرية، ناعمة",
+    "space-grotesk": "Space Grotesk — تقنية، جريئة",
+    "sora": "Sora — معاصرة، واضحة",
+    "manrope": "Manrope — بسيطة، سهلة القراءة",
+    "libre-baskerville": "Libre Baskerville — كلاسيكية، أدبية",
+    "dm-serif": "DM Serif Display — بارزة، تحريرية",
+    "marcellus": "Marcellus — عتيقة، مرموقة",
+    "josefin": "Josefin Sans — هندسية، أنيقة قديمة الطراز",
+    "bebas": "Bebas Neue — بأحرف كبيرة، لافتة"
+  }
+}

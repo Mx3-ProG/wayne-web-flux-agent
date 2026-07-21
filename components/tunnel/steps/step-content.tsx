@@ -5,29 +5,21 @@ import { Loader2, WandSparkles } from "lucide-react";
 import { getTool } from "@/lib/tools-config";
 import { Question } from "@/components/tunnel/question";
 import styles from "@/app/commencer/tunnel.module.css";
+import type { TunnelDict } from "@/lib/i18n/get-dictionary";
 
 const TOOL_SLUG = "posts";
-
-const FORMATS = [
-  { value: "reel", label: "Reel / vidéo courte" },
-  { value: "carrousel", label: "Carrousel" },
-  { value: "post", label: "Post simple" },
-];
-const OBJECTIFS = [
-  { value: "visibilite", label: "Toucher un max de monde" },
-  { value: "expertise", label: "Prouver mon expertise" },
-  { value: "conversion", label: "Donner envie de réserver" },
-];
 
 // Étape 6 : la SEULE étape facturée du tunnel (25 cr. sur les 100 offerts).
 // C'est volontaire — c'est ici que le crédit prend un sens concret, en
 // produisant quelque chose de publiable tout de suite.
 export function StepContent({
+  dict,
   gain,
   balance,
   done,
   onDone,
 }: {
+  dict: TunnelDict["content"];
   gain: string;
   balance: number;
   done: boolean;
@@ -40,6 +32,8 @@ export function StepContent({
   const [output, setOutput] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
+  const formats = Object.entries(dict.formats).map(([value, label]) => ({ value, label }));
+  const goals = Object.entries(dict.goals).map(([value, label]) => ({ value, label }));
 
   async function generate() {
     setPending(true);
@@ -59,18 +53,18 @@ export function StepContent({
         // Mêmes codes que partout ailleurs : l'essai expiré et le solde vide
         // sont des situations normales, pas des bugs.
         if (body?.error === "insufficient_credits") {
-          setError("Il te manque des crédits pour cette génération.");
+          setError(dict.errors.insufficientCredits);
         } else if (
           body?.error === "ai_window_expired" ||
           body?.error === "subscription_required"
         ) {
           setError(
-            "Tu as terminé ton essai — recharge pour profiter de FLUX à 100 %."
+            dict.errors.trialExpired
           );
         } else if (body?.error === "content_blocked") {
-          setError("Ce sujet ne passe pas la modération. Reformule-le.");
+          setError(dict.errors.contentBlocked);
         } else {
-          setError("La génération a échoué. Réessaie dans un instant.");
+          setError(dict.errors.generic);
         }
         return;
       }
@@ -78,7 +72,7 @@ export function StepContent({
       setOutput(await response.text());
       onDone();
     } catch {
-      setError("La génération a échoué. Réessaie dans un instant.");
+      setError(dict.errors.generic);
     } finally {
       setPending(false);
     }
@@ -86,20 +80,20 @@ export function StepContent({
 
   return (
     <Question
-      kicker="Étape 6 · Ton premier contenu"
-      title={<>Ta première <em>publication</em> t&apos;attend.</>}
-      subtitle="L'IA connaît maintenant ton métier, ta ville, ton catalogue et ton ton. Regarde ce qu'elle en fait."
+      kicker={dict.kicker}
+      title={<>{dict.titleStart} <em>{dict.titleEm}</em> {dict.titleEnd}</>}
+      subtitle={dict.subtitle}
       gain={gain}
     >
       <p className={styles.costBadge}>
-        {cost} crédits sur tes {balance} · c&apos;est la seule étape payante du parcours
+        {dict.costBadge.replace("{cost}", String(cost)).replace("{balance}", String(balance))}
       </p>
 
       <div className={styles.contentForm}>
         <label>
-          <span>Type de contenu</span>
+          <span>{dict.formatLabel}</span>
           <select value={format} onChange={(event) => setFormat(event.target.value)}>
-            {FORMATS.map((item) => (
+            {formats.map((item) => (
               <option key={item.value} value={item.value}>
                 {item.label}
               </option>
@@ -107,9 +101,9 @@ export function StepContent({
           </select>
         </label>
         <label>
-          <span>Il sert à quoi, ce post ?</span>
+          <span>{dict.goalLabel}</span>
           <select value={objectif} onChange={(event) => setObjectif(event.target.value)}>
-            {OBJECTIFS.map((item) => (
+            {goals.map((item) => (
               <option key={item.value} value={item.value}>
                 {item.label}
               </option>
@@ -117,12 +111,12 @@ export function StepContent({
           </select>
         </label>
         <label>
-          <span>Le sujet (facultatif)</span>
+          <span>{dict.topicLabel}</span>
           <input
             value={sujet}
             onChange={(event) => setSujet(event.target.value)}
             maxLength={400}
-            placeholder="Ex : ma prestation phare, une astuce, un avant/après…"
+            placeholder={dict.topicPlaceholder}
           />
         </label>
       </div>
@@ -131,7 +125,7 @@ export function StepContent({
 
       {output ? (
         <div className={styles.output}>
-          <p className={styles.outputLabel}>Ton contenu — il est déjà dans ton coffre.</p>
+          <p className={styles.outputLabel}>{dict.outputLabel}</p>
           <pre>{output}</pre>
         </div>
       ) : (
@@ -143,11 +137,11 @@ export function StepContent({
         >
           {pending ? (
             <>
-              <Loader2 aria-hidden="true" className={styles.spin} /> L&apos;IA écrit…
+              <Loader2 aria-hidden="true" className={styles.spin} /> {dict.generating}
             </>
           ) : (
             <>
-              Générer mon premier contenu <WandSparkles aria-hidden="true" />
+              {dict.generate} <WandSparkles aria-hidden="true" />
             </>
           )}
         </button>
@@ -155,7 +149,7 @@ export function StepContent({
 
       {done && output && (
         <p className={styles.outputNote}>
-          Tu peux le retrouver à tout moment dans ton coffre.
+          {dict.outputNote}
         </p>
       )}
     </Question>

@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import styles from "@/app/(app)/app-shell.module.css";
 import { FluxBrand } from "@/components/flux-brand";
+import { useI18n } from "@/components/i18n-provider";
 
 type DrawerItem = {
   href: string;
@@ -32,36 +33,6 @@ type DrawerItem = {
   badge?: "orders" | "stock";
   activeRoot?: string;
 };
-
-const GROUPS: { label: string; items: DrawerItem[] }[] = [
-  {
-    label: "L’essentiel",
-    items: [
-      { href: "/espace", label: "Accueil", icon: LayoutDashboard },
-      { href: "/projets", label: "Mes projets", icon: Layers },
-      { href: "/ma-page", label: "Ma vitrine", icon: Store },
-      { href: "/commandes", label: "Mes commandes", icon: ShoppingBag, badge: "orders" },
-      { href: "/offres/configurer", label: "Mes offres", icon: BadgePercent, activeRoot: "/offres" },
-    ],
-  },
-  {
-    label: "Mon commerce",
-    items: [
-      { href: "/produits/configurer", label: "Mes produits", icon: Boxes, badge: "stock", activeRoot: "/produits" },
-      { href: "/agenda", label: "Mon agenda", icon: CalendarDays },
-      { href: "/statistiques", label: "Mes statistiques", icon: ChartLine },
-      { href: "/resultats", label: "Mes contenus", icon: FolderOpen },
-      { href: "/installer", label: "Installer l’app", icon: Smartphone },
-      { href: "/contexte/configurer", label: "FLUX – IA", icon: MessageSquareText, activeRoot: "/contexte" },
-    ],
-  },
-  {
-    label: "Mon compte",
-    items: [
-      { href: "/compte", label: "Voir mon profil", icon: UserRound },
-    ],
-  },
-];
 
 export function MobileAppMenu({
   balance,
@@ -73,6 +44,28 @@ export function MobileAppMenu({
   lowStock: number;
 }) {
   const pathname = usePathname();
+  const { dictionary } = useI18n();
+  const t = dictionary.nav;
+  const groups: { label: string; items: DrawerItem[] }[] = [
+    { label: t.groups.essential, items: [
+      { href: "/espace", label: t.items.home, icon: LayoutDashboard },
+      { href: "/projets", label: t.items.projects, icon: Layers },
+      { href: "/ma-page", label: t.items.storefront, icon: Store },
+      { href: "/commandes", label: t.items.orders, icon: ShoppingBag, badge: "orders" },
+      { href: "/offres/configurer", label: t.items.offers, icon: BadgePercent, activeRoot: "/offres" },
+    ] },
+    { label: t.groups.business, items: [
+      { href: "/produits/configurer", label: t.items.products, icon: Boxes, badge: "stock", activeRoot: "/produits" },
+      { href: "/agenda", label: t.items.agenda, icon: CalendarDays },
+      { href: "/statistiques", label: t.items.stats, icon: ChartLine },
+      { href: "/resultats", label: t.items.content, icon: FolderOpen },
+      { href: "/installer", label: t.items.install, icon: Smartphone },
+      { href: "/contexte/configurer", label: t.items.ai, icon: MessageSquareText, activeRoot: "/contexte" },
+    ] },
+    { label: t.groups.account, items: [
+      { href: "/compte", label: t.items.viewProfile, icon: UserRound },
+    ] },
+  ];
   const drawerId = useId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
@@ -115,7 +108,7 @@ export function MobileAppMenu({
         onClick={() => setOpen(true)}
       >
         <Menu aria-hidden="true" />
-        <span>Menu</span>
+        <span>{t.menu}</span>
       </button>
 
       <div
@@ -125,7 +118,7 @@ export function MobileAppMenu({
         <button
           type="button"
           className={styles.drawerBackdrop}
-          aria-label="Fermer le menu"
+          aria-label={t.close}
           tabIndex={open ? 0 : -1}
           onClick={() => setOpen(false)}
         />
@@ -135,7 +128,7 @@ export function MobileAppMenu({
           className={styles.mobileDrawer}
           role="dialog"
           aria-modal="true"
-          aria-label="Menu principal"
+          aria-label={t.mainAria}
         >
           <div className={styles.drawerHeader}>
             <Link href="/espace" className={styles.drawerBrand} onClick={() => setOpen(false)}>
@@ -145,7 +138,7 @@ export function MobileAppMenu({
               ref={closeButtonRef}
               type="button"
               className={styles.drawerClose}
-              aria-label="Fermer le menu"
+              aria-label={t.close}
               onClick={() => setOpen(false)}
             >
               <X aria-hidden="true" />
@@ -155,13 +148,13 @@ export function MobileAppMenu({
           <div className={styles.drawerIdentity}>
             <FluxBrand className={styles.drawerAvatar} markOnly />
             <span>
-              <strong>Mon espace</strong>
+              <strong>{t.workspace}</strong>
               <small>Wayne-Web Flux</small>
             </span>
           </div>
 
           <div className={styles.drawerScroll}>
-            {GROUPS.map((group) => (
+            {groups.map((group) => (
               <section className={styles.drawerGroup} key={group.label}>
                 <h2>{group.label}</h2>
                 <nav aria-label={group.label}>
@@ -203,7 +196,7 @@ export function MobileAppMenu({
           <div className={styles.drawerFooter}>
             <Link href="/credits" className={styles.drawerCreditLink} onClick={() => setOpen(false)}>
               <Coins aria-hidden="true" />
-              <span><strong>{balance}</strong> crédits</span>
+              <span><strong>{balance}</strong> {t.credits}</span>
               <ChevronRight aria-hidden="true" />
             </Link>
           </div>

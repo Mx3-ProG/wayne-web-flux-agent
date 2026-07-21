@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createPage } from "@/app/(app)/ma-page/actions";
-import { VERTICALS, getVertical } from "@/lib/verticals";
+import { KARLMADA_BLOCK_MESSAGE } from "@/lib/karlmada-constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,11 +14,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useI18n } from "@/components/i18n-provider";
 
 // Première visite : 3 questions et la vitrine existe, pré-remplie pour le métier.
 // `redirectTo` permet de réutiliser le wizard pour créer un projet supplémentaire.
 export function CreatePageWizard({ redirectTo }: { redirectTo?: string } = {}) {
   const router = useRouter();
+  const { editor, verticals } = useI18n();
+  const t = editor.wizard;
   const [vertical, setVertical] = useState("");
   const [businessName, setBusinessName] = useState("");
   const [jobTitle, setJobTitle] = useState("");
@@ -26,15 +29,17 @@ export function CreatePageWizard({ redirectTo }: { redirectTo?: string } = {}) {
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
 
-  const selected = vertical ? getVertical(vertical) : null;
+  const selected = vertical ? (verticals.find((v) => v.slug === vertical) ?? null) : null;
 
   async function submit() {
     setError("");
     setPending(true);
     const result = await createPage({ vertical, businessName, jobTitle, city });
     setPending(false);
-    if (result.error) setError(result.error);
-    else if (redirectTo) router.push(redirectTo);
+    if (result.error) {
+      const code = result.error === KARLMADA_BLOCK_MESSAGE ? "content_blocked" : result.error;
+      setError(t.errors[code as keyof typeof t.errors] ?? t.errors.unknown);
+    } else if (redirectTo) router.push(redirectTo);
     else router.refresh();
   }
 
@@ -42,23 +47,20 @@ export function CreatePageWizard({ redirectTo }: { redirectTo?: string } = {}) {
     <div className="max-w-xl mx-auto">
       <Card>
         <CardHeader>
-          <CardTitle className="text-2xl">Créons ta vitrine</CardTitle>
-          <CardDescription>
-            3 questions, et ta page existe — déjà remplie pour ton métier. Tout
-            reste modifiable ensuite.
-          </CardDescription>
+          <CardTitle className="text-2xl">{t.title}</CardTitle>
+          <CardDescription>{t.description}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           <div className="space-y-2">
-            <Label>Ton activité</Label>
+            <Label>{t.activity}</Label>
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-              {VERTICALS.map((v) => (
+              {verticals.map((v) => (
                 <button
                   key={v.slug}
                   type="button"
                   onClick={() => {
                     setVertical(v.slug);
-                    if (!jobTitle || !VERTICALS.some((x) => x.jobTitles.includes(jobTitle)))
+                    if (!jobTitle || !verticals.some((x) => x.jobTitles.includes(jobTitle)))
                       setJobTitle(v.jobTitles[0]);
                   }}
                   className={`rounded-xl border px-3 py-3 text-sm text-left transition-colors ${
@@ -77,17 +79,17 @@ export function CreatePageWizard({ redirectTo }: { redirectTo?: string } = {}) {
           {selected && (
             <>
               <div className="space-y-2">
-                <Label htmlFor="wizard-name">Le nom de ton commerce</Label>
+                <Label htmlFor="wizard-name">{t.businessName}</Label>
                 <Input
                   id="wizard-name"
                   value={businessName}
                   onChange={(e) => setBusinessName(e.target.value)}
-                  placeholder="Pas de nom ? Ton prénom marche très bien."
+                  placeholder={t.businessNamePlaceholder}
                   maxLength={60}
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="wizard-job">Ton métier (s&apos;affiche sous ton nom)</Label>
+                <Label htmlFor="wizard-job">{t.jobTitle}</Label>
                 <Input
                   id="wizard-job"
                   value={jobTitle}
@@ -112,12 +114,12 @@ export function CreatePageWizard({ redirectTo }: { redirectTo?: string } = {}) {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="wizard-city">Ta ville</Label>
+                <Label htmlFor="wizard-city">{t.city}</Label>
                 <Input
                   id="wizard-city"
                   value={city}
                   onChange={(e) => setCity(e.target.value)}
-                  placeholder="Ex : Lyon"
+                  placeholder={t.cityPlaceholder}
                   maxLength={60}
                 />
               </div>
@@ -128,7 +130,7 @@ export function CreatePageWizard({ redirectTo }: { redirectTo?: string } = {}) {
                 disabled={pending || !businessName.trim()}
                 onClick={submit}
               >
-                {pending ? "Création…" : "Créer ma vitrine"}
+                {pending ? t.creating : t.create}
               </Button>
             </>
           )}

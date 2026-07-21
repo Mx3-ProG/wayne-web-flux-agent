@@ -7,6 +7,8 @@ import { formatDuration, formatPrice } from "@/lib/types";
 import { Clock3, ChevronDown } from "lucide-react";
 import type { CategoryWithProducts, FamilyWithServices } from "../vitrine-view";
 import styles from "../vitrine.module.css";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
+import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
 
 type Mode = "combined" | "boutique" | "prestations";
 
@@ -21,6 +23,7 @@ type Props = {
   first?: boolean;
   title?: string;
   subtitle?: string;
+  t?: StorefrontDict["sections"]["catalog"];
 };
 
 // Bloc catalogue de la vitrine. En mode "combined" (boutique et prestations
@@ -37,6 +40,7 @@ export function CatalogSection({
   first = false,
   title,
   subtitle,
+  t = frStorefront.sections.catalog,
 }: Props) {
   const [openFamily, setOpenFamily] = useState<string | null>(
     families[0]?.id ?? null
@@ -50,7 +54,7 @@ export function CatalogSection({
 
   if (!hasServices && !hasShop) {
     if (mode === "combined" && showEmpty) {
-      return <p className={styles.empty}>Le catalogue arrive bientôt.</p>;
+      return <p className={styles.empty}>{t.emptyCatalog}</p>;
     }
     return null;
   }
@@ -58,13 +62,13 @@ export function CatalogSection({
   const heading =
     mode === "combined"
       ? hasShop && !hasServices
-        ? { p: "Ce que je propose", h2: title || "Produits", span: subtitle || "Des produits à commander." }
+        ? { p: t.eyebrow, h2: title || t.shopOnlyTitle, span: subtitle || t.shopOnlySubtitle }
         : hasServices && !hasShop
-          ? { p: "Ce que je propose", h2: title || "Réservations", span: subtitle || "Des rendez-vous à réserver." }
-          : { p: "Ce que je propose", h2: title || "Mes prestations", span: subtitle || "Produits à commander et rendez-vous à réserver." }
+          ? { p: t.eyebrow, h2: title || t.servicesOnlyTitle, span: subtitle || t.servicesOnlySubtitle }
+          : { p: t.eyebrow, h2: title || t.comboTitle, span: subtitle || t.comboSubtitle }
       : mode === "boutique"
-        ? { p: "Ce que je propose", h2: title || "Ma boutique", span: subtitle || "Des produits à commander." }
-        : { p: "Ce que je propose", h2: title || "Mes prestations", span: subtitle || "Des rendez-vous à réserver." };
+        ? { p: t.eyebrow, h2: title || t.shopTitle, span: subtitle || t.shopSubtitle }
+        : { p: t.eyebrow, h2: title || t.servicesTitle, span: subtitle || t.servicesSubtitle };
 
   const shop = hasShop && (
     <div
@@ -72,7 +76,7 @@ export function CatalogSection({
       id="boutique"
     >
       {mode === "combined" && hasServices && (
-        <h3 className={styles.subHeading}>Produits</h3>
+        <h3 className={styles.subHeading}>{t.productsHeading}</h3>
       )}
       {mode !== "combined" && (
         <div className={styles.sectionHeading}>
@@ -112,7 +116,7 @@ export function CatalogSection({
                         {formatPrice(product.price_cents)}
                       </span>
                       {product.track_stock && product.stock <= 0 ? (
-                        <span className={styles.soldOut}>Épuisé</span>
+                        <span className={styles.soldOut}>{t.soldOut}</span>
                       ) : (
                         onAddToCart && (
                           <button
@@ -121,7 +125,7 @@ export function CatalogSection({
                             className={styles.addButton}
                             style={{ backgroundColor: accent }}
                           >
-                            Ajouter
+                            {t.add}
                           </button>
                         )
                       )}
@@ -147,7 +151,7 @@ export function CatalogSection({
       id="reservations"
     >
       {mode === "combined" && hasShop && (
-        <h3 className={styles.subHeading}>Réservations</h3>
+        <h3 className={styles.subHeading}>{t.reservationsHeading}</h3>
       )}
       {mode !== "combined" && (
         <div className={styles.sectionHeading}>
@@ -187,7 +191,7 @@ export function CatalogSection({
                       <div className={styles.serviceAction}>
                         <span>
                           {service.price_cents === 0
-                            ? "Offert"
+                            ? t.free
                             : formatPrice(service.price_cents)}
                         </span>
                         {onBook && (
@@ -197,7 +201,7 @@ export function CatalogSection({
                             className={styles.bookButton}
                             style={{ backgroundColor: accent }}
                           >
-                            Réserver
+                            {t.book}
                           </button>
                         )}
                       </div>

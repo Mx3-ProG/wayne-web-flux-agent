@@ -1,0 +1,379 @@
+{
+ "nav": {
+  "menu": "Menü",
+  "open": "Navigation öffnen",
+  "close": "Navigation schließen",
+  "homeAria": "Startseite WayneWeb FLUX",
+  "mainAria": "Hauptnavigation",
+  "mobileAria": "Mobile Navigation",
+  "title": "Navigation",
+  "activeProject": "Aktives Projekt",
+  "workspace": "Mein Bereich",
+  "tagline": "Dein Geschäft. Ein einziger Ort.",
+  "manageCredits": "Meine Credits verwalten",
+  "credits": "Credits",
+  "pending": "{count} ausstehend",
+  "groups": {
+   "control": "Steuern",
+   "sell": "Verkaufen",
+   "grow": "Wachsen",
+   "essential": "Das Wesentliche",
+   "business": "Mein Geschäft",
+   "account": "Mein Konto"
+  },
+  "items": {
+   "home": "Start",
+   "stats": "Meine Statistiken",
+   "statsShort": "Statistiken",
+   "orders": "Meine Bestellungen",
+   "ordersShort": "Bestellungen",
+   "offers": "Meine Angebote",
+   "offersShort": "Angebote",
+   "projects": "Meine Projekte",
+   "storefront": "Meine Vitrine",
+   "products": "Meine Produkte",
+   "agenda": "Mein Kalender",
+   "content": "Meine Inhalte",
+   "ai": "FLUX – KI",
+   "install": "App installieren",
+   "profile": "Mein Profil",
+   "viewProfile": "Mein Profil ansehen"
+  }
+ },
+ "language": {
+  "aria": "Sprache deines Bereichs",
+  "title": "Sprache deines Bereichs",
+  "description": "Diese Sprache gilt für dein Dashboard und wird zur Ausgangssprache deiner neuen Seiten.",
+  "firstChoice": "Die erste Wahl im Tunnel ist kostenlos.",
+  "change": "Ändern · {cost} Credits",
+  "changing": "Wird geändert…",
+  "success": "Sprache deines Bereichs geändert.",
+  "error": "Die Sprache kann gerade nicht geändert werden.",
+  "insufficient": "Du brauchst {cost} Credits, um die Kontosprache zu ändern.",
+  "laterChangeCost": "Eine spätere Änderung, sobald deine Seite online ist, kostet {cost} Credits (Neuübersetzung inklusive)."
+ },
+ "vitrineGuide": {
+  "step": "Schritt {current} von {total}",
+  "fullEditor": "Vollständiger Editor",
+  "back": "Zurück",
+  "continue": "Weiter",
+  "edit": "Bearbeiten",
+  "saving": "Wird gespeichert…",
+  "draftSaved": "Entwurf gespeichert.",
+  "errors": {
+   "blocked": "Dieser Inhalt entspricht nicht den Regeln von FLUX.",
+   "rate": "Du hast mehrere Generierungen kurz hintereinander gestartet. Versuch es in ein paar Minuten erneut.",
+   "generation": "Die Generierung ist fehlgeschlagen — deine Credits wurden nicht abgebucht.",
+   "brief": "Beschreib dein Geschäft zuerst kurz mit ein paar Worten."
+  },
+  "intro": {
+   "kicker": "FLUX Vitrine-Assistent",
+   "titleStart": "Entwickle deine Vitrine weiter,",
+   "titleEm": "eine Entscheidung nach der anderen.",
+   "text": "FLUX übernimmt deine aktuellen Infos und begleitet dich Schritt für Schritt. Nichts ändert sich vor deiner finalen Bestätigung.",
+   "placeholder": "Beschreib dein Geschäft in ein paar Sätzen: was du anbietest, deinen Stil, was dich auszeichnet… FLUX kümmert sich um den Rest.",
+   "creating": "FLUX erstellt deine Vitrine…",
+   "create": "FLUX erstellt meine komplette Vitrine ({cost} Cr.)",
+   "recharge": "FLUX erstellt meine komplette Vitrine — lade deine Credits auf",
+   "working": "FLUX arbeitet…",
+   "prefill": "Nur Texte vorausfüllen ({cost} Cr.)",
+   "stepByStep": "Oder Schritt für Schritt bearbeiten",
+   "direct": "Direkt zum Editor",
+   "prefillSuccess": "FLUX hat deinen Entwurf vorausgefüllt. Schau ihn dir an und veröffentliche ihn.",
+   "generateSuccess": "FLUX hat deine Vitrine erstellt. Schau dir deinen Entwurf an und veröffentliche ihn."
+  },
+  "identity": {
+   "kicker": "Deine Identität",
+   "title": "Was sollen sich deine Kunden merken?",
+   "subtitle": "Der Name, der Beruf und das Versprechen, die zuerst erscheinen.",
+   "business": "Name des Geschäfts",
+   "job": "Dein Beruf",
+   "tagline": "Dein Slogan",
+   "taglinePlaceholder": "Was Lust macht, dich zu wählen",
+   "city": "Deine Stadt"
+  },
+  "images": {
+   "kicker": "Deine Bilder",
+   "title": "Welchen Eindruck willst du hinterlassen?",
+   "subtitle": "Füg dein Logo und das große Foto hinzu, das deine Besucher empfängt.",
+   "logo": "Logo oder Porträt",
+   "logoChange": "Logo ändern",
+   "logoAdd": "Mein Logo hinzufügen",
+   "hero": "Großes Titelbild",
+   "heroChange": "Foto ändern",
+   "heroAdd": "Foto hinzufügen"
+  },
+  "mood": {
+   "kicker": "Deine Stimmung",
+   "title": "Welche Welt erzählt dein Business am besten?",
+   "subtitle": "Die Struktur bleibt zugänglich und responsiv, nur die Atmosphäre ändert sich."
+  },
+  "details": {
+   "kicker": "Die Details",
+   "title": "Wie erkennt und erreicht man dich?",
+   "subtitle": "Wähl deine Schriftart, deine Farben und prüfe deine Kontaktdaten.",
+   "font": "Schriftstil",
+   "primary": "Hauptfarbe",
+   "dark": "Dunkle Farbe",
+   "phone": "Telefon",
+   "phonePlaceholder": "Z. B.: 06 12 34 56 78",
+   "address": "Adresse",
+   "optional": "Optional"
+  },
+  "confirmation": {
+   "kicker": "Bestätigung",
+   "title": "Deine Vitrine ist bereit für die nächste Stufe.",
+   "subtitle": "Prüf das Wichtigste: Deine Änderungen gehen als Entwurf raus, du entscheidest anschließend, ob du sie veröffentlichst.",
+   "business": "Geschäft",
+   "positioning": "Positionierung",
+   "mood": "Stimmung",
+   "images": "Bilder",
+   "imagesCount": "{count} von 2 hinzugefügt",
+   "cost": "Kosten des Assistenten",
+   "costValue": "{cost} Credits · Guthaben: {balance} Cr.",
+   "missing": "Dir fehlen {count} Credits.",
+   "recharge": "Lade deine Credits auf",
+   "freeEditor": "oder nutze den vollständigen Editor, kostenlos.",
+   "confirm": "Meine Änderungen bestätigen ({cost} Cr.)"
+  },
+  "publish": {
+   "kicker": "Veröffentlichung",
+   "title": "Dein Entwurf ist bereit. Sollen wir ihn online stellen?",
+   "subtitle": "Deine öffentliche Seite zeigt noch die alte Version. Eine neue Version zu veröffentlichen ersetzt sie für deine Kunden.",
+   "later": "Später — zum Editor"
+  },
+  "credits": {
+   "expiredTitle": "Dein 6-Monats-KI-Fenster ist abgelaufen",
+   "trialTitle": "Deine Testphase ist beendet",
+   "insufficientTitle": "Nicht genug Credits",
+   "expired": "Dein Kauf hat dir 6 Monate Zugang zur KI gegeben. Deine verbleibenden Credits sind weiterhin verfügbar, um deine Vitrine zu veröffentlichen und zu verwalten; wähl eine Formel, um die KI-Generierungen zu reaktivieren.",
+   "trial": "Deine Testphase ist beendet — lade auf, um FLUX zu 100 % zu nutzen.",
+   "insufficient": "Der Vitrine-Assistent kostet {cost} Credits. Lade deine Credits auf oder nutze den vollständigen Editor (kostenlos).",
+   "template": "Von einer Vorlage starten",
+   "recharge": "Meine Credits aufladen",
+   "plan": "Meine FLUX-Formel wählen"
+  },
+  "preview": {
+   "aria": "Aktuelle Vorschau deiner Vitrine",
+   "live": "Live-Vorschau",
+   "job": "Dein Beruf",
+   "city": "Deine Stadt",
+   "business": "Dein Geschäft",
+   "tagline": "Dein Slogan erscheint hier.",
+   "discover": "Entdecken",
+   "whatsapp": "WhatsApp aktiviert"
+  }
+ },
+ "offerTunnel": {
+  "step": "Schritt {current} von 8",
+  "myOffers": "Meine Angebote",
+  "back": "Zurück",
+  "continue": "Weiter",
+  "creation": "FLUX-Angebotserstellung",
+  "create": "Mein Angebot erstellen",
+  "success": "Dein Angebot ist bereit. Veröffentliche eine neue Version deiner Website, um es online zu stellen.",
+  "intro": {
+   "title": "Erstell ein Angebot, das zum Handeln motiviert.",
+   "text": "FLUX hilft dir, das richtige Versprechen zum richtigen Preis direkt auf deiner Vitrine zu präsentieren."
+  },
+  "format": {
+   "kicker": "Das Format",
+   "title": "Was möchtest du hervorheben?",
+   "subtitle": "Wähl die Art, die am besten zu deinem Angebot passt.",
+   "kinds": {
+    "produit": {
+     "title": "Ein Produktangebot",
+     "text": "Ein Artikel oder Paket zum Bestellen."
+    },
+    "service": {
+     "title": "Ein Serviceangebot",
+     "text": "Eine hervorgehobene Dienstleistung."
+    },
+    "evenement": {
+     "title": "Ein Event",
+     "text": "Ein Erlebnis mit Datum oder Kapazität."
+    }
+   }
+  },
+  "promise": {
+   "kicker": "Das Versprechen",
+   "title": "Wie heißt dein Angebot?",
+   "subtitle": "Ein kurzer Titel, der sofort verständlich ist.",
+   "label": "Titel des Angebots",
+   "placeholder": "Z. B.: Entdeckerpaket"
+  },
+  "price": {
+   "kicker": "Der Preis",
+   "title": "Welchen Wert willst du anzeigen?",
+   "subtitle": "Füg einen durchgestrichenen Preis nur hinzu, wenn das Angebot eine echte Aktion darstellt.",
+   "offer": "Angebotspreis (€)",
+   "offerPlaceholder": "Z. B.: 49",
+   "compare": "Ursprünglicher, durchgestrichener Preis (€) · optional",
+   "comparePlaceholder": "Z. B.: 120"
+  },
+  "benefit": {
+   "kicker": "Der Vorteil",
+   "title": "Warum sollte dein Kunde es wählen?",
+   "subtitle": "Beschreib einfach, was enthalten ist und was der Kunde davon hat.",
+   "label": "Beschreibung",
+   "placeholder": "Was im Angebot enthalten ist, sein Vorteil, seine Grenze…"
+  },
+  "photo": {
+   "kicker": "Das Foto",
+   "title": "Gib deinem Angebot ein starkes Bild.",
+   "subtitle": "Das Foto ist optional, hilft dem Angebot aber, aufzufallen.",
+   "change": "Foto ändern",
+   "add": "Foto hinzufügen"
+  },
+  "visibility": {
+   "kicker": "Die Veröffentlichung",
+   "title": "Ist dein Angebot bereit, online zu gehen?",
+   "subtitle": "Du kannst es jetzt veröffentlichen oder als Entwurf behalten.",
+   "online": "Online stellen",
+   "onlineHint": "Bei der nächsten Veröffentlichung auf deiner Vitrine sichtbar.",
+   "draft": "Als Entwurf behalten",
+   "draftHint": "Bereit, später weiterbearbeitet zu werden."
+  },
+  "confirm": {
+   "kicker": "Bestätigung",
+   "title": "Dein Angebot ist bereit zu konvertieren.",
+   "subtitle": "Prüf die Infos, bevor du es erstellst.",
+   "type": "Typ",
+   "status": "Status",
+   "offer": "Angebot",
+   "price": "Preis",
+   "cost": "Erstellungskosten",
+   "online": "Online",
+   "draft": "Entwurf",
+   "instead": "statt",
+   "costValue": "{cost} Credits · Guthaben: {balance} Cr.",
+   "extra": "über deine Formel hinaus",
+   "missing": "Dir fehlen {count} Credits, um dieses Angebot zu erstellen.",
+   "recharge": "Lade deine Credits auf",
+   "edit": "Bearbeiten",
+   "creating": "Wird erstellt…",
+   "create": "Bestätigen und erstellen ({cost} Cr.)"
+  },
+  "limit": {
+   "overTitle": "Du überschreitest das Limit deiner Formel",
+   "reachedTitle": "Limit deiner Formel erreicht",
+   "over": "Deine Formel umfasst {limit} Angebote und du hast bereits {count}. Du kannst dieses trotzdem erstellen: Es kostet {extra} Credits statt {normal}.",
+   "reached": "Deine Formel umfasst {limit} Angebote und du hast bereits {count}. Lade deine Credits auf, um weiterzumachen: Ein zusätzliches Angebot kostet {extra} Credits und dir bleiben noch {balance}.",
+   "view": "Meine Angebote ansehen",
+   "continue": "Weiter ({cost} Cr.)",
+   "recharge": "Meine Credits aufladen"
+  },
+  "credits": {
+   "trialTitle": "Testphase beendet und Guthaben leer",
+   "insufficientTitle": "Nicht genug Credits",
+   "trial": "Deine Testphase ist beendet und dir bleiben keine Credits mehr. Eine FLUX-Formel lädt dein Guthaben jeden Monat wieder auf; dein Angebot ist bereit, nichts geht verloren.",
+   "insufficient": "Dieses Angebot zu erstellen kostet {cost} Credits. Lade deine Credits auf, um abzuschließen; dein Angebot ist bereit, nichts geht verloren.",
+   "later": "Später",
+   "plan": "Meine FLUX-Formel wählen",
+   "recharge": "Meine Credits aufladen"
+  },
+  "errors": {
+   "not_authenticated": "Du musst angemeldet sein, um fortzufahren.",
+   "no_active_page": "Erstell zuerst deine Vitrine.",
+   "offer_creation_failed": "Erstellung des Angebots nicht möglich.",
+   "content_blocked": "Hassbotschaften oder explizite Inhalte sind auf FLUX verboten und werden geahndet; bitte respektiere deine Umgebung und die der anderen. Nach 3 Verstößen gegen unsere Nutzungsbedingungen wird das Konto gelöscht.",
+   "unknown": "Ein Fehler ist aufgetreten. Versuch es gleich noch einmal."
+  }
+ },
+ "installer": {
+  "metaTitle": "App installieren",
+  "eyebrow": "Immer griffbereit",
+  "title": "Installiere Wayne Web Flux",
+  "subtitle": "Füg die App zu deinem Startbildschirm hinzu, um dein Dashboard wie eine echte App zu öffnen und die Anzahl der zu bearbeitenden Bestellungen auf dem Icon zu sehen, wenn dein Gerät Badges unterstützt.",
+  "noteTitle": "Gut zu wissen",
+  "note": "Das Badge aktualisiert sich beim Öffnen der App und verschwindet, sobald keine Bestellung mehr zu bearbeiten ist. Seine Anzeige hängt vom Handy und Browser ab.",
+  "installed": "Die App ist installiert",
+  "oneMinute": "Installation in einer Minute",
+  "installedHint": "Du findest sie auf deinem Startbildschirm.",
+  "chooseDevice": "Wähl die Schritte für dein Handy.",
+  "installNow": "Jetzt installieren",
+  "iphonePlatform": "iPhone · Safari",
+  "fromSafari": "Über Safari",
+  "iphoneSteps": [
+   "Öffne diese Seite in Safari.",
+   "Tipp auf Teilen.",
+   "Wähl Zum Home-Bildschirm, dann Hinzufügen."
+  ],
+  "androidPlatform": "Android · Chrome",
+  "fromChrome": "Über Chrome",
+  "androidSteps": [
+   "Öffne diese Seite in Chrome.",
+   "Tipp auf das Menü oben rechts.",
+   "Wähl App installieren oder Zum Startbildschirm hinzufügen."
+  ]
+ },
+ "emailVerification": {
+  "banner": "Bestätige deine E-Mail-Adresse, um deine Vitrine zu veröffentlichen und Zahlungen deiner Kunden zu erhalten.",
+  "resend": "E-Mail erneut senden",
+  "resending": "Wird gesendet…",
+  "sent": "E-Mail gesendet. Schau in deinem Postfach nach.",
+  "spamHint": "Falls du sie nicht siehst, schau auch in deinem Spam-Ordner nach.",
+  "errors": {
+   "not_authenticated": "Du musst angemeldet sein, um fortzufahren.",
+   "already_verified": "Deine Adresse ist bereits bestätigt.",
+   "rate_limited": "Warte eine Minute, bevor du erneut eine E-Mail anforderst.",
+   "update_failed": "Die E-Mail konnte nicht gesendet werden. Versuch es später erneut.",
+   "send_failed": "Die E-Mail ist nicht rausgegangen. Versuch es gleich noch einmal.",
+   "unknown": "Ein Fehler ist aufgetreten. Versuch es gleich noch einmal."
+  }
+ },
+ "trialBanner": {
+  "activeSingular": "FLUX-Testphase: noch {days} Tag, um alles auszuprobieren.",
+  "activePlural": "FLUX-Testphase: noch {days} Tage, um alles auszuprobieren.",
+  "viewPlans": "Tarife ansehen",
+  "creditsActiveSingular": "Deine Testphase ist beendet — dein {credits} verbleibendes Guthaben hält FLUX weiter am Laufen. Lade auf, um es zu 100 % zu nutzen.",
+  "creditsActivePlural": "Deine Testphase ist beendet — deine {credits} verbleibenden Guthaben halten FLUX weiter am Laufen. Lade auf, um es zu 100 % zu nutzen.",
+  "expiredNoCredits": "Testphase beendet und Guthaben leer — deine Website bleibt online, Änderungen sind aber pausiert.",
+  "choosePlan": "Meinen FLUX-Tarif wählen"
+ },
+ "revenueCounter": {
+  "aria": "Erzielter Umsatz",
+  "eyebrow": "Dein Umsatz",
+  "milestoneReached": "🎉 Meilenstein {amount} erreicht",
+  "caption": "Dein Können verdient es, geteilt zu werden. Das hat deine FLUX-Vitrine bereits durch wahrgenommene Termine und angenommene Bestellungen erzielt.",
+  "nextMilestone": "Nächster Meilenstein: {amount}",
+  "remaining": "Nur noch {amount} bis dahin 💪",
+  "maxed": "Du sprengst jeden Meilenstein 🚀 Weiter so!"
+ },
+ "upsellDialog": {
+  "later": "Später",
+  "discoverPlans": "Tarife entdecken",
+  "trial": {
+   "title": "Gib FLUX die Mittel, um weiterzukommen",
+   "description": "In deiner Testphase entdeckst du die KI-Tools. Ein Tarif schaltet die vollständige Erstellung deiner Vitrine frei und lädt dein Guthaben jeden Monat auf."
+  },
+  "trialExpired": {
+   "title": "Deine Testphase ist beendet",
+   "description": "Dein Guthaben ist leer, deine Website bleibt aber online. Lade auf, um FLUX zu 100 % zu nutzen: Änderungen, Veröffentlichungen und Generierungen."
+  },
+  "trialExpiredWithCredits": {
+   "title": "Deine Testphase ist beendet",
+   "description": "Dein verbleibendes Guthaben hält FLUX weiter am Laufen — Generierungen inklusive. Lade auf, um es zu 100 % zu nutzen, mit einem Guthaben, das sich jeden Monat erneuert."
+  },
+  "creditsActive": {
+   "title": "Wechsle von einem einmaligen Paket zu einem festen Rhythmus",
+   "description": "Dein Paket gibt dir weiterhin Zugriff auf die KI. Ein Tarif ergänzt eine monatliche Aufladung und hält FLUX verfügbar, ohne auf einen neuen Kauf zu warten."
+  },
+  "creditsExpired": {
+   "title": "Dein KI-Fenster ist vorbei, dein Guthaben nicht",
+   "description": "Dein verbleibendes Guthaben dient weiterhin dazu, deine Vitrine zu veröffentlichen und zu verwalten. Ein Tarif reaktiviert KI-Generierungen und richtet einen monatlichen Rhythmus ein."
+  }
+ },
+ "photoUpload": {
+  "uploading": "Wird hochgeladen…",
+  "tooLarge": "Datei zu groß (max. {max} MB).",
+  "failed": "Upload fehlgeschlagen. Versuch es erneut."
+ },
+ "copyButton": {
+  "copy": "Kopieren",
+  "copied": "Link kopiert."
+ },
+ "creditsLink": {
+  "aria": "{credits} Guthaben — mein Guthaben ansehen"
+ }
+}

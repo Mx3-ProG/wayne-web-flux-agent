@@ -1,24 +1,27 @@
-// Verticales métiers : prestations pré-remplies, vocabulaire pour les prompts
-// IA et défauts visuels de la vitrine. Tout est modifiable par le commerçant.
+// Verticales métiers : données INVARIANTES uniquement (identifiants stables,
+// structure, prix, durées, couleurs). Le texte (labels, métiers, vocabulaire,
+// contexte IA, noms de prestations/produits) vit dans les dictionnaires i18n
+// — voir lib/verticals-i18n.ts pour l'API localisée. Les slugs et ids définis
+// ici sont la source de vérité : ne jamais les dériver d'une traduction.
 
 export type VerticalService = {
-  name: string;
+  id: string;
   duration_min: number;
   price_cents: number;
 };
 
 export type VerticalFamily = {
-  name: string;
+  id: string;
   services: VerticalService[];
 };
 
 export type VerticalProduct = {
-  name: string;
+  id: string;
   price_cents: number;
 };
 
 export type VerticalProductCategory = {
-  name: string;
+  id: string;
   products: VerticalProduct[];
 };
 
@@ -29,12 +32,8 @@ export type VerticalKind = "service" | "product" | "hybrid";
 
 export type Vertical = {
   slug: string;
-  label: string;
-  jobTitles: string[];
   emoji: string;
-  clientWord: string; // "clientes", "clients", "convives"…
   kind: VerticalKind;
-  promptContext: string; // injecté dans les prompts IA
   defaultColors: { primary: string; dark: string; text: string };
   families: VerticalFamily[];
   productCategories?: VerticalProductCategory[]; // boutique pré-remplie
@@ -43,296 +42,246 @@ export type Vertical = {
 export const VERTICALS: Vertical[] = [
   {
     slug: "beaute",
-    label: "Beauté & esthétique",
-    jobTitles: ["Esthéticienne", "Prothésiste ongulaire", "Technicienne de cils", "Dermographe"],
     emoji: "💅",
-    clientWord: "clientes",
     kind: "service",
-    promptContext:
-      "Institut de beauté / esthétique : soins, ongles, cils, sourcils. Clientèle majoritairement féminine, ton chaleureux et rassurant.",
     defaultColors: { primary: "#b4886b", dark: "#1c1512", text: "#2b211c" },
     families: [
       {
-        name: "Soins du visage",
+        id: "soins-visage",
         services: [
-          { name: "Soin éclat", duration_min: 60, price_cents: 6500 },
-          { name: "Soin anti-âge", duration_min: 75, price_cents: 8500 },
+          { id: "soin-eclat", duration_min: 60, price_cents: 6500 },
+          { id: "soin-anti-age", duration_min: 75, price_cents: 8500 },
         ],
       },
       {
-        name: "Ongles",
+        id: "ongles",
         services: [
-          { name: "Pose gel", duration_min: 90, price_cents: 5500 },
-          { name: "Remplissage", duration_min: 60, price_cents: 4000 },
-          { name: "Vernis semi-permanent", duration_min: 45, price_cents: 3500 },
+          { id: "pose-gel", duration_min: 90, price_cents: 5500 },
+          { id: "remplissage", duration_min: 60, price_cents: 4000 },
+          { id: "vernis-semi-permanent", duration_min: 45, price_cents: 3500 },
         ],
       },
       {
-        name: "Cils & sourcils",
+        id: "cils-sourcils",
         services: [
-          { name: "Extension de cils pose complète", duration_min: 120, price_cents: 9000 },
-          { name: "Rehaussement de cils", duration_min: 60, price_cents: 5500 },
-          { name: "Restructuration sourcils", duration_min: 30, price_cents: 2000 },
+          { id: "extension-cils", duration_min: 120, price_cents: 9000 },
+          { id: "rehaussement-cils", duration_min: 60, price_cents: 5500 },
+          { id: "restructuration-sourcils", duration_min: 30, price_cents: 2000 },
         ],
       },
     ],
   },
   {
     slug: "coiffure",
-    label: "Coiffure & barbier",
-    jobTitles: ["Coiffeuse", "Coiffeur", "Barbier", "Coloriste"],
     emoji: "✂️",
-    clientWord: "clients",
     kind: "service",
-    promptContext:
-      "Salon de coiffure ou barbier : coupes, couleurs, soins capillaires. Ton dynamique et de proximité.",
     defaultColors: { primary: "#8a6d5c", dark: "#171310", text: "#241d18" },
     families: [
       {
-        name: "Coupes",
+        id: "coupes",
         services: [
-          { name: "Coupe femme", duration_min: 60, price_cents: 4500 },
-          { name: "Coupe homme", duration_min: 30, price_cents: 2500 },
-          { name: "Coupe + barbe", duration_min: 45, price_cents: 3500 },
+          { id: "coupe-femme", duration_min: 60, price_cents: 4500 },
+          { id: "coupe-homme", duration_min: 30, price_cents: 2500 },
+          { id: "coupe-barbe", duration_min: 45, price_cents: 3500 },
         ],
       },
       {
-        name: "Couleur",
+        id: "couleur",
         services: [
-          { name: "Coloration complète", duration_min: 120, price_cents: 7500 },
-          { name: "Balayage", duration_min: 150, price_cents: 9500 },
+          { id: "coloration-complete", duration_min: 120, price_cents: 7500 },
+          { id: "balayage", duration_min: 150, price_cents: 9500 },
         ],
       },
     ],
   },
   {
     slug: "restaurant",
-    label: "Restaurant & traiteur",
-    jobTitles: ["Restaurateur", "Restauratrice", "Chef à domicile", "Traiteur"],
     emoji: "🍽️",
-    clientWord: "convives",
     kind: "service",
-    promptContext:
-      "Restaurant, traiteur ou chef : réservation de tables ou d'événements. Ton gourmand et convivial, mise en avant des produits et du fait-maison.",
     defaultColors: { primary: "#a33b2e", dark: "#14100d", text: "#241b16" },
     families: [
       {
-        name: "Réservations",
+        id: "reservations",
         services: [
-          { name: "Table déjeuner", duration_min: 90, price_cents: 0 },
-          { name: "Table dîner", duration_min: 120, price_cents: 0 },
+          { id: "table-dejeuner", duration_min: 90, price_cents: 0 },
+          { id: "table-diner", duration_min: 120, price_cents: 0 },
         ],
       },
       {
-        name: "Événements",
+        id: "evenements",
         services: [
-          { name: "Privatisation (acompte)", duration_min: 240, price_cents: 15000 },
-          { name: "Menu dégustation", duration_min: 150, price_cents: 6500 },
+          { id: "privatisation", duration_min: 240, price_cents: 15000 },
+          { id: "menu-degustation", duration_min: 150, price_cents: 6500 },
         ],
       },
     ],
   },
   {
     slug: "auto",
-    label: "Automobile & garage",
-    jobTitles: ["Garagiste", "Mécanicien", "Detailer auto", "Carrossier"],
     emoji: "🚗",
-    clientWord: "clients",
     kind: "hybrid",
-    promptContext:
-      "Garage, mécanique ou esthétique automobile. Ton direct et de confiance : transparence des prix, sérieux, délais tenus.",
     defaultColors: { primary: "#2e5aa3", dark: "#0e1116", text: "#1a1e24" },
     families: [
       {
-        name: "Entretien",
+        id: "entretien",
         services: [
-          { name: "Vidange + filtres", duration_min: 60, price_cents: 9900 },
-          { name: "Révision complète", duration_min: 120, price_cents: 19900 },
-          { name: "Plaquettes de frein (essieu)", duration_min: 90, price_cents: 14900 },
+          { id: "vidange-filtres", duration_min: 60, price_cents: 9900 },
+          { id: "revision-complete", duration_min: 120, price_cents: 19900 },
+          { id: "plaquettes-frein", duration_min: 90, price_cents: 14900 },
         ],
       },
       {
-        name: "Esthétique",
+        id: "esthetique",
         services: [
-          { name: "Lavage intérieur/extérieur", duration_min: 90, price_cents: 6900 },
-          { name: "Polish + céramique", duration_min: 240, price_cents: 39900 },
+          { id: "lavage-int-ext", duration_min: 90, price_cents: 6900 },
+          { id: "polish-ceramique", duration_min: 240, price_cents: 39900 },
         ],
       },
     ],
     productCategories: [
       {
-        name: "Pièces & accessoires",
+        id: "pieces-accessoires",
         products: [
-          { name: "Roue (unité)", price_cents: 2000 },
-          { name: "Jeu de balais d'essuie-glace", price_cents: 1900 },
-          { name: "Batterie 12V", price_cents: 8900 },
+          { id: "roue", price_cents: 2000 },
+          { id: "balais-essuie-glace", price_cents: 1900 },
+          { id: "batterie-12v", price_cents: 8900 },
         ],
       },
       {
-        name: "Produits d'entretien",
+        id: "produits-entretien",
         products: [
-          { name: "Bidon d'huile moteur 5L", price_cents: 4500 },
-          { name: "Kit lavage auto", price_cents: 2500 },
+          { id: "huile-moteur-5l", price_cents: 4500 },
+          { id: "kit-lavage-auto", price_cents: 2500 },
         ],
       },
     ],
   },
   {
     slug: "artisan",
-    label: "Artisan & BTP",
-    jobTitles: ["Plombier", "Électricien", "Peintre", "Menuisier", "Multi-services"],
     emoji: "🔧",
-    clientWord: "clients",
     kind: "service",
-    promptContext:
-      "Artisan du bâtiment : dépannages et chantiers. Ton fiable et sans jargon : devis clair, ponctualité, travail soigné.",
     defaultColors: { primary: "#c07f24", dark: "#12100c", text: "#211c14" },
     families: [
       {
-        name: "Interventions",
+        id: "interventions",
         services: [
-          { name: "Diagnostic / devis à domicile", duration_min: 60, price_cents: 0 },
-          { name: "Dépannage urgent", duration_min: 90, price_cents: 9000 },
-          { name: "Petits travaux (à l'heure)", duration_min: 60, price_cents: 5500 },
+          { id: "diagnostic-devis", duration_min: 60, price_cents: 0 },
+          { id: "depannage-urgent", duration_min: 90, price_cents: 9000 },
+          { id: "petits-travaux", duration_min: 60, price_cents: 5500 },
         ],
       },
     ],
   },
   {
     slug: "commerce",
-    label: "Commerce & boutique",
-    jobTitles: ["Commerçant", "Commerçante", "Gérant de boutique", "Vendeur", "Vendeuse"],
     emoji: "🛍️",
-    clientWord: "clients",
     kind: "product",
-    promptContext:
-      "Commerce de détail / boutique : vente de produits en magasin et en click-and-collect. Ton commercial et de proximité, mise en avant des nouveautés, promotions et disponibilités.",
     defaultColors: { primary: "#c2410c", dark: "#12100e", text: "#211b16" },
     families: [],
     productCategories: [
       {
-        name: "Nouveautés",
+        id: "nouveautes",
         products: [
-          { name: "Article vedette", price_cents: 2900 },
-          { name: "Coup de cœur", price_cents: 1900 },
+          { id: "article-vedette", price_cents: 2900 },
+          { id: "coup-de-coeur", price_cents: 1900 },
         ],
       },
       {
-        name: "Best-sellers",
+        id: "best-sellers",
         products: [
-          { name: "Produit populaire", price_cents: 2500 },
-          { name: "Pack découverte", price_cents: 4900 },
+          { id: "produit-populaire", price_cents: 2500 },
+          { id: "pack-decouverte", price_cents: 4900 },
         ],
       },
     ],
   },
   {
     slug: "alimentation",
-    label: "Alimentation & épicerie",
-    jobTitles: ["Boulanger", "Boulangère", "Pâtissier", "Primeur", "Épicier", "Fromager", "Caviste"],
     emoji: "🥖",
-    clientWord: "clients",
     kind: "product",
-    promptContext:
-      "Commerce de bouche (boulangerie, pâtisserie, primeur, épicerie fine) : vente de produits frais et précommande / click-and-collect. Ton gourmand, artisanal et local, insiste sur la fraîcheur et le fait-maison.",
     defaultColors: { primary: "#b45309", dark: "#141009", text: "#241d12" },
     families: [],
     productCategories: [
       {
-        name: "Boulangerie",
+        id: "boulangerie",
         products: [
-          { name: "Baguette tradition", price_cents: 130 },
-          { name: "Pain de campagne", price_cents: 350 },
-          { name: "Croissant", price_cents: 130 },
+          { id: "baguette-tradition", price_cents: 130 },
+          { id: "pain-campagne", price_cents: 350 },
+          { id: "croissant", price_cents: 130 },
         ],
       },
       {
-        name: "Pâtisserie",
+        id: "patisserie",
         products: [
-          { name: "Éclair", price_cents: 350 },
-          { name: "Tarte du jour (part)", price_cents: 400 },
-          { name: "Gâteau à commander", price_cents: 2500 },
+          { id: "eclair", price_cents: 350 },
+          { id: "tarte-du-jour", price_cents: 400 },
+          { id: "gateau-a-commander", price_cents: 2500 },
         ],
       },
     ],
   },
   {
     slug: "mode",
-    label: "Mode & accessoires",
-    jobTitles: ["Créateur", "Créatrice", "Styliste", "Bijoutier", "Bijoutière", "Maroquinier"],
     emoji: "👗",
-    clientWord: "clients",
     kind: "product",
-    promptContext:
-      "Prêt-à-porter, bijoux ou accessoires : boutique de créations et pièces sélectionnées. Ton élégant et désirable, storytelling autour des matières, des tailles et des éditions limitées.",
     defaultColors: { primary: "#9d174d", dark: "#120a0e", text: "#20141a" },
     families: [],
     productCategories: [
       {
-        name: "Vêtements",
+        id: "vetements",
         products: [
-          { name: "T-shirt", price_cents: 3500 },
-          { name: "Robe", price_cents: 7900 },
-          { name: "Veste", price_cents: 12900 },
+          { id: "t-shirt", price_cents: 3500 },
+          { id: "robe", price_cents: 7900 },
+          { id: "veste", price_cents: 12900 },
         ],
       },
       {
-        name: "Accessoires",
+        id: "accessoires",
         products: [
-          { name: "Collier", price_cents: 4500 },
-          { name: "Sac", price_cents: 8900 },
-          { name: "Carte cadeau", price_cents: 5000 },
+          { id: "collier", price_cents: 4500 },
+          { id: "sac", price_cents: 8900 },
+          { id: "carte-cadeau", price_cents: 5000 },
         ],
       },
     ],
   },
   {
     slug: "bienetre",
-    label: "Bien-être & coaching",
-    jobTitles: ["Coach sportif", "Naturopathe", "Photographe", "Sophrologue", "Praticien bien-être"],
     emoji: "🧘",
-    clientWord: "clients",
     kind: "hybrid",
-    promptContext:
-      "Bien-être, coaching ou photographie : prestations sur rendez-vous ET vente de forfaits, cures ou produits (séances, ebooks, programmes). Ton bienveillant, motivant et expert, orienté transformation et résultats.",
     defaultColors: { primary: "#0d9488", dark: "#0a1211", text: "#14201e" },
     families: [
       {
-        name: "Séances",
+        id: "seances",
         services: [
-          { name: "Séance découverte", duration_min: 60, price_cents: 0 },
-          { name: "Séance individuelle", duration_min: 60, price_cents: 6000 },
-          { name: "Bilan complet", duration_min: 90, price_cents: 9000 },
+          { id: "seance-decouverte", duration_min: 60, price_cents: 0 },
+          { id: "seance-individuelle", duration_min: 60, price_cents: 6000 },
+          { id: "bilan-complet", duration_min: 90, price_cents: 9000 },
         ],
       },
     ],
     productCategories: [
       {
-        name: "Forfaits & programmes",
+        id: "forfaits-programmes",
         products: [
-          { name: "Forfait 5 séances", price_cents: 27000 },
-          { name: "Forfait 10 séances", price_cents: 50000 },
-          { name: "Programme en ligne", price_cents: 9900 },
+          { id: "forfait-5-seances", price_cents: 27000 },
+          { id: "forfait-10-seances", price_cents: 50000 },
+          { id: "programme-en-ligne", price_cents: 9900 },
         ],
       },
     ],
   },
   {
     slug: "autre",
-    label: "Autre activité",
-    jobTitles: ["Indépendant", "Indépendante"],
     emoji: "⭐",
-    clientWord: "clients",
     kind: "service",
-    promptContext:
-      "Commerce ou activité indépendante de proximité. Ton professionnel et accessible.",
     defaultColors: { primary: "#d31212", dark: "#0a0a0a", text: "#1c1c1c" },
     families: [
       {
-        name: "Prestations",
+        id: "prestations",
         services: [
-          { name: "Rendez-vous découverte", duration_min: 30, price_cents: 0 },
-          { name: "Prestation standard", duration_min: 60, price_cents: 5000 },
+          { id: "rendez-vous-decouverte", duration_min: 30, price_cents: 0 },
+          { id: "prestation-standard", duration_min: 60, price_cents: 5000 },
         ],
       },
     ],
@@ -343,75 +292,23 @@ export function getVertical(slug: string): Vertical {
   return VERTICALS.find((v) => v.slug === slug) ?? VERTICALS[VERTICALS.length - 1];
 }
 
-export type CatalogWording = {
-  categoryWord: string;
-  itemWord: string;
-  categoryPlaceholder: string;
-  itemPlaceholder: string;
-  categoryHint: string;
-  itemHint: string;
-  showStock: boolean;
-};
-
-// Le tunnel fait créer à tout le monde une catégorie + un article, quelle que
-// soit la verticale : c'est la même table (products) derrière. Seul le
-// vocabulaire change, pour qu'un coiffeur ne se demande pas quel « produit » il
-// est censé vendre.
-export function catalogWording(kind: VerticalKind): CatalogWording {
-  if (kind === "service") {
-    return {
-      categoryWord: "catégorie de prestations",
-      itemWord: "prestation",
-      categoryPlaceholder: "Ex : Soins du visage",
-      itemPlaceholder: "Ex : Soin éclat 60 min",
-      categoryHint:
-        "Une famille de prestations, comme tu les regrouperais sur ton tarif affiché.",
-      itemHint:
-        "Ta prestation la plus demandée. C'est celle que tes clients viendront réserver en premier.",
-      // Une prestation ne s'épuise pas : le suivi de stock n'a aucun sens ici.
-      showStock: false,
-    };
-  }
-  if (kind === "product") {
-    return {
-      categoryWord: "catégorie",
-      itemWord: "produit",
-      categoryPlaceholder: "Ex : Bouquets",
-      itemPlaceholder: "Ex : Bouquet de saison",
-      categoryHint: "Un rayon de ta boutique, comme tes clients le chercheraient.",
-      itemHint: "Ton produit phare, celui que tu vends le plus.",
-      showStock: true,
-    };
-  }
-  return {
-    categoryWord: "catégorie",
-    itemWord: "produit ou prestation",
-    categoryPlaceholder: "Ex : Coupe & couleur",
-    itemPlaceholder: "Ex : Coupe brushing",
-    categoryHint:
-      "Tu peux y ranger aussi bien des produits que des prestations sur rendez-vous.",
-    itemHint: "Ce que tes clients te demandent le plus souvent.",
-    showStock: true,
-  };
-}
-
-export const FONTS: { id: string; label: string; css: string }[] = [
-  { id: "fraunces", label: "Fraunces — éditoriale, premium (par défaut)", css: "'Fraunces', Georgia, serif" },
-  { id: "inter", label: "Inter — moderne, neutre (par défaut)", css: "'Inter', sans-serif" },
-  { id: "playfair", label: "Playfair Display — chic, élégante", css: "'Playfair Display', serif" },
-  { id: "montserrat", label: "Montserrat — épurée, pro", css: "'Montserrat', sans-serif" },
-  { id: "lora", label: "Lora — raffinée, serif douce", css: "'Lora', serif" },
-  { id: "cormorant", label: "Cormorant Garamond — luxe, sophistiquée", css: "'Cormorant Garamond', serif" },
-  { id: "quicksand", label: "Quicksand — ronde, douce", css: "'Quicksand', sans-serif" },
-  { id: "poppins", label: "Poppins — moderne, douce", css: "'Poppins', sans-serif" },
-  { id: "space-grotesk", label: "Space Grotesk — tech, affirmée", css: "'Space Grotesk', sans-serif" },
-  { id: "sora", label: "Sora — contemporaine, nette", css: "'Sora', sans-serif" },
-  { id: "manrope", label: "Manrope — sobre, lisible", css: "'Manrope', sans-serif" },
-  { id: "libre-baskerville", label: "Libre Baskerville — classique, littéraire", css: "'Libre Baskerville', serif" },
-  { id: "dm-serif", label: "DM Serif Display — affichée, éditoriale", css: "'DM Serif Display', serif" },
-  { id: "marcellus", label: "Marcellus — antique, prestigieuse", css: "'Marcellus', serif" },
-  { id: "josefin", label: "Josefin Sans — géométrique, rétro-chic", css: "'Josefin Sans', sans-serif" },
-  { id: "bebas", label: "Bebas Neue — capitale, percutante", css: "'Bebas Neue', sans-serif" },
+export const FONTS: { id: string; css: string }[] = [
+  { id: "fraunces", css: "'Fraunces', Georgia, serif" },
+  { id: "inter", css: "'Inter', sans-serif" },
+  { id: "playfair", css: "'Playfair Display', serif" },
+  { id: "montserrat", css: "'Montserrat', sans-serif" },
+  { id: "lora", css: "'Lora', serif" },
+  { id: "cormorant", css: "'Cormorant Garamond', serif" },
+  { id: "quicksand", css: "'Quicksand', sans-serif" },
+  { id: "poppins", css: "'Poppins', sans-serif" },
+  { id: "space-grotesk", css: "'Space Grotesk', sans-serif" },
+  { id: "sora", css: "'Sora', sans-serif" },
+  { id: "manrope", css: "'Manrope', sans-serif" },
+  { id: "libre-baskerville", css: "'Libre Baskerville', serif" },
+  { id: "dm-serif", css: "'DM Serif Display', serif" },
+  { id: "marcellus", css: "'Marcellus', serif" },
+  { id: "josefin", css: "'Josefin Sans', sans-serif" },
+  { id: "bebas", css: "'Bebas Neue', sans-serif" },
 ];
 
 export function getFont(id: string) {

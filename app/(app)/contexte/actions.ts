@@ -14,11 +14,11 @@ export async function saveVoiceProfile(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "not_authenticated" };
 
   // Voix rattachée au projet actif.
   const pageId = await getActivePageId(supabase, user.id);
-  if (!pageId) return { error: "Crée d'abord ta vitrine." };
+  if (!pageId) return { error: "no_active_page" };
 
   // 1re création gratuite (onboarding) ; toute modification ultérieure du
   // contexte coûte CONTEXT_CHANGE_COST crédits.
@@ -54,7 +54,7 @@ export async function saveVoiceProfile(
     if (isUpdate) {
       await refundCredits(user.id, CONTEXT_CHANGE_COST, "refund:voice");
     }
-    return { error: "Enregistrement impossible." };
+    return { error: "save_failed" };
   }
   revalidatePath("/contexte");
   return {};

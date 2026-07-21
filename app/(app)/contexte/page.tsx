@@ -1,12 +1,23 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePageId } from "@/lib/active-project";
 import type { VoiceProfile } from "@/lib/types";
 import { voiceCompletion } from "@/lib/voice";
+import { getAccountLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { defaultLocale } from "@/lib/i18n/config";
 import { VoiceForm } from "@/components/voice/voice-form";
 import type { VoiceDraft } from "@/components/voice/voice-options";
 
-export const metadata = { title: "Ma voix" };
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const locale = user ? await getAccountLocale(supabase, user.id) : defaultLocale;
+  return { title: (await getDictionary(locale, "voice")).meta.title };
+}
 
 const DRAFT_KEYS = [
   "tone",
@@ -28,6 +39,9 @@ export default async function ContextePage({
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
+
+  const locale = await getAccountLocale(supabase, user.id);
+  const t = await getDictionary(locale, "voice");
 
   // Voix du projet actif.
   const pageId = await getActivePageId(supabase, user.id);
@@ -58,6 +72,7 @@ export default async function ContextePage({
       initialVoice={voice}
       preparedVoice={preparedVoice}
       completion={voiceCompletion(voice, !!page)}
+      t={t}
     />
   );
 }

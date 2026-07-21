@@ -2,15 +2,18 @@
 
 import { Question } from "@/components/tunnel/question";
 import styles from "@/app/commencer/tunnel.module.css";
+import type { TunnelDict } from "@/lib/i18n/get-dictionary";
 
 // Étape 7 : aucun signal en base ne dit « j'ai compris mes chiffres ». Elle est
 // validée à la main via completeJourneyStep(7), comme sur le dashboard.
 export function StepResults({
+  dict,
   balance,
   generationCount,
   upcomingBookings,
   gain,
 }: {
+  dict: TunnelDict["results"];
   balance: number;
   generationCount: number;
   upcomingBookings: number;
@@ -18,28 +21,26 @@ export function StepResults({
 }) {
   return (
     <Question
-      kicker="Étape 7 · Tes résultats"
-      title={<>Voilà où tu en es <em>vraiment.</em></>}
-      subtitle="Ce sont tes vrais chiffres, pas une démo. C'est ce tableau que tu retrouveras chaque matin dans ton espace."
+      kicker={dict.kicker}
+      title={<>{dict.titleStart} <em>{dict.titleEm}</em></>}
+      subtitle={dict.subtitle}
       gain={gain}
     >
       <div className={styles.resultGrid}>
         <div className={styles.resultCard}>
           <strong>{balance}</strong>
-          <span>crédits restants</span>
-          <small>Chaque contenu, chaque publication en consomme.</small>
+          <span>{dict.creditsLeft}</span><small>{dict.creditsLeftHint}</small>
         </div>
         <div className={styles.resultCard}>
           <strong>{generationCount}</strong>
           <span>
-            création{generationCount > 1 ? "s" : ""} dans ton coffre
+            {generationCount === 1 ? dict.creation : dict.creations}
           </span>
-          <small>Tes contenus restent accessibles pour toujours.</small>
+          <small>{dict.creationsHint}</small>
         </div>
         <div className={styles.resultCard}>
           <strong>{upcomingBookings}</strong>
-          <span>rendez-vous à venir</span>
-          <small>Il montera tout seul dès que ton lien circulera.</small>
+          <span>{dict.upcomingBookings}</span><small>{dict.upcomingBookingsHint}</small>
         </div>
       </div>
     </Question>

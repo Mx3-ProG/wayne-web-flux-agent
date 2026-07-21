@@ -13,8 +13,12 @@ import { buildPlan } from "./render-plan";
 import { SectionShell } from "./section-shell";
 import { VitrineShell } from "./vitrine-shell";
 import { VitrineHeader } from "./vitrine-header";
+import { LanguageGlobe } from "./language-globe";
 import { isDarkTheme, useVisitorMode } from "./visitor-mode";
 import styles from "./vitrine.module.css";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
+import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
+import type { Locale } from "@/lib/i18n/config";
 
 export type FamilyWithServices = ServiceFamily & { services: Service[] };
 export type CategoryWithProducts = ProductCategory & { products: Product[] };
@@ -31,6 +35,9 @@ type Props = {
   onOpenCart?: () => void;
   poweredBy?: boolean;
   preview?: boolean; // préview éditeur : désactive les interactions réseau
+  t?: StorefrontDict;
+  locale?: Locale;
+  availableLocales?: Locale[];
 };
 
 // Vitrine publique du commerçant, aux couleurs qu'il a choisies.
@@ -49,6 +56,9 @@ export function VitrineView({
   onOpenCart,
   poweredBy = true,
   preview = false,
+  t = frStorefront,
+  locale,
+  availableLocales,
 }: Props) {
   const { effectiveDark, toggleMode } = useVisitorMode(isDarkTheme(page.theme));
 
@@ -79,6 +89,7 @@ export function VitrineView({
     preview,
     onBook,
     onAddToCart,
+    t: t.sections,
   };
 
   const address = (page.address || page.city) && (
@@ -94,9 +105,10 @@ export function VitrineView({
       poweredBy={poweredBy}
       cartCount={cartCount}
       onOpenCart={onOpenCart}
+      t={t.shell}
     >
       {/* Bandeau promo au-dessus du hero (position historique) */}
-      {plan[0]?.kind === "promo" && <PromoBanner page={page} accent={accent} />}
+      {plan[0]?.kind === "promo" && <PromoBanner page={page} accent={accent} t={t.sections.promo} />}
 
       {/* Hero — fixe, hors sections */}
       <header
@@ -136,7 +148,14 @@ export function VitrineView({
           )
         )}
         {page.navigation ? (
-          <VitrineHeader page={page} currentPath="" preview={preview} />
+          <VitrineHeader
+            page={page}
+            currentPath=""
+            preview={preview}
+            t={t.header}
+            locale={locale}
+            availableLocales={availableLocales}
+          />
         ) : (
           <div className={styles.storeNav}>
             <span className={styles.storeNavName}>
@@ -145,19 +164,27 @@ export function VitrineView({
               ) : (
                 <i>{(page.business_name || "M").charAt(0).toUpperCase()}</i>
               )}
-              <b>{page.business_name || "Mon commerce"}</b>
+              <b>{page.business_name || t.header.defaultBusinessName}</b>
             </span>
             <span className={styles.storeNavActions}>
+              {!preview && locale && availableLocales && (
+                <LanguageGlobe
+                  slug={page.slug}
+                  currentPath=""
+                  locale={locale}
+                  availableLocales={availableLocales}
+                />
+              )}
               <button
                 type="button"
                 className={styles.modeToggle}
                 onClick={toggleMode}
-                aria-label={effectiveDark ? "Passer en mode clair" : "Passer en mode sombre"}
+                aria-label={effectiveDark ? t.header.lightMode : t.header.darkMode}
               >
                 {effectiveDark ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
               </button>
               <a href={primaryAnchor}>
-                {offersVisible ? "Voir les offres" : hasServices ? "Réserver" : "Découvrir"}
+                {offersVisible ? t.hero.viewOffers : hasServices ? t.hero.book : t.hero.discover}
               </a>
             </span>
           </div>
@@ -177,20 +204,20 @@ export function VitrineView({
               {[page.job_title, page.city].filter(Boolean).join(" · ")}
             </p>
           )}
-          <h1>{page.business_name || "Mon commerce"}</h1>
+          <h1>{page.business_name || t.header.defaultBusinessName}</h1>
           {page.tagline && <p className={styles.tagline}>{page.tagline}</p>}
           <div className={styles.heroActions}>
             <a className={styles.heroCta} href={primaryAnchor}>
               {offersVisible
-                ? "Voir les offres"
+                ? t.hero.viewOffers
                 : hasServices
-                  ? "Voir les prestations"
-                  : "Découvrir la boutique"}{" "}
+                  ? t.hero.viewServices
+                  : t.hero.discoverShop}{" "}
               <ArrowRight aria-hidden="true" />
             </a>
             <span className={styles.online}>
               <span />
-              {hasServices ? "Réservation en ligne" : "Commande en ligne"}
+              {hasServices ? t.hero.onlineBooking : t.hero.onlineOrder}
             </span>
           </div>
         </div>
@@ -200,7 +227,7 @@ export function VitrineView({
         if (item.kind === "promo") {
           // Le bandeau de tête est déjà rendu au-dessus du hero.
           if (planIndex === 0) return null;
-          return <PromoBanner key="promo" page={page} accent={accent} />;
+          return <PromoBanner key="promo" page={page} accent={accent} t={t.sections.promo} />;
         }
         if (item.kind === "offres") {
           const settings = item.section.settings as
@@ -214,6 +241,7 @@ export function VitrineView({
               onAddOffer={onAddOffer}
               title={settings?.title}
               subtitle={settings?.subtitle}
+              t={t.sections.offers}
             />
           );
         }
@@ -246,6 +274,7 @@ export function VitrineView({
                   onAddToCart={onAddToCart}
                   showEmpty={!offersVisible}
                   first={entryIndex === 0}
+                  t={t.sections.catalog}
                 />
               ) : (
                 // Ancre stable pour le menu de navigation (#s-<sectionId>).

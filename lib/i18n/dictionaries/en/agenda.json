@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "title": "My schedule"
+  },
+  "weekdaysShort": {
+    "0": "Sun",
+    "1": "Mon",
+    "2": "Tue",
+    "3": "Wed",
+    "4": "Thu",
+    "5": "Fri",
+    "6": "Sat"
+  },
+  "weekdaysLong": {
+    "0": "Sunday",
+    "1": "Monday",
+    "2": "Tuesday",
+    "3": "Wednesday",
+    "4": "Thursday",
+    "5": "Friday",
+    "6": "Saturday"
+  },
+  "rhythms": {
+    "classic": "Classic day",
+    "extended": "Extended day",
+    "split": "With lunch break",
+    "morning": "Mostly mornings",
+    "afternoon": "Mostly afternoons",
+    "evening": "End of day & evenings"
+  },
+  "tunnel": {
+    "myAgenda": "My schedule",
+    "step": "Step {current} of 4",
+    "intro": {
+      "kicker": "Your time, well organized",
+      "titleStart": "FLUX, the schedule that works for",
+      "titleEm": "your needs.",
+      "text": "Pick your days and your rhythm. Flux sets up the slots your clients can book from your storefront.",
+      "cta": "Create my hours",
+      "shortcutText": "I've already set my business hours",
+      "shortcutCta": "Back to schedule"
+    },
+    "days": {
+      "kicker": "Your open days",
+      "titleStart": "Which days do you want to make",
+      "titleEm": "bookable?",
+      "subtitle": "Select every day your clients can book an appointment."
+    },
+    "rhythm": {
+      "kicker": "Your rhythm",
+      "titleStart": "When do you work",
+      "titleEm": "best?",
+      "subtitle": "This rhythm will apply to the selected days. You can fine-tune it later in your schedule."
+    },
+    "variable": {
+      "kicker": "Variable hours",
+      "titleStart": "Do some days have a",
+      "titleEm": "different rhythm?",
+      "subtitle": "Keep the main rhythm or adjust each day. No fields to fill in."
+    },
+    "review": {
+      "kicker": "Your schedule is ready",
+      "title": "Here are the slots offered to your clients.",
+      "closed": "Closed",
+      "open": "Open",
+      "unavailable": "Unavailable",
+      "saving": "Creating your schedule…",
+      "save": "Save and open my schedule",
+      "editAria": "Edit my hours"
+    },
+    "back": "Back",
+    "continue": "Continue",
+    "successToast": "Your hours are set. Your schedule is open at the right times."
+  },
+  "empty": {
+    "title": "First, your storefront",
+    "text": "Your schedule activates as soon as your page exists: your clients book directly from it.",
+    "cta": "Create my storefront"
+  },
+  "view": {
+    "eyebrow": "Your Flux schedule",
+    "greeting": "Hello{name}.",
+    "noUpcoming": "Your week is quiet. Your slots stay open and your storefront keeps working for you.",
+    "upcomingCount": "{count} upcoming appointments. Everything's ready to welcome your clients.",
+    "viewStorefront": "View my storefront",
+    "statsAria": "Schedule summary",
+    "upcomingLabel": "Upcoming appointments",
+    "syncedHint": "Schedule synced",
+    "registeredClients": "Registered clients",
+    "listFillsItself": "The list fills itself in",
+    "bookableDays": "Bookable days",
+    "outOf7": "out of 7 days",
+    "myWeek": "My week",
+    "weekHint": "Tap a day to see your schedule. The red dot = appointments.",
+    "noBookingToday": "No appointments this day yet.",
+    "cancel": "Cancel",
+    "bookingCancelled": "Appointment cancelled.",
+    "myClients": "My clients",
+    "clientsHint": "This list fills itself in with every booking. Tap a client to see their history and your private note.",
+    "searchPlaceholder": "Search a name or number…",
+    "firstClientHint": "Your first client will appear here after their booking.",
+    "noClientMatch": "No client with that name.",
+    "visitSingular": "visit",
+    "visitPlural": "visits",
+    "orderSingular": "order",
+    "orderPlural": "orders",
+    "clientRevenue": "Client revenue",
+    "email": "Email",
+    "hisAppointments": "Their appointments",
+    "myNote": "My note (visible only to you)",
+    "save": "Save",
+    "noteSaved": "Note saved.",
+    "variableHours": "Variable hours",
+    "variableHoursHint": "Each day can have its own rhythm. Hover over a row to bring it to the front.",
+    "removeRange": "Remove range",
+    "addBreak": "+ break",
+    "saveVariableHours": "Save my variable hours",
+    "variableHoursSaved": "Saved. Your clients already see the right slots.",
+    "blockPeriod": "Block a period",
+    "blockPeriodHint": "Time off, personal appointments: no one will be able to book over it.",
+    "from": "From",
+    "to": "to",
+    "block": "Block",
+    "periodBlocked": "Period blocked.",
+    "fromTo": "From {start} to {end}",
+    "unblock": "unblock",
+    "googleAgenda": "In your Google Calendar",
+    "googleAgendaHint": "Paste this link ONCE into Google Calendar (+ → \"From URL\") and your appointments show up there automatically. Read-only — keep it to yourself.",
+    "copy": "Copy",
+    "linkCopied": "Link copied."
+  },
+  "errors": {
+    "not_authenticated": "You need to be logged in to continue.",
+    "save_failed": "Couldn't save.",
+    "invalid_dates": "Invalid dates.",
+    "end_before_start": "The end must be after the start.",
+    "block_failed": "Couldn't block this period.",
+    "note_save_failed": "Note not saved.",
+    "cancel_failed": "Couldn't cancel.",
+    "unknown": "Something went wrong. Try again in a moment."
+  }
+}

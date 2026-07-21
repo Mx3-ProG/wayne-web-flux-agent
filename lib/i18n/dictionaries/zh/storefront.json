@@ -1,0 +1,186 @@
+{
+  "verifiedBadge": {
+    "label": "已认证店铺",
+    "title": "该店铺版本已通过 FLUX 审核。"
+  },
+  "header": {
+    "navAria": "网站导航",
+    "lightMode": "切换到浅色模式",
+    "darkMode": "切换到深色模式",
+    "openMenu": "打开菜单",
+    "closeMenu": "关闭菜单",
+    "defaultBusinessName": "我的店铺"
+  },
+  "hero": {
+    "viewOffers": "查看优惠",
+    "book": "预约",
+    "discover": "去探索",
+    "viewServices": "查看服务项目",
+    "discoverShop": "探索店铺",
+    "onlineBooking": "在线预约",
+    "onlineOrder": "在线下单"
+  },
+  "shell": {
+    "scrollTop": "回到页面顶部",
+    "whatsapp": "通过 WhatsApp 联系",
+    "call": "打电话",
+    "viewCart": "查看购物车",
+    "stayInTouch": "保持联系",
+    "legalNotice": "法律声明",
+    "terms": "条款",
+    "termsFull": "销售总条款",
+    "privacy": "隐私",
+    "privacyFull": "隐私政策",
+    "close": "关闭",
+    "poweredBy": "技术支持"
+  },
+  "subpage": {
+    "home": "首页",
+    "draftNotice": "该页面正在编辑中。"
+  },
+  "booking": {
+    "loadAvailabilityError": "无法加载可预约时段。",
+    "loadSlotsError": "无法加载时间段。",
+    "slotTakenError": "该时段刚被预订，请选择其他时段。",
+    "genericError": "预约未能保存，请重试。",
+    "close": "关闭",
+    "chooseDay": "选择日期",
+    "loading": "请稍候…",
+    "closed": "休息",
+    "full": "已满",
+    "slotsCount": "{count} 个时段",
+    "changeDay": "← 更改日期",
+    "changeTime": "← 更改时间",
+    "yourDetails": "您的联系方式",
+    "firstNamePlaceholder": "您的名字",
+    "phonePlaceholder": "您的电话",
+    "emailPlaceholder": "您的邮箱（选填）",
+    "confirmationHint": "用于接收您的预约确认信息。",
+    "confirm": "确认预约",
+    "booked": "预约成功！",
+    "seeYouSoon": "很快见！",
+    "at": "于"
+  },
+  "order": {
+    "orderSent": "订单已发送",
+    "myOrder": "我的订单",
+    "close": "关闭",
+    "itemSingular": "件商品",
+    "itemPlural": "件商品",
+    "cartEmpty": "你的购物车是空的。",
+    "continue": "继续",
+    "removeOne": "减少一个",
+    "addOne": "增加一个",
+    "backToCart": "← 返回购物车",
+    "yourDetails": "你的联系方式",
+    "firstNamePlaceholder": "你的名字",
+    "phonePlaceholder": "你的电话",
+    "emailPlaceholder": "你的邮箱（选填）",
+    "addressPlaceholder": "你的地址（选填）",
+    "notePlaceholder": "有什么需要说明的吗？（选填）",
+    "contactHint": "商家会联系你确认并商定付款方式。",
+    "sendOrder": "发送订单",
+    "sending": "请稍候…",
+    "thanks": "谢谢，已收到！",
+    "transmitted": "你的订单已成功发送。",
+    "willContact": "商家会尽快联系你。",
+    "submitError": "订单未能保存，请稍后再试。"
+  },
+  "sections": {
+    "about": {
+      "eyebrow": "我的故事",
+      "defaultAlt": "肖像照"
+    },
+    "beforeAfter": {
+      "eyebrow": "见证实力",
+      "title": "前后对比",
+      "before": "之前",
+      "after": "之后",
+      "compareAria": "对比前后效果"
+    },
+    "catalog": {
+      "eyebrow": "我提供的服务",
+      "comboTitle": "我的服务项目",
+      "comboSubtitle": "可下单的商品和可预约的服务。",
+      "shopOnlyTitle": "商品",
+      "shopOnlySubtitle": "可下单的商品。",
+      "servicesOnlyTitle": "预约",
+      "servicesOnlySubtitle": "可预约的服务。",
+      "shopTitle": "我的店铺",
+      "shopSubtitle": "可下单的商品。",
+      "servicesTitle": "我的服务项目",
+      "servicesSubtitle": "可预约的服务。",
+      "productsHeading": "商品",
+      "reservationsHeading": "预约",
+      "soldOut": "已售罄",
+      "add": "加入",
+      "free": "免费",
+      "book": "预约",
+      "emptyCatalog": "目录即将上线。"
+    },
+    "faq": {
+      "eyebrow": "常见问题",
+      "title": "FAQ",
+      "subtitle": "大家最常问我的问题解答。"
+    },
+    "gallery": {
+      "eyebrow": "图片展示",
+      "title": "我的作品",
+      "subtitle": "一些展现我风格的细节。",
+      "photoAlt": "图片 {index}"
+    },
+    "googleBusiness": {
+      "eyebrow": "Google 评价",
+      "defaultTitle": "你的评价对我们很重要",
+      "defaultDescription": "查看我们客户的评价，或几秒钟内分享你的体验。",
+      "leaveReview": "留下评价",
+      "viewProfile": "查看 Google 资料"
+    },
+    "hours": {
+      "eyebrow": "营业时间",
+      "title": "我的营业时间",
+      "subtitle": "选对时间来找我。"
+    },
+    "map": {
+      "eyebrow": "如何找到我",
+      "title": "前来探访",
+      "mapTitle": "地图：{query}"
+    },
+    "newsletter": {
+      "eyebrow": "保持联系",
+      "title": "获取最新消息",
+      "subtitle": "接收我的优惠和新品信息，绝不打扰。",
+      "emailPlaceholder": "your@email.com",
+      "emailAria": "你的邮箱地址",
+      "subscribe": "订阅",
+      "sending": "…",
+      "done": "谢谢！已收到。✨",
+      "error": "暂时无法完成订阅，请稍后再试。"
+    },
+    "offers": {
+      "eyebrow": "不容错过",
+      "title": "我的优惠",
+      "subtitle": "现在就把握的优惠。",
+      "kindProduit": "商品",
+      "kindService": "服务",
+      "kindEvenement": "活动",
+      "orderProduct": "下单",
+      "grabOffer": "立即享受"
+    },
+    "promo": {
+      "remainingDays": "{days} 天 {hours} 小时",
+      "remainingHours": "{hours} 小时 {minutes} 分钟",
+      "countdownPrefix": "⏳ 剩余 {countdown}",
+      "codeCopied": "已复制！",
+      "codeLabel": "代码：{code}"
+    },
+    "reviews": {
+      "eyebrow": "他们信任我",
+      "title": "大家对我的评价",
+      "subtitle": "客户留下的真心话。"
+    },
+    "video": {
+      "title": "视频"
+    }
+  }
+}

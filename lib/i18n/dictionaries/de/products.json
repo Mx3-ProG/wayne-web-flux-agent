@@ -1,0 +1,179 @@
+{
+ "meta": {
+  "title": "Meine Produkte",
+  "tunnelTitle": "Meine Produkte erstellen"
+ },
+ "page": {
+  "eyebrow": "Dein Shop",
+  "title": "Meine Produkte",
+  "subtitle": "Dein E-Commerce-Katalog: Erstelle deine Produkte, behalte deinen Lagerbestand im Blick (eine angenommene Bestellung = −1) und sieh, was dir jedes einzelne einbringt. Sie erscheinen unter „Meine Leistungen“ auf deiner Vitrine.",
+  "startHint": "Füge zuerst eine Kategorie hinzu, dann Produkte darin.",
+  "emptyStart": "Erstelle zuerst deine",
+  "emptyLink": "Vitrine",
+  "emptyEnd": "um deine Produkte zu verwalten."
+ },
+ "card": {
+  "namePlaceholder": "Produktname",
+  "displayed": "Sichtbar",
+  "hidden": "Ausgeblendet",
+  "reservation": "Reservierung",
+  "product": "Produkt",
+  "deleteProduct": "Produkt löschen",
+  "price": "Preis (€)",
+  "duration": "Dauer (Min.)",
+  "description": "Beschreibung",
+  "descriptionPlaceholder": "Kurze Beschreibung",
+  "changePhoto": "Foto ändern",
+  "addPhoto": "Foto hinzufügen",
+  "removePhoto": "Foto entfernen",
+  "saved": "Gespeichert",
+  "saving": "Wird gespeichert…",
+  "confirm": "Meine Auswahl bestätigen",
+  "confirmHintReservation": "Name · Preis · Dauer · Beschreibung",
+  "confirmHintProduct": "Name · Preis · Beschreibung",
+  "inStock": "auf Lager",
+  "removeOne": "Eins entfernen",
+  "addOne": "Eins hinzufügen",
+  "restockPlaceholder": "+ Menge",
+  "restock": "Nachschub",
+  "setExact": "Festlegen",
+  "stopTracking": "Lagerbestand nicht mehr verfolgen",
+  "trackStock": "Lagerbestand verfolgen",
+  "soldSingular": "verkauft",
+  "soldPlural": "verkauft",
+  "noSales": "Noch keine Verkäufe"
+ },
+ "category": {
+  "save": "Speichern",
+  "deleteCategory": "Kategorie löschen",
+  "otherProducts": "Weitere Produkte",
+  "defaultName": "Neue Kategorie",
+  "addProduct": "Produkt hinzufügen · {cost} Kr.",
+  "addReservation": "Reservierung hinzufügen · {cost} Kr."
+ },
+ "manager": {
+  "addCategory": "Kategorie hinzufügen ·",
+  "free": "kostenlos",
+  "productNoCategory": "Produkt ohne Kategorie · {cost} Kr.",
+  "reservationNoCategory": "Reservierung ohne Kategorie · {cost} Kr.",
+  "defaultProductName": "Neues Produkt",
+  "defaultReservationName": "Neue Reservierung",
+  "reservationsFamilyName": "Buchungen"
+ },
+ "errors": {
+  "not_authenticated": "Du musst angemeldet sein, um fortzufahren.",
+  "no_active_page": "Erstelle zuerst deine Vitrine.",
+  "creation_failed": "Erstellung nicht möglich.",
+  "category_not_found": "Kategorie nicht gefunden.",
+  "category_name_required": "Gib deiner Kategorie einen Namen.",
+  "at_least_one_product": "Füge mindestens ein Produkt hinzu.",
+  "category_creation_failed": "Erstellung der Kategorie nicht möglich.",
+  "products_creation_failed": "Erstellung der Produkte nicht möglich.",
+  "product_not_found": "Produkt nicht gefunden.",
+  "save_failed": "Speichern nicht möglich.",
+  "delete_failed": "Löschen nicht möglich.",
+  "content_blocked": "Hassbotschaften oder explizite Inhalte sind auf FLUX verboten und werden geahndet; bitte respektiere deine Umgebung und die der anderen. Nach 3 Verstößen gegen unsere Nutzungsbedingungen wird das Konto gelöscht.",
+  "insufficientCredits": "Diese Aktion kostet {cost} Kredit und dein Guthaben reicht nicht aus. Lade deine Kredite auf der Seite Kredite auf.",
+  "insufficientCreditsPlural": "Diese Aktion kostet {cost} Kredite und dein Guthaben reicht nicht aus. Lade deine Kredite auf der Seite Kredite auf.",
+  "subscriptionRequired": "Dein FLUX-Test ist beendet und dein Guthaben ist leer. Wähle ein Angebot, um fortzufahren.",
+  "unknown": "Ein Fehler ist aufgetreten. Versuch's gleich noch mal."
+ },
+ "tunnel": {
+  "myProducts": "Meine Produkte",
+  "step": "Schritt {current} von 8",
+  "intro": {
+   "kicker": "FLUX-Produkterstellung",
+   "title": "Verwandle dein Know-how in Produkte,",
+   "titleEm": "die sofort verkaufsbereit sind.",
+   "text": "Eine Kategorie, ein oder mehrere Produkte, und Flux organisiert alles in deiner Vitrine.",
+   "cta": "Meine Produkte erstellen"
+  },
+  "category": {
+   "kicker": "Deine Kategorie",
+   "titleStart": "Wie möchtest du sie",
+   "titleEm": "organisieren?",
+   "subtitle": "Benenne die Kategorie und füge dann alle Produkte hinzu, die du jetzt erstellen möchtest.",
+   "nameLabel": "Name der Kategorie",
+   "namePlaceholder": "Z. B.: Gesichtspflege",
+   "productLabel": "Produkt {index}",
+   "productPlaceholder": "Z. B.: Glow-Behandlung",
+   "removeProduct": "Produkt {index} entfernen",
+   "addAnother": "Ein weiteres Produkt hinzufügen"
+  },
+  "price": {
+   "title": "Was kosten sie?",
+   "kicker": "Der richtige Preis",
+   "subtitle": "Gib für jedes Produkt einen Preis an. Du kannst ihn jederzeit ändern.",
+   "defaultName": "Produkt {index}",
+   "priceLabel": "Preis in €",
+   "placeholder": "Z. B.: 20"
+  },
+  "description": {
+   "title": "Was macht sie begehrenswert?",
+   "kicker": "Die Beschreibung",
+   "subtitle": "Ein einfacher Satz reicht, um dem Kunden die Wahl zu erleichtern.",
+   "placeholder": "Was der Kunde erhält, fühlt oder gewinnt…"
+  },
+  "photo": {
+   "kicker": "Das Foto",
+   "titleStart": "Verleih ihnen eine visuelle",
+   "titleEm": "Präsenz.",
+   "subtitle": "Ein Foto pro Produkt. Dieser Schritt bleibt optional.",
+   "change": "Foto ändern",
+   "add": "Foto hinzufügen"
+  },
+  "stock": {
+   "kicker": "Der Lagerbestand",
+   "title": "Möchtest du die Mengen verfolgen?",
+   "subtitle": "Aktiviere die Verfolgung und gib die heute verfügbare Anzahl an.",
+   "trackedHint": "Flux benachrichtigt dich, sobald der Lagerbestand auf null sinkt.",
+   "untrackedHint": "Es wird keine Mengenbegrenzung angezeigt.",
+   "tracked": "Lagerbestand wird verfolgt",
+   "track": "Lagerbestand verfolgen",
+   "quantityLabel": "Verfügbare Menge",
+   "unitSingular": "Einheit",
+   "unitPlural": "Einheiten"
+  },
+  "visibility": {
+   "kicker": "Die Veröffentlichung",
+   "title": "Sind sie bereit, sichtbar zu sein?",
+   "subtitle": "Ein ausgeblendetes Produkt bleibt gespeichert, erscheint aber nicht auf deiner Vitrine.",
+   "yes": "Veröffentlichen",
+   "no": "Als Entwurf behalten",
+   "toggleAria": "Einstellung für {name} ändern"
+  },
+  "confirm": {
+   "kicker": "Bestätigung",
+   "titleStart": "Alles ist bereit für deinen",
+   "titleEm": "Shop.",
+   "subtitle": "Überprüfe deine Auswahl: Nach der Erstellung geht es direkt weiter mit deinen Öffnungszeiten (im Preis inbegriffen).",
+   "category": "Kategorie",
+   "products": "Produkte",
+   "productSingular": "Produkt",
+   "productPlural": "Produkte",
+   "online": "Online",
+   "draft": "Entwurf",
+   "inStock": "auf Lager",
+   "totalCost": "Gesamtkosten (Produkte + Terminplan)",
+   "costValue": "{cost} Kredite · Guthaben: {balance} Kr.",
+   "missingSingular": "Dir fehlt {count} Kredit.",
+   "missingPlural": "Dir fehlen {count} Kredite.",
+   "recharge": "Lade deine Kredite auf",
+   "edit": "Bearbeiten",
+   "creating": "Wird erstellt…",
+   "create": "Bestätigen und meine Öffnungszeiten regeln ({cost} Kr.)"
+  },
+  "credits": {
+   "trialTitle": "Test beendet und Guthaben leer",
+   "insufficientTitle": "Nicht genug Kredite",
+   "trial": "Dein Test ist abgelaufen und du hast keine Kredite mehr übrig. Ein FLUX-Abo lädt dein Guthaben jeden Monat auf und öffnet die KI-Generierungen wieder — nichts geht verloren.",
+   "insufficient": "Die Erstellung deiner Produkte kostet {cost} Kredite. Lade deine Kredite auf, um fortzufahren — nichts geht verloren.",
+   "later": "Später",
+   "choosePlan": "Mein FLUX-Angebot wählen",
+   "rechargeCredits": "Meine Kredite aufladen"
+  },
+  "successToast": "Deine Produkte sind bereit. Letzter Schritt: deine Öffnungszeiten.",
+  "back": "Zurück",
+  "continue": "Weiter"
+ }
+}

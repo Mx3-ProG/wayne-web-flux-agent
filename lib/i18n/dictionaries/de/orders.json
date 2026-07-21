@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "title": "Meine Bestellungen"
+  },
+  "status": {
+    "pending": "Zu bearbeiten",
+    "accepted": "Angenommen",
+    "fulfilled": "Abgeschlossen",
+    "cancelled": "Storniert"
+  },
+  "bookingStatus": {
+    "cancelled": "Storniert",
+    "confirmed": "Bestätigt"
+  },
+  "itemKind": {
+    "offer": "Angebot",
+    "reservation": "Reservierung",
+    "product": "Produkt"
+  },
+  "clientSheet": {
+    "aria": "Kundenkarte",
+    "titleWithName": "Kundenkarte · {name}",
+    "titleDefault": "Kundenkarte",
+    "interactions": "{count} Interaktion(en)",
+    "phone": "Telefon",
+    "email": "E-Mail",
+    "notProvided": "Nicht angegeben",
+    "address": "Physische Adresse",
+    "addressNotProvided": "Nicht angegeben"
+  },
+  "history": {
+    "title": "Kundenhistorie",
+    "purchases": "{count} Kauf/Käufe",
+    "reservation": "Reservierung"
+  },
+  "orderCard": {
+    "transaction": "FLUX-Transaktion",
+    "defaultClient": "Kunde",
+    "itemSingular": "Artikel",
+    "itemPlural": "Artikel",
+    "accept": "Annehmen",
+    "markDone": "Als erledigt markieren",
+    "cancel": "Stornieren",
+    "refuse": "Ablehnen"
+  },
+  "clientProfile": {
+    "dossier": "Kundenakte",
+    "interactionSingular": "Interaktion",
+    "interactionPlural": "Interaktionen"
+  },
+  "hero": {
+    "kicker": "FLUX-Portfolio",
+    "titleStart": "Business-",
+    "titleEm": "Center",
+    "text": "Steuere deine Bestellungen, finde jeden Kunden wieder und verwandle deine Vitrine in ein sauberes, übersichtliches Umsatzbuch.",
+    "movementSingular": "verfolgte Bewegung",
+    "movementPlural": "verfolgte Bewegungen"
+  },
+  "metrics": {
+    "aria": "Bestell-Kennzahlen",
+    "toProcess": "Zu bearbeiten",
+    "accepted": "Angenommen",
+    "history": "Historie",
+    "clientSheets": "Kundenkarten"
+  },
+  "empty": {
+    "noPageStart": "Erstelle zuerst deine",
+    "noPageLink": "Vitrine",
+    "noPageEnd": ", um Bestellungen zu erhalten.",
+    "noOrdersStart": "Noch keine Bestellungen. Füge Produkte in deiner",
+    "noOrdersLink": "Vitrine",
+    "noOrdersEnd": "hinzu und teile deinen Link."
+  },
+  "sections": {
+    "incoming": "Eingehende Transaktionen",
+    "toProcess": "Zu bearbeiten",
+    "toProcessCount": "{count} zu bestätigende(s) Dossier(s)",
+    "openLabel": "Offene Dossiers",
+    "accepted": "Angenommen",
+    "acceptedCount": "{count} laufende Zahlungseingänge",
+    "ledger": "Hauptbuch",
+    "history": "Historie",
+    "historyCount": "{count} verbuchte Transaktion(en)",
+    "book": "Geschäftsbuch",
+    "clientSheets": "Kundenkarten",
+    "clientSheetsCount": "{count} gepflegte Beziehung(en)"
+  },
+  "errors": {
+    "not_authenticated": "Du musst angemeldet sein, um fortzufahren.",
+    "action_failed": "Aktion nicht möglich.",
+    "unknown": "Ein Fehler ist aufgetreten. Versuch's gleich nochmal."
+  }
+}

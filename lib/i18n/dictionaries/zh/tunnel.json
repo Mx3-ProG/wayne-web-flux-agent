@@ -1,0 +1,369 @@
+{
+ "accountGate": {
+  "backHome": "返回首页",
+  "alreadyAccount": "我已经有账号了",
+  "kicker": "个性化配置",
+  "titleLine1": "我们一起来搭建你的",
+  "titleEm": "增长引擎。",
+  "text": "先创建你的账号，再回答几个问题。你说的每一句话，都会实时应用到你的空间里——路上不会丢失任何信息。",
+  "nameLabel": "你的名字",
+  "namePlaceholder": "Alex",
+  "emailLabel": "你的工作邮箱",
+  "emailPlaceholder": "alex@moncommerce.fr",
+  "passwordLabel": "设置一个密码",
+  "passwordPlaceholder": "至少8个字符",
+  "submit": "创建我的空间",
+  "submitting": "正在创建你的空间…",
+  "trialValue": "7天试用，无需绑卡",
+  "creditsValue": "开通即送100积分",
+  "legalPrefix": "创建空间即表示你已阅读并同意我们的",
+  "legalLink": "使用条款"
+ },
+ "errors": {
+  "fillAll": "请填写所有字段。",
+  "passwordTooShort": "密码至少需要8个字符。",
+  "accountExists": "该邮箱已注册账号。",
+  "createFailed": "无法创建你的账号，请重试。",
+  "createdSignInFailed": "账号已创建，但登录失败。请尝试重新登录。",
+  "notConnected": "未登录。",
+  "createPageFirst": "请先创建你的展示页。",
+  "twoFieldsRequired": "请填写这两个字段。",
+  "catalogCreateFailed": "创建失败。",
+  "offerTitleRequired": "请给你的优惠起个标题。",
+  "offerCreateFailed": "无法创建该优惠。",
+  "noAgendaForVertical": "你的行业不使用日程功能。",
+  "chooseOneDay": "请至少选择一天。",
+  "closingAfterOpening": "关闭时间必须晚于开放时间。",
+  "unknownStyle": "未知风格。",
+  "not_authenticated": "你需要登录才能继续。",
+  "business_name_required": "请给你的展示页起个名字。",
+  "project_limit_reached": "你当前套餐的项目数量已达上限。",
+  "creation_failed": "页面创建失败。",
+  "content_blocked": "FLUX 严禁并制裁仇恨言论或露骨内容；请尊重你自己以及他人所处的环境。违反使用条款满3次，账号将被删除。",
+  "unknown": "出了点问题，请稍后重试。"
+ },
+ "shell": {
+  "espaceAria": "进入我的空间",
+  "chapterProgress": "第 {chapter} 章 · {title} — {done}/{total}",
+  "trialDays": "剩余 {days} 天试用"
+ },
+ "chapterIntro": {
+  "kicker": "第 {chapter} 章 · {title}",
+  "cta": "开始吧"
+ },
+ "chapterDone": {
+  "kicker": "第 {chapter} 章 完成",
+  "defaultCta": "继续",
+  "pending": "稍等一下…"
+ },
+ "chapters": {
+  "1": {
+   "title": "你的专属地址",
+   "whyTitle": "顾客在找你，却找不到你。",
+   "whyBody": "我们会给你一个属于你自己的链接，永久保留，而且 Google 能读懂它。",
+   "doneTitle": "你的专属地址已经建好了。",
+   "doneBody": "它属于你，而且 AI 现在已经学会用你的语气说话了。"
+  },
+  "2": {
+   "title": "你卖什么",
+   "whyTitle": "空空的展示页什么都卖不出去。",
+   "whyBody": "我们会用一个目录、一个优惠和你的可预约时段把它填满。",
+   "doneTitle": "顾客知道该买什么了。",
+   "doneBody": "现在，你工作的同时，展示页也能接收咨询了。"
+  },
+  "3": {
+   "title": "你的曝光度",
+   "whyTitle": "再好的展示页，没人访问也白搭。",
+   "whyBody": "我们会创建你的第一条内容，并把你的链接传播出去。",
+   "doneTitle": "你的入门流程已经完成。",
+   "doneBody": "你的店铺已经上线、内容丰富，随时可以分享出去。"
+  }
+ },
+ "achievements": {
+  "storeCreated": "你的展示页「{name}」已创建",
+  "defaultStore": "你的店铺",
+  "voiceLearned": "AI 已学会你的语气和行业特点",
+  "firstService": "你的第一项服务已上线",
+  "firstProduct": "你的第一款产品已上线",
+  "offerReady": "你的引流优惠已经准备好了",
+  "bookingReady": "顾客现在可以预约时段了"
+ },
+ "footer": {
+  "back": "返回",
+  "continue": "继续",
+  "pending": "稍等一下…"
+ },
+ "finalCta": "进入我的空间",
+ "vertical": {
+  "kicker": "你的行业",
+  "titleStart": "你最擅长",
+  "titleEm": "什么",
+  "titleEnd": "？",
+  "subtitle": "选择你的领域。FLUX 会据此调整工具、用词和展示页的配色。"
+ },
+ "goals": {
+  "kicker": "你的目标",
+  "titleStart": "现在是什么在",
+  "titleEm": "拖你后腿",
+  "titleEnd": "？",
+  "subtitle": "选择所有符合你情况的选项。你在这里说的内容，AI 都会用来替你写作。",
+  "items": {
+   "temps": {
+    "title": "我时间不够",
+    "text": "内容创作和回复客户占用了我所有的晚上。"
+   },
+   "google": {
+    "title": "没人能找到我",
+    "text": "我想在 Google 和本地搜索中排名靠前。"
+   },
+   "leads": {
+    "title": "我想要更多客户",
+    "text": "我需要持续、优质的咨询需求。"
+   },
+   "tout": {
+    "title": "把一切集中起来",
+    "text": "我想不再在五个工具之间来回切换。"
+   }
+  }
+ },
+ "identity": {
+  "kicker": "第1步 · 你的展示页",
+  "titleStart": "给它一个",
+  "titleEm": "专属地址。",
+  "subtitle": "这些信息将用于创建你的展示页，并为本地搜索优化做准备。之后一切都可以修改。",
+  "nameLabel": "店铺名称",
+  "nameHint": "用你的名字也可以",
+  "namePlaceholder": "例：Atelier Louise",
+  "jobLabel": "你的职业",
+  "jobHint": "选择或输入你自己的",
+  "jobPlaceholder": "例：花艺师",
+  "cityLabel": "你所在的城市",
+  "cityPlaceholder": "例：Lyon"
+ },
+ "voice": {
+  "kicker": "第2步 · 你的语气",
+  "titleStart": "FLUX 要说得",
+  "titleEm": "像你。",
+  "subtitle": "选择最贴近你店铺气质的语气。AI 会在所有内容中模仿这种风格。",
+  "tones": {
+   "Direct et efficace": {
+    "title": "直接高效",
+    "sample": "我们直奔结果。"
+   },
+   "Chaleureux et proche": {
+    "title": "亲切温暖",
+    "sample": "就像对待你最好的客户一样。"
+   },
+   "Premium et expert": {
+    "title": "高端专业",
+    "sample": "简洁、精准、有格调。"
+   },
+   "Dynamique et audacieux": {
+    "title": "活力大胆",
+    "sample": "满满的能量和个性。"
+   }
+  }
+ },
+ "catalog": {
+  "kicker": "第3步 · 你的产品目录",
+  "titleStart": "你想先卖",
+  "titleEm": "什么？",
+  "subtitle": "一个{categoryWord}和你的第一个{itemWord}。这是让顾客明白你提供什么的最基本条件。",
+  "freeBadge": "入门流程期间免费 · 已为你节省15积分",
+  "categoryLabel": "{categoryWord}的名称",
+  "itemLabel": "你的{itemWord}名称",
+  "itemLabelWithCategory": "你在「{category}」中的{itemWord}名称",
+  "priceLabel": "含税价格",
+  "trackStock": "追踪库存",
+  "trackStockHint": "库存售罄时 FLUX 会通知你。",
+  "stockLabel": "可用数量",
+  "noStockHint": "服务类项目无需追踪库存：顾客预约时段即可，具体设置在日程步骤中完成。"
+ },
+ "offer": {
+  "kicker": "第4步 · 你的优惠",
+  "titleStart": "给他们一个",
+  "titleEm": "理由",
+  "titleEnd": "让他们现在就来。",
+  "subtitle": "一个展示在展示页顶部的重点优惠：首次体验优惠、套餐或开业折扣。",
+  "freeBadge": "入门流程期间免费 · 已为你节省15积分",
+  "titleLabel": "优惠标题",
+  "titlePlaceholder": "例：首次到店享8折",
+  "titleHint": "要具体：顾客能立刻获得什么好处。",
+  "descriptionLabel": "一句话说明（选填）",
+  "descriptionPlaceholder": "例：本月底前有效，需预约。",
+  "priceLabel": "优惠价格",
+  "compareAtLabel": "划线原价（选填）"
+ },
+ "agenda": {
+  "kicker": "第5步 · 你的日程",
+  "titleStart": "你什么时候",
+  "titleEm": "有空？",
+  "subtitle": "选择你的工作日和一个初始时间段。即使你没空回复，顾客也能自主预约。",
+  "weekdays": {
+   "mon": "周一",
+   "tue": "周二",
+   "wed": "周三",
+   "thu": "周四",
+   "fri": "周五",
+   "sat": "周六",
+   "sun": "周日"
+  },
+  "from": "从",
+  "to": "到"
+ },
+ "content": {
+  "kicker": "第6步 · 你的第一条内容",
+  "titleStart": "你的第一条",
+  "titleEm": "发布内容",
+  "titleEnd": "已经在等你了。",
+  "subtitle": "AI 现在已经了解你的行业、城市、产品目录和语气。看看它能写出什么。",
+  "costBadge": "花费{cost}积分，当前余额{balance} · 这是整个流程中唯一需要付费的一步",
+  "formatLabel": "内容类型",
+  "formats": {
+   "reel": "Reel / 短视频",
+   "carrousel": "轮播图",
+   "post": "普通帖子"
+  },
+  "goalLabel": "这条内容的目的是什么？",
+  "goals": {
+   "visibilite": "尽可能多触达人群",
+   "expertise": "展示我的专业能力",
+   "conversion": "促使顾客预约"
+  },
+  "topicLabel": "主题（选填）",
+  "topicPlaceholder": "例：我的招牌服务、一个小技巧、前后对比…",
+  "generating": "AI 正在写作…",
+  "generate": "生成我的第一条内容",
+  "outputLabel": "你的内容——已经存进你的内容库了。",
+  "outputNote": "你随时都可以在内容库中找到它。",
+  "errors": {
+   "insufficientCredits": "你的积分不足，无法生成此内容。",
+   "trialExpired": "你的试用期已结束——充值后即可100%体验 FLUX。",
+   "contentBlocked": "该主题未通过审核，请重新表述。",
+   "generic": "生成失败，请稍后重试。"
+  }
+ },
+ "results": {
+  "kicker": "第7步 · 你的成果",
+  "titleStart": "这才是你",
+  "titleEm": "真实的进展。",
+  "subtitle": "这些是你的真实数据，不是演示。每天早上你都会在你的空间里看到这张表。",
+  "creditsLeft": "剩余积分",
+  "creditsLeftHint": "每一次内容生成、每一次发布都会消耗积分。",
+  "creation": "条内容存入你的内容库",
+  "creations": "条内容存入你的内容库",
+  "creationsHint": "你的内容会永久保留，随时可查。",
+  "upcomingBookings": "个即将到来的预约",
+  "upcomingBookingsHint": "只要你的链接开始传播，这个数字就会自动上涨。"
+ },
+ "style": {
+  "kicker": "你的风格",
+  "titleStart": "选择你的",
+  "titleEm": "风格。",
+  "subtitle": "每种风格都会设定展示页的配色、字体和排版。预览会随你的选择实时更新，之后一切仍可修改。"
+ },
+ "images": {
+  "kicker": "你的风格 · 你的图片",
+  "titleStart": "你想留下",
+  "titleEm": "什么样的印象？",
+  "subtitle": "你的Logo，以及迎接访客的大图。两者都是选填项——你也可以之后在编辑器里添加。",
+  "logoLabel": "Logo 或头像",
+  "logoChange": "更换Logo",
+  "logoAdd": "添加我的Logo",
+  "heroLabel": "封面大图",
+  "heroChange": "更换图片",
+  "heroAdd": "添加图片",
+  "uploading": "上传中…",
+  "tooLarge": "文件过大（最大 {max} MB）。",
+  "failed": "上传失败，请重试。"
+ },
+ "details": {
+  "kicker": "你的风格 · 细节设置",
+  "titleStart": "完善细节，告诉他们如何",
+  "titleEm": "联系你。",
+  "subtitle": "你的字体、配色和联系方式。刚才选择的风格已经帮你预设好了大部分内容。",
+  "fontLabel": "字体风格",
+  "primaryLabel": "主色调",
+  "darkLabel": "深色调",
+  "phoneLabel": "电话",
+  "optional": "选填",
+  "phonePlaceholder": "例：06 12 34 56 78",
+  "addressLabel": "地址",
+  "addressPlaceholder": "例：12 rue des Lilas"
+ },
+ "publish": {
+  "kicker": "你的风格 · 上线发布",
+  "titleStart": "我们要",
+  "titleEm": "上线了吗？",
+  "subtitle": "你刚才设置的一切目前都以草稿形式保存。发布，才能让你的展示页真正被顾客看到——也让下一步的链接产生意义。",
+  "done": "你的展示页已经上线。",
+  "cost": "发布需要花费{cost}积分 · 你的余额：{balance}积分",
+  "publishing": "正在上线…",
+  "cta": "发布我的展示页",
+  "missingCredits": "你还差{missing}积分才能发布。",
+  "missingCreditsPlural": "你还差{missing}积分。你可以先继续，之后再回到你的空间中发布。",
+  "errors": {
+   "insufficientCredits": "发布需要{cost}积分。",
+   "subscriptionRequired": "你的试用期已结束：请选择一个套餐以继续发布。",
+   "alreadyUpToDate": "你的展示页已经是最新版本。",
+   "contentBlocked": "FLUX 严禁并制裁仇恨言论或露骨内容，请尊重你自己以及他人所处的环境。违反使用条款满3次，账号将被删除。",
+   "generic": "发布失败，请稍后重试。",
+   "success": "你的展示页已上线！余额：{balance}积分"
+  }
+ },
+ "share": {
+  "kicker": "第8步 · 你的链接",
+  "titleStart": "让它",
+  "titleEm": "传播起来。",
+  "subtitle": "Instagram 简介、WhatsApp 状态、Google 商家信息、邮件签名。这一步是大家最容易跳过的——却是能填满你日程的关键一步。",
+  "copied": "已复制",
+  "copy": "复制",
+  "whatsappText": "在线预约：{url}",
+  "whatsappShare": "分享到 WhatsApp",
+  "iosTitle": "iPhone 用户",
+  "iosStep1": "在 Safari 中点击「分享」",
+  "iosStep2": "选择「添加到主屏幕」",
+  "androidTitle": "Android 用户",
+  "androidStep1": "打开 Chrome 菜单",
+  "androidStep2": "选择「安装应用」",
+  "installNow": "立即安装 FLUX"
+ },
+ "emailVerify": {
+  "title": "确认邮箱地址以完成发布",
+  "description": "我们已向 {email} 发送了一封确认邮件。点击邮件中的链接，然后回到这里：你的展示页就会上线。",
+  "spamHint": "如果没看到邮件，记得查看垃圾邮件箱。",
+  "openWebmail": "打开 {label}",
+  "resend": "重新发送邮件",
+  "resending": "发送中…",
+  "sent": "邮件已发送，请查看你的收件箱。",
+  "errors": {
+   "not_authenticated": "你需要登录才能继续。",
+   "already_verified": "你的邮箱已经通过验证。",
+   "rate_limited": "请等一分钟后再重新发送邮件。",
+   "update_failed": "邮件发送失败，请稍后重试。",
+   "send_failed": "邮件未能发出，请稍后重试。",
+   "unknown": "出了点问题，请稍后重试。"
+  }
+ },
+ "preview": {
+  "label": "你的展示页，实时预览",
+  "availableIn": "在{city}开放服务",
+  "addressOnline": "你的专属地址已上线",
+  "defaultBusinessName": "你的店铺",
+  "defaultJobTitle": "你的行业",
+  "defaultCategory": "你的产品目录",
+  "toneTagline": "本地匠心，用{tone}的方式讲述。",
+  "defaultTagline": "本地匠心手艺，简单流畅的体验，以及与众不同的服务。",
+  "bookCta": "立即预约",
+  "open": "营业中",
+  "days": {
+   "sun": "周日",
+   "mon": "周一",
+   "tue": "周二",
+   "wed": "周三",
+   "thu": "周四",
+   "fri": "周五",
+   "sat": "周六"
+  }
+ }
+}

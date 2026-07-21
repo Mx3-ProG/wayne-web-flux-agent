@@ -1,0 +1,379 @@
+{
+ "nav": {
+  "menu": "Menú",
+  "open": "Abrir la navegación",
+  "close": "Cerrar la navegación",
+  "homeAria": "Inicio WayneWeb FLUX",
+  "mainAria": "Navegación principal",
+  "mobileAria": "Navegación móvil",
+  "title": "Navegación",
+  "activeProject": "Proyecto activo",
+  "workspace": "Mi espacio",
+  "tagline": "Tu negocio. Un solo espacio.",
+  "manageCredits": "Gestionar mis créditos",
+  "credits": "créditos",
+  "pending": "{count} pendientes",
+  "groups": {
+   "control": "Pilotar",
+   "sell": "Vender",
+   "grow": "Crecer",
+   "essential": "Lo esencial",
+   "business": "Mi negocio",
+   "account": "Mi cuenta"
+  },
+  "items": {
+   "home": "Inicio",
+   "stats": "Mis estadísticas",
+   "statsShort": "Stats",
+   "orders": "Mis pedidos",
+   "ordersShort": "Pedidos",
+   "offers": "Mis ofertas",
+   "offersShort": "Ofertas",
+   "projects": "Mis proyectos",
+   "storefront": "Mi escaparate",
+   "products": "Mis productos",
+   "agenda": "Mi agenda",
+   "content": "Mis contenidos",
+   "ai": "FLUX – IA",
+   "install": "Instalar la app",
+   "profile": "Mi perfil",
+   "viewProfile": "Ver mi perfil"
+  }
+ },
+ "language": {
+  "aria": "Idioma del espacio",
+  "title": "Idioma de tu espacio",
+  "description": "Este idioma se aplica a tu dashboard y se convierte en el idioma de origen de tus nuevas páginas.",
+  "firstChoice": "La primera elección en el asistente es gratis.",
+  "change": "Cambiar · {cost} créditos",
+  "changing": "Modificando…",
+  "success": "Idioma del espacio modificado.",
+  "error": "No se puede cambiar el idioma en este momento.",
+  "insufficient": "Necesitas {cost} créditos para cambiar el idioma de la cuenta.",
+  "laterChangeCost": "Cambiarlo más tarde, con tu escaparate en línea, cuesta {cost} créditos (retraducción incluida)."
+ },
+ "vitrineGuide": {
+  "step": "Paso {current} de {total}",
+  "fullEditor": "Editor completo",
+  "back": "Atrás",
+  "continue": "Continuar",
+  "edit": "Modificar",
+  "saving": "Guardando…",
+  "draftSaved": "Borrador guardado.",
+  "errors": {
+   "blocked": "Este contenido no respeta las normas de FLUX.",
+   "rate": "Has lanzado varias generaciones seguidas. Inténtalo de nuevo en unos minutos.",
+   "generation": "La generación ha fallado — no se te han descontado créditos.",
+   "brief": "Describe tu negocio en pocas palabras primero."
+  },
+  "intro": {
+   "kicker": "Asistente de escaparate FLUX",
+   "titleStart": "Haz evolucionar tu escaparate,",
+   "titleEm": "una decisión a la vez.",
+   "text": "FLUX recoge tu información actual y te acompaña paso a paso. Nada cambia hasta tu confirmación final.",
+   "placeholder": "Describe tu negocio en pocas frases: qué ofreces, tu estilo, qué te distingue… FLUX se encarga del resto.",
+   "creating": "FLUX está creando tu escaparate…",
+   "create": "FLUX crea todo mi escaparate ({cost} cr.)",
+   "recharge": "FLUX crea todo mi escaparate — recarga tus créditos",
+   "working": "FLUX está trabajando…",
+   "prefill": "Solo prerrellenar los textos ({cost} cr.)",
+   "stepByStep": "O modificar paso a paso",
+   "direct": "Ir directamente al editor",
+   "prefillSuccess": "FLUX ha prerrellenado tu borrador. Revísalo y publícalo.",
+   "generateSuccess": "FLUX ha creado tu escaparate. Revisa tu borrador y publícalo."
+  },
+  "identity": {
+   "kicker": "Tu identidad",
+   "title": "¿Qué deben recordar tus clientes?",
+   "subtitle": "El nombre, el oficio y la promesa que aparecen primero.",
+   "business": "Nombre del negocio",
+   "job": "Tu oficio",
+   "tagline": "Tu frase de impacto",
+   "taglinePlaceholder": "Lo que hace que te elijan a ti",
+   "city": "Tu ciudad"
+  },
+  "images": {
+   "kicker": "Tus imágenes",
+   "title": "¿Qué imagen quieres transmitir?",
+   "subtitle": "Añade tu logo y la gran foto que recibe a tus visitantes.",
+   "logo": "Logo o retrato",
+   "logoChange": "Cambiar el logo",
+   "logoAdd": "Añadir mi logo",
+   "hero": "Gran foto de portada",
+   "heroChange": "Cambiar la foto",
+   "heroAdd": "Añadir una foto"
+  },
+  "mood": {
+   "kicker": "Tu ambiente",
+   "title": "¿Qué universo cuenta mejor tu negocio?",
+   "subtitle": "La estructura sigue siendo accesible y responsive, solo cambia la atmósfera."
+  },
+  "details": {
+   "kicker": "Los detalles",
+   "title": "¿Cómo se te puede reconocer y contactar?",
+   "subtitle": "Elige tu tipografía, tus colores y verifica tus datos de contacto.",
+   "font": "Estilo de escritura",
+   "primary": "Color principal",
+   "dark": "Color oscuro",
+   "phone": "Teléfono",
+   "phonePlaceholder": "Ej: 612 34 56 78",
+   "address": "Dirección",
+   "optional": "Opcional"
+  },
+  "confirmation": {
+   "kicker": "Confirmación",
+   "title": "Tu escaparate está listo para evolucionar.",
+   "subtitle": "Revisa lo esencial: tus cambios se guardan como borrador, luego decides si los publicas.",
+   "business": "Negocio",
+   "positioning": "Posicionamiento",
+   "mood": "Ambiente",
+   "images": "Imágenes",
+   "imagesCount": "{count} de 2 añadidas",
+   "cost": "Coste del asistente",
+   "costValue": "{cost} créditos · saldo: {balance} cr.",
+   "missing": "Te faltan {count} créditos.",
+   "recharge": "Recarga tus créditos",
+   "freeEditor": "o pasa por el editor completo, gratis.",
+   "confirm": "Confirmar mis cambios ({cost} cr.)"
+  },
+  "publish": {
+   "kicker": "Publicación",
+   "title": "Tu borrador está listo. ¿Lo publicamos?",
+   "subtitle": "Tu web pública todavía muestra la versión anterior. Publicar una nueva versión la reemplaza para tus clientes.",
+   "later": "Más tarde — ir al editor"
+  },
+  "credits": {
+   "expiredTitle": "Tu ventana de IA de 6 meses ha terminado",
+   "trialTitle": "Has terminado tu prueba",
+   "insufficientTitle": "No tienes suficientes créditos",
+   "expired": "Tu compra te dio acceso a la IA durante 6 meses. Tus créditos restantes siguen disponibles para publicar y gestionar tu escaparate; elige una tarifa para reactivar las generaciones IA.",
+   "trial": "Has terminado tu prueba — recarga para disfrutar de FLUX al 100 %.",
+   "insufficient": "El asistente de escaparate cuesta {cost} créditos. Recarga tus créditos, o usa el editor completo (gratis).",
+   "template": "Partir de una plantilla",
+   "recharge": "Recargar mis créditos",
+   "plan": "Elegir mi tarifa FLUX"
+  },
+  "preview": {
+   "aria": "Vista previa actual de tu escaparate",
+   "live": "Vista previa en directo",
+   "job": "Tu oficio",
+   "city": "Tu ciudad",
+   "business": "Tu negocio",
+   "tagline": "Tu frase de impacto aparecerá aquí.",
+   "discover": "Descubrir",
+   "whatsapp": "WhatsApp activado"
+  }
+ },
+ "offerTunnel": {
+  "step": "Paso {current} de 8",
+  "myOffers": "Mis ofertas",
+  "back": "Atrás",
+  "continue": "Continuar",
+  "creation": "Creación de oferta FLUX",
+  "create": "Crear mi oferta",
+  "success": "Tu oferta está lista. Publica una nueva versión de tu web para ponerla en marcha.",
+  "intro": {
+   "title": "Crea una oferta que dé ganas de pasar a la acción.",
+   "text": "FLUX te ayuda a presentar la promesa adecuada, al precio adecuado, directamente en tu escaparate."
+  },
+  "format": {
+   "kicker": "El formato",
+   "title": "¿Qué quieres destacar?",
+   "subtitle": "Elige el tipo que mejor corresponda a tu oferta.",
+   "kinds": {
+    "produit": {
+     "title": "Una oferta de producto",
+     "text": "Un artículo o un pack para pedir."
+    },
+    "service": {
+     "title": "Una oferta de servicio",
+     "text": "Una prestación destacada."
+    },
+    "evenement": {
+     "title": "Un evento",
+     "text": "Una experiencia con fecha o aforo."
+    }
+   }
+  },
+  "promise": {
+   "kicker": "La promesa",
+   "title": "¿Cómo se llama tu oferta?",
+   "subtitle": "Un título corto que se entienda al instante.",
+   "label": "Título de la oferta",
+   "placeholder": "Ej: Pack descubrimiento"
+  },
+  "price": {
+   "kicker": "El precio",
+   "title": "¿Qué valor quieres mostrar?",
+   "subtitle": "Añade un precio tachado solo si la oferta representa una promoción real.",
+   "offer": "Precio de la oferta (€)",
+   "offerPlaceholder": "Ej: 49",
+   "compare": "Precio inicial tachado (€) · opcional",
+   "comparePlaceholder": "Ej: 120"
+  },
+  "benefit": {
+   "kicker": "El beneficio",
+   "title": "¿Por qué debería elegirla tu cliente?",
+   "subtitle": "Describe simplemente qué incluye y qué gana el cliente con ella.",
+   "label": "Descripción",
+   "placeholder": "Qué incluye la oferta, su ventaja, su límite…"
+  },
+  "photo": {
+   "kicker": "La foto",
+   "title": "Dale una imagen potente a tu oferta.",
+   "subtitle": "La foto es opcional, pero ayuda a que la oferta destaque.",
+   "change": "Cambiar la foto",
+   "add": "Añadir una foto"
+  },
+  "visibility": {
+   "kicker": "La publicación",
+   "title": "¿Tu oferta está lista para salir?",
+   "subtitle": "Puedes publicarla ahora o guardarla como borrador.",
+   "online": "Publicar",
+   "onlineHint": "Visible en tu escaparate en la próxima publicación.",
+   "draft": "Guardar como borrador",
+   "draftHint": "Lista para retomarla más adelante."
+  },
+  "confirm": {
+   "kicker": "Confirmación",
+   "title": "Tu oferta está lista para convertir.",
+   "subtitle": "Revisa la información antes de crearla.",
+   "type": "Tipo",
+   "status": "Estado",
+   "offer": "Oferta",
+   "price": "Precio",
+   "cost": "Coste de creación",
+   "online": "En línea",
+   "draft": "Borrador",
+   "instead": "en lugar de",
+   "costValue": "{cost} créditos · saldo: {balance} cr.",
+   "extra": "por encima de tu tarifa",
+   "missing": "Te faltan {count} créditos para crear esta oferta.",
+   "recharge": "Recarga tus créditos",
+   "edit": "Modificar",
+   "creating": "Creando…",
+   "create": "Confirmar y crear ({cost} cr.)"
+  },
+  "limit": {
+   "overTitle": "Superas el límite de tu tarifa",
+   "reachedTitle": "Límite de tu tarifa alcanzado",
+   "over": "Tu tarifa incluye {limit} ofertas y ya tienes {count}. Aun así puedes crear esta: costará {extra} créditos en lugar de {normal}.",
+   "reached": "Tu tarifa incluye {limit} ofertas y ya tienes {count}. Recarga tus créditos para continuar: una oferta adicional cuesta {extra} créditos y te quedan {balance}.",
+   "view": "Ver mis ofertas",
+   "continue": "Continuar ({cost} cr.)",
+   "recharge": "Recargar mis créditos"
+  },
+  "credits": {
+   "trialTitle": "Prueba terminada y saldo vacío",
+   "insufficientTitle": "No tienes suficientes créditos",
+   "trial": "Tu prueba ha terminado y ya no te quedan créditos. Una tarifa FLUX recarga tu saldo cada mes; tu oferta está lista, no se pierde nada.",
+   "insufficient": "Crear esta oferta cuesta {cost} créditos. Recarga tus créditos para finalizar; tu oferta está lista, no se pierde nada.",
+   "later": "Más tarde",
+   "plan": "Elegir mi tarifa FLUX",
+   "recharge": "Recargar mis créditos"
+  },
+  "errors": {
+   "not_authenticated": "Debes estar conectado para continuar.",
+   "no_active_page": "Crea primero tu escaparate.",
+   "offer_creation_failed": "No se ha podido crear la oferta.",
+   "content_blocked": "Los mensajes de odio o los contenidos explícitos están prohibidos y sancionados en FLUX; por favor, respeta tu entorno y el de los demás. Tras 3 infracciones de nuestras condiciones de uso, la cuenta se elimina.",
+   "unknown": "Se ha producido un error. Inténtalo de nuevo en un momento."
+  }
+ },
+ "installer": {
+  "metaTitle": "Instalar la aplicación",
+  "eyebrow": "Siempre a mano",
+  "title": "Instala Wayne Web Flux",
+  "subtitle": "Añade la aplicación a tu pantalla de inicio para abrir tu dashboard como una app de verdad y ver el número de pedidos por gestionar en su icono cuando tu dispositivo admite los distintivos.",
+  "noteTitle": "Bueno saberlo",
+  "note": "El distintivo se actualiza al abrir la aplicación y desaparece en cuanto no queda ningún pedido por gestionar. Su visualización depende del teléfono y del navegador.",
+  "installed": "La aplicación está instalada",
+  "oneMinute": "Instalación en un minuto",
+  "installedHint": "Puedes encontrarla en tu pantalla de inicio.",
+  "chooseDevice": "Elige los pasos correspondientes a tu teléfono.",
+  "installNow": "Instalar ahora",
+  "iphonePlatform": "iPhone · Safari",
+  "fromSafari": "Desde Safari",
+  "iphoneSteps": [
+   "Abre esta página en Safari.",
+   "Pulsa en Compartir.",
+   "Elige Añadir a pantalla de inicio."
+  ],
+  "androidPlatform": "Android · Chrome",
+  "fromChrome": "Desde Chrome",
+  "androidSteps": [
+   "Abre esta página en Chrome.",
+   "Pulsa en el menú de arriba a la derecha.",
+   "Elige Instalar aplicación o Añadir a pantalla de inicio."
+  ]
+ },
+ "emailVerification": {
+  "banner": "Verifica tu dirección de email para publicar tu escaparate y cobrar a tus clientes.",
+  "resend": "Reenviar el email",
+  "resending": "Enviando…",
+  "sent": "Email enviado. Revisa tu bandeja de entrada.",
+  "spamHint": "Si no lo ves, recuerda revisar tu carpeta de spam.",
+  "errors": {
+   "not_authenticated": "Debes estar conectado para continuar.",
+   "already_verified": "Tu dirección ya está verificada.",
+   "rate_limited": "Espera un minuto antes de volver a pedir un email.",
+   "update_failed": "No se ha podido enviar el email. Inténtalo más tarde.",
+   "send_failed": "El email no se ha enviado. Inténtalo de nuevo en un momento.",
+   "unknown": "Se ha producido un error. Inténtalo de nuevo en un momento."
+  }
+ },
+ "trialBanner": {
+  "activeSingular": "Prueba FLUX: te queda {days} día para probarlo todo.",
+  "activePlural": "Prueba FLUX: te quedan {days} días para probarlo todo.",
+  "viewPlans": "Ver los planes",
+  "creditsActiveSingular": "Terminaste tu prueba — tu {credits} crédito restante sigue haciendo funcionar FLUX. Recarga para disfrutarlo al 100 %.",
+  "creditsActivePlural": "Terminaste tu prueba — tus {credits} créditos restantes siguen haciendo funcionar FLUX. Recarga para disfrutarlo al 100 %.",
+  "expiredNoCredits": "Prueba terminada y saldo vacío — tu sitio sigue en línea, pero las modificaciones están en pausa.",
+  "choosePlan": "Elegir mi plan FLUX"
+ },
+ "revenueCounter": {
+  "aria": "Facturación generada",
+  "eyebrow": "Tu facturación",
+  "milestoneReached": "🎉 Nivel {amount} alcanzado",
+  "caption": "Tu talento merece ser compartido. Esto es lo que tu vitrina FLUX ya ha generado gracias a las citas cumplidas y los pedidos aceptados.",
+  "nextMilestone": "Próximo nivel: {amount}",
+  "remaining": "Solo faltan {amount} para lograrlo 💪",
+  "maxed": "¡Superas todos los niveles! 🚀 Sigue así."
+ },
+ "upsellDialog": {
+  "later": "Más tarde",
+  "discoverPlans": "Descubrir los planes",
+  "trial": {
+   "title": "Dale a FLUX los medios para ir más lejos",
+   "description": "Tu prueba te permite descubrir las herramientas de IA. Un plan desbloquea la creación completa de tu vitrina y recarga tus créditos cada mes."
+  },
+  "trialExpired": {
+   "title": "Terminaste tu prueba",
+   "description": "Tu saldo está vacío y tu sitio sigue en línea. Recarga para disfrutar FLUX al 100 %: modificaciones, publicaciones y generaciones."
+  },
+  "trialExpiredWithCredits": {
+   "title": "Terminaste tu prueba",
+   "description": "Tus créditos restantes siguen haciendo funcionar FLUX — generaciones incluidas. Recarga para disfrutarlo al 100 %, con un saldo que se renueva cada mes."
+  },
+  "creditsActive": {
+   "title": "Pasa de un pack puntual a un ritmo constante",
+   "description": "Tu pack todavía te da acceso a la IA. Un plan añade una recarga mensual y mantiene FLUX disponible sin esperar una nueva compra."
+  },
+  "creditsExpired": {
+   "title": "Tu ventana de IA terminó, tus créditos no",
+   "description": "Tus créditos restantes siguen sirviendo para publicar y gestionar tu vitrina. Un plan reactiva las generaciones de IA e instala un ritmo mensual."
+  }
+ },
+ "photoUpload": {
+  "uploading": "Enviando…",
+  "tooLarge": "Archivo demasiado pesado (máx. {max} Mo).",
+  "failed": "El envío falló. Inténtalo de nuevo."
+ },
+ "copyButton": {
+  "copy": "Copiar",
+  "copied": "Enlace copiado."
+ },
+ "creditsLink": {
+  "aria": "{credits} créditos — ver mis créditos"
+ }
+}

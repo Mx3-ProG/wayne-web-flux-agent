@@ -1,0 +1,79 @@
+{
+  "meta": {
+    "title": "Tariffe e crediti",
+    "description": "Scopri gli abbonamenti FLUX e i pacchetti di crediti per sviluppare la presenza digitale della tua attività."
+  },
+  "header": {
+    "tryFree": "Prova gratis"
+  },
+  "hero": {
+    "eyebrow": "Tariffe chiare. Nessun costo nascosto.",
+    "titleLine1": "Scegli il ritmo della",
+    "titleEm": "tua crescita.",
+    "text": "Un abbonamento per far funzionare il tuo spazio. Crediti per creare, pubblicare e accelerare quando ne hai bisogno.",
+    "fact1": "giorni di prova",
+    "fact2": "Disdicibile in qualsiasi momento",
+    "fact3": "Pagamento sicuro con Stripe"
+  },
+  "plans": {
+    "kicker": "Abbonamenti mensili",
+    "title": "Una formula per ogni ambizione.",
+    "note": "I crediti mensili non utilizzati si accumulano.",
+    "featured": "Il più scelto",
+    "perMonth": "/ mese",
+    "creditsIncluded": "crediti incluși / mese",
+    "showcase": "vetrina",
+    "showcases": "vetrine",
+    "activeOffers": "offerte attive",
+    "subpages": "sottopagine per vetrina",
+    "choose": "Scegli",
+    "checkoutNote": "Accederai o creerai il tuo account prima del pagamento. L’abbonamento si attiva dopo la conferma di Stripe."
+  },
+  "planNames": {
+    "basique": "Base",
+    "pro": "Pro",
+    "business": "Business",
+    "entreprise": "Impresa"
+  },
+  "features": {
+    "basique": [
+      "Personalizzazione essenziale",
+      "Indirizzo FLUX incluso",
+      "Strumenti FLUX inclusi"
+    ],
+    "pro": [
+      "Personalizzazione avanzata",
+      "Temi premium",
+      "Strumenti FLUX inclusi"
+    ],
+    "business": [
+      "Dominio personalizzato",
+      "Temi premium",
+      "Strumenti FLUX inclusi"
+    ],
+    "entreprise": [
+      "10 vetrine professionali",
+      "Dominio personalizzato",
+      "Firma Wayne Web nascondibile"
+    ]
+  },
+  "credits": {
+    "kicker": "Ricariche una tantum",
+    "title": "Hai bisogno di una spinta in più?",
+    "note": "Senza abbonamento aggiuntivo. Senza rinnovo automatico.",
+    "creditsWord": "crediti",
+    "perCredit": "/ credito",
+    "buy": "Acquista questo pacchetto"
+  },
+  "explainer": {
+    "kicker": "Come funziona?",
+    "titleLine1": "L’abbonamento dà accesso.",
+    "titleLine2": "I crediti fanno andare avanti.",
+    "step1Title": "Scegli la tua formula",
+    "step1Text": "Determina il numero di vetrine, offerte e le funzionalità disponibili.",
+    "step2Title": "Usa i tuoi crediti",
+    "step2Text": "Servono per le generazioni, pubblicazioni e azioni che mobilitano gli strumenti FLUX.",
+    "step3Title": "Ricarica se necessario",
+    "step3Text": "Aggiungi un pacchetto extra al tuo saldo, senza modificare il tuo abbonamento."
+  }
+}

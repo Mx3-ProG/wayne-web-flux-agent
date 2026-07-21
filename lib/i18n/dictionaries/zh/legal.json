@@ -1,0 +1,13 @@
+{
+  "chrome": {
+    "backToSite": "返回网站",
+    "eyebrow": "Wayne Web Flux · 合同信息",
+    "lastUpdated": "最近更新：",
+    "frenchOnlyNotice": "本合同文件以法语提供，仅法语版本具有法律效力。"
+  },
+  "titles": {
+    "terms": "销售与使用通用条款",
+    "privacy": "隐私政策",
+    "legalNotice": "法律声明"
+  }
+}

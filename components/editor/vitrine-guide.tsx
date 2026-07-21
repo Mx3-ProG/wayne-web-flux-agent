@@ -25,6 +25,7 @@ import { VITRINE_ASSIST_COST, SITE_GENERATE_COST } from "@/lib/plans";
 import { PREFILL_COST } from "@/lib/tools-config";
 import { saveVitrineGuide } from "@/app/(app)/ma-page/actions";
 import { fluxPrefill, fluxGenerateSite } from "@/app/(app)/ma-page/flux-actions";
+import { translateActionError } from "./translate-action-error";
 import { Button } from "@/components/ui/button";
 import { FluxBrand } from "@/components/flux-brand";
 import {
@@ -39,6 +40,8 @@ import { PhotoUpload } from "./photo-upload";
 import { PublishButton } from "./publish-button";
 import type { PublishProps } from "./page-editor";
 import styles from "@/components/commerce/setup-tunnel.module.css";
+import { useI18n } from "@/components/i18n-provider";
+import type { DashboardDict } from "@/lib/i18n/get-dictionary";
 
 export function VitrineGuide({
   initialPage,
@@ -51,6 +54,8 @@ export function VitrineGuide({
   // verrou AVANT le clic ; l'autorité reste checkFluxAccess.
   canGenerateSite: boolean;
 }) {
+  const { dictionary, editor, fonts } = useI18n();
+  const t = dictionary.vitrineGuide;
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [page, setPage] = useState(initialPage);
@@ -90,14 +95,13 @@ export function VitrineGuide({
       if (result.error) {
         toast.error(
           result.error === "content_blocked"
-            ? "Les messages de haines ou les contenus explicit sont interdit et amendé sur FLUX, veuillez respectez votre environnement et celui des autres. 3 Infractions contre nos conditions d'utilisations le compte est supprimé."
+            ? t.errors.blocked
             : result.error === "too_many_requests"
-              ? "Tu as lancé plusieurs générations coup sur coup. Réessaie dans quelques minutes."
-              : "La génération a échoué — tes crédits n'ont pas été débités."
+              ? t.errors.rate : t.errors.generation
         );
         return;
       }
-      toast.success("FLUX a pré-rempli ton brouillon. Relis, puis publie.");
+      toast.success(t.intro.prefillSuccess);
       router.push("/ma-page?view=editor");
       router.refresh();
     });
@@ -105,7 +109,7 @@ export function VitrineGuide({
 
   function generateSite() {
     if (!brief.trim()) {
-      toast.error("Décris ton commerce en quelques mots d'abord.");
+      toast.error(t.errors.brief);
       return;
     }
     startTransition(async () => {
@@ -122,16 +126,15 @@ export function VitrineGuide({
       if (result.error) {
         toast.error(
           result.error === "content_blocked"
-            ? "Les messages de haines ou les contenus explicit sont interdit et amendé sur FLUX, veuillez respectez votre environnement et celui des autres. 3 Infractions contre nos conditions d'utilisations le compte est supprimé."
+            ? t.errors.blocked
             : result.error === "empty_brief"
-              ? "Décris ton commerce en quelques mots d'abord."
+              ? t.errors.brief
               : result.error === "too_many_requests"
-                ? "Tu as lancé plusieurs générations coup sur coup. Réessaie dans quelques minutes."
-                : "La génération a échoué — tes crédits n'ont pas été débités."
+                ? t.errors.rate : t.errors.generation
         );
         return;
       }
-      toast.success("FLUX a créé ta vitrine. Relis ton brouillon, puis publie.");
+      toast.success(t.intro.generateSuccess);
       router.push("/ma-page?view=editor");
       router.refresh();
     });
@@ -163,12 +166,12 @@ export function VitrineGuide({
         return;
       }
       if (result.error) {
-        toast.error(result.error);
+        toast.error(translateActionError(editor.actionErrors, result.error));
         return;
       }
       // Les modifications sont en brouillon : le site public ne bougera qu'à
       // la publication d'une nouvelle version (étape suivante).
-      toast.success("Brouillon enregistré.");
+      toast.success(t.draftSaved);
       router.refresh();
       setStep(6);
     });
@@ -179,29 +182,26 @@ export function VitrineGuide({
       <header className={styles.header}>
         <Link href="/espace" className={styles.brand}><FluxBrand /></Link>
         <div className={styles.progressMeta}>
-          <span>Étape {Math.min(step + 1, 6)} sur 6</span>
+          <span>{t.step.replace("{current}", String(Math.min(step + 1, 6))).replace("{total}", "6")}</span>
           <div className={styles.progress}><i style={{ width: `${progress}%` }} /></div>
         </div>
-        <Link href="/ma-page?view=editor" className={styles.exit}>Éditeur complet</Link>
+        <Link href="/ma-page?view=editor" className={styles.exit}>{t.fullEditor}</Link>
       </header>
 
       <main className={styles.stage}>
         {step === 0 && (
           <section className={styles.intro}>
             <span className={styles.icon}><PencilRuler aria-hidden="true" /></span>
-            <p className={styles.kicker}>Assistant vitrine FLUX</p>
-            <h1>Fais évoluer ta vitrine, <em>une décision à la fois.</em></h1>
-            <p>
-              Flux reprend tes informations actuelles et t’accompagne étape par
-              étape. Rien ne change avant ta confirmation finale.
-            </p>
+            <p className={styles.kicker}>{t.intro.kicker}</p>
+            <h1>{t.intro.titleStart} <em>{t.intro.titleEm}</em></h1>
+            <p>{t.intro.text}</p>
             <textarea
               className={styles.input}
               style={{ minHeight: 96, resize: "vertical", marginBottom: 12 }}
               maxLength={1500}
               value={brief}
               onChange={(event) => setBrief(event.target.value)}
-              placeholder="Décris ton commerce en quelques phrases : ce que tu proposes, ton style, ce qui te distingue… FLUX s'occupe du reste."
+              placeholder={t.intro.placeholder}
             />
             {/* Le bouton reste cliquable : le dialogue explique le verrou et
                 mène à /formules — c'est le meilleur endroit pour convertir. */}
@@ -212,10 +212,10 @@ export function VitrineGuide({
               onClick={generateSite}
             >
               {pending
-                ? "FLUX crée ta vitrine…"
+                ? t.intro.creating
                 : canGenerateSite
-                  ? `FLUX crée toute ma vitrine (${SITE_GENERATE_COST} cr.)`
-                  : `FLUX crée toute ma vitrine — recharge tes crédits`}
+                  ? t.intro.create.replace("{cost}", String(SITE_GENERATE_COST))
+                  : t.intro.recharge}
               <ArrowRight aria-hidden="true" />
             </button>
             <button
@@ -224,51 +224,51 @@ export function VitrineGuide({
               disabled={pending}
               onClick={prefill}
             >
-              {pending ? "FLUX travaille…" : `Juste pré-remplir les textes (${PREFILL_COST} cr.)`}
+              {pending ? t.intro.working : t.intro.prefill.replace("{cost}", String(PREFILL_COST))}
               <ArrowRight aria-hidden="true" />
             </button>
             <button className={styles.directEditor} type="button" onClick={() => setStep(1)}>
-              Ou modifier étape par étape <ArrowRight aria-hidden="true" />
+              {t.intro.stepByStep} <ArrowRight aria-hidden="true" />
             </button>
             <Link href="/ma-page?view=editor" className={styles.directEditor}>
-              Aller directement à l’éditeur <ExternalLink aria-hidden="true" />
+              {t.intro.direct} <ExternalLink aria-hidden="true" />
             </Link>
           </section>
         )}
 
         {step === 1 && (
-          <Screen kicker="Ton identité" title={<>Que doivent retenir tes <em>clients ?</em></>} subtitle="Le nom, le métier et la promesse qui apparaissent en premier.">
-            <VitrinePreview page={page} />
+          <Screen kicker={t.identity.kicker} title={t.identity.title} subtitle={t.identity.subtitle}>
+            <VitrinePreview page={page} dict={t.preview} />
             <div className={styles.formGrid}>
-              <Field label="Nom du commerce" value={page.business_name} maxLength={60} onChange={(business_name) => patch({ business_name })} />
-              <Field label="Ton métier" value={page.job_title} maxLength={60} onChange={(job_title) => patch({ job_title })} />
-              <Field label="Ta phrase d’accroche" value={page.tagline} maxLength={120} placeholder="Ce qui donne envie de te choisir" onChange={(tagline) => patch({ tagline })} />
-              <Field label="Ta ville" value={page.city} maxLength={60} onChange={(city) => patch({ city })} />
+              <Field label={t.identity.business} value={page.business_name} maxLength={60} onChange={(business_name) => patch({ business_name })} />
+              <Field label={t.identity.job} value={page.job_title} maxLength={60} onChange={(job_title) => patch({ job_title })} />
+              <Field label={t.identity.tagline} value={page.tagline} maxLength={120} placeholder={t.identity.taglinePlaceholder} onChange={(tagline) => patch({ tagline })} />
+              <Field label={t.identity.city} value={page.city} maxLength={60} onChange={(city) => patch({ city })} />
             </div>
           </Screen>
         )}
 
         {step === 2 && (
-          <Screen kicker="Tes images" title={<>Quelle image veux-tu <em>laisser ?</em></>} subtitle="Ajoute ton logo et la grande photo qui accueille tes visiteurs.">
-            <VitrinePreview page={page} />
+          <Screen kicker={t.images.kicker} title={t.images.title} subtitle={t.images.subtitle}>
+            <VitrinePreview page={page} dict={t.preview} />
             <div className={styles.photoGrid}>
               <article className={styles.photoCard}>
-                <strong>Logo ou portrait</strong>
+                <strong>{t.images.logo}</strong>
                 {page.logo_url ? <Image src={page.logo_url} width={520} height={240} unoptimized alt="" /> : <ImageIcon aria-hidden="true" />}
-                <PhotoUpload userId={page.user_id} label={page.logo_url ? "Changer le logo" : "Ajouter mon logo"} onUploaded={(logo_url) => patch({ logo_url })} />
+                <PhotoUpload userId={page.user_id} label={page.logo_url ? t.images.logoChange : t.images.logoAdd} messages={dictionary.photoUpload} onUploaded={(logo_url) => patch({ logo_url })} />
               </article>
               <article className={styles.photoCard}>
-                <strong>Grande photo de couverture</strong>
+                <strong>{t.images.hero}</strong>
                 {page.hero_url ? <Image src={page.hero_url} width={520} height={240} unoptimized alt="" /> : <ImageIcon aria-hidden="true" />}
-                <PhotoUpload userId={page.user_id} label={page.hero_url ? "Changer la photo" : "Ajouter une photo"} onUploaded={(hero_url) => patch({ hero_url })} />
+                <PhotoUpload userId={page.user_id} label={page.hero_url ? t.images.heroChange : t.images.heroAdd} messages={dictionary.photoUpload} onUploaded={(hero_url) => patch({ hero_url })} />
               </article>
             </div>
           </Screen>
         )}
 
         {step === 3 && (
-          <Screen kicker="Ton ambiance" title={<>Quel univers raconte le mieux ton <em>business ?</em></>} subtitle="La structure reste accessible et responsive, seule l’atmosphère change.">
-            <VitrinePreview page={page} />
+          <Screen kicker={t.mood.kicker} title={t.mood.title} subtitle={t.mood.subtitle}>
+            <VitrinePreview page={page} dict={t.preview} />
             <div className={styles.choiceGrid}>
               {VITRINE_THEMES.map((theme) => {
                 const selected = (page.theme || "editorial") === theme.id;
@@ -286,56 +286,56 @@ export function VitrineGuide({
         )}
 
         {step === 4 && (
-          <Screen kicker="Les détails" title="Comment peut-on te reconnaître et te joindre ?" subtitle="Choisis ta typographie, tes couleurs et vérifie tes coordonnées.">
-            <VitrinePreview page={page} />
+          <Screen kicker={t.details.kicker} title={t.details.title} subtitle={t.details.subtitle}>
+            <VitrinePreview page={page} dict={t.preview} />
             <div className={styles.formGrid}>
               <label className={styles.field}>
-                <span>Style d’écriture</span>
+                <span>{t.details.font}</span>
                 <select className={styles.input} value={page.font} onChange={(event) => patch({ font: event.target.value })}>
-                  {FONTS.map((font) => <option key={font.id} value={font.id}>{font.label}</option>)}
+                  {fonts.map((font) => <option key={font.id} value={font.id}>{font.label}</option>)}
                 </select>
               </label>
               <div className={styles.colorFields}>
-                <label><span>Couleur principale</span><input type="color" value={page.colors.primary ?? "#ef233c"} onChange={(event) => patch({ colors: { ...page.colors, primary: event.target.value } })} /></label>
-                <label><span>Couleur foncée</span><input type="color" value={page.colors.dark ?? "#111114"} onChange={(event) => patch({ colors: { ...page.colors, dark: event.target.value } })} /></label>
+                <label><span>{t.details.primary}</span><input type="color" value={page.colors.primary ?? "#ef233c"} onChange={(event) => patch({ colors: { ...page.colors, primary: event.target.value } })} /></label>
+                <label><span>{t.details.dark}</span><input type="color" value={page.colors.dark ?? "#111114"} onChange={(event) => patch({ colors: { ...page.colors, dark: event.target.value } })} /></label>
               </div>
-              <Field label="Téléphone" value={page.phone} maxLength={30} placeholder="Ex : 06 12 34 56 78" onChange={(phone) => {
+              <Field label={t.details.phone} value={page.phone} maxLength={30} placeholder={t.details.phonePlaceholder} onChange={(phone) => {
                 const syncFloatingNumber = page.floating_cta && (!page.floating_cta.number || page.floating_cta.number === page.phone);
                 patch({
                   phone,
                   ...(syncFloatingNumber ? { floating_cta: { ...page.floating_cta!, number: phone } } : {}),
                 });
               }} />
-              <Field label="Adresse" value={page.address} maxLength={120} placeholder="Facultatif" onChange={(address) => patch({ address })} />
+              <Field label={t.details.address} value={page.address} maxLength={120} placeholder={t.details.optional} onChange={(address) => patch({ address })} />
             </div>
           </Screen>
         )}
 
         {step === 5 && (
-          <Screen kicker="Confirmation" title={<>Ta vitrine est prête à <em>évoluer.</em></>} subtitle="Vérifie l’essentiel : tes modifications partent en brouillon, tu choisis ensuite de les publier.">
-            <VitrinePreview page={page} />
+          <Screen kicker={t.confirmation.kicker} title={t.confirmation.title} subtitle={t.confirmation.subtitle}>
+            <VitrinePreview page={page} dict={t.preview} />
             <div className={styles.reviewGrid}>
-              <article className={styles.reviewCard}><small>Commerce</small><strong>{page.business_name}</strong></article>
-              <article className={styles.reviewCard}><small>Positionnement</small><strong>{page.job_title} · {page.city}</strong></article>
-              <article className={styles.reviewCard}><small>Ambiance</small><strong>{VITRINE_THEMES.find((theme) => theme.id === page.theme)?.name ?? "Éditorial"}</strong></article>
-              <article className={styles.reviewCard}><small>Images</small><strong>{[page.logo_url, page.hero_url].filter(Boolean).length} sur 2 ajoutées</strong></article>
-              <article className={styles.reviewCard}><small>Coût de l&apos;assistant</small><strong>{VITRINE_ASSIST_COST} crédits · solde : {publish.balance} cr.</strong></article>
+              <article className={styles.reviewCard}><small>{t.confirmation.business}</small><strong>{page.business_name}</strong></article>
+              <article className={styles.reviewCard}><small>{t.confirmation.positioning}</small><strong>{page.job_title} · {page.city}</strong></article>
+              <article className={styles.reviewCard}><small>{t.confirmation.mood}</small><strong>{VITRINE_THEMES.find((theme) => theme.id === page.theme)?.name ?? "Editorial"}</strong></article>
+              <article className={styles.reviewCard}><small>{t.confirmation.images}</small><strong>{t.confirmation.imagesCount.replace("{count}", String([page.logo_url, page.hero_url].filter(Boolean).length))}</strong></article>
+              <article className={styles.reviewCard}><small>{t.confirmation.cost}</small><strong>{t.confirmation.costValue.replace("{cost}", String(VITRINE_ASSIST_COST)).replace("{balance}", String(publish.balance))}</strong></article>
             </div>
-            {!enough && <p className={styles.subtitle}>Il te manque {VITRINE_ASSIST_COST - publish.balance} crédit{VITRINE_ASSIST_COST - publish.balance > 1 ? "s" : ""}. <Link href="/credits" style={{ textDecoration: "underline" }}>Recharge tes crédits</Link> — ou passe par l&apos;éditeur complet, gratuit.</p>}
+            {!enough && <p className={styles.subtitle}>{t.confirmation.missing.replace("{count}", String(VITRINE_ASSIST_COST - publish.balance))} <Link href="/credits" style={{ textDecoration: "underline" }}>{t.confirmation.recharge}</Link> — {t.confirmation.freeEditor}</p>}
             <div className={styles.confirm}>
-              <button className={styles.back} type="button" onClick={() => setStep(4)}><ArrowLeft aria-hidden="true" /> Modifier</button>
-              <button className={`flux-button-smooth ${styles.primary}`} type="button" disabled={pending || !enough} onClick={save}>{pending ? "Enregistrement…" : `Confirmer mes modifications (${VITRINE_ASSIST_COST} cr.)`} <Store aria-hidden="true" /></button>
+              <button className={styles.back} type="button" onClick={() => setStep(4)}><ArrowLeft aria-hidden="true" /> {t.edit}</button>
+              <button className={`flux-button-smooth ${styles.primary}`} type="button" disabled={pending || !enough} onClick={save}>{pending ? t.saving : t.confirmation.confirm.replace("{cost}", String(VITRINE_ASSIST_COST))} <Store aria-hidden="true" /></button>
             </div>
           </Screen>
         )}
 
         {step === 6 && (
-          <Screen kicker="Publication" title={<>Ton brouillon est prêt. On le met <em>en ligne ?</em></>} subtitle="Ton site public affiche encore l’ancienne version. Publier une nouvelle version la remplace pour tes clients.">
-            <VitrinePreview page={page} />
+          <Screen kicker={t.publish.kicker} title={t.publish.title} subtitle={t.publish.subtitle}>
+            <VitrinePreview page={page} dict={t.preview} />
             <div className={styles.confirm}>
               <PublishButton {...publish} hasDraft redirectTo="/ma-page?view=editor" />
               <Link href="/ma-page?view=editor" className={styles.back}>
-                Plus tard — aller à l’éditeur
+                {t.publish.later}
               </Link>
             </div>
           </Screen>
@@ -344,8 +344,8 @@ export function VitrineGuide({
 
       {step > 0 && step < 5 && (
         <footer className={styles.controls}>
-          <button className={styles.back} type="button" onClick={() => setStep((current) => current - 1)}><ArrowLeft aria-hidden="true" /> Retour</button>
-          <button className={`flux-button-smooth ${styles.primary}`} type="button" disabled={!canContinue} onClick={() => setStep((current) => current + 1)}>Continuer <ArrowRight aria-hidden="true" /></button>
+          <button className={styles.back} type="button" onClick={() => setStep((current) => current - 1)}><ArrowLeft aria-hidden="true" /> {t.back}</button>
+          <button className={`flux-button-smooth ${styles.primary}`} type="button" disabled={!canContinue} onClick={() => setStep((current) => current + 1)}>{t.continue} <ArrowRight aria-hidden="true" /></button>
         </footer>
       )}
 
@@ -354,24 +354,22 @@ export function VitrineGuide({
           <DialogHeader>
             <DialogTitle>
               {creditsDialog === "flux_credits_expired"
-                ? "Ta fenêtre IA de 6 mois est terminée"
+                ? t.credits.expiredTitle
                 : creditsDialog === "subscription_required" ||
                     creditsDialog === "flux_requires_payment"
-                  ? "Tu as terminé ton essai"
-                  : "Plus assez de crédits"}
+                  ? t.credits.trialTitle : t.credits.insufficientTitle}
             </DialogTitle>
             <DialogDescription>
               {creditsDialog === "flux_credits_expired"
-                ? "Ton achat t’a donné accès à l’IA pendant 6 mois. Tes crédits restants sont toujours disponibles pour publier et gérer ta vitrine ; choisis une formule pour réactiver les générations IA."
+                ? t.credits.expired
                 : creditsDialog === "subscription_required" ||
                     creditsDialog === "flux_requires_payment"
-                  ? "Tu as terminé ton essai — recharge pour profiter de FLUX à 100 %."
-                  : `L'assistant vitrine coûte ${VITRINE_ASSIST_COST} crédits. Recharge tes crédits, ou utilise l'éditeur complet (gratuit).`}
+                  ? t.credits.trial : t.credits.insufficient.replace("{cost}", String(VITRINE_ASSIST_COST))}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button asChild variant="ghost">
-              <Link href="/ma-page?view=editor">Partir d&apos;un template</Link>
+              <Link href="/ma-page?view=editor">{t.credits.template}</Link>
             </Button>
             <Button asChild>
               <Link
@@ -380,8 +378,7 @@ export function VitrineGuide({
                 }
               >
                 {creditsDialog === "insufficient_credits"
-                  ? "Recharger mes crédits"
-                  : "Choisir ma formule FLUX"}
+                  ? t.credits.recharge : t.credits.plan}
               </Link>
             </Button>
           </DialogFooter>
@@ -399,7 +396,7 @@ function Field({ label, value, placeholder, maxLength, onChange }: { label: stri
   return <label className={styles.field}><span>{label}</span><input className={styles.input} value={value} maxLength={maxLength} placeholder={placeholder} onChange={(event) => onChange(event.target.value)} /></label>;
 }
 
-function VitrinePreview({ page }: { page: Page }) {
+function VitrinePreview({ page, dict }: { page: Page; dict: DashboardDict["vitrineGuide"]["preview"] }) {
   const design = resolveVitrineDesign(page.theme, page.design);
   const font = FONTS.find((item) => item.id === page.font)?.css ?? FONTS[0].css;
   const primary = page.colors.primary ?? "#ef233c";
@@ -417,7 +414,7 @@ function VitrinePreview({ page }: { page: Page }) {
         "--preview-dark": dark,
         "--preview-font": font,
       } as React.CSSProperties}
-      aria-label="Aperçu actuel de ta vitrine"
+      aria-label={dict.aria}
     >
       {page.hero_url ? (
         <Image
@@ -438,18 +435,18 @@ function VitrinePreview({ page }: { page: Page }) {
         ) : (
           <span>{page.business_name.charAt(0).toUpperCase() || "W"}</span>
         )}
-        <small>Aperçu en direct</small>
+        <small>{dict.live}</small>
       </div>
       <div className={styles.vitrinePreviewContent}>
-        <small>{page.job_title || "Ton métier"} · {page.city || "Ta ville"}</small>
-        <strong>{page.business_name || "Ton commerce"}</strong>
-        <p>{page.tagline || "Ta phrase d’accroche apparaîtra ici."}</p>
-        <span className={styles.vitrinePreviewButton}>Découvrir</span>
+        <small>{page.job_title || dict.job} · {page.city || dict.city}</small>
+        <strong>{page.business_name || dict.business}</strong>
+        <p>{page.tagline || dict.tagline}</p>
+        <span className={styles.vitrinePreviewButton}>{dict.discover}</span>
         {(page.phone || page.floating_cta?.number) && (
           <span className={styles.vitrinePreviewContacts}>
             {page.phone && <span><Phone aria-hidden="true" /> {page.phone}</span>}
             {page.floating_cta?.type === "whatsapp" && page.floating_cta.number && (
-              <span><MessageCircle aria-hidden="true" /> WhatsApp activé</span>
+              <span><MessageCircle aria-hidden="true" /> {dict.whatsapp}</span>
             )}
           </span>
         )}

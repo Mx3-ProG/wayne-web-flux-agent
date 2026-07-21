@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "title": "Mein Bereich"
+  },
+  "hero": {
+    "eyebrow": "Überblick",
+    "greeting": "Hallo {name}",
+    "greetingNoName": "Hallo",
+    "text": "Das bringt dein Geschäft heute weiter.",
+    "cta": "Content erstellen"
+  },
+  "storefront": {
+    "eyebrow": "Meine Vitrine",
+    "titleOnline": "Deine Vitrine ist online",
+    "titleOffline": "Erstelle deine Adresse im Web",
+    "textOnline": "Der eine Link, den du mit deinen Kunden teilst, egal wo sie dich suchen.",
+    "textOffline": "Eine klare, schöne Seite, bereit für deine ersten Anfragen.",
+    "copyLink": "Link kopieren",
+    "emptyText": "Ein paar Entscheidungen reichen, um deine erste Vitrine vorzubereiten.",
+    "editCta": "Meine Vitrine bearbeiten",
+    "createCta": "Meine Vitrine erstellen",
+    "viewCta": "Meine Vitrine ansehen"
+  },
+  "metrics": {
+    "aria": "Kennzahlen",
+    "readyLabel": "Dein Bereich ist bereit für",
+    "voiceGood": "Deine Stimme ist gut eingerichtet",
+    "voiceContinue": "Personalisiere deine Stimme weiter",
+    "upcomingBookings": "Kommende Termine",
+    "agendaSynced": "Kalender synchronisiert",
+    "availableCredits": "Verfügbare Credits",
+    "contentSingular": "erstellter Content",
+    "contentPlural": "erstellte Contents"
+  },
+  "journey": {
+    "title": "Dein Weg",
+    "subtitle": "Ein klarer Schritt nach dem anderen.",
+    "progress": "{completed} / {total} erledigt",
+    "done": "Erledigt",
+    "todo": "Zu erledigen",
+    "nextStep": "Nächster Schritt",
+    "todoNow": "Jetzt zu erledigen",
+    "viewStep": "Schritt ansehen",
+    "validate": "Bestätigen"
+  },
+  "steps": {
+    "openEditor": "Vitrinen-Editor öffnen",
+    "createStorefront": "Meine Vitrine erstellen",
+    "voiceScore": "Ich schreibe wie du zu {percent}%",
+    "voiceHint": "Je mehr du ihr gibst, desto mehr schreibt die KI mit deiner Stimme, deinem Ton, deinen eigenen Worten.",
+    "voiceRefine": "Weiter verfeinern",
+    "voiceMeet": "Kennenlernen (2 Min)",
+    "createMoreProducts": "Weitere Produkte mit Flux erstellen",
+    "startProductCreation": "Flux-Produkterstellung starten",
+    "createNewOffer": "Ein neues Angebot mit Flux erstellen",
+    "startOfferCreation": "Flux-Angebotserstellung starten",
+    "reviewSchedule": "Meine Öffnungszeiten mit Flux überprüfen",
+    "configureSchedule": "Meine Öffnungszeiten einrichten",
+    "toolsHint": "Wähl ein Tool aus. Die Credit-Kosten werden vor dem Start angezeigt.",
+    "creditsLeft": "verbleibende Credits",
+    "viewCredits": "Meine Credits ansehen",
+    "creationSingular": "Kreation",
+    "creationPlural": "Kreationen",
+    "inYourVault": "in deinem Tresor",
+    "openVault": "Meinen Tresor öffnen",
+    "upcomingAppointments": "kommende Termine",
+    "openAgenda": "Meinen Kalender öffnen",
+    "shareHint": "Instagram-Bio, WhatsApp-Status, Google-Eintrag: Je mehr dein Link kursiert, desto mehr füllt sich dein Kalender von allein.",
+    "shareWhatsapp": "Auf WhatsApp teilen",
+    "whatsappMessage": "Reserviere deinen Termin online: {url}"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "title": "マイスペース"
+  },
+  "hero": {
+    "eyebrow": "全体を見る",
+    "greeting": "こんにちは、{name}さん",
+    "greetingNoName": "こんにちは",
+    "text": "今日、あなたのビジネスを前進させるポイントはこちら。",
+    "cta": "コンテンツを作成"
+  },
+  "storefront": {
+    "eyebrow": "マイストア",
+    "titleOnline": "あなたのストアは公開中",
+    "titleOffline": "あなたのウェブアドレスを作ろう",
+    "textOnline": "お客様がどこであなたを探しても届けられる、たったひとつのリンク。",
+    "textOffline": "シンプルで美しく、最初の問い合わせを受け取る準備は万端なページ。",
+    "copyLink": "リンクをコピー",
+    "emptyText": "いくつか選ぶだけで、最初のストアが準備できるよ。",
+    "editCta": "ストアを編集",
+    "createCta": "ストアを作成",
+    "viewCta": "ストアを見る"
+  },
+  "metrics": {
+    "aria": "指標",
+    "readyLabel": "あなたのスペースの準備状況",
+    "voiceGood": "あなたの声、しっかり設定できてる",
+    "voiceContinue": "あなたの声をもっと磨いていこう",
+    "upcomingBookings": "これからの予約",
+    "agendaSynced": "アジェンダ同期済み",
+    "availableCredits": "利用可能なクレジット",
+    "contentSingular": "件のコンテンツを作成",
+    "contentPlural": "件のコンテンツを作成"
+  },
+  "journey": {
+    "title": "あなたの道のり",
+    "subtitle": "一歩ずつ、はっきりと。",
+    "progress": "{completed} / {total} 完了",
+    "done": "完了",
+    "todo": "未対応",
+    "nextStep": "次のステップ",
+    "todoNow": "今やること",
+    "viewStep": "ステップを見る",
+    "validate": "確定する"
+  },
+  "steps": {
+    "openEditor": "ストアエディターを開く",
+    "createStorefront": "ストアを作成",
+    "voiceScore": "あなたらしい文章、再現度{percent}%",
+    "voiceHint": "情報を与えるほど、AIはあなたの声、あなたのトーン、あなたの言葉で書けるようになるよ。",
+    "voiceRefine": "さらに磨きをかける",
+    "voiceMeet": "自己紹介する（2分）",
+    "createMoreProducts": "Fluxでほかの商品も作る",
+    "startProductCreation": "Fluxの商品作成をスタート",
+    "createNewOffer": "Fluxで新しいオファーを作る",
+    "startOfferCreation": "Fluxのオファー作成をスタート",
+    "reviewSchedule": "Fluxと一緒に営業時間を見直す",
+    "configureSchedule": "営業時間を設定",
+    "toolsHint": "ツールを選んでね。必要なクレジット数は実行前に表示されるよ。",
+    "creditsLeft": "残りクレジット",
+    "viewCredits": "クレジットを見る",
+    "creationSingular": "件の作成",
+    "creationPlural": "件の作成",
+    "inYourVault": "があなたの保管庫に",
+    "openVault": "保管庫を開く",
+    "upcomingAppointments": "件のこれからの予約",
+    "openAgenda": "アジェンダを開く",
+    "shareHint": "InstagramのプロフィールやWhatsAppのステータス、Googleビジネスプロフィールにも。リンクが広がるほど、予約は自然と埋まっていくよ。",
+    "shareWhatsapp": "WhatsAppでシェア",
+    "whatsappMessage": "オンラインで予約しよう：{url}"
+  }
+}

@@ -38,6 +38,8 @@ export const RESERVATION_ADD_COST = 1; // ajout d'une réservation
 export const VITRINE_ASSIST_COST = 10; // assistant vitrine FLUX (confirmation finale)
 export const SITE_GENERATE_COST = 50; // génération complète de la vitrine par brief (FLUX)
 export const CONTEXT_CHANGE_COST = 5; // modification du contexte FLUX (1re création gratuite)
+export const ACCOUNT_LANGUAGE_CHANGE_COST = 25;
+export const STOREFRONT_LANGUAGE_COST = 25;
 
 // Durée de l'essai offert sur toutes les formules (miroir du default SQL de
 // profiles.trial_ends_at, migration 00013).

@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "title": "Mes commandes"
+  },
+  "status": {
+    "pending": "À traiter",
+    "accepted": "Acceptée",
+    "fulfilled": "Terminée",
+    "cancelled": "Annulée"
+  },
+  "bookingStatus": {
+    "cancelled": "Annulée",
+    "confirmed": "Confirmée"
+  },
+  "itemKind": {
+    "offer": "Offre",
+    "reservation": "Réservation",
+    "product": "Produit"
+  },
+  "clientSheet": {
+    "aria": "Fiche client",
+    "titleWithName": "Fiche client · {name}",
+    "titleDefault": "Fiche client",
+    "interactions": "{count} interaction(s)",
+    "phone": "Téléphone",
+    "email": "Email",
+    "notProvided": "Non renseigné",
+    "address": "Adresse physique",
+    "addressNotProvided": "Non renseignée"
+  },
+  "history": {
+    "title": "Historique client",
+    "purchases": "{count} achat(s)",
+    "reservation": "Réservation"
+  },
+  "orderCard": {
+    "transaction": "Transaction FLUX",
+    "defaultClient": "Client",
+    "itemSingular": "article",
+    "itemPlural": "articles",
+    "accept": "Accepter",
+    "markDone": "Marquer comme terminée",
+    "cancel": "Annuler",
+    "refuse": "Refuser"
+  },
+  "clientProfile": {
+    "dossier": "Dossier client",
+    "interactionSingular": "interaction",
+    "interactionPlural": "interactions"
+  },
+  "hero": {
+    "kicker": "Portefeuille FLUX",
+    "titleStart": "Centre d'",
+    "titleEm": "affaires",
+    "text": "Pilote les commandes, retrouve chaque client, puis transforme ta vitrine en carnet d'encaissements propre et lisible.",
+    "movementSingular": "mouvement suivi",
+    "movementPlural": "mouvements suivis"
+  },
+  "metrics": {
+    "aria": "Indicateurs commandes",
+    "toProcess": "À traiter",
+    "accepted": "Acceptées",
+    "history": "Historique",
+    "clientSheets": "Fiches clients"
+  },
+  "empty": {
+    "noPageStart": "Crée d'abord ta",
+    "noPageLink": "vitrine",
+    "noPageEnd": "pour recevoir des commandes.",
+    "noOrdersStart": "Aucune commande pour l'instant. Ajoute des produits dans ta",
+    "noOrdersLink": "vitrine",
+    "noOrdersEnd": "et partage ton lien."
+  },
+  "sections": {
+    "incoming": "Transactions entrantes",
+    "toProcess": "À traiter",
+    "toProcessCount": "{count} dossier(s) à valider",
+    "openLabel": "Dossiers ouverts",
+    "accepted": "Acceptées",
+    "acceptedCount": "{count} encaissement(s) en cours",
+    "ledger": "Grand livre",
+    "history": "Historique",
+    "historyCount": "{count} transaction(s) classée(s)",
+    "book": "Carnet d'affaires",
+    "clientSheets": "Fiches clients",
+    "clientSheetsCount": "{count} relation(s) conservée(s)"
+  },
+  "errors": {
+    "not_authenticated": "Tu dois être connecté pour continuer.",
+    "action_failed": "Action impossible.",
+    "unknown": "Une erreur est survenue. Réessaie dans un instant."
+  }
+}

@@ -1,0 +1,379 @@
+{
+ "nav": {
+  "menu": "菜单",
+  "open": "打开导航",
+  "close": "关闭导航",
+  "homeAria": "WayneWeb FLUX 首页",
+  "mainAria": "主导航",
+  "mobileAria": "移动端导航",
+  "title": "导航",
+  "activeProject": "当前项目",
+  "workspace": "我的空间",
+  "tagline": "你的生意，尽在一个空间。",
+  "manageCredits": "管理我的积分",
+  "credits": "积分",
+  "pending": "{count} 待处理",
+  "groups": {
+   "control": "掌控",
+   "sell": "销售",
+   "grow": "发展",
+   "essential": "基础功能",
+   "business": "我的商店",
+   "account": "我的账户"
+  },
+  "items": {
+   "home": "首页",
+   "stats": "我的数据",
+   "statsShort": "数据",
+   "orders": "我的订单",
+   "ordersShort": "订单",
+   "offers": "我的优惠",
+   "offersShort": "优惠",
+   "projects": "我的项目",
+   "storefront": "我的橱窗",
+   "products": "我的产品",
+   "agenda": "我的日程",
+   "content": "我的内容",
+   "ai": "FLUX – AI",
+   "install": "安装应用",
+   "profile": "我的资料",
+   "viewProfile": "查看我的资料"
+  }
+ },
+ "language": {
+  "aria": "空间语言",
+  "title": "你的空间语言",
+  "description": "此语言将同步到你的仪表盘，并作为新页面的源语言。",
+  "firstChoice": "在流程中的第一次选择是免费的。",
+  "change": "更改 · {cost} 积分",
+  "changing": "修改中…",
+  "success": "空间语言已更改。",
+  "error": "暂时无法更改语言。",
+  "insufficient": "更改账户语言需要 {cost} 积分。",
+  "laterChangeCost": "在店铺上线后再更改，需要 {cost} 积分（含重新翻译）。"
+ },
+ "vitrineGuide": {
+  "step": "第 {current} 步，共 {total} 步",
+  "fullEditor": "完整编辑器",
+  "back": "返回",
+  "continue": "继续",
+  "edit": "修改",
+  "saving": "保存中…",
+  "draftSaved": "草稿已保存。",
+  "errors": {
+   "blocked": "此内容不符合 FLUX 的规定。",
+   "rate": "你连续启动了多次生成，请几分钟后再试。",
+   "generation": "生成失败——你的积分未被扣除。",
+   "brief": "请先用几句话描述一下你的生意。"
+  },
+  "intro": {
+   "kicker": "FLUX 橱窗助手",
+   "titleStart": "一步一步，",
+   "titleEm": "打磨你的橱窗。",
+   "text": "FLUX 会读取你现有的信息，并一步步引导你。所有修改在你最终确认前都不会生效。",
+   "placeholder": "用几句话描述你的生意：你提供什么、你的风格、你的特色……剩下的交给 FLUX。",
+   "creating": "FLUX 正在创建你的橱窗…",
+   "create": "让 FLUX 创建整个橱窗（{cost} 积分）",
+   "recharge": "让 FLUX 创建整个橱窗——请先充值积分",
+   "working": "FLUX 正在处理…",
+   "prefill": "仅预填文案（{cost} 积分）",
+   "stepByStep": "或逐步修改",
+   "direct": "直接进入编辑器",
+   "prefillSuccess": "FLUX 已预填好你的草稿。检查后即可发布。",
+   "generateSuccess": "FLUX 已创建你的橱窗。检查草稿后即可发布。"
+  },
+  "identity": {
+   "kicker": "你的身份",
+   "title": "你希望顾客记住什么？",
+   "subtitle": "首先展示的名称、职业和承诺。",
+   "business": "商店名称",
+   "job": "你的职业",
+   "tagline": "你的宣传语",
+   "taglinePlaceholder": "让人想选择你的一句话",
+   "city": "你所在的城市"
+  },
+  "images": {
+   "kicker": "你的图片",
+   "title": "你想留下怎样的印象？",
+   "subtitle": "添加你的 Logo 和迎接访客的大图。",
+   "logo": "Logo 或头像",
+   "logoChange": "更换 Logo",
+   "logoAdd": "添加我的 Logo",
+   "hero": "封面大图",
+   "heroChange": "更换图片",
+   "heroAdd": "添加图片"
+  },
+  "mood": {
+   "kicker": "你的氛围",
+   "title": "哪种风格最能代表你的生意？",
+   "subtitle": "结构依然清晰、自适应，只有氛围会改变。"
+  },
+  "details": {
+   "kicker": "细节",
+   "title": "如何让人认出并联系到你？",
+   "subtitle": "选择字体、颜色，并检查你的联系方式。",
+   "font": "字体风格",
+   "primary": "主色调",
+   "dark": "深色调",
+   "phone": "电话",
+   "phonePlaceholder": "例如：06 12 34 56 78",
+   "address": "地址",
+   "optional": "选填"
+  },
+  "confirmation": {
+   "kicker": "确认",
+   "title": "你的橱窗已准备好升级。",
+   "subtitle": "核对关键信息：你的修改将保存为草稿，之后由你决定是否发布。",
+   "business": "商店",
+   "positioning": "定位",
+   "mood": "氛围",
+   "images": "图片",
+   "imagesCount": "已添加 {count}/2",
+   "cost": "助手费用",
+   "costValue": "{cost} 积分 · 余额：{balance} 积分",
+   "missing": "你还缺 {count} 积分。",
+   "recharge": "充值积分",
+   "freeEditor": "或使用完整编辑器，完全免费。",
+   "confirm": "确认我的修改（{cost} 积分）"
+  },
+  "publish": {
+   "kicker": "发布",
+   "title": "你的草稿已准备好。要上线吗？",
+   "subtitle": "你的公开网站目前仍显示旧版本。发布新版本会替换客户看到的内容。",
+   "later": "稍后——前往编辑器"
+  },
+  "credits": {
+   "expiredTitle": "你的 6 个月 AI 使用期已结束",
+   "trialTitle": "你的试用已结束",
+   "insufficientTitle": "积分不足",
+   "expired": "你的购买让你享有 6 个月的 AI 使用权限。剩余积分仍可用于发布和管理你的橱窗；选择一个套餐以重新启用 AI 生成功能。",
+   "trial": "你的试用已结束——充值以畅享 100% 的 FLUX。",
+   "insufficient": "橱窗助手需要 {cost} 积分。请充值积分，或使用完整编辑器（免费）。",
+   "template": "从模板开始",
+   "recharge": "充值我的积分",
+   "plan": "选择我的 FLUX 套餐"
+  },
+  "preview": {
+   "aria": "你的橱窗当前预览",
+   "live": "实时预览",
+   "job": "你的职业",
+   "city": "你所在的城市",
+   "business": "你的商店",
+   "tagline": "你的宣传语将显示在这里。",
+   "discover": "了解更多",
+   "whatsapp": "WhatsApp 已启用"
+  }
+ },
+ "offerTunnel": {
+  "step": "第 {current} 步，共 8 步",
+  "myOffers": "我的优惠",
+  "back": "返回",
+  "continue": "继续",
+  "creation": "FLUX 优惠创建",
+  "create": "创建我的优惠",
+  "success": "你的优惠已准备就绪。发布新版本网站即可上线。",
+  "intro": {
+   "title": "创建一个让人忍不住行动的优惠。",
+   "text": "FLUX 帮你在合适的价格，展示合适的承诺，直接呈现在你的橱窗上。"
+  },
+  "format": {
+   "kicker": "格式",
+   "title": "你想突出什么？",
+   "subtitle": "选择最符合你优惠内容的类型。",
+   "kinds": {
+    "produit": {
+     "title": "一个产品优惠",
+     "text": "可下单的商品或套餐。"
+    },
+    "service": {
+     "title": "一个服务优惠",
+     "text": "重点展示的一项服务。"
+    },
+    "evenement": {
+     "title": "一场活动",
+     "text": "有日期或名额限制的体验。"
+    }
+   }
+  },
+  "promise": {
+   "kicker": "承诺",
+   "title": "你的优惠叫什么名字？",
+   "subtitle": "一个一看就懂的简短标题。",
+   "label": "优惠标题",
+   "placeholder": "例如：体验套餐"
+  },
+  "price": {
+   "kicker": "价格",
+   "title": "你想展示什么价值？",
+   "subtitle": "只有在真正促销时才添加划线原价。",
+   "offer": "优惠价格（€）",
+   "offerPlaceholder": "例如：49",
+   "compare": "划线原价（€）· 选填",
+   "comparePlaceholder": "例如：120"
+  },
+  "benefit": {
+   "kicker": "优势",
+   "title": "顾客为什么要选择它？",
+   "subtitle": "简单描述包含的内容以及顾客能获得的好处。",
+   "label": "描述",
+   "placeholder": "优惠包含的内容、优势、限制条件……"
+  },
+  "photo": {
+   "kicker": "图片",
+   "title": "为你的优惠配上一张有力的图片。",
+   "subtitle": "图片为选填项，但能让优惠更加突出。",
+   "change": "更换图片",
+   "add": "添加图片"
+  },
+  "visibility": {
+   "kicker": "上线",
+   "title": "你的优惠准备好发布了吗？",
+   "subtitle": "你可以立即发布，也可以先保存为草稿。",
+   "online": "立即上线",
+   "onlineHint": "下次发布时将在你的橱窗上可见。",
+   "draft": "保存为草稿",
+   "draftHint": "之后可以继续完善。"
+  },
+  "confirm": {
+   "kicker": "确认",
+   "title": "你的优惠已准备好转化客户。",
+   "subtitle": "创建前请核对信息。",
+   "type": "类型",
+   "status": "状态",
+   "offer": "优惠",
+   "price": "价格",
+   "cost": "创建费用",
+   "online": "在线",
+   "draft": "草稿",
+   "instead": "原价",
+   "costValue": "{cost} 积分 · 余额：{balance} 积分",
+   "extra": "超出套餐部分",
+   "missing": "创建此优惠还缺 {count} 积分。",
+   "recharge": "充值积分",
+   "edit": "修改",
+   "creating": "创建中…",
+   "create": "确认并创建（{cost} 积分）"
+  },
+  "limit": {
+   "overTitle": "你已超出套餐限制",
+   "reachedTitle": "已达到套餐上限",
+   "over": "你的套餐包含 {limit} 个优惠，你已创建 {count} 个。你仍可以创建这一个：费用为 {extra} 积分，而不是 {normal} 积分。",
+   "reached": "你的套餐包含 {limit} 个优惠，你已创建 {count} 个。请充值积分以继续：额外的优惠需 {extra} 积分，你目前剩余 {balance} 积分。",
+   "view": "查看我的优惠",
+   "continue": "继续（{cost} 积分）",
+   "recharge": "充值我的积分"
+  },
+  "credits": {
+   "trialTitle": "试用已结束且余额为空",
+   "insufficientTitle": "积分不足",
+   "trial": "你的试用已结束，积分余额也已用完。FLUX 套餐会每月为你充值积分；你的优惠已准备好，不会丢失。",
+   "insufficient": "创建此优惠需要 {cost} 积分。请充值积分以完成创建；你的优惠已准备好，不会丢失。",
+   "later": "稍后再说",
+   "plan": "选择我的 FLUX 套餐",
+   "recharge": "充值我的积分"
+  },
+  "errors": {
+   "not_authenticated": "你需要先登录才能继续。",
+   "no_active_page": "请先创建你的橱窗。",
+   "offer_creation_failed": "无法创建该优惠。",
+   "content_blocked": "仇恨言论或露骨内容在 FLUX 上被禁止并将受到处罚；请尊重你自己和他人的使用环境。违反我们使用条款满 3 次，账户将被删除。",
+   "unknown": "发生了一个错误，请稍后再试。"
+  }
+ },
+ "installer": {
+  "metaTitle": "安装应用",
+  "eyebrow": "随时触手可及",
+  "title": "安装 Wayne Web Flux",
+  "subtitle": "将应用添加到主屏幕，像使用真正的应用一样打开你的仪表盘，并在设备支持角标的情况下，在图标上直接看到待处理订单数量。",
+  "noteTitle": "小贴士",
+  "note": "角标会在应用打开时更新，并在没有待处理订单时自动消失。其显示效果取决于手机型号和浏览器。",
+  "installed": "应用已安装",
+  "oneMinute": "一分钟完成安装",
+  "installedHint": "你可以在主屏幕上找到它。",
+  "chooseDevice": "选择与你手机对应的步骤。",
+  "installNow": "立即安装",
+  "iphonePlatform": "iPhone · Safari",
+  "fromSafari": "通过 Safari",
+  "iphoneSteps": [
+   "在 Safari 中打开此页面。",
+   "点击“分享”按钮。",
+   "选择“添加到主屏幕”，然后点击“添加”。"
+  ],
+  "androidPlatform": "Android · Chrome",
+  "fromChrome": "通过 Chrome",
+  "androidSteps": [
+   "在 Chrome 中打开此页面。",
+   "点击右上角的菜单。",
+   "选择“安装应用”或“添加到主屏幕”。"
+  ]
+ },
+ "emailVerification": {
+  "banner": "验证你的邮箱地址，才能发布橱窗并向客户收款。",
+  "resend": "重新发送邮件",
+  "resending": "发送中…",
+  "sent": "邮件已发送，请查看你的收件箱。",
+  "spamHint": "如果没看到邮件，记得检查一下垃圾邮件箱。",
+  "errors": {
+   "not_authenticated": "你需要先登录才能继续。",
+   "already_verified": "你的邮箱地址已验证过了。",
+   "rate_limited": "请等待一分钟后再重新申请邮件。",
+   "update_failed": "邮件发送失败，请稍后再试。",
+   "send_failed": "邮件未能发出，请稍后再试一次。",
+   "unknown": "发生了一个错误，请稍后再试。"
+  }
+ },
+ "trialBanner": {
+  "activeSingular": "FLUX 试用：还剩 {days} 天可体验全部功能。",
+  "activePlural": "FLUX 试用：还剩 {days} 天可体验全部功能。",
+  "viewPlans": "查看套餐",
+  "creditsActiveSingular": "试用已结束——剩余的 {credits} 个积分仍可让 FLUX 运转。充值即可 100% 畅享。",
+  "creditsActivePlural": "试用已结束——剩余的 {credits} 个积分仍可让 FLUX 运转。充值即可 100% 畅享。",
+  "expiredNoCredits": "试用已结束且积分为零——你的网站仍在线，但修改已暂停。",
+  "choosePlan": "选择我的 FLUX 套餐"
+ },
+ "revenueCounter": {
+  "aria": "已产生的营业额",
+  "eyebrow": "你的营业额",
+  "milestoneReached": "🎉 已达成 {amount} 里程碑",
+  "caption": "你的专业值得被更多人看见。这是你的 FLUX 店铺通过已完成的预约和已接受的订单产生的成果。",
+  "nextMilestone": "下一个里程碑：{amount}",
+  "remaining": "还差 {amount} 就能达成 💪",
+  "maxed": "你已突破所有里程碑 🚀 继续保持！"
+ },
+ "upsellDialog": {
+  "later": "以后再说",
+  "discoverPlans": "查看套餐",
+  "trial": {
+   "title": "让 FLUX 走得更远",
+   "description": "试用期让你体验 AI 工具。套餐可解锁完整的店铺创建功能，并每月为你充值积分。"
+  },
+  "trialExpired": {
+   "title": "你的试用已结束",
+   "description": "你的余额为零，但网站仍在线。充值即可 100% 畅享 FLUX：修改、发布与生成。"
+  },
+  "trialExpiredWithCredits": {
+   "title": "你的试用已结束",
+   "description": "剩余积分仍可让 FLUX 运转——包括内容生成。充值即可 100% 畅享，余额每月自动更新。"
+  },
+  "creditsActive": {
+   "title": "从一次性充值包转为稳定节奏",
+   "description": "你的充值包仍可使用 AI。套餐可增加每月充值，让 FLUX 持续可用，无需再次购买。"
+  },
+  "creditsExpired": {
+   "title": "AI 窗口已结束，但积分还在",
+   "description": "剩余积分仍可用于发布和管理你的店铺。套餐可重新启用 AI 生成并建立每月节奏。"
+  }
+ },
+ "photoUpload": {
+  "uploading": "上传中…",
+  "tooLarge": "文件过大（最大 {max} MB）。",
+  "failed": "上传失败，请重试。"
+ },
+ "copyButton": {
+  "copy": "复制",
+  "copied": "链接已复制。"
+ },
+ "creditsLink": {
+  "aria": "{credits} 个积分 — 查看我的积分"
+ }
+}

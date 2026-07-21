@@ -15,6 +15,8 @@ import { isDarkTheme, useVisitorMode } from "./visitor-mode";
 import { ScrollTopButton } from "./scroll-top-button";
 import styles from "./vitrine.module.css";
 import { resolveVitrineDesign } from "@/lib/vitrine-design/resolver";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
+import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
 
 type Props = {
   page: Page;
@@ -22,6 +24,7 @@ type Props = {
   cartCount?: number;
   onOpenCart?: () => void;
   children: React.ReactNode;
+  t?: StorefrontDict["shell"];
 };
 
 export function VitrineShell({
@@ -30,6 +33,7 @@ export function VitrineShell({
   cartCount = 0,
   onOpenCart,
   children,
+  t = frStorefront.shell,
 }: Props) {
   const [legalOpen, setLegalOpen] = useState<string | null>(null);
   const design = resolveVitrineDesign(page.theme || "editorial", page.design);
@@ -52,7 +56,7 @@ export function VitrineShell({
     typography.headingFont && typography.headingFont !== page.font
       ? getFont(typography.headingFont)
       : null;
-  const legal = { ...defaultLegal(page.business_name), ...page.legal };
+  const legal = { ...defaultLegal(page.business_name, page.default_locale), ...page.legal };
   const socials = Object.entries(page.socials || {}).filter(([, v]) => v);
 
   return (
@@ -94,7 +98,7 @@ export function VitrineShell({
       {children}
 
       {/* Bouton « remonter en haut » */}
-      {page.scroll_top && <ScrollTopButton />}
+      {page.scroll_top && <ScrollTopButton label={t.scrollTop} />}
 
       {/* Bouton flottant WhatsApp / appel */}
       {page.floating_cta?.number && (
@@ -108,11 +112,7 @@ export function VitrineShell({
           }
           target={page.floating_cta.type === "whatsapp" ? "_blank" : undefined}
           rel="noreferrer"
-          aria-label={
-            page.floating_cta.type === "whatsapp"
-              ? "Écrire sur WhatsApp"
-              : "Appeler"
-          }
+          aria-label={page.floating_cta.type === "whatsapp" ? t.whatsapp : t.call}
         >
           {page.floating_cta.type === "whatsapp" ? (
             <MessageCircle aria-hidden="true" />
@@ -131,15 +131,15 @@ export function VitrineShell({
           style={{ backgroundColor: colors.primary }}
         >
           <ShoppingBag aria-hidden="true" />
-          <span>Voir le panier</span>
+          <span>{t.viewCart}</span>
           <span className={styles.cartFabCount}>{cartCount}</span>
         </button>
       )}
 
       {/* Footer */}
       <footer className={styles.footer} style={{ backgroundColor: colors.dark }}>
-        <p className={styles.footerKicker}>Restons en contact</p>
-        <h2>{page.business_name || "Mon commerce"}</h2>
+        <p className={styles.footerKicker}>{t.stayInTouch}</p>
+        <h2>{page.business_name || frStorefront.header.defaultBusinessName}</h2>
         {page.phone && (
           <p className={styles.phone}>
             <a href={`tel:${page.phone}`}>
@@ -165,11 +165,7 @@ export function VitrineShell({
                 className="underline underline-offset-4"
                 onClick={() => setLegalOpen(key)}
               >
-                {key === "mentions"
-                  ? "Mentions légales"
-                  : key === "cgv"
-                    ? "CGV"
-                    : "Confidentialité"}
+                {key === "mentions" ? t.legalNotice : key === "cgv" ? t.terms : t.privacy}
               </button>
             </span>
           ))}
@@ -177,7 +173,7 @@ export function VitrineShell({
         {poweredBy && (
           <p className={styles.powered}>
             <Sparkles aria-hidden="true" />
-            Créé avec <Link href="/">Wayne Web Flux</Link>
+            {t.poweredBy} <Link href="/">Wayne Web Flux</Link>
           </p>
         )}
       </footer>
@@ -194,15 +190,15 @@ export function VitrineShell({
             <div className={styles.modalHeader}>
               <h3>
                 {legalOpen === "mentions"
-                  ? "Mentions légales"
+                  ? t.legalNotice
                   : legalOpen === "cgv"
-                    ? "Conditions générales de vente"
-                    : "Politique de confidentialité"}
+                    ? t.termsFull
+                    : t.privacyFull}
               </h3>
               <button
                 type="button"
                 onClick={() => setLegalOpen(null)}
-                aria-label="Fermer"
+                aria-label={t.close}
                 className={styles.close}
               >
                 ×

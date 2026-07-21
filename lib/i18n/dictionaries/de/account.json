@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "title": "Mein Profil",
+    "billingTitle": "Abrechnung"
+  },
+  "hero": {
+    "eyebrow": "Dein persönlicher Bereich",
+    "title": "Mein Profil",
+    "text": "Alles rund um deine Identität, dein Business und deinen Zugang zu FLUX."
+  },
+  "nav": {
+    "aria": "Profilbereiche",
+    "info": "Informationen",
+    "adventure": "Abenteuer starten",
+    "invite": "Freund einladen",
+    "credits": "Credits",
+    "plans": "Tarife",
+    "license": "Lizenz",
+    "billing": "Abrechnung"
+  },
+  "info": {
+    "title": "Persönliche und geschäftliche Informationen",
+    "text": "Diese Angaben bleiben privat und dienen dazu, dein Erlebnis zu personalisieren."
+  },
+  "profileForm": {
+    "name": "Name und Vorname",
+    "email": "Login-E-Mail",
+    "phone": "Persönliche Telefonnummer",
+    "company": "Unternehmen",
+    "job": "Beruf / Funktion",
+    "businessEmail": "Geschäftliche E-Mail",
+    "siret": "SIRET",
+    "address": "Geschäftsadresse",
+    "saving": "Wird gespeichert…",
+    "save": "Speichern"
+  },
+  "adventure": {
+    "canCreateTitle": "Erstelle eine neue Website",
+    "limitTitle": "Finde deine Projekte wieder",
+    "canCreateText": "Ein paar Fragen genügen: FLUX bereitet die Basis vor und du behältst die volle Kontrolle.",
+    "limitText": "Dein Tarif hat sein Projektlimit erreicht. Du kannst deine bestehenden Websites verwalten.",
+    "startTunnel": "Tunnel starten",
+    "viewProjects": "Meine Projekte ansehen"
+  },
+  "invite": {
+    "title": "Freund einladen",
+    "text": "Zeig FLUX einem Geschäftsinhaber, den du kennst: Er bekommt eine Einladung und 7 Tage kostenlose Testphase.",
+    "emailLabel": "E-Mail deines Freundes",
+    "emailPlaceholder": "freund@email.de",
+    "sending": "Wird gesendet…",
+    "send": "Einladung senden"
+  },
+  "credits": {
+    "available": "Verfügbare Credits",
+    "nextRecharge": "Nächste Aufladung am {date}",
+    "trial": "FLUX-Testphase: noch {days} Tag",
+    "trialPlural": "FLUX-Testphase: noch {days} Tage",
+    "subscribed": "Aufladung über deinen FLUX-Tarif",
+    "trialOver": "Testphase beendet — wähle deinen FLUX-Tarif",
+    "viewUsage": "Meine Nutzung ansehen"
+  },
+  "license": {
+    "title": "Nutzungslizenz",
+    "text": "Du bleibst Eigentümer der Informationen und Inhalte, die du hinzufügst. FLUX gewährt dir ein persönliches Nutzungsrecht am Service, ohne Eigentumsübertragung an der Plattform."
+  },
+  "security": {
+    "title": "Sicherheit",
+    "text": "Verwalte deine Zugangsdaten mit sicheren E-Mail-Bestätigungen oder melde dich auf diesem Gerät ab.",
+    "logout": "Abmelden"
+  },
+  "passwordForm": {
+    "title": "Passwort",
+    "text": "Erhalte einen sicheren Link an deine aktuelle E-Mail-Adresse, um ein neues Passwort zu wählen.",
+    "sending": "Wird gesendet…",
+    "cta": "Ich habe mein Passwort vergessen"
+  },
+  "emailForm": {
+    "title": "E-Mail-Adresse",
+    "text": "Deine aktuelle Adresse ist {email}. Die Änderung erfordert eine Bestätigung von der alten und der neuen Adresse.",
+    "newEmailLabel": "Neue E-Mail-Adresse",
+    "newEmailPlaceholder": "neue@adresse.de",
+    "sending": "Bestätigungen werden gesendet…",
+    "cta": "Bestätigungen senden"
+  },
+  "danger": {
+    "title": "Gefahrenzone",
+    "text": "Das Löschen entfernt dein Konto, deine Websites, Kunden, Bestellungen, Termine und Inhalte endgültig. Diese Aktion ist unwiderruflich.",
+    "confirmLabel": "Gib {word} ein, um zu bestätigen",
+    "confirmWord": "LÖSCHEN",
+    "deleting": "Wird gelöscht…",
+    "delete": "Mein Konto endgültig löschen"
+  },
+  "billing": {
+    "kicker": "Konto",
+    "title": "Abrechnung",
+    "subtitle": "Dein Abo, deine Fälligkeiten und deine Rechnungen an einem Ort.",
+    "portalUnavailable": "Das Abrechnungsportal ist momentan nicht verfügbar.",
+    "currentPlan": "Aktueller Tarif",
+    "noActivePlan": "Kein aktiver Tarif",
+    "price": "Preis",
+    "priceValue": "{price} € / Monat",
+    "includedCredits": "Enthaltene Credits",
+    "includedCreditsValue": "{credits} pro bezahlter Rechnung",
+    "accessEndsAt": "Zugang endet voraussichtlich",
+    "nextDueDate": "Nächste Fälligkeit",
+    "toConfirm": "Zu bestätigen",
+    "manage": "Abo und Rechnungen verwalten",
+    "choosePlan": "Tarif wählen",
+    "help": "Über das sichere Stripe-Portal kannst du die Zahlungsmethode ändern, Rechnungen herunterladen, den Tarif wechseln oder kündigen.",
+    "back": "← Zurück zum Profil",
+    "status": {
+      "active": "Aktiv",
+      "trialing": "Testphase",
+      "past_due": "Zahlung ausstehend",
+      "unpaid": "Unbezahlt",
+      "canceled": "Gekündigt",
+      "incomplete": "Aktivierung unvollständig",
+      "incomplete_expired": "Aktivierung abgelaufen",
+      "paused": "Pausiert"
+    }
+  },
+  "errors": {
+    "session_expired": "Deine Sitzung ist abgelaufen.",
+    "name_required": "Gib mindestens deinen Namen an.",
+    "save_failed": "Profil konnte nicht gespeichert werden.",
+    "email_send_failed": "E-Mail kann momentan nicht gesendet werden.",
+    "invalid_email": "Ungültige E-Mail-Adresse.",
+    "already_current_email": "Das ist bereits deine aktuelle Adresse.",
+    "email_change_failed": "Der E-Mail-Wechsel konnte nicht gestartet werden.",
+    "confirmation_mismatch": "Gib LÖSCHEN ein, um zu bestätigen.",
+    "deletion_failed": "Die Löschung ist fehlgeschlagen. Versuch es später erneut.",
+    "content_blocked": "Hassbotschaften oder explizite Inhalte sind auf FLUX verboten und werden geahndet; bitte respektiere deine Umgebung und die der anderen. Nach 3 Verstößen gegen unsere Nutzungsbedingungen wird das Konto gelöscht.",
+    "unknown": "Ein Fehler ist aufgetreten. Versuch es gleich noch einmal."
+  },
+  "messages": {
+    "profile_saved": "Profil gespeichert.",
+    "reset_email_sent": "Es wurde bereits eine E-Mail gesendet.",
+    "reset_email_sent_fresh": "E-Mail an deine aktuelle Adresse gesendet. Der Link ist zeitlich begrenzt und nur einmal nutzbar.",
+    "email_change_pending": "Eine Anfrage läuft bereits. Prüfe beide Postfächer.",
+    "email_change_requested": "Anfrage gesendet. Deine Adresse ändert sich erst nach Bestätigung von deiner aktuellen und der neuen Adresse.",
+    "invite_sent": "Einladung an {email} gesendet."
+  }
+}

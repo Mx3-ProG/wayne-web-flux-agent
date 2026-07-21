@@ -1,11 +1,22 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePageId } from "@/lib/active-project";
 import { offerLimit } from "@/lib/plans";
 import type { Plan } from "@/lib/types";
+import { getAccountLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { defaultLocale } from "@/lib/i18n/config";
 import { OfferTunnel } from "@/components/commerce/offer-tunnel";
 
-export const metadata = { title: "Créer mon offre" };
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const locale = user ? await getAccountLocale(supabase, user.id) : defaultLocale;
+  return { title: (await getDictionary(locale, "offers")).meta.tunnelTitle };
+}
 
 export default async function ConfigurerOffrePage() {
   const supabase = await createClient();

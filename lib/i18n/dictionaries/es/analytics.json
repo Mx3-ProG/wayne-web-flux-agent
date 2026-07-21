@@ -1,0 +1,53 @@
+{
+ "meta": {
+  "title": "Estadísticas"
+ },
+ "hero": {
+  "kicker": "Centro de datos",
+  "titleStart": "Tu panel de",
+  "titleEm": "control",
+  "textStart": "Lo que pasa en",
+  "textLink": "tu web",
+  "textEnd": ": visitas, contactos y suscriptores, en tiempo real.",
+  "visitSingular": "visita en los últimos 30 días",
+  "visitPlural": "visitas en los últimos 30 días"
+ },
+ "cards": {
+  "visits7": "Visitas (7 d)",
+  "visits30": "Visitas (30 d)",
+  "phoneClicks30": "Clics teléfono (30 d)",
+  "whatsappClicks30": "Clics WhatsApp (30 d)",
+  "socialClicks30": "Clics redes (30 d)",
+  "newsletterSubscribers": "Suscriptores newsletter"
+ },
+ "chart": {
+  "title": "Visitas de los últimos 14 días",
+  "empty": "Todavía no hay datos: llegarán en cuanto tu web reciba sus primeras visitas.",
+  "tooltipSingular": "{label}: {count} visita",
+  "tooltipPlural": "{label}: {count} visitas"
+ },
+ "subscribers": {
+  "title": "Tus suscriptores newsletter",
+  "hint": "Recogidos por el bloque «Newsletter» de tu web.",
+  "export": "Exportar (CSV)",
+  "empty": "Nadie por ahora. Añade el bloque «Newsletter» en el editor de tu web (sección «Secciones de mi página») para recoger emails.",
+  "csvHeader": "email;inscrito_el"
+ },
+ "tunnel": {
+  "step": "Paso {current} de {total}",
+  "exit": "Mis estadísticas",
+  "kicker1": "Haz circular tu enlace",
+  "title1Start": "Tus estadísticas empiezan con un",
+  "title1Em": "compartir.",
+  "subtitle1": "Comparte tu enlace con las personas que aprecian tu trabajo, que encuentran valor o consuelo en él. Cada visita, cada clic y cada seguidor aparecerá aquí — cuanto más circule tu enlace, más contarán tus cifras tu historia.",
+  "uniqueLink": "Tu enlace único",
+  "copyLink": "Copiar mi enlace",
+  "continueCta": "Continuar",
+  "fromTeam": "De parte de todo el equipo",
+  "title2Start": "Gracias por usar FLUX para",
+  "title2Em": "tu negocio.",
+  "text2": "Tu negocio merece ser visto, elegido y recomendado. Te deseamos que logres grandes cosas — y estaremos aquí para celebrar cada victoria contigo.",
+  "back": "Atrás",
+  "viewStats": "Ver mis estadísticas"
+ }
+}

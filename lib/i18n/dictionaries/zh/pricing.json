@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "title": "价格与积分",
+    "description": "了解 FLUX 订阅方案和积分包，助力你的生意发展数字化形象。"
+  },
+  "header": {
+    "tryFree": "免费试用"
+  },
+  "hero": {
+    "eyebrow": "价格透明，没有任何隐藏费用。",
+    "titleLine1": "选择属于",
+    "titleEm": "你的增长节奏。",
+    "text": "订阅让你的空间持续运转，积分让你在需要时创建、发布并加速。",
+    "fact1": "天免费试用",
+    "fact2": "随时可取消",
+    "fact3": "Stripe 安全支付"
+  },
+  "plans": {
+    "kicker": "月度订阅",
+    "title": "每种抱负都有对应的方案。",
+    "note": "未使用的每月积分可累积。",
+    "featured": "最受欢迎",
+    "perMonth": "/ 月",
+    "creditsIncluded": "积分 / 月（已包含）",
+    "showcase": "个展示站点",
+    "showcases": "个展示站点",
+    "activeOffers": "个有效优惠",
+    "subpages": "个子页面（每个站点）",
+    "choose": "选择",
+    "checkoutNote": "付款前你将登录或创建账户。Stripe 确认后订阅即刻生效。"
+  },
+  "planNames": {
+    "basique": "基础版",
+    "pro": "专业版",
+    "business": "商务版",
+    "entreprise": "企业版"
+  },
+  "features": {
+    "basique": ["基础个性化", "包含 FLUX 地址", "包含 FLUX 工具"],
+    "pro": ["高级个性化", "高级主题", "包含 FLUX 工具"],
+    "business": ["自定义域名", "高级主题", "包含 FLUX 工具"],
+    "entreprise": ["10 个专业展示站点", "自定义域名", "可隐藏 Wayne Web 署名"]
+  },
+  "credits": {
+    "kicker": "单次充值",
+    "title": "需要加速一下？",
+    "note": "无需额外订阅，不会自动续费。",
+    "creditsWord": "积分",
+    "perCredit": "/ 积分",
+    "buy": "购买此积分包"
+  },
+  "explainer": {
+    "kicker": "如何运作？",
+    "titleLine1": "订阅赋予访问权限。",
+    "titleLine2": "积分推动前进。",
+    "step1Title": "选择你的方案",
+    "step1Text": "它决定展示站点数量、优惠数量和可用功能。",
+    "step2Title": "使用你的积分",
+    "step2Text": "积分用于调用 FLUX 工具的生成、发布和各种操作。",
+    "step3Title": "需要时充值",
+    "step3Text": "为余额添加单次积分包，无需更改订阅。"
+  }
+}

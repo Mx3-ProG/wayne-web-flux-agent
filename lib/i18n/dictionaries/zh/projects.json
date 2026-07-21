@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "我的项目",
+    "newTitle": "新建项目"
+  },
+  "eyebrow": "你的账户",
+  "title": "我的项目",
+  "subtitle": "每个项目都是一个完整的店铺：专属展示页、商品、订单、营业额。选择要管理的活跃项目，掌控你的整个空间。",
+  "counter": "{count} / {limit} 个项目 — {plan} 套餐",
+  "counterPlural": "{count} / {limit} 个项目 — {plan} 套餐",
+  "noName": "未命名",
+  "revenue": "营业额",
+  "open": "打开 ↗",
+  "newProject": "新建项目",
+  "upsellTitle": "多店铺管理",
+  "upsellBasique": "升级到更高套餐，即可管理多个店铺（最多 10 个）。",
+  "upsellLimit": "你已达到当前套餐的项目上限。",
+  "discoverPlans": "了解 FLUX 套餐",
+  "activeProject": "活跃项目",
+  "activating": "……",
+  "activate": "激活此项目",
+  "domain": {
+    "title": "域名",
+    "text": "把你自己的域名（例如 {example}）绑定到当前活跃项目的展示页上。",
+    "soon": "Pro 套餐起可用",
+    "placeholder": "ma-boutique.fr",
+    "saving": "……",
+    "save": "保存",
+    "saved": "域名已保存。",
+    "comingSoon": "此功能即将上线，目前可在本地环境中试用。"
+  },
+  "backToProjects": "← 我的项目",
+  "errors": {
+    "feature_coming_soon": "该功能即将上线。",
+    "not_authenticated": "未登录。",
+    "plan_restricted": "仅限 Pro 及以上套餐使用。",
+    "invalid_domain": "域名格式无效（例如 ma-boutique.fr）。",
+    "save_failed": "保存失败（域名可能已被占用？）。",
+    "project_not_found": "找不到该项目。",
+    "change_failed": "无法完成更改。",
+    "content_blocked": "FLUX 严禁并将处罚仇恨言论或色情内容；请尊重你自己和他人所处的环境。累计违反使用条款 3 次后，账户将被删除。",
+    "unknown": "出了点问题，请稍后再试。"
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "title": "我的订单"
+  },
+  "status": {
+    "pending": "待处理",
+    "accepted": "已接受",
+    "fulfilled": "已完成",
+    "cancelled": "已取消"
+  },
+  "bookingStatus": {
+    "cancelled": "已取消",
+    "confirmed": "已确认"
+  },
+  "itemKind": {
+    "offer": "优惠",
+    "reservation": "预订",
+    "product": "商品"
+  },
+  "clientSheet": {
+    "aria": "客户档案",
+    "titleWithName": "客户档案 · {name}",
+    "titleDefault": "客户档案",
+    "interactions": "{count} 次互动",
+    "phone": "电话",
+    "email": "邮箱",
+    "notProvided": "未填写",
+    "address": "实体地址",
+    "addressNotProvided": "未填写"
+  },
+  "history": {
+    "title": "客户历史",
+    "purchases": "{count} 笔购买",
+    "reservation": "预订"
+  },
+  "orderCard": {
+    "transaction": "FLUX 交易",
+    "defaultClient": "客户",
+    "itemSingular": "件商品",
+    "itemPlural": "件商品",
+    "accept": "接受",
+    "markDone": "标记为完成",
+    "cancel": "取消",
+    "refuse": "拒绝"
+  },
+  "clientProfile": {
+    "dossier": "客户档案",
+    "interactionSingular": "次互动",
+    "interactionPlural": "次互动"
+  },
+  "hero": {
+    "kicker": "FLUX 业务组合",
+    "titleStart": "业务",
+    "titleEm": "指挥中心",
+    "text": "掌控订单、找到每一位客户，把你的橱窗变成清晰整洁的收款账本。",
+    "movementSingular": "笔已跟踪流水",
+    "movementPlural": "笔已跟踪流水"
+  },
+  "metrics": {
+    "aria": "订单指标",
+    "toProcess": "待处理",
+    "accepted": "已接受",
+    "history": "历史记录",
+    "clientSheets": "客户档案"
+  },
+  "empty": {
+    "noPageStart": "先创建你的",
+    "noPageLink": "橱窗",
+    "noPageEnd": "才能开始接收订单。",
+    "noOrdersStart": "目前还没有订单。去你的",
+    "noOrdersLink": "橱窗",
+    "noOrdersEnd": "添加商品，然后分享你的链接吧。"
+  },
+  "sections": {
+    "incoming": "进账交易",
+    "toProcess": "待处理",
+    "toProcessCount": "{count} 个待确认的订单",
+    "openLabel": "待处理订单",
+    "accepted": "已接受",
+    "acceptedCount": "{count} 笔收款进行中",
+    "ledger": "总账",
+    "history": "历史记录",
+    "historyCount": "{count} 笔已归档交易",
+    "book": "业务账簿",
+    "clientSheets": "客户档案",
+    "clientSheetsCount": "{count} 段保留的客户关系"
+  },
+  "errors": {
+    "not_authenticated": "你需要先登录才能继续。",
+    "action_failed": "操作失败。",
+    "unknown": "出了点问题，请稍后再试。"
+  }
+}

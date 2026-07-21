@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "title": "مساحتي"
+  },
+  "hero": {
+    "eyebrow": "نظرة عامة",
+    "greeting": "أهلاً {name}",
+    "greetingNoName": "أهلاً بك",
+    "text": "هذا ما يدفع تجارتك إلى الأمام اليوم.",
+    "cta": "إنشاء محتوى"
+  },
+  "storefront": {
+    "eyebrow": "واجهتي",
+    "titleOnline": "واجهتك أونلاين الآن",
+    "titleOffline": "أنشئ عنوانك على الويب",
+    "textOnline": "الرابط الفريد الذي تشاركه مع عملائك، أينما بحثوا عنك.",
+    "textOffline": "صفحة واضحة وجميلة وجاهزة لاستقبال أولى طلباتك.",
+    "copyLink": "نسخ الرابط",
+    "emptyText": "بعض الخيارات فقط تكفي لتحضير أول واجهة لك.",
+    "editCta": "تعديل واجهتي",
+    "createCta": "إنشاء واجهتي",
+    "viewCta": "عرض واجهتي"
+  },
+  "metrics": {
+    "aria": "المؤشرات",
+    "readyLabel": "مساحتك جاهزة لـ",
+    "voiceGood": "صوتك مُهيّأ بشكل جيد",
+    "voiceContinue": "تابع تخصيص صوتك",
+    "upcomingBookings": "مواعيد قادمة",
+    "agendaSynced": "الأجندة متزامنة",
+    "availableCredits": "أرصدة متاحة",
+    "contentSingular": "محتوى تم إنشاؤه",
+    "contentPlural": "محتويات تم إنشاؤها"
+  },
+  "journey": {
+    "title": "مسارك",
+    "subtitle": "خطوة واضحة في كل مرة.",
+    "progress": "{completed} / {total} مكتملة",
+    "done": "منتهية",
+    "todo": "قيد الإنجاز",
+    "nextStep": "الخطوة التالية",
+    "todoNow": "للإنجاز الآن",
+    "viewStep": "عرض الخطوة",
+    "validate": "تأكيد"
+  },
+  "steps": {
+    "openEditor": "فتح محرر الواجهة",
+    "createStorefront": "إنشاء واجهتي",
+    "voiceScore": "أكتب بأسلوبك بنسبة {percent}%",
+    "voiceHint": "كل ما زوّدته بمعلومات أكثر، كتب الذكاء الاصطناعي بصوتك، بنغمتك، وبكلماتك الخاصة.",
+    "voiceRefine": "تحسين أكثر",
+    "voiceMeet": "تعرّف علينا (دقيقتان)",
+    "createMoreProducts": "إنشاء منتجات أخرى مع FLUX",
+    "startProductCreation": "بدء إنشاء المنتج مع FLUX",
+    "createNewOffer": "إنشاء عرض جديد مع FLUX",
+    "startOfferCreation": "بدء إنشاء العرض مع FLUX",
+    "reviewSchedule": "مراجعة مواعيدي مع FLUX",
+    "configureSchedule": "ضبط مواعيدي",
+    "toolsHint": "اختر أداة. تكلفة الأرصدة تظهر قبل الانطلاق.",
+    "creditsLeft": "أرصدة متبقية",
+    "viewCredits": "عرض أرصدتي",
+    "creationSingular": "إنشاء",
+    "creationPlural": "إنشاءات",
+    "inYourVault": "في خزانتك",
+    "openVault": "فتح خزانتي",
+    "upcomingAppointments": "مواعيد قادمة",
+    "openAgenda": "فتح أجندتي",
+    "shareHint": "بايو إنستغرام، حالة واتساب، بطاقة جوجل: كل ما انتشر رابطك أكثر، امتلأت أجندتك تلقائياً.",
+    "shareWhatsapp": "مشاركة على واتساب",
+    "whatsappMessage": "احجز موعدك أونلاين: {url}"
+  }
+}

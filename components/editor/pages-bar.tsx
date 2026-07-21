@@ -10,7 +10,6 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { SitePage } from "@/lib/types";
-import { PAGE_TEMPLATES } from "@/lib/page-templates";
 import { createSitePage } from "@/app/(app)/ma-page/subpage-actions";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,6 +19,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { FileText, Home, Plus } from "lucide-react";
+import { useI18n } from "@/components/i18n-provider";
+import { translateActionError } from "./translate-action-error";
 
 type Props = {
   pageId: string;
@@ -30,6 +31,8 @@ type Props = {
 
 export function PagesBar({ pageId, sitePages, activeSitePageId, limit }: Props) {
   const router = useRouter();
+  const { editor, pageTemplates } = useI18n();
+  const t = editor.pagesBar;
   const [pickerOpen, setPickerOpen] = useState(false);
   const [creating, startCreating] = useTransition();
 
@@ -39,7 +42,11 @@ export function PagesBar({ pageId, sitePages, activeSitePageId, limit }: Props) 
     startCreating(async () => {
       const result = await createSitePage(pageId, { templateId });
       if (result.error || !result.sitePage) {
-        toast.error(result.error ?? "Impossible de créer la page.");
+        toast.error(
+          result.error
+            ? translateActionError(editor.actionErrors, result.error)
+            : editor.actionErrors.subpage_creation_failed
+        );
         return;
       }
       setPickerOpen(false);
@@ -55,7 +62,7 @@ export function PagesBar({ pageId, sitePages, activeSitePageId, limit }: Props) 
         size="sm"
       >
         <Link href="/ma-page?view=editor">
-          <Home aria-hidden="true" /> Accueil
+          <Home aria-hidden="true" /> {t.home}
         </Link>
       </Button>
       {sitePages.map((sp) => {
@@ -74,12 +81,12 @@ export function PagesBar({ pageId, sitePages, activeSitePageId, limit }: Props) 
               </span>
               {sp.draft_status === "new" && (
                 <span className="rounded-full bg-amber-500/15 px-1.5 text-[10px] font-semibold text-amber-600">
-                  brouillon
+                  {t.draftBadge}
                 </span>
               )}
               {sp.draft_status === "deleted" && (
                 <span className="rounded-full bg-destructive/15 px-1.5 text-[10px] font-semibold text-destructive">
-                  à supprimer
+                  {t.deleteBadge}
                 </span>
               )}
             </Link>
@@ -92,20 +99,20 @@ export function PagesBar({ pageId, sitePages, activeSitePageId, limit }: Props) 
         disabled={atLimit || creating}
         onClick={() => setPickerOpen(true)}
       >
-        <Plus aria-hidden="true" /> Nouvelle page
+        <Plus aria-hidden="true" /> {t.newPage}
       </Button>
       <span className="text-xs text-muted-foreground">
-        {sitePages.length}/{limit} pages
-        {atLimit ? " — limite de ton forfait atteinte" : ""}
+        {t.pagesCount.replace("{count}", String(sitePages.length)).replace("{limit}", String(limit))}
+        {atLimit ? t.limitReached : ""}
       </span>
 
       <Dialog open={pickerOpen} onOpenChange={setPickerOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Quelle page veux-tu ajouter ?</DialogTitle>
+            <DialogTitle>{t.pickerTitle}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-2 sm:grid-cols-2">
-            {PAGE_TEMPLATES.map((template) => (
+            {pageTemplates.map((template) => (
               <button
                 key={template.id}
                 type="button"
@@ -120,10 +127,7 @@ export function PagesBar({ pageId, sitePages, activeSitePageId, limit }: Props) 
               </button>
             ))}
           </div>
-          <p className="text-xs text-muted-foreground">
-            La page est pré-remplie puis entièrement modifiable. Elle reste en
-            brouillon tant que tu ne publies pas.
-          </p>
+          <p className="text-xs text-muted-foreground">{t.pickerHint}</p>
         </DialogContent>
       </Dialog>
     </div>

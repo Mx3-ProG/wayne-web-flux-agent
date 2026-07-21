@@ -16,21 +16,24 @@ import {
   Vault,
 } from "lucide-react";
 import styles from "./generation-list.module.css";
+import type { ToolsDict } from "@/lib/i18n/get-dictionary";
+import type { Locale } from "@/lib/i18n/config";
+import { formatDate as formatLocaleDate } from "@/lib/i18n/format";
 
 function toolName(slug: string): string {
   return TOOLS.find((tool) => tool.slug === slug)?.name ?? slug;
 }
 
-function formatDate(value: string): string {
-  return new Intl.DateTimeFormat("fr-FR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  }).format(new Date(value));
-}
-
 // Le coffre-fort : tout ce qui a été créé reste accessible pour toujours.
-export function GenerationList({ generations }: { generations: Generation[] }) {
+export function GenerationList({
+  generations,
+  t,
+  locale,
+}: {
+  generations: Generation[];
+  t: ToolsDict;
+  locale: Locale;
+}) {
   const [openId, setOpenId] = useState<string | null>(null);
 
   return (
@@ -39,24 +42,24 @@ export function GenerationList({ generations }: { generations: Generation[] }) {
         <div className={styles.heroGlow} aria-hidden="true" />
         <span className={styles.overline}>
           <LockKeyhole aria-hidden="true" />
-          Chambre forte personnelle
+          {t.vault.overline}
         </span>
         <div className={styles.vaultMark} aria-hidden="true">
           <Vault />
         </div>
         <h1>
-          Ton coffre-<span>fort</span>
+          {t.vault.titleStart}<span>{t.vault.titleEm}</span>
         </h1>
         <p>
           {generations.length === 0
-            ? "Chaque création précieuse trouvera sa place ici."
-            : `${generations.length} trésor${generations.length > 1 ? "s" : ""} façonné${generations.length > 1 ? "s" : ""} par FLUX, conservé${generations.length > 1 ? "s" : ""} pour toujours.`}
+            ? t.vault.emptySubtitle
+            : `${generations.length} ${generations.length > 1 ? t.vault.treasurePlural : t.vault.treasureSingular}`}
         </p>
         {generations.length > 0 && (
           <div className={styles.vaultCount}>
             <Gem aria-hidden="true" />
             <strong>{generations.length}</strong>
-            <span>création{generations.length > 1 ? "s" : ""} en sûreté</span>
+            <span>{generations.length > 1 ? t.vault.creationPlural : t.vault.creationSingular}</span>
           </div>
         )}
       </header>
@@ -69,24 +72,21 @@ export function GenerationList({ generations }: { generations: Generation[] }) {
             <span className={styles.orbitThree}><Gem /></span>
             <span className={styles.emptyVault}><Vault /></span>
           </div>
-          <p className={styles.emptyKicker}>Le premier trésor t’attend</p>
-          <h2>Ton savoir-faire mérite son écrin.</h2>
-          <p>
-            Crée ton premier contenu avec FLUX. Il sera rangé ici,
-            prêt à être relu, copié et partagé.
-          </p>
+          <p className={styles.emptyKicker}>{t.vault.emptyKicker}</p>
+          <h2>{t.vault.emptyTitle}</h2>
+          <p>{t.vault.emptyText}</p>
           <Link href="/espace#outils" className={styles.goldAction}>
-            Créer mon premier contenu <ArrowRight aria-hidden="true" />
+            {t.vault.createFirst} <ArrowRight aria-hidden="true" />
           </Link>
         </section>
       ) : (
         <section className={styles.collection}>
           <div className={styles.collectionHead}>
             <div>
-              <p className={styles.goldLabel}>Ta collection</p>
-              <h2>Des pièces uniques, prêtes à rayonner.</h2>
+              <p className={styles.goldLabel}>{t.vault.collectionLabel}</p>
+              <h2>{t.vault.collectionTitle}</h2>
             </div>
-            <span>Classées de la plus récente à la plus ancienne</span>
+            <span>{t.vault.sortedHint}</span>
           </div>
 
           <div className={styles.grid}>
@@ -110,14 +110,15 @@ export function GenerationList({ generations }: { generations: Generation[] }) {
                       <ScrollText aria-hidden="true" />
                     </span>
                     <span className={styles.treasureTitle}>
-                      <small>Création FLUX</small>
+                      <small>{t.vault.creationLabel}</small>
                       <strong>{toolName(generation.tool_slug)}</strong>
                       <span>
-                        {formatDate(generation.created_at)} · {generation.credits_spent} crédits
+                        {formatLocaleDate(locale, generation.created_at)} ·{" "}
+                        {t.vault.creditsSpent.replace("{cost}", String(generation.credits_spent))}
                       </span>
                     </span>
                     <span className={styles.openControl}>
-                      {open ? "Refermer" : "Découvrir"}
+                      {open ? t.vault.close : t.vault.discover}
                       <ChevronDown aria-hidden="true" />
                     </span>
                   </button>
@@ -130,11 +131,11 @@ export function GenerationList({ generations }: { generations: Generation[] }) {
                         className={styles.copyButton}
                         onClick={() => {
                           void navigator.clipboard.writeText(generation.output);
-                          toast.success("Création copiée !");
+                          toast.success(t.vault.copiedToast);
                         }}
                       >
                         <Copy aria-hidden="true" />
-                        Copier cette création
+                        {t.vault.copyCreation}
                       </button>
                     </div>
                   )}

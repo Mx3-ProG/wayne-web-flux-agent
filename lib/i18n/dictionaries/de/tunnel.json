@@ -1,0 +1,369 @@
+{
+ "accountGate": {
+  "backHome": "Zurück zur Startseite",
+  "alreadyAccount": "Ich habe schon ein Konto",
+  "kicker": "Individuelle Einrichtung",
+  "titleLine1": "Wir bauen deinen",
+  "titleEm": "Wachstumsmotor.",
+  "text": "Erstelle deinen Zugang und beantworte anschließend ein paar Fragen. Alles, was du sagst, wird nach und nach in deinem Bereich umgesetzt — nichts geht dabei verloren.",
+  "nameLabel": "Dein Vorname",
+  "namePlaceholder": "Alex",
+  "emailLabel": "Deine geschäftliche E-Mail",
+  "emailPlaceholder": "alex@meinladen.de",
+  "passwordLabel": "Wähle ein Passwort",
+  "passwordPlaceholder": "Mindestens 8 Zeichen",
+  "submit": "Meinen Bereich erstellen",
+  "submitting": "Dein Bereich wird erstellt…",
+  "trialValue": "7 Tage Testphase, keine Kreditkarte nötig",
+  "creditsValue": "100 Credits geschenkt zum Start",
+  "legalPrefix": "Mit der Erstellung deines Bereichs bestätigst du, unsere",
+  "legalLink": "Allgemeinen Geschäftsbedingungen gelesen und akzeptiert zu haben"
+ },
+ "errors": {
+  "fillAll": "Fülle alle Felder aus.",
+  "passwordTooShort": "Das Passwort muss mindestens 8 Zeichen haben.",
+  "accountExists": "Mit dieser E-Mail existiert bereits ein Konto.",
+  "createFailed": "Dein Konto konnte nicht erstellt werden. Versuch es nochmal.",
+  "createdSignInFailed": "Konto erstellt, aber Anmeldung fehlgeschlagen. Versuch dich einzuloggen.",
+  "notConnected": "Nicht verbunden.",
+  "createPageFirst": "Erstelle zuerst deine Vitrine.",
+  "twoFieldsRequired": "Fülle beide Felder aus.",
+  "catalogCreateFailed": "Erstellung nicht möglich.",
+  "offerTitleRequired": "Gib deinem Angebot einen Titel.",
+  "offerCreateFailed": "Das Angebot konnte nicht erstellt werden.",
+  "noAgendaForVertical": "Deine Branche nutzt keinen Kalender.",
+  "chooseOneDay": "Wähle mindestens einen Tag.",
+  "closingAfterOpening": "Die Schließzeit muss nach der Öffnungszeit liegen.",
+  "unknownStyle": "Unbekannter Stil.",
+  "not_authenticated": "Du musst angemeldet sein, um fortzufahren.",
+  "business_name_required": "Gib deiner Vitrine einen Namen.",
+  "project_limit_reached": "Projektlimit für dein Paket erreicht.",
+  "creation_failed": "Die Seite konnte nicht erstellt werden.",
+  "content_blocked": "Hassbotschaften oder explizite Inhalte sind auf FLUX verboten und werden geahndet; bitte respektiere deine Umgebung und die der anderen. Nach 3 Verstößen gegen unsere Nutzungsbedingungen wird das Konto gelöscht.",
+  "unknown": "Ein Fehler ist aufgetreten. Versuch es gleich nochmal."
+ },
+ "shell": {
+  "espaceAria": "Zu meinem Bereich gehen",
+  "chapterProgress": "Kapitel {chapter} · {title} — {done}/{total}",
+  "trialDays": "{days} T. Testphase"
+ },
+ "chapterIntro": {
+  "kicker": "Kapitel {chapter} · {title}",
+  "cta": "Los geht's"
+ },
+ "chapterDone": {
+  "kicker": "Kapitel {chapter} abgeschlossen",
+  "defaultCta": "Weiter",
+  "pending": "Einen Moment…"
+ },
+ "chapters": {
+  "1": {
+   "title": "Deine Adresse",
+   "whyTitle": "Deine Kunden suchen dich, finden dich aber nicht.",
+   "whyBody": "Wir geben dir einen Link, der dir gehört, den du für immer behältst, und den Google lesen kann.",
+   "doneTitle": "Deine Adresse existiert.",
+   "doneBody": "Sie gehört dir, und die KI weiß jetzt, wie sie mit deiner Stimme schreibt."
+  },
+  "2": {
+   "title": "Was du verkaufst",
+   "whyTitle": "Eine leere Vitrine verkauft nichts.",
+   "whyBody": "Wir füllen sie mit einem Katalog, einem Angebot und deinen Verfügbarkeiten.",
+   "doneTitle": "Deine Kunden wissen, was sie kaufen können.",
+   "doneBody": "Deine Vitrine kann jetzt Anfragen empfangen, während du arbeitest."
+  },
+  "3": {
+   "title": "Deine Sichtbarkeit",
+   "whyTitle": "Die beste Vitrine bringt nichts, wenn sie niemand besucht.",
+   "whyBody": "Wir erstellen deinen ersten Inhalt und bringen deinen Link in Umlauf.",
+   "doneTitle": "Dein Weg ist abgeschlossen.",
+   "doneBody": "Dein Geschäft ist online, gefüllt und bereit, geteilt zu werden."
+  }
+ },
+ "achievements": {
+  "storeCreated": "Deine Vitrine „{name}“ ist erstellt",
+  "defaultStore": "dein Geschäft",
+  "voiceLearned": "Die KI hat deinen Ton und dein Handwerk gelernt",
+  "firstService": "Deine erste Leistung ist online",
+  "firstProduct": "Dein erstes Produktangebot ist online",
+  "offerReady": "Dein Lockangebot ist bereit",
+  "bookingReady": "Deine Kunden können einen Termin buchen"
+ },
+ "footer": {
+  "back": "Zurück",
+  "continue": "Weiter",
+  "pending": "Einen Moment…"
+ },
+ "finalCta": "Zu meinem Bereich",
+ "vertical": {
+  "kicker": "Deine Branche",
+  "titleStart": "Was machst du",
+  "titleEm": "am besten",
+  "titleEnd": "?",
+  "subtitle": "Wähle deine Welt. Flux passt die Tools, das Vokabular und die Farben deiner Vitrine an."
+ },
+ "goals": {
+  "kicker": "Deine Ziele",
+  "titleStart": "Was",
+  "titleEm": "bremst",
+  "titleEnd": "dich heute aus?",
+  "subtitle": "Wähle alles, was auf dich zutrifft. Was du hier sagst, nutzt die KI, um für dich zu schreiben.",
+  "items": {
+   "temps": {
+    "title": "Mir fehlt die Zeit",
+    "text": "Inhalte und Kundenantworten fressen mir die Abende auf."
+   },
+   "google": {
+    "title": "Man findet mich nicht",
+    "text": "Ich will bei Google und in meiner Stadt weiter oben stehen."
+   },
+   "leads": {
+    "title": "Ich will mehr Kunden",
+    "text": "Ich brauche regelmäßige, qualifizierte Anfragen."
+   },
+   "tout": {
+    "title": "Alles zentralisieren",
+    "text": "Ich will aufhören, zwischen fünf Tools hin- und herzuspringen."
+   }
+  }
+ },
+ "identity": {
+  "kicker": "Schritt 1 · Deine Vitrine",
+  "titleStart": "Geben wir ihr eine",
+  "titleEm": "Adresse.",
+  "subtitle": "Diese Angaben erstellen deine Vitrine und bereiten deine lokale Auffindbarkeit vor. Alles bleibt später änderbar.",
+  "nameLabel": "Name des Geschäfts",
+  "nameHint": "Dein Vorname funktioniert auch",
+  "namePlaceholder": "Z. B.: Atelier Louise",
+  "jobLabel": "Dein Beruf",
+  "jobHint": "Wähle oder schreibe deinen eigenen",
+  "jobPlaceholder": "Z. B.: Floristin",
+  "cityLabel": "Deine Stadt",
+  "cityPlaceholder": "Z. B.: Köln"
+ },
+ "voice": {
+  "kicker": "Schritt 2 · Deine Stimme",
+  "titleStart": "Flux muss sprechen",
+  "titleEm": "wie du.",
+  "subtitle": "Wähle den Ton, der deinem Geschäft am meisten ähnelt. Genau den wird die KI in allen deinen Inhalten nachahmen.",
+  "tones": {
+   "Direct et efficace": {
+    "title": "Direkt & effizient",
+    "sample": "Wir gehen direkt zum Ergebnis."
+   },
+   "Chaleureux et proche": {
+    "title": "Warmherzig & nah",
+    "sample": "Wie bei deinen besten Kunden."
+   },
+   "Premium et expert": {
+    "title": "Premium & Experte",
+    "sample": "Schlicht, präzise, hochwertig."
+   },
+   "Dynamique et audacieux": {
+    "title": "Dynamisch & mutig",
+    "sample": "Energie und Charakter."
+   }
+  }
+ },
+ "catalog": {
+  "kicker": "Schritt 3 · Dein Katalog",
+  "titleStart": "Was möchtest du",
+  "titleEm": "zuerst verkaufen?",
+  "subtitle": "Eine {categoryWord} und deine erste {itemWord}. Das ist das Minimum, damit ein Kunde versteht, was du anbietest.",
+  "freeBadge": "Kostenlos während deines Wegs · 15 Credits gespart",
+  "categoryLabel": "Name der {categoryWord}",
+  "itemLabel": "Name deiner {itemWord}",
+  "itemLabelWithCategory": "Name deiner {itemWord} in „{category}“",
+  "priceLabel": "Preis inkl. MwSt.",
+  "trackStock": "Bestand verfolgen",
+  "trackStockHint": "FLUX benachrichtigt dich, wenn er aufgebraucht ist.",
+  "stockLabel": "Verfügbare Menge",
+  "noStockHint": "Kein Bestand zu verfolgen bei einer Leistung: deine Kunden buchen einen Termin, den du im Kalenderschritt festlegst."
+ },
+ "offer": {
+  "kicker": "Schritt 4 · Dein Angebot",
+  "titleStart": "Gib ihnen einen",
+  "titleEm": "Grund",
+  "titleEnd": ", jetzt zu kommen.",
+  "subtitle": "Ein hervorgehobenes Angebot oben in deiner Vitrine: ein erstes Mal, ein Paket, ein Startrabatt.",
+  "freeBadge": "Kostenlos während deines Wegs · 15 Credits gespart",
+  "titleLabel": "Titel des Angebots",
+  "titlePlaceholder": "Z. B.: -20% auf deinen ersten Besuch",
+  "titleHint": "Sei konkret: was der Kunde sofort gewinnt.",
+  "descriptionLabel": "In einem Satz (optional)",
+  "descriptionPlaceholder": "Z. B.: Gültig bis Monatsende, nach Termin.",
+  "priceLabel": "Preis des Angebots",
+  "compareAtLabel": "Durchgestrichener Preis (optional)"
+ },
+ "agenda": {
+  "kicker": "Schritt 5 · Dein Kalender",
+  "titleStart": "Wann bist du",
+  "titleEm": "verfügbar?",
+  "subtitle": "Wähle deine Tage und einen ersten Zeitraum. Deine Kunden können selbstständig buchen, auch wenn du gerade nicht antwortest.",
+  "weekdays": {
+   "mon": "Mo",
+   "tue": "Di",
+   "wed": "Mi",
+   "thu": "Do",
+   "fri": "Fr",
+   "sat": "Sa",
+   "sun": "So"
+  },
+  "from": "Von",
+  "to": "Bis"
+ },
+ "content": {
+  "kicker": "Schritt 6 · Dein erster Inhalt",
+  "titleStart": "Dein erster",
+  "titleEm": "Beitrag",
+  "titleEnd": "wartet auf dich.",
+  "subtitle": "Die KI kennt jetzt deinen Beruf, deine Stadt, deinen Katalog und deinen Ton. Sieh dir an, was sie daraus macht.",
+  "costBadge": "{cost} Credits von deinen {balance} · das ist der einzige kostenpflichtige Schritt deines Wegs",
+  "formatLabel": "Art des Inhalts",
+  "formats": {
+   "reel": "Reel / Kurzvideo",
+   "carrousel": "Karussell",
+   "post": "Einfacher Beitrag"
+  },
+  "goalLabel": "Wozu dient dieser Beitrag?",
+  "goals": {
+   "visibilite": "Möglichst viele Menschen erreichen",
+   "expertise": "Meine Expertise beweisen",
+   "conversion": "Lust auf eine Buchung machen"
+  },
+  "topicLabel": "Das Thema (optional)",
+  "topicPlaceholder": "Z. B.: meine Top-Leistung, ein Tipp, ein Vorher/Nachher…",
+  "generating": "Die KI schreibt…",
+  "generate": "Meinen ersten Inhalt generieren",
+  "outputLabel": "Dein Inhalt — er ist schon in deinem Archiv.",
+  "outputNote": "Du findest ihn jederzeit in deinem Archiv wieder.",
+  "errors": {
+   "insufficientCredits": "Dir fehlen Credits für diese Generierung.",
+   "trialExpired": "Deine Testphase ist beendet — lade auf, um FLUX zu 100% zu nutzen.",
+   "contentBlocked": "Dieses Thema besteht die Moderation nicht. Formuliere es um.",
+   "generic": "Die Generierung ist fehlgeschlagen. Versuch es gleich nochmal."
+  }
+ },
+ "results": {
+  "kicker": "Schritt 7 · Deine Ergebnisse",
+  "titleStart": "So steht's",
+  "titleEm": "wirklich um dich.",
+  "subtitle": "Das sind deine echten Zahlen, keine Demo. Genau diese Übersicht findest du jeden Morgen in deinem Bereich.",
+  "creditsLeft": "verbleibende Credits",
+  "creditsLeftHint": "Jeder Inhalt, jede Veröffentlichung verbraucht welche.",
+  "creation": "Kreation in deinem Archiv",
+  "creations": "Kreationen in deinem Archiv",
+  "creationsHint": "Deine Inhalte bleiben für immer zugänglich.",
+  "upcomingBookings": "kommende Termine",
+  "upcomingBookingsHint": "Diese Zahl steigt von selbst, sobald dein Link zirkuliert."
+ },
+ "style": {
+  "kicker": "Dein Stil",
+  "titleStart": "Wähle deinen",
+  "titleEm": "Stil.",
+  "subtitle": "Jeder Stil legt die Farben, Schriften und das Layout deiner Vitrine fest. Die Vorschau folgt deiner Wahl, und alles bleibt danach änderbar."
+ },
+ "images": {
+  "kicker": "Dein Stil · Deine Bilder",
+  "titleStart": "Welches Bild möchtest du",
+  "titleEm": "hinterlassen?",
+  "subtitle": "Dein Logo und das große Foto, das deine Besucher empfängt. Beides ist optional — du kannst sie später über den Editor hinzufügen.",
+  "logoLabel": "Logo oder Porträt",
+  "logoChange": "Logo ändern",
+  "logoAdd": "Mein Logo hinzufügen",
+  "heroLabel": "Großes Titelbild",
+  "heroChange": "Foto ändern",
+  "heroAdd": "Foto hinzufügen",
+  "uploading": "Wird hochgeladen…",
+  "tooLarge": "Datei zu groß (max. {max} MB).",
+  "failed": "Upload fehlgeschlagen. Versuch es erneut."
+ },
+ "details": {
+  "kicker": "Dein Stil · Die Details",
+  "titleStart": "Feile daran und sag ihnen, wie sie dich",
+  "titleEm": "erreichen.",
+  "subtitle": "Deine Schrift, deine Farben und deine Kontaktdaten. Der Stil, den du gerade gewählt hast, hat schon alles voreingestellt.",
+  "fontLabel": "Schriftstil",
+  "primaryLabel": "Hauptfarbe",
+  "darkLabel": "Dunkle Farbe",
+  "phoneLabel": "Telefon",
+  "optional": "Optional",
+  "phonePlaceholder": "Z. B.: 0176 12345678",
+  "addressLabel": "Adresse",
+  "addressPlaceholder": "Z. B.: Lilienweg 12"
+ },
+ "publish": {
+  "kicker": "Dein Stil · Veröffentlichung",
+  "titleStart": "Bringen wir sie",
+  "titleEm": "online?",
+  "subtitle": "Alles, was du gerade eingestellt hast, existiert als Entwurf. Veröffentlichen macht deine Vitrine für deine Kunden sichtbar — und gibt dem Link im nächsten Schritt einen Sinn.",
+  "done": "Deine Vitrine ist online.",
+  "cost": "Veröffentlichen kostet {cost} Credits · dein Guthaben: {balance} Cr.",
+  "publishing": "Wird veröffentlicht…",
+  "cta": "Meine Vitrine veröffentlichen",
+  "missingCredits": "Dir fehlt {missing} Credit zum Veröffentlichen.",
+  "missingCreditsPlural": "Dir fehlen {missing} Credits. Du kannst fortfahren und später in deinem Bereich veröffentlichen.",
+  "errors": {
+   "insufficientCredits": "Du brauchst {cost} Credits, um zu veröffentlichen.",
+   "subscriptionRequired": "Deine Testphase ist beendet: wähle ein Paket, um zu veröffentlichen.",
+   "alreadyUpToDate": "Deine Vitrine ist bereits aktuell.",
+   "contentBlocked": "Hassbotschaften oder explizite Inhalte sind auf FLUX verboten und werden geahndet, bitte respektiere deine Umgebung und die der anderen. Nach 3 Verstößen gegen unsere Nutzungsbedingungen wird das Konto gelöscht.",
+   "generic": "Veröffentlichung nicht möglich. Versuch es gleich nochmal.",
+   "success": "Deine Vitrine ist online! Guthaben: {balance} Cr."
+  }
+ },
+ "share": {
+  "kicker": "Schritt 8 · Dein Link",
+  "titleStart": "Bring ihn",
+  "titleEm": "in Umlauf.",
+  "subtitle": "Instagram-Bio, WhatsApp-Status, Google-Eintrag, E-Mail-Signatur. Das ist der Schritt, den alle überspringen — und der einen Kalender füllt.",
+  "copied": "Kopiert",
+  "copy": "Kopieren",
+  "whatsappText": "Online buchen: {url}",
+  "whatsappShare": "Auf WhatsApp teilen",
+  "iosTitle": "Auf iPhone",
+  "iosStep1": "Tippe in Safari auf „Teilen“",
+  "iosStep2": "Wähle „Zum Home-Bildschirm“",
+  "androidTitle": "Auf Android",
+  "androidStep1": "Öffne das Chrome-Menü",
+  "androidStep2": "Wähle „App installieren“",
+  "installNow": "FLUX jetzt installieren"
+ },
+ "emailVerify": {
+  "title": "Bestätige deine Adresse, um zu veröffentlichen",
+  "description": "Wir haben einen Bestätigungslink an {email} geschickt. Klick darauf und komm dann hierher zurück: deine Vitrine geht online.",
+  "spamHint": "Falls du ihn nicht siehst, schau in deinem Spam-Ordner nach.",
+  "openWebmail": "{label} öffnen",
+  "resend": "E-Mail erneut senden",
+  "resending": "Wird gesendet…",
+  "sent": "E-Mail gesendet. Schau in dein Postfach.",
+  "errors": {
+   "not_authenticated": "Du musst angemeldet sein, um fortzufahren.",
+   "already_verified": "Deine Adresse ist bereits bestätigt.",
+   "rate_limited": "Warte eine Minute, bevor du eine weitere E-Mail anforderst.",
+   "update_failed": "Die E-Mail konnte nicht gesendet werden. Versuch es später nochmal.",
+   "send_failed": "Die E-Mail ist nicht rausgegangen. Versuch es gleich nochmal.",
+   "unknown": "Ein Fehler ist aufgetreten. Versuch es gleich nochmal."
+  }
+ },
+ "preview": {
+  "label": "Deine Vitrine, live",
+  "availableIn": "Verfügbar in {city}",
+  "addressOnline": "Deine Adresse online",
+  "defaultBusinessName": "Dein Geschäft",
+  "defaultJobTitle": "Deine Tätigkeit",
+  "defaultCategory": "Dein Katalog",
+  "toneTagline": "Handwerkskunst vor Ort, erzählt {tone}.",
+  "defaultTagline": "Lokales Know-how, ein einfaches Erlebnis und ein Service, der den Unterschied macht.",
+  "bookCta": "Termin vereinbaren",
+  "open": "Geöffnet",
+  "days": {
+   "sun": "So",
+   "mon": "Mo",
+   "tue": "Di",
+   "wed": "Mi",
+   "thu": "Do",
+   "fri": "Fr",
+   "sat": "Sa"
+  }
+ }
+}

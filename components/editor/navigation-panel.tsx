@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ChevronDown, ChevronUp, Trash2 } from "lucide-react";
+import { useI18n } from "@/components/i18n-provider";
 
 const MAX_ITEMS = 8;
 
@@ -34,11 +35,13 @@ function newId(): string {
 }
 
 export function NavigationPanel({ page, sitePages, patch }: Props) {
+  const { editor } = useI18n();
+  const t = editor.navigationPanel;
   const nav = page.navigation;
 
   // Cibles proposées : pages du projet + ancres des sections activées.
   const pageTargets = [
-    { value: "", label: "Accueil" },
+    { value: "", label: t.home },
     ...sitePages
       .filter((sp) => sp.draft_status !== "deleted")
       .map((sp) => {
@@ -91,11 +94,8 @@ export function NavigationPanel({ page, sitePages, patch }: Props) {
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <Label>Menu de navigation</Label>
-          <p className="text-xs text-muted-foreground">
-            Une barre de menu en haut de ton site, avec des liens vers tes
-            pages et tes sections.
-          </p>
+          <Label>{t.title}</Label>
+          <p className="text-xs text-muted-foreground">{t.description}</p>
         </div>
         <Switch
           checked={Boolean(nav)}
@@ -104,7 +104,7 @@ export function NavigationPanel({ page, sitePages, patch }: Props) {
               navigation: on
                 ? {
                     items: [
-                      { id: newId(), label: "Accueil", kind: "page", target: "" },
+                      { id: newId(), label: t.home, kind: "page", target: "" },
                       ...sitePages
                         .filter((sp) => sp.draft_status !== "deleted")
                         .slice(0, 4)
@@ -137,7 +137,7 @@ export function NavigationPanel({ page, sitePages, patch }: Props) {
                   <div className="flex flex-col">
                     <button
                       type="button"
-                      aria-label="Monter le lien"
+                      aria-label={t.moveUp}
                       disabled={i === 0}
                       className="text-muted-foreground disabled:opacity-30"
                       onClick={() => move(i, -1)}
@@ -146,7 +146,7 @@ export function NavigationPanel({ page, sitePages, patch }: Props) {
                     </button>
                     <button
                       type="button"
-                      aria-label="Descendre le lien"
+                      aria-label={t.moveDown}
                       disabled={i === nav.items.length - 1}
                       className="text-muted-foreground disabled:opacity-30"
                       onClick={() => move(i, 1)}
@@ -157,12 +157,12 @@ export function NavigationPanel({ page, sitePages, patch }: Props) {
                   <Input
                     value={item.label}
                     maxLength={40}
-                    placeholder="Texte du lien"
+                    placeholder={t.linkPlaceholder}
                     onChange={(e) => setItem(item.id, { label: e.target.value })}
                   />
                   <button
                     type="button"
-                    aria-label="Supprimer le lien"
+                    aria-label={t.deleteLink}
                     className="p-1 text-destructive"
                     onClick={() =>
                       setNav({ items: nav.items.filter((x) => x.id !== item.id) })
@@ -190,16 +190,16 @@ export function NavigationPanel({ page, sitePages, patch }: Props) {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="page">Une de mes pages</SelectItem>
-                      <SelectItem value="anchor">Une section</SelectItem>
-                      <SelectItem value="external">Un lien externe</SelectItem>
+                      <SelectItem value="page">{t.kindPage}</SelectItem>
+                      <SelectItem value="anchor">{t.kindAnchor}</SelectItem>
+                      <SelectItem value="external">{t.kindExternal}</SelectItem>
                     </SelectContent>
                   </Select>
                   {item.kind === "external" ? (
                     <Input
                       value={item.target}
                       maxLength={300}
-                      placeholder="https://…"
+                      placeholder={t.externalPlaceholder}
                       onChange={(e) => setItem(item.id, { target: e.target.value })}
                     />
                   ) : (
@@ -208,7 +208,7 @@ export function NavigationPanel({ page, sitePages, patch }: Props) {
                       onValueChange={(target) => setItem(item.id, { target })}
                     >
                       <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Choisir…" />
+                        <SelectValue placeholder={t.choose} />
                       </SelectTrigger>
                       <SelectContent>
                         {(item.kind === "page" ? pageTargets : anchorTargets).map(
@@ -233,32 +233,20 @@ export function NavigationPanel({ page, sitePages, patch }: Props) {
               setNav({
                 items: [
                   ...nav.items,
-                  { id: newId(), label: "Nouveau lien", kind: "page", target: "" },
+                  { id: newId(), label: t.newLink, kind: "page", target: "" },
                 ],
               })
             }
           >
-            + Ajouter un lien
+            {t.addLink}
           </Button>
 
           <div className="space-y-3 rounded-lg border border-border p-3">
             {(
               [
-                [
-                  "sticky",
-                  "Menu fixé en haut",
-                  "Le menu reste visible pendant le défilement.",
-                ],
-                [
-                  "transparent",
-                  "Menu transparent",
-                  "Sans fond, posé sur ta grande photo.",
-                ],
-                [
-                  "showLogo",
-                  "Afficher le logo",
-                  "Ton logo (ou ton initiale) à gauche du menu.",
-                ],
+                ["sticky", t.stickyLabel, t.stickyHint],
+                ["transparent", t.transparentLabel, t.transparentHint],
+                ["showLogo", t.showLogoLabel, t.showLogoHint],
               ] as const
             ).map(([key, label, hint]) => (
               <div key={key} className="flex items-center justify-between gap-3">
@@ -280,10 +268,8 @@ export function NavigationPanel({ page, sitePages, patch }: Props) {
 
       <div className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
         <div>
-          <Label>Bouton « remonter en haut »</Label>
-          <p className="text-xs text-muted-foreground">
-            Un bouton flottant apparaît après un écran de défilement.
-          </p>
+          <Label>{t.scrollTopLabel}</Label>
+          <p className="text-xs text-muted-foreground">{t.scrollTopHint}</p>
         </div>
         <Switch
           checked={page.scroll_top ?? false}

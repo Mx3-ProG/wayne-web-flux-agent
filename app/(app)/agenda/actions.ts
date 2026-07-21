@@ -27,7 +27,7 @@ export async function saveSchedules(
   days: DaySetting[]
 ): Promise<{ error?: string }> {
   const pageId = await ownedPageId();
-  if (!pageId) return { error: "Non connecté." };
+  if (!pageId) return { error: "not_authenticated" };
   const supabase = await createClient();
 
   for (const day of days) {
@@ -44,7 +44,7 @@ export async function saveSchedules(
       },
       { onConflict: "page_id,weekday" }
     );
-    if (error) return { error: "Enregistrement impossible." };
+    if (error) return { error: "save_failed" };
   }
   revalidatePath("/agenda");
   return {};
@@ -55,16 +55,16 @@ export async function addBlockedPeriod(
   endDate: string
 ): Promise<{ error?: string }> {
   const pageId = await ownedPageId();
-  if (!pageId) return { error: "Non connecté." };
+  if (!pageId) return { error: "not_authenticated" };
   if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate) || !/^\d{4}-\d{2}-\d{2}$/.test(endDate))
-    return { error: "Dates invalides." };
-  if (endDate < startDate) return { error: "La fin doit être après le début." };
+    return { error: "invalid_dates" };
+  if (endDate < startDate) return { error: "end_before_start" };
 
   const supabase = await createClient();
   const { error } = await supabase
     .from("blocked_periods")
     .insert({ page_id: pageId, start_date: startDate, end_date: endDate });
-  if (error) return { error: "Impossible de bloquer cette période." };
+  if (error) return { error: "block_failed" };
   revalidatePath("/agenda");
   return {};
 }
@@ -85,7 +85,7 @@ export async function saveCustomerNote(
     .from("customers")
     .update({ note: note.slice(0, 1000) })
     .eq("id", customerId); // RLS protège
-  if (error) return { error: "Note non enregistrée." };
+  if (error) return { error: "note_save_failed" };
   revalidatePath("/agenda");
   return {};
 }
@@ -96,7 +96,7 @@ export async function cancelBooking(bookingId: string): Promise<{ error?: string
     .from("bookings")
     .update({ status: "cancelled" })
     .eq("id", bookingId); // RLS protège
-  if (error) return { error: "Annulation impossible." };
+  if (error) return { error: "cancel_failed" };
   revalidatePath("/agenda");
   return {};
 }

@@ -1,0 +1,285 @@
+{
+ "meta": {
+  "title": "Mi voz",
+  "tunnelTitle": "Crear mi voz"
+ },
+ "form": {
+  "summary": {
+   "tone": "Tu energía",
+   "addressForm": "Tu forma de dirigirte a los clientes",
+   "emojis": "Tu uso de los emojis",
+   "specialty": "Tu firma",
+   "oftenTold": "Lo que tus clientes dicen de ti",
+   "story": "Tu historia",
+   "vals": "Tus valores",
+   "fallback": "Por definir",
+   "addressTu": "Tuteas a tus clientes",
+   "addressVous": "Tratas de usted a tus clientes",
+   "emojisMuch": "A menudo, forman parte de tu estilo",
+   "emojisSome": "Con moderación",
+   "emojisNone": "Una comunicación sin emojis"
+  },
+  "reviewKicker": "Tu voz está lista",
+  "defaultKicker": "Tu identidad editorial",
+  "reviewTitle": "Así es como Flux va a hablar por ti.",
+  "defaultTitle": "Flux conoce tu voz.",
+  "reviewText": "Revisa el resumen. Si todo se parece a ti, solo queda guardarlo.",
+  "defaultText": "Encuentra aquí las decisiones que guían todos tus próximos contenidos.",
+  "completionAria": "Perfil completado al {percent}%",
+  "completionLabel": "de tu voz comprendida por Flux",
+  "profileLabel": "Tu perfil",
+  "profileTitle": "Lo que Flux ha retenido",
+  "redo": "Repetir el cuestionario",
+  "allYou": "¿Todo se parece a ti?",
+  "updateCost": "Actualizar tu contexto cuesta {cost} cr.",
+  "redoAnytime": "Podrás repetir este cuestionario en cualquier momento.",
+  "saving": "Guardando…",
+  "saveVoiceUpdate": "Guardar mi voz ({cost} cr.)",
+  "saveVoice": "Guardar mi voz",
+  "updateVoice": "Actualizar mi voz",
+  "insufficientCredits": "Modificar tu contexto cuesta {cost} créditos y tu saldo es insuficiente. Recarga tus créditos desde la página Créditos.",
+  "subscriptionRequired": "Tu prueba de FLUX ha terminado y tu saldo está vacío. Elige un plan para continuar.",
+  "saveSuccess": "Tu voz está guardada. Flux ya puede hablar como tú."
+ },
+ "tunnel": {
+  "exit": "Salir",
+  "question": "Pregunta {current} de {total}",
+  "introKicker": "Tu inteligencia de marca",
+  "introTitleStart": "FLUX, la inteligencia de los desarrolladores al servicio de los",
+  "introTitleEm": "Negocios con ambición.",
+  "introText": "Ningún texto que redactar. Simplemente elige lo que se parece a ti, Flux compone tu voz y prepara una comunicación coherente.",
+  "createVoice": "Crear mi voz",
+  "introHint": "7 elecciones · menos de 2 minutos · modificable en cualquier momento",
+  "back": "Volver",
+  "seeSummary": "Ver mi resumen",
+  "continue": "Continuar"
+ },
+ "errors": {
+  "not_authenticated": "Debes haber iniciado sesión para continuar.",
+  "no_active_page": "Crea primero tu página web.",
+  "save_failed": "No se ha podido guardar.",
+  "content_blocked": "Los mensajes de odio o los contenidos explícitos están prohibidos y sancionados en FLUX; por favor, respeta tu entorno y el de los demás. Tras 3 infracciones de nuestras condiciones de uso, la cuenta se elimina.",
+  "unknown": "Se ha producido un error. Inténtalo de nuevo en un momento."
+ },
+ "steps": {
+  "tone": {
+   "kicker": "Tu personalidad",
+   "title": "¿Qué energía debe sentirse en tus palabras?",
+   "subtitle": "Elige cómo se dirigirá Flux a tus clientes.",
+   "options": {
+    "complice_chaleureux": {
+     "title": "Cercano y cálido",
+     "text": "Próximo, humano, como con un cliente fiel.",
+     "value": "Cercano y cálido"
+    },
+    "pro_expert": {
+     "title": "Profesional y experto",
+     "text": "Claro, tranquilizador y siempre creíble.",
+     "value": "Profesional y experto"
+    },
+    "doux_pose": {
+     "title": "Suave y sereno",
+     "text": "Calmado, atento y sin presión.",
+     "value": "Suave y sereno"
+    },
+    "solaire_petillant": {
+     "title": "Radiante y chispeante",
+     "text": "Positivo, vivo y lleno de energía.",
+     "value": "Radiante y chispeante"
+    },
+    "chic_raffine": {
+     "title": "Elegante y refinado",
+     "text": "Elegante, preciso y de alta gama.",
+     "value": "Elegante y refinado"
+    },
+    "direct_efficace": {
+     "title": "Directo y eficaz",
+     "text": "Sin rodeos, una promesa clara.",
+     "value": "Directo y sin rodeos"
+    }
+   }
+  },
+  "address_form": {
+   "kicker": "Tu relación con el cliente",
+   "title": "¿Tratas de tú o de usted?",
+   "subtitle": "Flux mantendrá esta regla en todos tus contenidos.",
+   "options": {
+    "tu": {
+     "title": "Trato de tú",
+     "text": "Una relación directa, simple y cercana."
+    },
+    "vous": {
+     "title": "Trato de usted",
+     "text": "Una relación profesional y respetuosa."
+    }
+   }
+  },
+  "emojis": {
+   "kicker": "Tu estilo",
+   "title": "¿Qué lugar para los emojis?",
+   "subtitle": "Justo lo suficiente para parecerte a ti, nunca artificial.",
+   "options": {
+    "beaucoup": {
+     "title": "Los uso a menudo",
+     "text": "Forman parte de mi forma de comunicar."
+    },
+    "parfois": {
+     "title": "Con moderación",
+     "text": "Un emoji solo cuando aporta algo."
+    },
+    "jamais": {
+     "title": "Ningún emoji",
+     "text": "Prefiero una comunicación sobria y clara."
+    }
+   }
+  },
+  "specialty": {
+   "kicker": "Tu sello",
+   "title": "¿Por qué vienen a ti?",
+   "subtitle": "Elige la fortaleza que tus clientes deben recordar primero.",
+   "options": {
+    "resultat_naturel": {
+     "title": "El resultado natural",
+     "text": "Un trabajo honesto, sin efectos forzados.",
+     "value": "El resultado natural, solo se ve el resultado"
+    },
+    "precision": {
+     "title": "La precisión",
+     "text": "Cada detalle cuenta hasta el acabado.",
+     "value": "La precisión, el trabajo limpio"
+    },
+    "qualite_durable": {
+     "title": "La calidad duradera",
+     "text": "Un resultado pensado para durar en el tiempo.",
+     "value": "La calidad que perdura"
+    },
+    "sur_mesure": {
+     "title": "A medida",
+     "text": "Cada cliente recibe una respuesta realmente personal.",
+     "value": "A medida, nunca dos veces igual"
+    },
+    "juste_prix": {
+     "title": "El precio justo",
+     "text": "Un valor real, claro y sin malas sorpresas.",
+     "value": "La mejor relación calidad-precio"
+    },
+    "reactivite": {
+     "title": "La rapidez",
+     "text": "Ir rápido sin dejar de ser impecable.",
+     "value": "Rapidez sin descuidar nada"
+    }
+   }
+  },
+  "often_told": {
+   "kicker": "La prueba",
+   "title": "¿Qué dicen a menudo tus clientes?",
+   "subtitle": "Elige la frase que más se repite tras una experiencia contigo.",
+   "options": {
+    "prend_le_temps": {
+     "title": "«Te tomas tu tiempo»",
+     "text": "Tus clientes se sienten escuchados y valorados.",
+     "value": "Se nota que realmente te tomas tu tiempo."
+    },
+    "impeccable": {
+     "title": "«Siempre es impecable»",
+     "text": "La regularidad de tu trabajo tranquiliza al instante.",
+     "value": "Siempre es impecable."
+    },
+    "a_laise": {
+     "title": "«Me siento cómodo enseguida»",
+     "text": "Tu acogida transforma la experiencia.",
+     "value": "Enseguida te sientes a gusto."
+    },
+    "trouve_solution": {
+     "title": "«Siempre encuentras una solución»",
+     "text": "Tranquilizas incluso cuando la petición es complicada.",
+     "value": "Siempre encuentras una solución."
+    },
+    "mieux_que_prevu": {
+     "title": "«Mejor de lo esperado»",
+     "text": "El resultado final genera una emoción real.",
+     "value": "El resultado supera mis expectativas."
+    },
+    "compter_sur_toi": {
+     "title": "«Se puede contar contigo»",
+     "text": "Tu fiabilidad hace que los clientes vuelvan.",
+     "value": "Realmente se puede contar contigo."
+    }
+   }
+  },
+  "story": {
+   "kicker": "Tu historia",
+   "title": "¿Qué te llevó a este oficio?",
+   "subtitle": "Flux transformará este origen en una historia humana y creíble.",
+   "options": {
+    "passion": {
+     "title": "Una pasión convertida en oficio",
+     "text": "Elegiste vivir plenamente lo que te apasionaba.",
+     "value": "Una pasión que se convirtió en oficio con el tiempo."
+    },
+    "reconversion": {
+     "title": "Un cambio de rumbo elegido",
+     "text": "Cambiaste de camino para acercarte a lo esencial.",
+     "value": "Un cambio de rumbo elegido para ejercer un oficio con sentido."
+    },
+    "savoir_faire_transmis": {
+     "title": "Un saber transmitido",
+     "text": "Tu oficio forma parte de una historia más grande.",
+     "value": "Un saber transmitido y perfeccionado con los años."
+    },
+    "aventure_familiale": {
+     "title": "Una aventura familiar",
+     "text": "El vínculo y la transmisión forman parte de tu identidad.",
+     "value": "Una aventura familiar construida en torno a un saber común."
+    },
+    "envie_de_mieux": {
+     "title": "Las ganas de hacerlo mejor",
+     "text": "Creaste la experiencia que no encontrabas en otro lugar.",
+     "value": "Las ganas de ofrecer una mejor forma de hacer las cosas en mi sector."
+    },
+    "entreprendre_localement": {
+     "title": "Emprender en lo local",
+     "text": "Tu negocio está profundamente ligado a su territorio.",
+     "value": "El deseo de emprender localmente y ser útil a mi alrededor."
+    }
+   }
+  },
+  "vals": {
+   "kicker": "Tus valores",
+   "title": "¿Qué es lo que realmente te importa?",
+   "subtitle": "Elige hasta tres valores. Guiarán todos tus contenidos.",
+   "options": {
+    "qualite": {
+     "title": "La calidad",
+     "text": "No entregar nunca algo de lo que no te sientas orgulloso.",
+     "value": "La calidad"
+    },
+    "ecoute": {
+     "title": "La escucha",
+     "text": "Comprender antes de proponer.",
+     "value": "La escucha"
+    },
+    "confiance": {
+     "title": "La confianza",
+     "text": "Construir una relación duradera.",
+     "value": "La confianza"
+    },
+    "authenticite": {
+     "title": "La autenticidad",
+     "text": "Ser fiel a ti mismo, también al comunicar.",
+     "value": "La autenticidad"
+    },
+    "fiabilite": {
+     "title": "La fiabilidad",
+     "text": "Cumplir tu palabra, respetar el tiempo de los demás.",
+     "value": "La puntualidad"
+    },
+    "proximite": {
+     "title": "La cercanía",
+     "text": "Cultivar una relación humana y local.",
+     "value": "La cercanía"
+    }
+   }
+  }
+ }
+}

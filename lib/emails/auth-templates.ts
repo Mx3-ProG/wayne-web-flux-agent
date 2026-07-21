@@ -1,4 +1,6 @@
 import { baseLayout, emailButton, emailCode, emailColors } from "./layout";
+import { defaultLocale, type Locale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 
 // Templates des emails d'authentification Supabase (confirmation d'inscription,
 // récupération de mot de passe, magic link), DÉRIVÉS du layout partagé pour
@@ -50,16 +52,23 @@ export function confirmationEmail(confirmationUrl = CONFIRMATION_URL): AuthEmail
 // dans son espace. On ne lui demande pas d'« activer », on lui demande de
 // débloquer la publication. Envoyé par le code (Resend), pas par Supabase, donc
 // l'URL est toujours fournie — d'où l'absence de placeholder par défaut.
-export function emailVerificationEmail(verifyUrl: string): AuthEmail {
+export async function emailVerificationEmail(
+  verifyUrl: string,
+  locale: Locale = defaultLocale
+): Promise<AuthEmail> {
+  const t = await getDictionary(locale, "emails");
+  const o = t.verification;
   return {
-    subject: "Vérifiez votre adresse — FLUX",
+    subject: o.subject,
     html: baseLayout({
-      title: "Vérifiez votre adresse",
-      preheader: "Débloquez la publication de votre vitrine",
+      title: o.title,
+      preheader: o.preheader,
       bodyHtml: `
-        <p>Votre espace FLUX est prêt et vous pouvez déjà l’utiliser. Il ne reste qu’à confirmer que cette adresse est bien la vôtre pour débloquer la publication de votre vitrine et les paiements.</p>
-        ${emailButton("Vérifier mon adresse", verifyUrl)}
-        ${note("Si vous n’êtes pas à l’origine de cette inscription, ignorez simplement cet email.")}`,
+        <p>${o.body}</p>
+        ${emailButton(o.cta, verifyUrl)}
+        ${note(o.note)}`,
+      locale,
+      footerTagline: t.footer.tagline,
     }),
   };
 }

@@ -4,10 +4,20 @@ import { useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Button } from "@/components/ui/button";
 
+// Composant générique (utilisé par le dashboard ET le tunnel pré-compte
+// /commencer, qui n'a pas I18nProvider) : aucun texte en dur, tout vient de
+// l'appelant, déjà résolu dans la bonne locale.
+type UploadMessages = {
+  uploading: string;
+  tooLarge: string; // avec placeholder {max}
+  failed: string;
+};
+
 type Props = {
   userId: string;
   label: string;
   onUploaded: (url: string) => void;
+  messages: UploadMessages;
   multiple?: boolean;
   accept?: string; // ex. "video/mp4,video/webm" — image/* par défaut
   maxMb?: number;
@@ -17,6 +27,7 @@ export function PhotoUpload({
   userId,
   label,
   onUploaded,
+  messages,
   multiple,
   accept = "image/*",
   maxMb = 5,
@@ -32,7 +43,7 @@ export function PhotoUpload({
     const supabase = createClient();
     for (const file of Array.from(files).slice(0, multiple ? 8 : 1)) {
       if (file.size > maxMb * 1024 * 1024) {
-        setError(`Fichier trop lourd (${maxMb} Mo max).`);
+        setError(messages.tooLarge.replace("{max}", String(maxMb)));
         continue;
       }
       const ext = file.name.split(".").pop()?.toLowerCase() || "jpg";
@@ -41,7 +52,7 @@ export function PhotoUpload({
         .from("page-photos")
         .upload(path, file, { cacheControl: "31536000" });
       if (uploadError) {
-        setError("L'envoi a échoué. Réessaie.");
+        setError(messages.failed);
         continue;
       }
       const { data } = supabase.storage.from("page-photos").getPublicUrl(path);
@@ -68,7 +79,7 @@ export function PhotoUpload({
         disabled={uploading}
         onClick={() => inputRef.current?.click()}
       >
-        {uploading ? "Envoi…" : label}
+        {uploading ? messages.uploading : label}
       </Button>
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>

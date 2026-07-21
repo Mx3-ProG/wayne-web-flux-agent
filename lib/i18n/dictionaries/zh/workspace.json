@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "title": "我的空间"
+  },
+  "hero": {
+    "eyebrow": "总览",
+    "greeting": "你好，{name}",
+    "greetingNoName": "你好",
+    "text": "这是今天能让你的生意更进一步的内容。",
+    "cta": "创建内容"
+  },
+  "storefront": {
+    "eyebrow": "我的橱窗",
+    "titleOnline": "你的橱窗已上线",
+    "titleOffline": "打造你在网上的门面",
+    "textOnline": "这个专属链接，随时分享给在各处寻找你的客户。",
+    "textOffline": "一个清晰美观的页面，随时准备迎接你的第一批咨询。",
+    "copyLink": "复制链接",
+    "emptyText": "只需几步选择，就能准备好你的第一个橱窗。",
+    "editCta": "修改我的橱窗",
+    "createCta": "创建我的橱窗",
+    "viewCta": "查看我的橱窗"
+  },
+  "metrics": {
+    "aria": "指标",
+    "readyLabel": "你的空间已准备好",
+    "voiceGood": "你的语气已配置得很好",
+    "voiceContinue": "继续个性化你的语气",
+    "upcomingBookings": "即将到来的预约",
+    "agendaSynced": "日程已同步",
+    "availableCredits": "可用积分",
+    "contentSingular": "个已创建内容",
+    "contentPlural": "个已创建内容"
+  },
+  "journey": {
+    "title": "你的历程",
+    "subtitle": "一步一步，稳步前进。",
+    "progress": "已完成 {completed} / {total}",
+    "done": "已完成",
+    "todo": "待完成",
+    "nextStep": "下一步",
+    "todoNow": "现在要做",
+    "viewStep": "查看步骤",
+    "validate": "确认"
+  },
+  "steps": {
+    "openEditor": "打开橱窗编辑器",
+    "createStorefront": "创建我的橱窗",
+    "voiceScore": "我写作风格已达到你的 {percent}%",
+    "voiceHint": "你给的信息越多，AI 就越能用你的语气、你的调调、你自己的话来写作。",
+    "voiceRefine": "继续打磨",
+    "voiceMeet": "认识一下（2 分钟）",
+    "createMoreProducts": "用 FLUX 创建更多产品",
+    "startProductCreation": "启动 FLUX 产品创建",
+    "createNewOffer": "用 FLUX 创建新的优惠",
+    "startOfferCreation": "启动 FLUX 优惠创建",
+    "reviewSchedule": "和 FLUX 一起复查我的时间安排",
+    "configureSchedule": "配置我的时间安排",
+    "toolsHint": "选择一个工具。启动前会显示所需积分。",
+    "creditsLeft": "剩余积分",
+    "viewCredits": "查看我的积分",
+    "creationSingular": "个创作",
+    "creationPlural": "个创作",
+    "inYourVault": "在你的宝库中",
+    "openVault": "打开我的宝库",
+    "upcomingAppointments": "个即将到来的预约",
+    "openAgenda": "打开我的日程",
+    "shareHint": "Instagram 简介、WhatsApp 状态、Google 店铺信息：你的链接传播得越广，你的日程就会自动越满。",
+    "shareWhatsapp": "分享到 WhatsApp",
+    "whatsappMessage": "在线预约你的时间：{url}"
+  }
+}

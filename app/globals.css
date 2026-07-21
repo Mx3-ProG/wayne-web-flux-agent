@@ -54,6 +54,24 @@
 /* Thème Wayne Web — noir + rouge, repris de wayne-web-site */
 :root {
   color-scheme: dark;
+  /* Polices système auto-hébergées : aucune requête réseau à la compilation
+     ni au runtime (fini la dépendance à fonts.googleapis.com/gstatic.com).
+     Inter/Fraunces n'ont pas d'équivalent système pixel-perfect, donc ces
+     piles visent le même registre (UI géométrique / serif éditorial) plutôt
+     qu'une police précise. Les piles CJK ne s'activent que via les
+     sélecteurs html[lang="zh-CN"]/[lang="ja-JP"] plus bas dans ce fichier. */
+  --font-inter:
+    -apple-system, "Segoe UI", Roboto, Helvetica, Arial, ui-sans-serif,
+    system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --font-fraunces:
+    Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino,
+    serif;
+  --font-noto-sc:
+    "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Source Han Sans SC",
+    "Noto Sans SC", sans-serif;
+  --font-noto-jp:
+    "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo",
+    "Source Han Sans JP", "Noto Sans JP", sans-serif;
   --ww-canvas: #070708;
   --ww-canvas-raised: #0d0d10;
   --ww-surface: #121216;
@@ -138,6 +156,26 @@
     font-weight: 540;
     letter-spacing: -0.035em;
     text-wrap: balance;
+  }
+  /* Inter/Fraunces ne couvrent pas les idéogrammes : Noto Sans prend le
+     relais quand la page est servie en chinois ou en japonais. */
+  html[lang="zh-CN"] {
+    font-family: var(--font-inter), var(--font-noto-sc), sans-serif;
+  }
+  html[lang="ja-JP"] {
+    font-family: var(--font-inter), var(--font-noto-jp), sans-serif;
+  }
+  html[lang="zh-CN"] h1,
+  html[lang="zh-CN"] h2,
+  html[lang="zh-CN"] h3 {
+    font-family: var(--font-fraunces), var(--font-noto-sc), Georgia, serif;
+    letter-spacing: 0;
+  }
+  html[lang="ja-JP"] h1,
+  html[lang="ja-JP"] h2,
+  html[lang="ja-JP"] h3 {
+    font-family: var(--font-fraunces), var(--font-noto-jp), Georgia, serif;
+    letter-spacing: 0;
   }
   a,
   button,

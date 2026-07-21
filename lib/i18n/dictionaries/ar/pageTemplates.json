@@ -1,0 +1,43 @@
+{
+  "a-propos": {
+    "label": "من نحن",
+    "description": "قصتك، مسارك، وصورة.",
+    "defaultTitle": "من نحن",
+    "aProposHistoryTitle": "قصتي",
+    "aProposHistoryBody": "احكِ هنا مسارك، شغفك، وما يجعل عملك مميزًا.",
+    "aProposMethodTitle": "طريقتي في العمل",
+    "aProposMethodBody": "صف طريقتك، قيمك، وما يمكن لعملائك توقعه."
+  },
+  "tarifs": {
+    "label": "الأسعار",
+    "description": "أسعارك، معروضة بوضوح.",
+    "defaultTitle": "الأسعار",
+    "tarifsTitle": "أسعاري",
+    "tarifsBody": "اعرض هنا أسعارك وما تشمله.",
+    "tarifsFaqTitle": "أسئلة شائعة",
+    "tarifsFaqQuestion": "ما هي وسائل الدفع التي تقبلونها؟"
+  },
+  "contact": {
+    "label": "تواصل",
+    "description": "خريطة، أوقات العمل، ووسائل التواصل.",
+    "defaultTitle": "تواصل",
+    "contactTitle": "تواصل معي",
+    "contactBody": "اذكر هنا أفضل طريقة للوصول إليك."
+  },
+  "galerie": {
+    "label": "معرض الصور",
+    "description": "إنجازاتك بالصور.",
+    "defaultTitle": "معرض الصور"
+  },
+  "faq": {
+    "label": "الأسئلة الشائعة",
+    "description": "الإجابات عن الأسئلة الشائعة.",
+    "defaultTitle": "أسئلة شائعة",
+    "faqTitle": "أسئلة شائعة"
+  },
+  "libre": {
+    "label": "صفحة حرة",
+    "description": "صفحة فارغة، لتصممها بنفسك.",
+    "defaultTitle": "صفحة جديدة"
+  }
+}

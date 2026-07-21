@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePage } from "@/lib/active-project";
@@ -12,8 +13,18 @@ import type {
 import { AgendaView } from "@/components/agenda/agenda-view";
 import { AgendaTunnel } from "@/components/agenda/agenda-tunnel";
 import { Button } from "@/components/ui/button";
+import { getAccountLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { defaultLocale } from "@/lib/i18n/config";
 
-export const metadata = { title: "Mon agenda" };
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const locale = user ? await getAccountLocale(supabase, user.id) : defaultLocale;
+  return { title: (await getDictionary(locale, "agenda")).meta.title };
+}
 
 export default async function AgendaPage({
   searchParams,
@@ -26,18 +37,19 @@ export default async function AgendaPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const page = await getActivePage(supabase, user.id);
+  const [page, locale] = await Promise.all([
+    getActivePage(supabase, user.id),
+    getAccountLocale(supabase, user.id),
+  ]);
+  const t = await getDictionary(locale, "agenda");
 
   if (!page) {
     return (
       <div className="max-w-md mx-auto text-center py-16 space-y-4">
-        <h1 className="text-2xl font-bold">D&apos;abord, ta vitrine</h1>
-        <p className="text-muted-foreground">
-          Ton agenda s&apos;active dès que ta page existe : tes clients y
-          réservent directement.
-        </p>
+        <h1 className="text-2xl font-bold">{t.empty.title}</h1>
+        <p className="text-muted-foreground">{t.empty.text}</p>
         <Button asChild>
-          <Link href="/ma-page">Créer ma vitrine</Link>
+          <Link href="/ma-page">{t.empty.cta}</Link>
         </Button>
       </div>
     );
@@ -52,7 +64,7 @@ export default async function AgendaPage({
       .select("*")
       .eq("page_id", page.id);
 
-    return <AgendaTunnel schedules={(schedules ?? []) as Schedule[]} />;
+    return <AgendaTunnel schedules={(schedules ?? []) as Schedule[]} t={t} />;
   }
 
   const [
@@ -95,6 +107,8 @@ export default async function AgendaPage({
       orders={(orders ?? []) as Order[]}
       schedules={(schedules ?? []) as Schedule[]}
       blocked={(blocked ?? []) as BlockedPeriod[]}
+      locale={locale}
+      t={t}
     />
   );
 }

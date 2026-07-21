@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "我的宝库"
+  },
+  "toolPage": {
+    "howItWorks": "使用方法",
+    "voicePrefix": "我用你的语气写作，风格是",
+    "improveVoice": "优化我的语气",
+    "myVoice": "我的语气"
+  },
+  "runner": {
+    "choosePlaceholder": "— 请选择 —",
+    "costLabel": "消耗：",
+    "costCredits": "{cost} 点积分",
+    "balanceLabel": "余额：{balance}",
+    "running": "AI 正在为你创作…",
+    "generate": "生成我的结果（{cost} 点）",
+    "missingCredits": "你的积分不够了。",
+    "discoverPlans": "了解 FLUX 套餐",
+    "waiting": "请稍等几秒，AI 正在为你思考…",
+    "copy": "复制",
+    "copied": "已复制！",
+    "viewInVault": "在我的宝库中查看 →",
+    "errors": {
+      "ai_window_expired": "你的 AI 工具使用期限已结束。选择一个套餐重新激活吧。",
+      "subscription_required": "你的 FLUX 试用期已结束。选择一个套餐继续生成内容吧。",
+      "insufficient_credits": "积分不够啦。升级到 FLUX 套餐即可充值。",
+      "generation_failed": "生成失败了。",
+      "generation_interrupted": "生成过程被中断了。"
+    }
+  },
+  "vault": {
+    "overline": "私人保险库",
+    "titleStart": "你的",
+    "titleEm": "宝库",
+    "emptySubtitle": "每一份珍贵的创作都会在这里安家。",
+    "treasureSingular": "件由 FLUX 打造的珍宝，永久珍藏。",
+    "treasurePlural": "件由 FLUX 打造的珍宝，永久珍藏。",
+    "creationSingular": "份安全存放的创作",
+    "creationPlural": "份安全存放的创作",
+    "emptyKicker": "第一件珍宝正等着你",
+    "emptyTitle": "你的手艺值得拥有专属展示柜。",
+    "emptyText": "用 FLUX 创作你的第一份内容吧。它会被妥善保存在这里，随时可以重读、复制和分享。",
+    "createFirst": "创建我的第一份内容",
+    "collectionLabel": "你的收藏",
+    "collectionTitle": "独一无二的作品，随时准备闪耀登场。",
+    "sortedHint": "按最新到最旧排序",
+    "creationLabel": "FLUX 创作",
+    "creditsSpent": "{cost} 点积分",
+    "close": "关闭",
+    "discover": "查看详情",
+    "copyCreation": "复制这份创作",
+    "copiedToast": "创作已复制！"
+  }
+}

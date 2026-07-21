@@ -11,7 +11,16 @@ import {
   useCheckoutElements,
 } from "@stripe/react-stripe-js/checkout";
 import { Check, LockKeyhole, ShieldCheck } from "lucide-react";
+import type { BillingDict } from "@/lib/i18n/get-dictionary";
+import type { Locale } from "@/lib/i18n/config";
 import styles from "./custom-checkout.module.css";
+
+// Stripe résout sa propre langue d'affichage (Elements) indépendamment du
+// dashboard : on la fait suivre la locale du compte plutôt que la détection
+// navigateur par défaut. "auto" en repli si Stripe ne supporte pas la langue.
+const STRIPE_LOCALE: Record<Locale, string> = {
+  fr: "fr", en: "en", es: "es", de: "de", it: "it", ru: "ru", zh: "zh", ja: "ja", ar: "ar",
+};
 
 type CheckoutProduct = {
   kind: "subscription" | "credits";
@@ -23,7 +32,7 @@ type CheckoutProduct = {
   features: string[];
 };
 
-function PaymentForm({ product }: { product: CheckoutProduct }) {
+function PaymentForm({ product, t }: { product: CheckoutProduct; t: BillingDict["checkout"] }) {
   const state = useCheckoutElements();
   const router = useRouter();
   const [accepted, setAccepted] = useState(false);
@@ -32,41 +41,57 @@ function PaymentForm({ product }: { product: CheckoutProduct }) {
 
   async function submit(event: React.FormEvent) {
     event.preventDefault();
-    if (!accepted) return setMessage("Accepte les conditions générales pour continuer.");
+    if (!accepted) return setMessage(t.acceptTermsRequired);
     if (state.type !== "success") return;
     setSubmitting(true);
     setMessage(null);
     const result = await state.checkout.confirm();
     if (result.type === "error") {
-      setMessage(result.error.message || "Le paiement n’a pas pu être confirmé.");
+      setMessage(result.error.message || t.paymentNotConfirmed);
       setSubmitting(false);
       return;
     }
     router.push(`/paiement/confirmation?session_id=${result.session.id}`);
   }
 
-  if (state.type === "loading") return <div className={styles.loading}>Préparation du paiement sécurisé…</div>;
+  if (state.type === "loading") return <div className={styles.loading}>{t.preparingPayment}</div>;
   if (state.type === "error") return <div className={styles.error}>{state.error.message}</div>;
 
   return (
     <form onSubmit={submit} className={styles.paymentForm}>
-      <div className={styles.block}><h2>Informations de facturation</h2><BillingAddressElement options={{ display: { name: "split" } }} /></div>
-      <div className={styles.block}><h2>Moyen de paiement</h2><PaymentElement options={{ layout: { type: "accordion", defaultCollapsed: false }, terms: { card: "never" } }} /></div>
+      <div className={styles.block}><h2>{t.billingInfoTitle}</h2><BillingAddressElement options={{ display: { name: "split" } }} /></div>
+      <div className={styles.block}><h2>{t.paymentMethodTitle}</h2><PaymentElement options={{ layout: { type: "accordion", defaultCollapsed: false }, terms: { card: "never" } }} /></div>
       <label className={styles.consent}>
         <input type="checkbox" checked={accepted} onChange={(event) => setAccepted(event.target.checked)} />
-        <span>J’accepte les <Link href="/cgv" target="_blank">conditions générales</Link> et reconnais {product.kind === "subscription" ? "le renouvellement mensuel jusqu’à résiliation" : "l’achat immédiat du pack de crédits"}.</span>
+        <span>
+          {t.consentPrefix} <Link href="/cgv" target="_blank">{t.consentTerms}</Link>{" "}
+          {t.consentSuffix.replace(
+            "{clause}",
+            product.kind === "subscription" ? t.consentSubscription : t.consentCredits
+          )}
+        </span>
       </label>
       {message && <p className={styles.formError} role="alert">{message}</p>}
       <button className={`flux-button-smooth ${styles.payButton}`} disabled={submitting || !state.checkout.canConfirm} type="submit">
         <LockKeyhole aria-hidden="true" />
-        {submitting ? "Confirmation…" : `Payer ${product.price}${product.cadence ?? ""}`}
+        {submitting ? t.confirming : t.payButton.replace("{price}", product.price).replace("{cadence}", product.cadence ?? "")}
       </button>
-      <p className={styles.secure}><ShieldCheck aria-hidden="true" /> Paiement chiffré et sécurisé par Stripe. FLUX ne voit jamais les données de ta carte.</p>
+      <p className={styles.secure}><ShieldCheck aria-hidden="true" /> {t.securityNote}</p>
     </form>
   );
 }
 
-export function CustomCheckout({ product, publishableKey }: { product: CheckoutProduct; publishableKey: string }) {
+export function CustomCheckout({
+  product,
+  publishableKey,
+  locale,
+  t,
+}: {
+  product: CheckoutProduct;
+  publishableKey: string;
+  locale: Locale;
+  t: BillingDict["checkout"];
+}) {
   const stripePromise = useMemo(() => loadStripe(publishableKey), [publishableKey]);
   const clientSecret = useMemo(() => fetch("/api/checkout/session", {
       method: "POST",
@@ -74,12 +99,13 @@ export function CustomCheckout({ product, publishableKey }: { product: CheckoutP
       body: JSON.stringify({ kind: product.kind, id: product.id }),
     }).then(async (response) => {
       const data = await response.json();
-      if (!response.ok || !data.clientSecret) throw new Error(data.error || "Paiement indisponible.");
+      if (!response.ok || !data.clientSecret) throw new Error(data.error || t.paymentUnavailable);
       return data.clientSecret as string;
-    }), [product.kind, product.id]);
+    }), [product.kind, product.id, t.paymentUnavailable]);
   const options = useMemo(() => ({
     clientSecret,
     elementsOptions: {
+      locale: STRIPE_LOCALE[locale],
       appearance: {
         theme: "night" as const,
         inputs: "spaced" as const,
@@ -101,23 +127,27 @@ export function CustomCheckout({ product, publishableKey }: { product: CheckoutP
         },
       },
     },
-  }), [clientSecret]);
+  }), [clientSecret, locale]);
 
   return (
     <div className={styles.page}>
-      <header><Link href={product.kind === "subscription" ? "/formules" : "/credits"}>← Retour</Link><span><LockKeyhole /> Paiement sécurisé</span></header>
+      <header><Link href={product.kind === "subscription" ? "/formules" : "/credits"}>← {t.back}</Link><span><LockKeyhole /> {t.securePayment}</span></header>
       <main>
         <aside className={styles.summary}>
-          <p className={styles.eyebrow}>{product.kind === "subscription" ? "Formule FLUX" : "Recharge FLUX"}</p>
+          <p className={styles.eyebrow}>{product.kind === "subscription" ? t.planEyebrow : t.creditsEyebrow}</p>
           <h1>{product.title}</h1><p>{product.subtitle}</p>
           <strong>{product.price}<small>{product.cadence}</small></strong>
           <ul>{product.features.map((feature) => <li key={feature}><Check />{feature}</li>)}</ul>
-          <div className={styles.total}><span>Total aujourd’hui</span><strong>{product.price}</strong></div>
-          {product.kind === "subscription" && <small className={styles.renewal}>Puis {product.price}{product.cadence}, résiliable depuis ton espace.</small>}
+          <div className={styles.total}><span>{t.totalToday}</span><strong>{product.price}</strong></div>
+          {product.kind === "subscription" && (
+            <small className={styles.renewal}>
+              {t.thenLabel.replace("{price}", product.price).replace("{cadence}", product.cadence ?? "")}
+            </small>
+          )}
         </aside>
         <section className={styles.formPanel}>
           <CheckoutElementsProvider stripe={stripePromise} options={options}>
-            <PaymentForm product={product} />
+            <PaymentForm product={product} t={t} />
           </CheckoutElementsProvider>
         </section>
       </main>

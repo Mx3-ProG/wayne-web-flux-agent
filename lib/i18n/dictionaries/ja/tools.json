@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "マイ金庫"
+  },
+  "toolPage": {
+    "howItWorks": "使い方",
+    "voicePrefix": "君そっくりの文体で書くよ：",
+    "improveVoice": "自分の声を磨く",
+    "myVoice": "自分の声"
+  },
+  "runner": {
+    "choosePlaceholder": "— 選択してね —",
+    "costLabel": "コスト：",
+    "costCredits": "{cost} クレジット",
+    "balanceLabel": "残高：{balance}",
+    "running": "AIが君のために書いてるよ…",
+    "generate": "結果を生成する（{cost} クレジット）",
+    "missingCredits": "クレジットが足りないよ。",
+    "discoverPlans": "FLUXのプランを見てみる",
+    "waiting": "あと少し待ってね、AIが考え中…",
+    "copy": "コピー",
+    "copied": "コピーしたよ！",
+    "viewInVault": "マイ金庫で見る →",
+    "errors": {
+      "ai_window_expired": "AIツールの利用期間が終了したよ。プランを選んでまた使えるようにしよう。",
+      "subscription_required": "FLUXの無料お試しが終了したよ。生成を続けるにはプランを選んでね。",
+      "insufficient_credits": "クレジットが足りないよ。FLUXのプランに切り替えてチャージしよう。",
+      "generation_failed": "生成に失敗したよ。",
+      "generation_interrupted": "生成が中断されたよ。"
+    }
+  },
+  "vault": {
+    "overline": "君だけの金庫室",
+    "titleStart": "君の金-",
+    "titleEm": "庫",
+    "emptySubtitle": "大切な作品はここに集まっていくよ。",
+    "treasureSingular": "FLUXが生み出した宝物、永遠に保存されるよ。",
+    "treasurePlural": "FLUXが生み出した宝物たち、永遠に保存されるよ。",
+    "creationSingular": "件の作品を安全に保管中",
+    "creationPlural": "件の作品を安全に保管中",
+    "emptyKicker": "最初の宝物が君を待ってるよ",
+    "emptyTitle": "君の腕前には、それにふさわしい輝きを。",
+    "emptyText": "FLUXで最初のコンテンツを作ってみよう。ここに保管されて、いつでも読み返し、コピーして、シェアできるよ。",
+    "createFirst": "最初のコンテンツを作る",
+    "collectionLabel": "君のコレクション",
+    "collectionTitle": "唯一無二の作品たち、輝く準備は万端。",
+    "sortedHint": "新しい順に並んでいるよ",
+    "creationLabel": "FLUXの作品",
+    "creditsSpent": "{cost} クレジット",
+    "close": "閉じる",
+    "discover": "見てみる",
+    "copyCreation": "この作品をコピー",
+    "copiedToast": "作品をコピーしたよ！"
+  }
+}

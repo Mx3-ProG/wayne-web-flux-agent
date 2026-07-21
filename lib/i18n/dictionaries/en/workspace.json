@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "title": "My space"
+  },
+  "hero": {
+    "eyebrow": "Overview",
+    "greeting": "Hi {name}",
+    "greetingNoName": "Hi there",
+    "text": "Here's what's moving your business forward today.",
+    "cta": "Create content"
+  },
+  "storefront": {
+    "eyebrow": "My storefront",
+    "titleOnline": "Your storefront is live",
+    "titleOffline": "Build your address on the web",
+    "textOnline": "The one link to share with your customers, wherever they're looking for you.",
+    "textOffline": "A clear, beautiful page ready to receive your first inquiries.",
+    "copyLink": "Copy link",
+    "emptyText": "Just a few choices are enough to set up your first storefront.",
+    "editCta": "Edit my storefront",
+    "createCta": "Create my storefront",
+    "viewCta": "View my storefront"
+  },
+  "metrics": {
+    "aria": "Metrics",
+    "readyLabel": "Your space is ready to",
+    "voiceGood": "Your voice is well configured",
+    "voiceContinue": "Keep personalizing your voice",
+    "upcomingBookings": "Upcoming bookings",
+    "agendaSynced": "Calendar synced",
+    "availableCredits": "Available credits",
+    "contentSingular": "content created",
+    "contentPlural": "pieces of content created"
+  },
+  "journey": {
+    "title": "Your journey",
+    "subtitle": "One clear step at a time.",
+    "progress": "{completed} / {total} completed",
+    "done": "Done",
+    "todo": "To do",
+    "nextStep": "Next step",
+    "todoNow": "To do now",
+    "viewStep": "View step",
+    "validate": "Validate"
+  },
+  "steps": {
+    "openEditor": "Open the storefront editor",
+    "createStorefront": "Create my storefront",
+    "voiceScore": "I write like you at {percent}%",
+    "voiceHint": "The more you give it, the more the AI writes in your voice, your tone, your own words.",
+    "voiceRefine": "Refine further",
+    "voiceMeet": "Get acquainted (2 min)",
+    "createMoreProducts": "Create more products with Flux",
+    "startProductCreation": "Launch Flux product creation",
+    "createNewOffer": "Create a new offer with Flux",
+    "startOfferCreation": "Launch Flux offer creation",
+    "reviewSchedule": "Review my hours with Flux",
+    "configureSchedule": "Set up my hours",
+    "toolsHint": "Pick a tool. The credit cost is shown before you launch.",
+    "creditsLeft": "credits left",
+    "viewCredits": "View my credits",
+    "creationSingular": "creation",
+    "creationPlural": "creations",
+    "inYourVault": "in your vault",
+    "openVault": "Open my vault",
+    "upcomingAppointments": "upcoming bookings",
+    "openAgenda": "Open my calendar",
+    "shareHint": "Instagram bio, WhatsApp status, Google listing: the more your link circulates, the more your calendar fills up on its own.",
+    "shareWhatsapp": "Share on WhatsApp",
+    "whatsappMessage": "Book your appointment online: {url}"
+  }
+}

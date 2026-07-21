@@ -45,8 +45,10 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import styles from "./agenda-view.module.css";
-
-const WEEKDAYS = ["Dim", "Lun", "Mar", "Mer", "Jeu", "Ven", "Sam"];
+import type { AgendaDict } from "@/lib/i18n/get-dictionary";
+import type { Locale } from "@/lib/i18n/config";
+import { formatDate } from "@/lib/i18n/format";
+import { KARLMADA_BLOCK_MESSAGE } from "@/lib/karlmada-constants";
 
 function normalizePhone(value: string): string {
   const digits = value.replace(/\D/g, "");
@@ -64,6 +66,8 @@ type Props = {
   orders: Order[];
   schedules: Schedule[];
   blocked: BlockedPeriod[];
+  locale: Locale;
+  t: AgendaDict;
 };
 
 export function AgendaView({
@@ -75,7 +79,16 @@ export function AgendaView({
   orders,
   schedules,
   blocked,
+  locale,
+  t,
 }: Props) {
+  function translateError(error: string): string {
+    const code = error === KARLMADA_BLOCK_MESSAGE ? "content_blocked" : error;
+    return t.errors[code as keyof typeof t.errors] ?? t.errors.unknown;
+  }
+  const WEEKDAYS = [0, 1, 2, 3, 4, 5, 6].map(
+    (n) => t.weekdaysShort[String(n) as keyof typeof t.weekdaysShort]
+  );
   const today = parisNow().date;
   const [selectedDate, setSelectedDate] = useState(today);
   const [search, setSearch] = useState("");
@@ -148,58 +161,56 @@ export function AgendaView({
   );
 
   function fmtDay(date: string) {
-    return new Intl.DateTimeFormat("fr-FR", {
+    return formatDate(locale, date + "T12:00:00Z", {
       weekday: "long",
       day: "numeric",
       month: "long",
-    }).format(new Date(date + "T12:00:00Z"));
+    });
   }
 
   return (
     <div className={styles.dashboard}>
       <section className={styles.hero}>
         <div>
-          <p className={styles.eyebrow}><CalendarCheck2 aria-hidden="true" /> Ton agenda Flux</p>
-          <h1>Bonjour{ownerName ? ` ${ownerName}` : ""}.</h1>
+          <p className={styles.eyebrow}><CalendarCheck2 aria-hidden="true" /> {t.view.eyebrow}</p>
+          <h1>{t.view.greeting.replace("{name}", ownerName ? ` ${ownerName}` : "")}</h1>
           <p>
             {upcoming.length === 0
-              ? "Ta semaine est calme. Tes créneaux restent ouverts et ta vitrine travaille pour toi."
-              : `${upcoming.length} rendez-vous à venir. Tout est prêt pour accueillir tes clients.`}
+              ? t.view.noUpcoming
+              : t.view.upcomingCount.replace("{count}", String(upcoming.length))}
           </p>
         </div>
         <Link href={`/p/${page.slug}`} target="_blank" className={`flux-button-smooth ${styles.heroAction}`}>
-          Voir ma vitrine <ArrowUpRight aria-hidden="true" />
+          {t.view.viewStorefront} <ArrowUpRight aria-hidden="true" />
         </Link>
       </section>
 
-      <section className={styles.stats} aria-label="Résumé de l’agenda">
+      <section className={styles.stats} aria-label={t.view.statsAria}>
         <article>
           <span><CalendarDays aria-hidden="true" /></span>
-          <small>Rendez-vous à venir</small>
+          <small>{t.view.upcomingLabel}</small>
           <strong>{upcoming.length}</strong>
-          <i>Planning synchronisé</i>
+          <i>{t.view.syncedHint}</i>
         </article>
         <article>
           <span><Users aria-hidden="true" /></span>
-          <small>Clients enregistrés</small>
+          <small>{t.view.registeredClients}</small>
           <strong>{customers.length}</strong>
-          <i>La liste se remplit seule</i>
+          <i>{t.view.listFillsItself}</i>
         </article>
         <article>
           <span><Clock3 aria-hidden="true" /></span>
-          <small>Jours réservables</small>
+          <small>{t.view.bookableDays}</small>
           <strong>{days.filter((day) => day.open).length}</strong>
-          <i>sur 7 jours</i>
+          <i>{t.view.outOf7}</i>
         </article>
       </section>
 
       {/* Semaine */}
       <Card className={`${styles.glassPanel} ${styles.weekPanel}`}>
         <CardHeader>
-          <CardTitle><CalendarDays aria-hidden="true" /> Ma semaine</CardTitle>
-          <CardDescription>
-            Touche un jour pour voir ta journée. Le point rouge = des rendez-vous.
-          </CardDescription>
+          <CardTitle><CalendarDays aria-hidden="true" /> {t.view.myWeek}</CardTitle>
+          <CardDescription>{t.view.weekHint}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className={styles.weekDays}>
@@ -227,9 +238,7 @@ export function AgendaView({
 
           <p className={styles.selectedDayTitle}>{fmtDay(selectedDate)}</p>
           {dayBookings.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Aucun rendez-vous ce jour pour l&apos;instant.
-            </p>
+            <p className="text-sm text-muted-foreground">{t.view.noBookingToday}</p>
           ) : (
             <ul className="space-y-2">
               {dayBookings.map((b) => (
@@ -240,7 +249,7 @@ export function AgendaView({
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {b.first_name} · {b.phone}
-                      {b.price_cents > 0 && <> · {formatPrice(b.price_cents)}</>}
+                      {b.price_cents > 0 && <> · {formatPrice(b.price_cents, locale)}</>}
                     </p>
                   </div>
                   <Button
@@ -250,12 +259,12 @@ export function AgendaView({
                     onClick={() =>
                       startTransition(async () => {
                         const r = await cancelBooking(b.id);
-                        if (r.error) toast.error(r.error);
-                        else toast.success("Rendez-vous annulé.");
+                        if (r.error) toast.error(translateError(r.error));
+                        else toast.success(t.view.bookingCancelled);
                       })
                     }
                   >
-                    Annuler
+                    {t.view.cancel}
                   </Button>
                 </li>
               ))}
@@ -267,22 +276,17 @@ export function AgendaView({
       {/* Clients */}
       <Card className={styles.glassPanel}>
         <CardHeader>
-          <CardTitle><Users aria-hidden="true" /> Mes clients</CardTitle>
-          <CardDescription>
-            Cette liste se remplit toute seule à chaque réservation. Touche un
-            client pour son historique et ta note privée.
-          </CardDescription>
+          <CardTitle><Users aria-hidden="true" /> {t.view.myClients}</CardTitle>
+          <CardDescription>{t.view.clientsHint}</CardDescription>
         </CardHeader>
         <CardContent className={styles.panelContent}>
           <label className={styles.searchField}>
             <Search aria-hidden="true" />
-            <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Chercher un prénom ou un numéro…" />
+            <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={t.view.searchPlaceholder} />
           </label>
           {filteredCustomers.length === 0 && (
             <p className="text-sm text-muted-foreground">
-              {customers.length === 0
-                ? "Ton premier client apparaîtra ici après sa réservation."
-                : "Aucun client à ce nom."}
+              {customers.length === 0 ? t.view.firstClientHint : t.view.noClientMatch}
             </p>
           )}
           {filteredCustomers.map((c) => {
@@ -310,9 +314,9 @@ export function AgendaView({
                   <span className="min-w-0 flex-1">
                     <span className="block font-medium">{c.first_name}</span>
                     <span className="block text-xs text-muted-foreground">
-                      {stats.visits} visite{stats.visits > 1 ? "s" : ""}
+                      {stats.visits} {stats.visits > 1 ? t.view.visitPlural : t.view.visitSingular}
                       {stats.orders > 0 && (
-                        <> · {stats.orders} commande{stats.orders > 1 ? "s" : ""}</>
+                        <> · {stats.orders} {stats.orders > 1 ? t.view.orderPlural : t.view.orderSingular}</>
                       )}
                     </span>
                   </span>
@@ -323,8 +327,8 @@ export function AgendaView({
                         : styles.customerRevenueEmpty
                     }
                   >
-                    <small>CA client</small>
-                    <strong>{formatPrice(stats.total)}</strong>
+                    <small>{t.view.clientRevenue}</small>
+                    <strong>{formatPrice(stats.total, locale)}</strong>
                   </span>
                   <span className="text-muted-foreground">{open ? "−" : "+"}</span>
                 </button>
@@ -345,12 +349,12 @@ export function AgendaView({
                       </Button>
                       {c.email && (
                         <Button asChild size="sm" variant="secondary">
-                          <a href={`mailto:${c.email}`}>Email</a>
+                          <a href={`mailto:${c.email}`}>{t.view.email}</a>
                         </Button>
                       )}
                     </div>
                     <div>
-                      <p className="text-sm font-medium mb-2">Ses rendez-vous</p>
+                      <p className="text-sm font-medium mb-2">{t.view.hisAppointments}</p>
                       <ul className="text-sm text-muted-foreground space-y-1">
                         {history.slice(0, 6).map((b) => (
                           <li key={b.id}>
@@ -361,9 +365,7 @@ export function AgendaView({
                       </ul>
                     </div>
                     <div className="space-y-2">
-                      <p className="text-sm font-medium">
-                        Ma note (visible par toi seul)
-                      </p>
+                      <p className="text-sm font-medium">{t.view.myNote}</p>
                       <Textarea
                         rows={2}
                         value={notes[c.id] ?? c.note}
@@ -380,12 +382,12 @@ export function AgendaView({
                               c.id,
                               notes[c.id] ?? c.note
                             );
-                            if (r.error) toast.error(r.error);
-                            else toast.success("Note enregistrée.");
+                            if (r.error) toast.error(translateError(r.error));
+                            else toast.success(t.view.noteSaved);
                           })
                         }
                       >
-                        Enregistrer
+                        {t.view.save}
                       </Button>
                     </div>
                   </div>
@@ -399,11 +401,8 @@ export function AgendaView({
       {/* Horaires */}
       <Card className={`${styles.glassPanel} ${styles.hoursPanel}`}>
         <CardHeader>
-          <CardTitle><Settings2 aria-hidden="true" /> Horaires variables</CardTitle>
-          <CardDescription>
-            Chaque journée peut avoir son propre rythme. Survole une ligne pour
-            la faire apparaître au premier plan.
-          </CardDescription>
+          <CardTitle><Settings2 aria-hidden="true" /> {t.view.variableHours}</CardTitle>
+          <CardDescription>{t.view.variableHoursHint}</CardDescription>
         </CardHeader>
         <CardContent className={styles.hoursList}>
           {days.map((day, di) => (
@@ -459,7 +458,7 @@ export function AgendaView({
                       {day.ranges.length > 1 && (
                         <button
                           type="button"
-                          aria-label="Retirer la plage"
+                          aria-label={t.view.removeRange}
                           className="text-destructive px-1"
                           onClick={() => {
                             const next = structuredClone(days);
@@ -482,7 +481,7 @@ export function AgendaView({
                         setDays(next);
                       }}
                     >
-                      + pause
+                      {t.view.addBreak}
                     </Button>
                   )}
                 </div>
@@ -494,15 +493,12 @@ export function AgendaView({
             onClick={() =>
               startTransition(async () => {
                 const r = await saveSchedules(days);
-                if (r.error) toast.error(r.error);
-                else
-                  toast.success(
-                    "C'est enregistré. Tes clients voient déjà les bons créneaux."
-                  );
+                if (r.error) toast.error(translateError(r.error));
+                else toast.success(t.view.variableHoursSaved);
               })
             }
           >
-            Enregistrer mes horaires variables
+            {t.view.saveVariableHours}
           </Button>
         </CardContent>
       </Card>
@@ -510,21 +506,19 @@ export function AgendaView({
       {/* Congés */}
       <Card className={styles.glassPanel}>
         <CardHeader>
-          <CardTitle><CalendarCheck2 aria-hidden="true" /> Bloquer une période</CardTitle>
-          <CardDescription>
-            Congés, rendez-vous perso : personne ne pourra réserver dessus.
-          </CardDescription>
+          <CardTitle><CalendarCheck2 aria-hidden="true" /> {t.view.blockPeriod}</CardTitle>
+          <CardDescription>{t.view.blockPeriodHint}</CardDescription>
         </CardHeader>
         <CardContent className={styles.panelContent}>
           <div className={styles.blockForm}>
-            Du
+            {t.view.from}
             <Input
               type="date"
               value={blockStart}
               className="w-40"
               onChange={(e) => setBlockStart(e.target.value)}
             />
-            au
+            {t.view.to}
             <Input
               type="date"
               value={blockEnd}
@@ -537,16 +531,16 @@ export function AgendaView({
               onClick={() =>
                 startTransition(async () => {
                   const r = await addBlockedPeriod(blockStart, blockEnd);
-                  if (r.error) toast.error(r.error);
+                  if (r.error) toast.error(translateError(r.error));
                   else {
-                    toast.success("Période bloquée.");
+                    toast.success(t.view.periodBlocked);
                     setBlockStart("");
                     setBlockEnd("");
                   }
                 })
               }
             >
-              Bloquer
+              {t.view.block}
             </Button>
           </div>
           {blocked.length > 0 && (
@@ -554,7 +548,9 @@ export function AgendaView({
               {blocked.map((b) => (
                 <li key={b.id} className="flex items-center gap-3">
                   <span>
-                    Du {fmtDay(b.start_date)} au {fmtDay(b.end_date)}
+                    {t.view.fromTo
+                      .replace("{start}", fmtDay(b.start_date))
+                      .replace("{end}", fmtDay(b.end_date))}
                   </span>
                   <button
                     type="button"
@@ -565,7 +561,7 @@ export function AgendaView({
                       })
                     }
                   >
-                    débloquer
+                    {t.view.unblock}
                   </button>
                 </li>
               ))}
@@ -577,12 +573,8 @@ export function AgendaView({
       {/* Google Agenda */}
       <Card className={`${styles.glassPanel} ${styles.syncPanel}`}>
         <CardHeader>
-          <CardTitle><Link2 aria-hidden="true" /> Dans ton agenda Google</CardTitle>
-          <CardDescription>
-            Colle ce lien UNE fois dans Google Agenda (+ → « À partir de
-            l&apos;URL ») et tes rendez-vous s&apos;affichent dedans, tout seuls.
-            Lecture seule — garde-le pour toi.
-          </CardDescription>
+          <CardTitle><Link2 aria-hidden="true" /> {t.view.googleAgenda}</CardTitle>
+          <CardDescription>{t.view.googleAgendaHint}</CardDescription>
         </CardHeader>
         <CardContent className={styles.syncContent}>
           <Input readOnly value={icalUrl} className="text-xs" />
@@ -590,10 +582,10 @@ export function AgendaView({
             variant="secondary"
             onClick={() => {
               navigator.clipboard.writeText(icalUrl);
-              toast.success("Lien copié.");
+              toast.success(t.view.linkCopied);
             }}
           >
-            <Copy aria-hidden="true" /> Copier
+            <Copy aria-hidden="true" /> {t.view.copy}
           </Button>
         </CardContent>
       </Card>

@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "My Projects",
+    "newTitle": "New Project"
+  },
+  "eyebrow": "Your account",
+  "title": "My Projects",
+  "subtitle": "Each project is a full-blown shop: its storefront, its products, its orders, its revenue. Pick the active project to run your whole space on it.",
+  "counter": "{count} / {limit} project — {plan} plan",
+  "counterPlural": "{count} / {limit} projects — {plan} plan",
+  "noName": "Unnamed",
+  "revenue": "Revenue",
+  "open": "Open ↗",
+  "newProject": "New project",
+  "upsellTitle": "Multiple shops",
+  "upsellBasique": "Manage multiple shops (up to 10) with the higher-tier plans.",
+  "upsellLimit": "You've hit your plan's project limit.",
+  "discoverPlans": "Discover FLUX plans",
+  "activeProject": "Active project",
+  "activating": "…",
+  "activate": "Activate this project",
+  "domain": {
+    "title": "Domain name",
+    "text": "Hook up your own domain (e.g. {example}) to the active project's storefront.",
+    "soon": "From the Pro plan on",
+    "placeholder": "my-shop.com",
+    "saving": "…",
+    "save": "Save",
+    "saved": "Domain saved.",
+    "comingSoon": "This feature is coming soon to production. It's already testable locally."
+  },
+  "backToProjects": "← My projects",
+  "errors": {
+    "feature_coming_soon": "Feature coming soon.",
+    "not_authenticated": "Not logged in.",
+    "plan_restricted": "Reserved for Pro plans and above.",
+    "invalid_domain": "Invalid domain name (e.g. my-shop.com).",
+    "save_failed": "Couldn't save (domain already taken?).",
+    "project_not_found": "Project not found.",
+    "change_failed": "Couldn't make the change.",
+    "content_blocked": "Hate speech and explicit content are forbidden and penalized on FLUX; please respect your environment and everyone else's. After 3 violations of our terms of use, the account gets deleted.",
+    "unknown": "Something went wrong. Try again in a moment."
+  }
+}

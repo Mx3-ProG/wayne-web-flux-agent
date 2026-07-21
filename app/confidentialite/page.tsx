@@ -1,10 +1,31 @@
+import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
 import { COMPANY } from "@/lib/company";
+import { getRequestLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { languageAlternates } from "@/lib/i18n/seo";
 
-export const metadata = { title: "Politique de confidentialité" };
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  const dict = await getDictionary(locale, "legal");
+  return {
+    title: dict.titles.privacy,
+    alternates: languageAlternates(locale, "/confidentialite"),
+  };
+}
 
-export default function PrivacyPage() {
-  return <LegalPage title="Politique de confidentialité">
+export default async function PrivacyPage() {
+  const locale = await getRequestLocale();
+  const [legal, common] = await Promise.all([
+    getDictionary(locale, "legal"),
+    getDictionary(locale, "common"),
+  ]);
+  return <LegalPage
+    title={legal.titles.privacy}
+    locale={locale}
+    chrome={legal.chrome}
+    footer={common.footer}
+  >
     <section><h2>Responsable du traitement</h2><p>{COMPANY.legalName} traite les données nécessaires au fonctionnement de Wayne Web Flux. Contact : <a href={`mailto:${COMPANY.email}`}>{COMPANY.email}</a>.</p></section>
     <section><h2>Données traitées</h2><p>Nous pouvons traiter les données de compte et de profil professionnel, les contenus saisis, l’historique d’utilisation et de crédits, les données techniques de sécurité, ainsi que les références de facturation. Les données complètes de carte bancaire sont collectées et conservées par Stripe, pas par Wayne Web Flux.</p></section>
     <section><h2>Finalités et bases</h2><ul><li>Créer et sécuriser le compte, exécuter le contrat et fournir les fonctionnalités.</li><li>Traiter les paiements, factures, abonnements et demandes d’assistance.</li><li>Prévenir les abus et améliorer la fiabilité sur la base de notre intérêt légitime.</li><li>Respecter les obligations comptables, fiscales et légales.</li></ul></section>

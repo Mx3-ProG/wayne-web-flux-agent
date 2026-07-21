@@ -16,6 +16,7 @@ import { MapSection } from "./sections/map-section";
 import { GoogleBusinessSection } from "./sections/google-business-section";
 import { NewsletterSection } from "./sections/newsletter-section";
 import { VideoSection } from "./sections/video-section";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
 
 export type SectionContext = {
   page: Page;
@@ -27,6 +28,7 @@ export type SectionContext = {
   preview: boolean;
   onBook?: (service: Service) => void;
   onAddToCart?: (product: Product) => void;
+  t?: StorefrontDict["sections"];
 };
 
 // Rendu d'une section « interne » (à l'intérieur d'un wrapper .services).
@@ -56,6 +58,7 @@ export function SectionRenderer({
           first={first}
           title={native?.title}
           subtitle={native?.subtitle}
+          t={ctx.t?.catalog}
         />
       );
     case "prestations":
@@ -69,6 +72,7 @@ export function SectionRenderer({
           first={first}
           title={native?.title}
           subtitle={native?.subtitle}
+          t={ctx.t?.catalog}
         />
       );
     case "galerie":
@@ -78,6 +82,7 @@ export function SectionRenderer({
           first={first}
           title={native?.title}
           subtitle={native?.subtitle}
+          t={ctx.t?.gallery}
         />
       );
     case "avis":
@@ -87,6 +92,7 @@ export function SectionRenderer({
           first={first}
           title={native?.title}
           subtitle={native?.subtitle}
+          t={ctx.t?.reviews}
         />
       );
     case "horaires":
@@ -97,6 +103,7 @@ export function SectionRenderer({
           first={first}
           title={native?.title}
           subtitle={native?.subtitle}
+          t={ctx.t?.hours}
         />
       );
     case "texte":
@@ -109,12 +116,13 @@ export function SectionRenderer({
           items={section.settings.items}
           title={section.settings.title}
           first={first}
+          t={ctx.t?.faq}
         />
       );
     case "a_propos":
-      return <AboutSection {...section.settings} first={first} />;
+      return <AboutSection {...section.settings} first={first} t={ctx.t?.about} />;
     case "avant_apres":
-      return <BeforeAfterSection {...section.settings} first={first} />;
+      return <BeforeAfterSection {...section.settings} first={first} t={ctx.t?.beforeAfter} />;
     case "carte":
       return (
         <MapSection
@@ -124,10 +132,11 @@ export function SectionRenderer({
               : ""
           }
           first={first}
+          t={ctx.t?.map}
         />
       );
     case "google_business":
-      return <GoogleBusinessSection {...section.settings} first={first} />;
+      return <GoogleBusinessSection {...section.settings} first={first} t={ctx.t?.googleBusiness} />;
     case "newsletter":
       return (
         <NewsletterSection
@@ -137,10 +146,11 @@ export function SectionRenderer({
           description={section.settings.description}
           interactive={!ctx.preview}
           first={first}
+          t={ctx.t?.newsletter}
         />
       );
     case "video":
-      return <VideoSection url={section.settings.url} first={first} />;
+      return <VideoSection url={section.settings.url} first={first} t={ctx.t?.video} />;
     default:
       return null;
   }

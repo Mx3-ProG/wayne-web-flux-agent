@@ -2,9 +2,9 @@ import "server-only";
 
 import profanity from "leo-profanity";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { KARLMADA_BLOCK_MESSAGE } from "@/lib/karlmada-constants";
 
-export const KARLMADA_BLOCK_MESSAGE =
-  "Les messages de haines ou les contenus explicit sont interdit et amendé sur FLUX, veuillez respectez votre environnement et celui des autres. 3 Infractions contre nos conditions d'utilisations le compte est supprimé.";
+export { KARLMADA_BLOCK_MESSAGE };
 
 type KarlMadaCategory = "adult" | "drugs" | "weapons" | "illegal" | "profanity";
 

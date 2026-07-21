@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "title": "Мои заказы"
+  },
+  "status": {
+    "pending": "На обработке",
+    "accepted": "Принят",
+    "fulfilled": "Завершён",
+    "cancelled": "Отменён"
+  },
+  "bookingStatus": {
+    "cancelled": "Отменена",
+    "confirmed": "Подтверждена"
+  },
+  "itemKind": {
+    "offer": "Предложение",
+    "reservation": "Бронирование",
+    "product": "Товар"
+  },
+  "clientSheet": {
+    "aria": "Карточка клиента",
+    "titleWithName": "Карточка клиента · {name}",
+    "titleDefault": "Карточка клиента",
+    "interactions": "{count} взаимодействи(е/я/й)",
+    "phone": "Телефон",
+    "email": "Email",
+    "notProvided": "Не указано",
+    "address": "Физический адрес",
+    "addressNotProvided": "Не указан"
+  },
+  "history": {
+    "title": "История клиента",
+    "purchases": "{count} покупк(а/и)",
+    "reservation": "Бронирование"
+  },
+  "orderCard": {
+    "transaction": "Транзакция FLUX",
+    "defaultClient": "Клиент",
+    "itemSingular": "товар",
+    "itemPlural": "товаров",
+    "accept": "Принять",
+    "markDone": "Отметить как завершённый",
+    "cancel": "Отменить",
+    "refuse": "Отклонить"
+  },
+  "clientProfile": {
+    "dossier": "Досье клиента",
+    "interactionSingular": "взаимодействие",
+    "interactionPlural": "взаимодействия"
+  },
+  "hero": {
+    "kicker": "Портфель FLUX",
+    "titleStart": "Центр ",
+    "titleEm": "бизнеса",
+    "text": "Управляй заказами, находи каждого клиента и превращай свою витрину в чёткий и понятный журнал платежей.",
+    "movementSingular": "отслеженная операция",
+    "movementPlural": "отслеженных операций"
+  },
+  "metrics": {
+    "aria": "Показатели заказов",
+    "toProcess": "На обработке",
+    "accepted": "Принято",
+    "history": "История",
+    "clientSheets": "Карточки клиентов"
+  },
+  "empty": {
+    "noPageStart": "Сначала создай свою",
+    "noPageLink": "витрину",
+    "noPageEnd": "чтобы получать заказы.",
+    "noOrdersStart": "Пока нет ни одного заказа. Добавь товары в свою",
+    "noOrdersLink": "витрину",
+    "noOrdersEnd": "и поделись своей ссылкой."
+  },
+  "sections": {
+    "incoming": "Входящие транзакции",
+    "toProcess": "На обработке",
+    "toProcessCount": "{count} дел(о/а) на подтверждение",
+    "openLabel": "Открытые дела",
+    "accepted": "Принятые",
+    "acceptedCount": "{count} платеж(ей/а) в процессе",
+    "ledger": "Главная книга",
+    "history": "История",
+    "historyCount": "{count} транзакци(я/й) занесено",
+    "book": "Бизнес-журнал",
+    "clientSheets": "Карточки клиентов",
+    "clientSheetsCount": "{count} сохранённ(ая/ых) связь(и)"
+  },
+  "errors": {
+    "not_authenticated": "Тебе нужно войти в аккаунт, чтобы продолжить.",
+    "action_failed": "Действие невозможно.",
+    "unknown": "Произошла ошибка. Попробуй ещё раз через минуту."
+  }
+}

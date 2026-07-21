@@ -4,11 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { formatPrice } from "@/lib/types";
 import { revenueProgress } from "@/lib/revenue";
 import { TrendingUp } from "lucide-react";
+import { useI18n } from "@/components/i18n-provider";
 import styles from "./revenue-counter.module.css";
 
 // Compteur de CA animé : monte de 0 au total au chargement, montre le palier
 // atteint et la progression vers le suivant. Hook de rétention du dashboard.
 export function RevenueCounter({ totalCents }: { totalCents: number }) {
+  const { locale, dictionary } = useI18n();
+  const t = dictionary.revenueCounter;
+  const price = (cents: number) => formatPrice(cents, locale);
   const p = revenueProgress(totalCents);
   const [shown, setShown] = useState(0);
   const rafRef = useRef<number | null>(null);
@@ -33,39 +37,36 @@ export function RevenueCounter({ totalCents }: { totalCents: number }) {
   }, [totalCents]);
 
   return (
-    <section className={styles.card} aria-label="Chiffre d'affaires généré">
+    <section className={styles.card} aria-label={t.aria}>
       <div className={styles.head}>
         <p className={styles.eyebrow}>
-          <TrendingUp aria-hidden="true" /> Ton chiffre d&apos;affaires
+          <TrendingUp aria-hidden="true" /> {t.eyebrow}
         </p>
         {p.reached > 0 && (
-          <span className={styles.badge}>🎉 Palier {formatPrice(p.reached)} franchi</span>
+          <span className={styles.badge}>
+            {t.milestoneReached.replace("{amount}", price(p.reached))}
+          </span>
         )}
       </div>
 
-      <strong className={styles.amount}>{formatPrice(shown)}</strong>
-      <p className={styles.caption}>
-        Ton savoir-faire mérite d&apos;être partagé. Voici ce que ta vitrine FLUX
-        a déjà généré grâce aux rendez-vous honorés et aux commandes acceptées.
-      </p>
+      <strong className={styles.amount}>{price(shown)}</strong>
+      <p className={styles.caption}>{t.caption}</p>
 
       {p.next !== null ? (
         <div className={styles.progress}>
           <div className={styles.progressHead}>
-            <span>
-              Prochain palier : <b>{formatPrice(p.next)}</b>
-            </span>
+            <span>{t.nextMilestone.replace("{amount}", price(p.next))}</span>
             <span>{p.pct}%</span>
           </div>
           <div className={styles.track}>
             <div className={styles.fill} style={{ width: `${p.pct}%` }} />
           </div>
           <p className={styles.remaining}>
-            Plus que <b>{formatPrice(p.remaining)}</b> pour y arriver 💪
+            {t.remaining.replace("{amount}", price(p.remaining))}
           </p>
         </div>
       ) : (
-        <p className={styles.maxed}>Tu exploses tous les paliers 🚀 Continue comme ça !</p>
+        <p className={styles.maxed}>{t.maxed}</p>
       )}
     </section>
   );

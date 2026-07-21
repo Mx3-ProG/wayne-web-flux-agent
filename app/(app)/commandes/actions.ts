@@ -56,13 +56,13 @@ async function setOrderStatus(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "not_authenticated" };
 
   const { error } = await supabase
     .from("orders")
     .update({ status, ...extra })
     .eq("id", orderId);
-  if (error) return { error: "Action impossible." };
+  if (error) return { error: "action_failed" };
 
   revalidatePath("/commandes");
   revalidatePath("/stock");

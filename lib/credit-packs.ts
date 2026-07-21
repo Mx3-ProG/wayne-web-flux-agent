@@ -3,6 +3,8 @@
 // ici uniquement (price_data inline côté Stripe, pas de Products/Prices à
 // créer dans le dashboard).
 
+import { LOCALE_BCP47, defaultLocale, type Locale } from "@/lib/i18n/config";
+
 export type CreditPack = {
   id: string;
   credits: number;
@@ -60,8 +62,8 @@ export function stripeCreditPriceId(packId: string): string | null {
   return null;
 }
 
-export function packUnitPrice(pack: CreditPack): string {
-  return (pack.priceCents / pack.credits / 100).toLocaleString("fr-FR", {
+export function packUnitPrice(pack: CreditPack, locale: Locale = defaultLocale): string {
+  return (pack.priceCents / pack.credits / 100).toLocaleString(LOCALE_BCP47[locale], {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });

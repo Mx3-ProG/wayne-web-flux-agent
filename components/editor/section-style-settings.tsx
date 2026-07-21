@@ -15,6 +15,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useI18n } from "@/components/i18n-provider";
 
 type Props = {
   style: SectionStyle | undefined;
@@ -25,6 +26,8 @@ type Props = {
 type BackgroundKind = "none" | SectionBackground["kind"];
 
 export function SectionStyleSettings({ style, userId, onChange }: Props) {
+  const { editor, dictionary } = useI18n();
+  const t = editor.sectionStyle;
   const bg = style?.background;
 
   const set = (fields: Partial<SectionStyle>) => {
@@ -64,7 +67,7 @@ export function SectionStyleSettings({ style, userId, onChange }: Props) {
   return (
     <div className="space-y-4">
       <div className="space-y-2">
-        <Label>Fond de la section</Label>
+        <Label>{t.backgroundLabel}</Label>
         <Select
           value={(bg?.kind ?? "none") as string}
           onValueChange={(kind) => setBackgroundKind(kind as BackgroundKind)}
@@ -73,11 +76,11 @@ export function SectionStyleSettings({ style, userId, onChange }: Props) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="none">Aucun (fond de la page)</SelectItem>
-            <SelectItem value="color">Une couleur</SelectItem>
-            <SelectItem value="gradient">Un dégradé</SelectItem>
-            <SelectItem value="image">Une photo</SelectItem>
-            <SelectItem value="video">Une vidéo</SelectItem>
+            <SelectItem value="none">{t.backgroundNone}</SelectItem>
+            <SelectItem value="color">{t.backgroundColor}</SelectItem>
+            <SelectItem value="gradient">{t.backgroundGradient}</SelectItem>
+            <SelectItem value="image">{t.backgroundImage}</SelectItem>
+            <SelectItem value="video">{t.backgroundVideo}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -97,8 +100,8 @@ export function SectionStyleSettings({ style, userId, onChange }: Props) {
         <div className="grid grid-cols-2 gap-3">
           {(
             [
-              ["from", "Départ"],
-              ["to", "Arrivée"],
+              ["from", t.gradientFrom],
+              ["to", t.gradientTo],
             ] as const
           ).map(([key, label]) => (
             <div key={key} className="space-y-2">
@@ -120,11 +123,12 @@ export function SectionStyleSettings({ style, userId, onChange }: Props) {
         <div className="flex items-center gap-3">
           <PhotoUpload
             userId={userId}
-            label={bg.url ? "Changer la photo" : "Choisir la photo"}
+            label={bg.url ? t.photoChange : t.photoChoose}
+            messages={dictionary.photoUpload}
             onUploaded={(url) => set({ background: { ...bg, url } })}
           />
           {bg.url && (
-            <span className="text-xs text-muted-foreground">Photo choisie ✓</span>
+            <span className="text-xs text-muted-foreground">{t.photoChosen}</span>
           )}
         </div>
       )}
@@ -134,19 +138,21 @@ export function SectionStyleSettings({ style, userId, onChange }: Props) {
           <div className="flex items-center gap-3">
             <PhotoUpload
               userId={userId}
-              label={bg.url ? "Changer la vidéo" : "Choisir la vidéo"}
+              label={bg.url ? t.videoChange : t.videoChoose}
               accept="video/mp4,video/webm"
               maxMb={50}
+              messages={dictionary.photoUpload}
               onUploaded={(url) => set({ background: { ...bg, url } })}
             />
             {bg.url && (
-              <span className="text-xs text-muted-foreground">Vidéo choisie ✓</span>
+              <span className="text-xs text-muted-foreground">{t.videoChosen}</span>
             )}
           </div>
           <div className="flex items-center gap-3">
             <PhotoUpload
               userId={userId}
-              label={bg.posterUrl ? "Changer l'image d'attente" : "Image d'attente"}
+              label={bg.posterUrl ? t.posterChange : t.posterChoose}
+              messages={dictionary.photoUpload}
               onUploaded={(posterUrl) => set({ background: { ...bg, posterUrl } })}
             />
             {bg.posterUrl && (
@@ -155,20 +161,17 @@ export function SectionStyleSettings({ style, userId, onChange }: Props) {
                 size="sm"
                 onClick={() => set({ background: { ...bg, posterUrl: undefined } })}
               >
-                Retirer
+                {t.remove}
               </Button>
             )}
           </div>
-          <p className="text-xs text-muted-foreground">
-            Une seule vidéo de fond par page, courte et sans son — préfère une
-            photo pour garder ta page rapide.
-          </p>
+          <p className="text-xs text-muted-foreground">{t.videoHint}</p>
         </div>
       )}
 
       {overlay !== null && bg && (
         <div className="space-y-2">
-          <Label>Voile sombre ({Math.round(overlay * 100)} %)</Label>
+          <Label>{t.overlayLabel.replace("{percent}", String(Math.round(overlay * 100)))}</Label>
           <input
             type="range"
             min={0}
@@ -182,15 +185,13 @@ export function SectionStyleSettings({ style, userId, onChange }: Props) {
               })
             }
           />
-          <p className="text-xs text-muted-foreground">
-            Assombrit la photo ou la vidéo pour garder le texte lisible.
-          </p>
+          <p className="text-xs text-muted-foreground">{t.overlayHint}</p>
         </div>
       )}
 
       <div className="grid grid-cols-3 gap-3">
         <div className="space-y-2">
-          <Label>Espacement</Label>
+          <Label>{t.spacingLabel}</Label>
           <Select
             value={style?.spacing ?? "normal"}
             onValueChange={(spacing) =>
@@ -201,14 +202,14 @@ export function SectionStyleSettings({ style, userId, onChange }: Props) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="compact">Compact</SelectItem>
-              <SelectItem value="normal">Normal</SelectItem>
-              <SelectItem value="large">Aéré</SelectItem>
+              <SelectItem value="compact">{t.spacingCompact}</SelectItem>
+              <SelectItem value="normal">{t.spacingNormal}</SelectItem>
+              <SelectItem value="large">{t.spacingLarge}</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="space-y-2">
-          <Label>Largeur</Label>
+          <Label>{t.widthLabel}</Label>
           <Select
             value={style?.width ?? "normal"}
             onValueChange={(width) => set({ width: width as SectionStyle["width"] })}
@@ -217,14 +218,14 @@ export function SectionStyleSettings({ style, userId, onChange }: Props) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="narrow">Étroit</SelectItem>
-              <SelectItem value="normal">Normal</SelectItem>
-              <SelectItem value="full">Pleine largeur</SelectItem>
+              <SelectItem value="narrow">{t.widthNarrow}</SelectItem>
+              <SelectItem value="normal">{t.widthNormal}</SelectItem>
+              <SelectItem value="full">{t.widthFull}</SelectItem>
             </SelectContent>
           </Select>
         </div>
         <div className="space-y-2">
-          <Label>Alignement</Label>
+          <Label>{t.alignLabel}</Label>
           <Select
             value={style?.align ?? "left"}
             onValueChange={(align) => set({ align: align as SectionStyle["align"] })}
@@ -233,8 +234,8 @@ export function SectionStyleSettings({ style, userId, onChange }: Props) {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="left">À gauche</SelectItem>
-              <SelectItem value="center">Centré</SelectItem>
+              <SelectItem value="left">{t.alignLeft}</SelectItem>
+              <SelectItem value="center">{t.alignCenter}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -242,7 +243,7 @@ export function SectionStyleSettings({ style, userId, onChange }: Props) {
 
       {style && (
         <Button variant="ghost" size="sm" onClick={() => onChange(undefined)}>
-          Réinitialiser l&apos;apparence
+          {t.reset}
         </Button>
       )}
     </div>

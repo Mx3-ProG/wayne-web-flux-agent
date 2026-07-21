@@ -13,10 +13,10 @@ async function ownedPageId(): Promise<{ pageId?: string; error?: string; userId?
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "not_authenticated" };
   // Le projet actif du user (multi-boutiques).
   const pageId = await getActivePageId(supabase, user.id);
-  if (!pageId) return { error: "Crée d'abord ta vitrine." };
+  if (!pageId) return { error: "no_active_page" };
   return { pageId, userId: user.id };
 }
 
@@ -75,7 +75,7 @@ export async function createOffer(): Promise<{ error?: CreateOfferError; id?: st
     .single();
   if (insertError || !offer) {
     await refundCredits(userId, cost, "refund:offer");
-    return { error: "Création impossible." };
+    return { error: "creation_failed" };
   }
 
   revalidatePath("/offres");
@@ -137,7 +137,7 @@ export async function createOfferFromTunnel(
   });
   if (insertError) {
     await refundCredits(userId, cost, "refund:offer");
-    return { error: "Création de l'offre impossible." };
+    return { error: "offer_creation_failed" };
   }
 
   revalidatePath("/offres");
@@ -156,7 +156,7 @@ export async function updateOffer(
     .select("draft_status, page_id")
     .eq("id", offerId)
     .single();
-  if (!offer) return { error: "Offre introuvable." };
+  if (!offer) return { error: "offer_not_found" };
 
   const moderation = await enforceKarlMada(fields, {
     pageId: offer.page_id,
@@ -167,7 +167,7 @@ export async function updateOffer(
   if (offer.draft_status === "new") {
     // Jamais publiée (invisible en public) : on écrit directement les colonnes.
     const { error } = await supabase.from("offers").update(fields).eq("id", offerId);
-    if (error) return { error: "Enregistrement impossible." };
+    if (error) return { error: "save_failed" };
   } else {
     // Déjà publiée : les modifications vont dans le brouillon, appliquées à la
     // prochaine publication du site.
@@ -175,7 +175,7 @@ export async function updateOffer(
       oid: offerId,
       fields,
     });
-    if (error) return { error: "Enregistrement impossible." };
+    if (error) return { error: "save_failed" };
   }
   revalidatePath("/offres");
   revalidatePath("/ma-page");
@@ -189,19 +189,19 @@ export async function deleteOffer(offerId: string): Promise<{ error?: string }> 
     .select("draft_status")
     .eq("id", offerId)
     .single();
-  if (!offer) return { error: "Offre introuvable." };
+  if (!offer) return { error: "offer_not_found" };
 
   if (offer.draft_status === "new") {
     // Jamais publiée : suppression immédiate.
     const { error } = await supabase.from("offers").delete().eq("id", offerId);
-    if (error) return { error: "Suppression impossible." };
+    if (error) return { error: "delete_failed" };
   } else {
     // Publiée : reste visible en public jusqu'à la prochaine publication.
     const { error } = await supabase
       .from("offers")
       .update({ draft_status: "deleted" })
       .eq("id", offerId);
-    if (error) return { error: "Suppression impossible." };
+    if (error) return { error: "delete_failed" };
   }
   revalidatePath("/offres");
   revalidatePath("/ma-page");
@@ -216,7 +216,7 @@ export async function restoreOffer(offerId: string): Promise<{ error?: string }>
     .update({ draft_status: null })
     .eq("id", offerId)
     .eq("draft_status", "deleted");
-  if (error) return { error: "Restauration impossible." };
+  if (error) return { error: "restore_failed" };
   revalidatePath("/offres");
   revalidatePath("/ma-page");
   return {};

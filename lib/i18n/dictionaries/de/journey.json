@@ -1,0 +1,59 @@
+{
+  "chapters": {
+    "1": {
+      "title": "Deine Adresse",
+      "whyTitle": "Heute suchen dich deine Kunden – und finden dich nicht.",
+      "whyBody": "Jeder zweite Kunde, der keine klare Adresse findet, ruft stattdessen die Konkurrenz von nebenan an. Wir geben dir jetzt einen eigenen Link, den du für immer behältst und den Google endlich lesen kann.",
+      "doneTitle": "Deine Adresse existiert.",
+      "doneBody": "Sie gehört dir. Niemand kann sie dir mehr wegnehmen – und die KI weiß jetzt, wie sie mit deinen Worten schreibt."
+    },
+    "2": {
+      "title": "Was du verkaufst",
+      "whyTitle": "Ein leeres Schaufenster verkauft nichts.",
+      "whyBody": "Ein Besucher entscheidet in 8 Sekunden. Sieht er weder Preis noch Angebot noch freien Termin, ist er weg. Wir füllen dein Schaufenster jetzt – nicht „irgendwann später“.",
+      "doneTitle": "Deine Kunden wissen, was sie kaufen können.",
+      "doneBody": "Ein Katalog, ein Highlight-Angebot und echte Termine. Dein Schaufenster kann jetzt Anfragen entgegennehmen, während du arbeitest."
+    },
+    "3": {
+      "title": "Deine Sichtbarkeit",
+      "whyTitle": "Das schönste Schaufenster der Welt bringt nichts, wenn niemand vorbeikommt.",
+      "whyBody": "Das ist der Schritt, den alle überspringen – und genau er füllt den Terminkalender. Wir erstellen jetzt deinen ersten Content und bringen deinen Link in Umlauf.",
+      "doneTitle": "Dein Weg ist abgeschlossen.",
+      "doneBody": "Dein Business ist online, gefüllt und teilbar. Alles, was du ab jetzt hinzufügst, vergrößert nur noch deinen Vorsprung."
+    }
+  },
+  "steps": {
+    "1": {
+      "title": "Erstelle dein Schaufenster",
+      "gain": "Eine eigene Adresse, lesbar für Google, fertig in 30 Sekunden."
+    },
+    "2": {
+      "title": "Bring ihr bei, wie du zu sprechen",
+      "gain": "Die KI hört auf, wie ein Roboter zu schreiben, und fängt an, wie du zu schreiben."
+    },
+    "3": {
+      "title": "Erstelle dein Produkt",
+      "gain": "Ohne sichtbaren Preis geht jeder zweite Besucher, ohne dich zu kontaktieren."
+    },
+    "4": {
+      "title": "Erstelle deine Angebote",
+      "gain": "Das Highlight-Angebot ist das Erste, was ein Kunde sieht. Es macht den Unterschied."
+    },
+    "5": {
+      "title": "Erstelle deinen Terminkalender",
+      "gain": "Deine Kunden buchen nachts, am Sonntag, während du arbeitest."
+    },
+    "6": {
+      "title": "Erstelle deinen ersten Content",
+      "gain": "Regelmäßige Posts bringen die Leute zurück auf dein Schaufenster."
+    },
+    "7": {
+      "title": "Schau dir deine Ergebnisse an",
+      "gain": "Was du nicht misst, kannst du nicht verbessern."
+    },
+    "8": {
+      "title": "Teile dein Business überall",
+      "gain": "Je mehr dein Link zirkuliert, desto voller wird dein Terminkalender – ganz von allein."
+    }
+  }
+}

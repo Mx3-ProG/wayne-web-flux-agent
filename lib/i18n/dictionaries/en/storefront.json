@@ -1,0 +1,186 @@
+{
+  "verifiedBadge": {
+    "label": "Verified shop",
+    "title": "This version of the shop has been checked by FLUX."
+  },
+  "header": {
+    "navAria": "Site navigation",
+    "lightMode": "Switch to light mode",
+    "darkMode": "Switch to dark mode",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "defaultBusinessName": "My business"
+  },
+  "hero": {
+    "viewOffers": "View offers",
+    "book": "Book now",
+    "discover": "Discover",
+    "viewServices": "View services",
+    "discoverShop": "Discover the shop",
+    "onlineBooking": "Online booking",
+    "onlineOrder": "Online ordering"
+  },
+  "shell": {
+    "scrollTop": "Scroll back to top",
+    "whatsapp": "Message on WhatsApp",
+    "call": "Call",
+    "viewCart": "View cart",
+    "stayInTouch": "Stay in touch",
+    "legalNotice": "Legal notice",
+    "terms": "Terms",
+    "termsFull": "Terms and conditions",
+    "privacy": "Privacy",
+    "privacyFull": "Privacy policy",
+    "close": "Close",
+    "poweredBy": "Made with"
+  },
+  "subpage": {
+    "home": "Home",
+    "draftNotice": "This page is still being written."
+  },
+  "booking": {
+    "loadAvailabilityError": "Couldn't load availability.",
+    "loadSlotsError": "Couldn't load time slots.",
+    "slotTakenError": "This slot was just taken. Pick another one.",
+    "genericError": "Your booking couldn't be saved. Try again.",
+    "close": "Close",
+    "chooseDay": "Choose a day",
+    "loading": "One sec…",
+    "closed": "closed",
+    "full": "full",
+    "slotsCount": "{count} slots",
+    "changeDay": "← change day",
+    "changeTime": "← change time",
+    "yourDetails": "Your details",
+    "firstNamePlaceholder": "Your first name",
+    "phonePlaceholder": "Your phone number",
+    "emailPlaceholder": "Your email (optional)",
+    "confirmationHint": "So you can get your appointment confirmation.",
+    "confirm": "Confirm appointment",
+    "booked": "Booked!",
+    "seeYouSoon": "See you soon.",
+    "at": "at"
+  },
+  "order": {
+    "orderSent": "Order sent",
+    "myOrder": "My order",
+    "close": "Close",
+    "itemSingular": "item",
+    "itemPlural": "items",
+    "cartEmpty": "Your cart is empty.",
+    "continue": "Continue",
+    "removeOne": "Remove one",
+    "addOne": "Add one",
+    "backToCart": "← back to cart",
+    "yourDetails": "Your details",
+    "firstNamePlaceholder": "Your first name",
+    "phonePlaceholder": "Your phone number",
+    "emailPlaceholder": "Your email (optional)",
+    "addressPlaceholder": "Your address (optional)",
+    "notePlaceholder": "Any special request? (optional)",
+    "contactHint": "The seller will get back to you to confirm and arrange payment.",
+    "sendOrder": "Send order",
+    "sending": "One sec…",
+    "thanks": "Thanks, got it!",
+    "transmitted": "Your order has been sent.",
+    "willContact": "The seller will get back to you very soon.",
+    "submitError": "Your order couldn't be saved. Try again in a moment."
+  },
+  "sections": {
+    "about": {
+      "eyebrow": "My story",
+      "defaultAlt": "Portrait"
+    },
+    "beforeAfter": {
+      "eyebrow": "The proof is in the pictures",
+      "title": "Before / after",
+      "before": "Before",
+      "after": "After",
+      "compareAria": "Compare before and after"
+    },
+    "catalog": {
+      "eyebrow": "What I offer",
+      "comboTitle": "My services",
+      "comboSubtitle": "Products to order and appointments to book.",
+      "shopOnlyTitle": "Products",
+      "shopOnlySubtitle": "Products to order.",
+      "servicesOnlyTitle": "Bookings",
+      "servicesOnlySubtitle": "Appointments to book.",
+      "shopTitle": "My shop",
+      "shopSubtitle": "Products to order.",
+      "servicesTitle": "My services",
+      "servicesSubtitle": "Appointments to book.",
+      "productsHeading": "Products",
+      "reservationsHeading": "Bookings",
+      "soldOut": "Sold out",
+      "add": "Add",
+      "free": "Free",
+      "book": "Book",
+      "emptyCatalog": "The catalog is coming soon."
+    },
+    "faq": {
+      "eyebrow": "Frequently asked questions",
+      "title": "FAQ",
+      "subtitle": "Answers to the questions I get asked the most."
+    },
+    "gallery": {
+      "eyebrow": "In pictures",
+      "title": "My work",
+      "subtitle": "A few details that tell the story of my world.",
+      "photoAlt": "Photo {index}"
+    },
+    "googleBusiness": {
+      "eyebrow": "Google Reviews",
+      "defaultTitle": "Your review matters to us",
+      "defaultDescription": "Check out our customers' reviews or share your experience in a few seconds.",
+      "leaveReview": "Leave a review",
+      "viewProfile": "View Google profile"
+    },
+    "hours": {
+      "eyebrow": "When to come",
+      "title": "My hours",
+      "subtitle": "Catch me at the right time."
+    },
+    "map": {
+      "eyebrow": "Where to find me",
+      "title": "Come see me",
+      "mapTitle": "Map: {query}"
+    },
+    "newsletter": {
+      "eyebrow": "Let's stay in touch",
+      "title": "Stay in the loop",
+      "subtitle": "Get my offers and news, no spam.",
+      "emailPlaceholder": "you@email.com",
+      "emailAria": "Your email address",
+      "subscribe": "Subscribe",
+      "sending": "…",
+      "done": "Thanks! You're all set. ✨",
+      "error": "Couldn't sign you up right now. Try again later."
+    },
+    "offers": {
+      "eyebrow": "Don't miss out",
+      "title": "My offers",
+      "subtitle": "Deals to grab right now.",
+      "kindProduit": "Product",
+      "kindService": "Service",
+      "kindEvenement": "Event",
+      "orderProduct": "Order",
+      "grabOffer": "I'm in"
+    },
+    "promo": {
+      "remainingDays": "{days}d {hours}h",
+      "remainingHours": "{hours}h {minutes}min",
+      "countdownPrefix": "⏳ {countdown} left",
+      "codeCopied": "Copied!",
+      "codeLabel": "Code: {code}"
+    },
+    "reviews": {
+      "eyebrow": "They trust me",
+      "title": "What people say about me",
+      "subtitle": "Real words, left by my customers."
+    },
+    "video": {
+      "title": "Video"
+    }
+  }
+}

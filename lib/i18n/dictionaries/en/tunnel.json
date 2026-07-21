@@ -1,0 +1,369 @@
+{
+ "accountGate": {
+  "backHome": "Back to home",
+  "alreadyAccount": "I already have an account",
+  "kicker": "Custom setup",
+  "titleLine1": "Let's build your",
+  "titleEm": "growth engine.",
+  "text": "Create your access, then answer a few questions. Everything you tell us gets applied to your space as you go — nothing gets lost along the way.",
+  "nameLabel": "Your first name",
+  "namePlaceholder": "Alex",
+  "emailLabel": "Your work email",
+  "emailPlaceholder": "alex@mybusiness.com",
+  "passwordLabel": "Choose a password",
+  "passwordPlaceholder": "8 characters minimum",
+  "submit": "Create my space",
+  "submitting": "Creating your space…",
+  "trialValue": "7-day trial, no credit card",
+  "creditsValue": "100 free credits to start",
+  "legalPrefix": "By creating your space, you confirm you've read and accepted our",
+  "legalLink": "terms of service"
+ },
+ "errors": {
+  "fillAll": "Fill in all fields.",
+  "passwordTooShort": "Password must be at least 8 characters.",
+  "accountExists": "An account already exists with this email.",
+  "createFailed": "Couldn't create your account. Try again.",
+  "createdSignInFailed": "Account created, but sign-in failed. Try logging in.",
+  "notConnected": "Not connected.",
+  "createPageFirst": "Create your storefront first.",
+  "twoFieldsRequired": "Fill in both fields.",
+  "catalogCreateFailed": "Couldn't create it.",
+  "offerTitleRequired": "Give your offer a title.",
+  "offerCreateFailed": "Couldn't create the offer.",
+  "noAgendaForVertical": "Your business doesn't use a calendar.",
+  "chooseOneDay": "Choose at least one day.",
+  "closingAfterOpening": "Closing time must be after opening time.",
+  "unknownStyle": "Unknown style.",
+  "not_authenticated": "You need to be logged in to continue.",
+  "business_name_required": "Give your storefront a name.",
+  "project_limit_reached": "Project limit reached for your plan.",
+  "creation_failed": "Couldn't create the page.",
+  "content_blocked": "Hate speech and explicit content are forbidden and penalized on FLUX; please respect your environment and that of others. After 3 violations of our terms of service, the account is deleted.",
+  "unknown": "Something went wrong. Try again in a moment."
+ },
+ "shell": {
+  "espaceAria": "Go to my space",
+  "chapterProgress": "Chapter {chapter} · {title} — {done}/{total}",
+  "trialDays": "{days}d trial"
+ },
+ "chapterIntro": {
+  "kicker": "Chapter {chapter} · {title}",
+  "cta": "Let's go"
+ },
+ "chapterDone": {
+  "kicker": "Chapter {chapter} complete",
+  "defaultCta": "Continue",
+  "pending": "One sec…"
+ },
+ "chapters": {
+  "1": {
+   "title": "Your address",
+   "whyTitle": "Your customers are looking for you, but can't find you.",
+   "whyBody": "We'll give you a link that's yours, that you keep for life, and that Google can read.",
+   "doneTitle": "Your address exists.",
+   "doneBody": "It's yours, and the AI now knows how to write in your voice."
+  },
+  "2": {
+   "title": "What you sell",
+   "whyTitle": "An empty storefront sells nothing.",
+   "whyBody": "We'll fill it with a catalog, an offer, and your availability.",
+   "doneTitle": "Your customers know what to buy.",
+   "doneBody": "Your storefront can now receive requests while you work."
+  },
+  "3": {
+   "title": "Your visibility",
+   "whyTitle": "The best storefront is useless if nobody visits it.",
+   "whyBody": "We'll create your first content and get your link circulating.",
+   "doneTitle": "Your journey is complete.",
+   "doneBody": "Your business is online, filled out, and ready to be shared."
+  }
+ },
+ "achievements": {
+  "storeCreated": "Your storefront \"{name}\" is created",
+  "defaultStore": "your business",
+  "voiceLearned": "The AI has learned your tone and your trade",
+  "firstService": "Your first service is online",
+  "firstProduct": "Your first product offer is online",
+  "offerReady": "Your hook offer is ready",
+  "bookingReady": "Your customers can book a slot"
+ },
+ "footer": {
+  "back": "Back",
+  "continue": "Continue",
+  "pending": "One sec…"
+ },
+ "finalCta": "Enter my space",
+ "vertical": {
+  "kicker": "Your business",
+  "titleStart": "What do you do",
+  "titleEm": "best",
+  "titleEnd": "?",
+  "subtitle": "Choose your world. Flux adapts the tools, the vocabulary, and the colors of your storefront."
+ },
+ "goals": {
+  "kicker": "Your goals",
+  "titleStart": "What's",
+  "titleEm": "holding you back",
+  "titleEnd": "today?",
+  "subtitle": "Choose everything that applies to you. The AI uses what you say here to write on your behalf.",
+  "items": {
+   "temps": {
+    "title": "I don't have enough time",
+    "text": "Content and customer replies eat up my evenings."
+   },
+   "google": {
+    "title": "People can't find me",
+    "text": "I want to rank higher on Google and in my city."
+   },
+   "leads": {
+    "title": "I want more customers",
+    "text": "I need regular, qualified inquiries."
+   },
+   "tout": {
+    "title": "Bring it all together",
+    "text": "I want to stop juggling five different tools."
+   }
+  }
+ },
+ "identity": {
+  "kicker": "Step 1 · Your storefront",
+  "titleStart": "Let's give it an",
+  "titleEm": "address.",
+  "subtitle": "This information creates your storefront and sets up your local SEO. Everything stays editable afterward.",
+  "nameLabel": "Business name",
+  "nameHint": "Your first name works too",
+  "namePlaceholder": "E.g.: Atelier Louise",
+  "jobLabel": "Your trade",
+  "jobHint": "Pick one or write your own",
+  "jobPlaceholder": "E.g.: Florist",
+  "cityLabel": "Your city",
+  "cityPlaceholder": "E.g.: Lyon"
+ },
+ "voice": {
+  "kicker": "Step 2 · Your voice",
+  "titleStart": "Flux needs to sound",
+  "titleEm": "like you.",
+  "subtitle": "Choose the tone that best matches your business. This is the one the AI will mimic in all your content.",
+  "tones": {
+   "Direct et efficace": {
+    "title": "Direct & efficient",
+    "sample": "We go straight to the result."
+   },
+   "Chaleureux et proche": {
+    "title": "Warm & personal",
+    "sample": "Like talking to your best customers."
+   },
+   "Premium et expert": {
+    "title": "Premium & expert",
+    "sample": "Understated, precise, high-end."
+   },
+   "Dynamique et audacieux": {
+    "title": "Dynamic & bold",
+    "sample": "Energy and personality."
+   }
+  }
+ },
+ "catalog": {
+  "kicker": "Step 3 · Your catalog",
+  "titleStart": "What do you want to",
+  "titleEm": "sell first?",
+  "subtitle": "A {categoryWord} and your first {itemWord}. That's the bare minimum for a customer to understand what you offer.",
+  "freeBadge": "Free during your journey · 15 credits saved",
+  "categoryLabel": "{categoryWord} name",
+  "itemLabel": "Your {itemWord} name",
+  "itemLabelWithCategory": "Your {itemWord} name in \"{category}\"",
+  "priceLabel": "Price (tax incl.)",
+  "trackStock": "Track stock",
+  "trackStockHint": "FLUX alerts you when it's sold out.",
+  "stockLabel": "Available quantity",
+  "noStockHint": "No stock to track for a service: your customers book a slot, which you'll set up in the calendar step."
+ },
+ "offer": {
+  "kicker": "Step 4 · Your offer",
+  "titleStart": "Give them a",
+  "titleEm": "reason",
+  "titleEnd": "to come in now.",
+  "subtitle": "A featured offer at the top of your storefront: a first-time deal, a bundle, a launch discount.",
+  "freeBadge": "Free during your journey · 15 credits saved",
+  "titleLabel": "Offer title",
+  "titlePlaceholder": "E.g.: -20% on your first visit",
+  "titleHint": "Be concrete: what the customer gets, right away.",
+  "descriptionLabel": "In one sentence (optional)",
+  "descriptionPlaceholder": "E.g.: Valid until the end of the month, by appointment.",
+  "priceLabel": "Offer price",
+  "compareAtLabel": "Crossed-out price (optional)"
+ },
+ "agenda": {
+  "kicker": "Step 5 · Your calendar",
+  "titleStart": "When are you",
+  "titleEm": "available?",
+  "subtitle": "Choose your days and a first time slot. Your customers will be able to book on their own, even when you're not answering.",
+  "weekdays": {
+   "mon": "Mon",
+   "tue": "Tue",
+   "wed": "Wed",
+   "thu": "Thu",
+   "fri": "Fri",
+   "sat": "Sat",
+   "sun": "Sun"
+  },
+  "from": "From",
+  "to": "To"
+ },
+ "content": {
+  "kicker": "Step 6 · Your first content",
+  "titleStart": "Your first",
+  "titleEm": "post",
+  "titleEnd": "is waiting.",
+  "subtitle": "The AI now knows your trade, your city, your catalog, and your tone. See what it comes up with.",
+  "costBadge": "{cost} credits out of your {balance} · the only paid step in the journey",
+  "formatLabel": "Content type",
+  "formats": {
+   "reel": "Reel / short video",
+   "carrousel": "Carousel",
+   "post": "Simple post"
+  },
+  "goalLabel": "What's this post for?",
+  "goals": {
+   "visibilite": "Reach as many people as possible",
+   "expertise": "Prove my expertise",
+   "conversion": "Make people want to book"
+  },
+  "topicLabel": "Topic (optional)",
+  "topicPlaceholder": "E.g.: my star service, a tip, a before/after…",
+  "generating": "The AI is writing…",
+  "generate": "Generate my first content",
+  "outputLabel": "Your content — it's already in your vault.",
+  "outputNote": "You can find it anytime in your vault.",
+  "errors": {
+   "insufficientCredits": "You're missing credits for this generation.",
+   "trialExpired": "Your trial has ended — top up to enjoy FLUX to the fullest.",
+   "contentBlocked": "This topic doesn't pass moderation. Rephrase it.",
+   "generic": "Generation failed. Try again in a moment."
+  }
+ },
+ "results": {
+  "kicker": "Step 7 · Your results",
+  "titleStart": "Here's where you",
+  "titleEm": "really",
+  "subtitle": "These are your real numbers, not a demo. This is the dashboard you'll find every morning in your space.",
+  "creditsLeft": "credits left",
+  "creditsLeftHint": "Every piece of content, every post uses some up.",
+  "creation": "creation in your vault",
+  "creations": "creations in your vault",
+  "creationsHint": "Your content stays accessible forever.",
+  "upcomingBookings": "upcoming bookings",
+  "upcomingBookingsHint": "It'll climb on its own as your link starts circulating."
+ },
+ "style": {
+  "kicker": "Your style",
+  "titleStart": "Choose your",
+  "titleEm": "style.",
+  "subtitle": "Each style sets the colors, fonts, and layout of your storefront. The preview follows your choice, and everything stays editable afterward."
+ },
+ "images": {
+  "kicker": "Your style · Your images",
+  "titleStart": "What image do you want to",
+  "titleEm": "leave behind?",
+  "subtitle": "Your logo and the big photo that welcomes your visitors. Both are optional — you can add them later from the editor.",
+  "logoLabel": "Logo or portrait",
+  "logoChange": "Change logo",
+  "logoAdd": "Add my logo",
+  "heroLabel": "Large cover photo",
+  "heroChange": "Change photo",
+  "heroAdd": "Add a photo",
+  "uploading": "Uploading…",
+  "tooLarge": "File too large ({max} MB max).",
+  "failed": "Upload failed. Try again."
+ },
+ "details": {
+  "kicker": "Your style · The details",
+  "titleStart": "Fine-tune it, and tell them how to",
+  "titleEm": "reach you.",
+  "subtitle": "Your writing style, your colors, and your contact info. The style you just picked has already pre-set everything.",
+  "fontLabel": "Writing style",
+  "primaryLabel": "Primary color",
+  "darkLabel": "Dark color",
+  "phoneLabel": "Phone",
+  "optional": "Optional",
+  "phonePlaceholder": "E.g.: 555 123 4567",
+  "addressLabel": "Address",
+  "addressPlaceholder": "E.g.: 12 Lilac Street"
+ },
+ "publish": {
+  "kicker": "Your style · Going live",
+  "titleStart": "Shall we",
+  "titleEm": "publish it?",
+  "subtitle": "Everything you just set is living in draft. Publishing is what makes your storefront visible to your customers — and gives meaning to the link in the next step.",
+  "done": "Your storefront is live.",
+  "cost": "Publishing costs {cost} credits · your balance: {balance} cr.",
+  "publishing": "Publishing…",
+  "cta": "Publish my storefront",
+  "missingCredits": "You're missing {missing} credit to publish.",
+  "missingCreditsPlural": "You're missing {missing} credits. You can continue and publish later from your space.",
+  "errors": {
+   "insufficientCredits": "You need {cost} credits to publish.",
+   "subscriptionRequired": "Your trial has ended: choose a plan to publish.",
+   "alreadyUpToDate": "Your storefront is already up to date.",
+   "contentBlocked": "Hate speech and explicit content are forbidden and penalized on FLUX; please respect your environment and that of others. After 3 violations of our terms of service, the account is deleted.",
+   "generic": "Couldn't publish. Try again in a moment.",
+   "success": "Your storefront is live! Balance: {balance} cr."
+  }
+ },
+ "share": {
+  "kicker": "Step 8 · Your link",
+  "titleStart": "Get it",
+  "titleEm": "circulating.",
+  "subtitle": "Instagram bio, WhatsApp status, Google listing, email signature. It's the step everyone skips — and the one that fills up a calendar.",
+  "copied": "Copied",
+  "copy": "Copy",
+  "whatsappText": "Book online: {url}",
+  "whatsappShare": "Share on WhatsApp",
+  "iosTitle": "On iPhone",
+  "iosStep1": "In Safari, tap \"Share\"",
+  "iosStep2": "Choose \"Add to Home Screen\"",
+  "androidTitle": "On Android",
+  "androidStep1": "Open the Chrome menu",
+  "androidStep2": "Choose \"Install app\"",
+  "installNow": "Install FLUX now"
+ },
+ "emailVerify": {
+  "title": "Confirm your address to publish",
+  "description": "We sent a confirmation link to {email}. Click it, then come back here: your storefront will go live.",
+  "spamHint": "If you don't see it, check your spam folder.",
+  "openWebmail": "Open {label}",
+  "resend": "Resend email",
+  "resending": "Sending…",
+  "sent": "Email sent. Check your inbox.",
+  "errors": {
+   "not_authenticated": "You need to be logged in to continue.",
+   "already_verified": "Your address is already verified.",
+   "rate_limited": "Wait a minute before requesting another email.",
+   "update_failed": "Couldn't send the email. Try again later.",
+   "send_failed": "The email didn't go through. Try again in a moment.",
+   "unknown": "Something went wrong. Try again in a moment."
+  }
+ },
+ "preview": {
+  "label": "Your storefront, live",
+  "availableIn": "Available in {city}",
+  "addressOnline": "Your address, online",
+  "defaultBusinessName": "Your business",
+  "defaultJobTitle": "Your trade",
+  "defaultCategory": "Your catalog",
+  "toneTagline": "Local know-how, told {tone}.",
+  "defaultTagline": "Local know-how, a simple experience, and service that makes the difference.",
+  "bookCta": "Book an appointment",
+  "open": "Open",
+  "days": {
+   "sun": "Sun",
+   "mon": "Mon",
+   "tue": "Tue",
+   "wed": "Wed",
+   "thu": "Thu",
+   "fri": "Fri",
+   "sat": "Sat"
+  }
+ }
+}

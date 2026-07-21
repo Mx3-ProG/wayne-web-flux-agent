@@ -1,7 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Offer, Page, Product, Service, SitePage } from "@/lib/types";
+import type { Locale } from "@/lib/i18n/config";
+import { LOCALE_BCP47 } from "@/lib/i18n/config";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
 import {
   VitrineView,
   type CategoryWithProducts,
@@ -21,6 +24,13 @@ type Props = {
   productCategories: CategoryWithProducts[];
   offers: Offer[];
   bookingEnabled: boolean;
+  // Langue source de la vitrine (pages.default_locale). Absente en préview
+  // éditeur (dashboard) : les composants retombent sur le français.
+  locale?: Locale;
+  // Langue principale + langues avec une traduction publiée : alimente le
+  // globe de langue (absent en préview éditeur, avant publication).
+  availableLocales?: Locale[];
+  t?: StorefrontDict;
 };
 
 // Wrapper client de la vitrine publique : « Réserver » → modal de réservation ;
@@ -32,7 +42,16 @@ export function VitrinePublic({
   productCategories,
   offers,
   bookingEnabled,
+  locale,
+  availableLocales,
+  t,
 }: Props) {
+  // Le root layout pose <html lang> depuis la locale de la requête marketing
+  // (proxy.ts), sans rapport avec la langue de la vitrine du commerçant : on
+  // la corrige côté client, comme le fait déjà I18nProvider pour le dashboard.
+  useEffect(() => {
+    if (locale) document.documentElement.lang = LOCALE_BCP47[locale];
+  }, [locale]);
   const [bookingService, setBookingService] = useState<Service | null>(null);
   const [cart, setCart] = useState<Record<string, CartLine>>({});
   const [cartOpen, setCartOpen] = useState(false);
@@ -76,8 +95,8 @@ export function VitrinePublic({
   return (
     <>
       {page.moderation_status === "verified" && (
-        <div className={styles.verifiedBadge} title="Cette version de la boutique a été contrôlée par FLUX.">
-          <span aria-hidden="true">✓</span> Boutique vérifiée
+        <div className={styles.verifiedBadge} title={t?.verifiedBadge.title ?? "Cette version de la boutique a été contrôlée par FLUX."}>
+          <span aria-hidden="true">✓</span> {t?.verifiedBadge.label ?? "Boutique vérifiée"}
         </div>
       )}
       {/* Tracking uniquement sur la vraie vitrine publique, jamais en préview. */}
@@ -95,6 +114,9 @@ export function VitrinePublic({
           cartCount={cartCount}
           onOpenCart={() => setCartOpen(true)}
           poweredBy={!page.hide_branding}
+          locale={locale}
+          availableLocales={availableLocales}
+          t={t}
         />
       ) : (
         <VitrineView
@@ -108,6 +130,9 @@ export function VitrinePublic({
           cartCount={cartCount}
           onOpenCart={() => setCartOpen(true)}
           poweredBy={!page.hide_branding}
+          locale={locale}
+          availableLocales={availableLocales}
+          t={t}
         />
       )}
       {bookingService && (
@@ -118,6 +143,8 @@ export function VitrinePublic({
           designId={design.components.booking.renderId}
           buttonDesignId={design.components.button.renderId}
           onClose={() => setBookingService(null)}
+          locale={locale}
+          t={t?.booking}
         />
       )}
       {cartOpen && (
@@ -130,6 +157,7 @@ export function VitrinePublic({
           onSetQty={setQty}
           onClose={() => setCartOpen(false)}
           onDone={() => setCart({})}
+          t={t?.order}
         />
       )}
     </>

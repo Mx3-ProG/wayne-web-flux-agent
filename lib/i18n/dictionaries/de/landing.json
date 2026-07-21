@@ -1,0 +1,335 @@
+{
+  "meta": {
+    "title": "Wayne Web Flux — Sichtbarkeit, Leads und Tools für dein Geschäft",
+    "description": "Spar dir Zeit, steigere deine Google-Sichtbarkeit und gewinne mehr Interessenten mit der All-in-One-Lösung von Wayne Web für Profis.",
+    "ogTitle": "Wayne Web Flux — Dein Geschäft, überall sichtbar",
+    "ogDescription": "Sichtbarkeit, Kontakte, Termine und Tools an einem Ort, gemacht für Profis."
+  },
+  "hero": {
+    "eyebrow": "Die Power einer Agentur. Die Einfachheit eines Tools.",
+    "titleLine1": "Dein Geschäft verdient es,",
+    "titleLine2": "",
+    "titleEm": "überall gesehen zu werden.",
+    "text": "Wayne Web Flux verwandelt dein Know-how in Sichtbarkeit, Kontakte und Termine. Alle Tools, um dein Business wachsen zu lassen, an einem Ort vereint.",
+    "primaryCta": "Mein Geschäft pushen",
+    "secondaryCta": "Lösung entdecken",
+    "reassurance1": "Ohne Kreditkarte",
+    "reassurance2": "100 Credits geschenkt",
+    "reassurance3": "Von Entwicklern gedacht",
+    "stageAria": "Vorschau von Wayne Web Flux",
+    "floatingLabel": "Google-Sichtbarkeit",
+    "floatingValue": "+ 38 % diesen Monat",
+    "appSpace": "Mein Bereich",
+    "appGreeting": "Hallo Mathieu,",
+    "appHeadline": "Bring dein Geschäft voran.",
+    "appViews": "Aufrufe deiner Seite",
+    "appViewsTrend": "↗ 24 % in 30 Tagen",
+    "appAppointments": "Termine",
+    "appThisMonth": "Diesen Monat",
+    "appMyTools": "Meine Tools",
+    "appSeeAll": "Alle anzeigen",
+    "appCreatePost": "Post erstellen",
+    "appReply": "Kunde antworten",
+    "appBoostSeo": "Mein SEO pushen",
+    "leadLabel": "Neuer Interessent",
+    "leadValue": "Anfrage gerade eben erhalten",
+    "footLeft": "Mit Anspruch entwickelt von Wayne Web",
+    "footRight": "Für Selbstständige, Geschäfte und Agenturen"
+  },
+  "manifesto": {
+    "index": "01 / DAS VERSPRECHEN",
+    "titleLine1": "Du beherrschst dein Handwerk.",
+    "titleLine2": "Wir beherrschen",
+    "titleEm": "das Digitale.",
+    "p1": "Du solltest nicht zum Experten für SEO, Programmierung, API-Funktionen und Automatisierung werden müssen, um dein Geschäft auszubauen.",
+    "p2": "Wir haben das Tool gebaut, das wir jedem unserer Kunden gerne gegeben hätten: einfach in der Nutzung, seriös unter der Haube, fokussiert auf handfeste Ergebnisse."
+  },
+  "liveShowcase": {
+    "index": "FLUX / LIVE",
+    "titleLine1": "FLUX bei der Arbeit",
+    "titleLine2": "während du",
+    "titleEm": "kassierst.",
+    "text": "Eine echte Vitrine, erstellt für ein Autoleasing-Unternehmen. Sie lebt auf ihrer eigenen Seite, genau wie die, die deine Kunden sehen werden.",
+    "reloadTitle": "Vorschau neu laden",
+    "formatAria": "Format der Vorschau",
+    "desktopTitle": "Desktop-Ansicht",
+    "mobileTitle": "Mobile-Ansicht",
+    "desktop": "Desktop",
+    "mobile": "Mobile",
+    "open": "Öffnen",
+    "iframeTitle": "Vorschau der mit Flux erstellten Website Maison Veyra",
+    "liveBadge": "Live"
+  },
+  "pillarsSection": {
+    "index": "02 / WAS SICH ÄNDERT",
+    "titleLine1": "Weniger Aufgaben.",
+    "titleLine2": "Mehr",
+    "titleGold": "Business.",
+    "text": "Vier Hebel, eine Richtung: die richtigen Kunden zu dir bringen.",
+    "askFlux": "Frag",
+    "flipHint": "Tippen zum Entdecken",
+    "flipCta": "Meinen Bereich erstellen",
+    "flipBack": "Zurück",
+    "showMoreAria": "Mehr anzeigen."
+  },
+  "pillars": [
+    {
+      "title": "Spar dir Zeit",
+      "text": "Posts, Kundenantworten und Inhalte, fertig zum Veröffentlichen. Du behältst deine Stimme, du bekommst deine Abende zurück.",
+      "tag": "Zeitspar-Tools",
+      "sales": "Deine Abende müssen nicht in wiederkehrenden Aufgaben verschwinden. Lass Flux arbeiten, während du wieder Zeit für dein Handwerk findest — und für dich."
+    },
+    {
+      "title": "Werde bei Google gefunden",
+      "text": "Eine klare lokale Präsenz, optimierte Texte und ein Google-Profil, das für dein Geschäft arbeitet.",
+      "tag": "Push dein Geschäft",
+      "sales": "Jemand sucht heute genau das, was du anbietest. Gib deinem Geschäft endlich die Sichtbarkeit, die aus dieser Suche einen Besuch macht."
+    },
+    {
+      "title": "Verwandle Aufrufe in Kunden",
+      "text": "Eine Vitrine, die überzeugt, ein einfacher Ablauf und Termine, die kommen, ohne dass du Interessenten hinterherlaufen musst.",
+      "tag": "Generiere Leads",
+      "sales": "Ein vergessener Aufruf zahlt keine Rechnung. Mit dem richtigen Ablauf kann jeder Besuch zu einem Gespräch werden, dann zu einem echten Kunden."
+    },
+    {
+      "title": "Steuere alles an einem Ort",
+      "text": "Seite, Kalender, Nachrichten und Sichtbarkeit vereint in einem Bereich, gemacht für Profis vor Ort.",
+      "tag": "All-in-One-Lösung",
+      "sales": "Weniger Tabs, weniger Kopfschmerzen, mehr Kontrolle. Dein Geschäft verdient einen Bereich, so klar und seriös wie dein Know-how."
+    }
+  ],
+  "toolsSection": {
+    "index": "03 / IN DEINEM BEREICH",
+    "titleLine1": "Tools, die liefern.",
+    "titleLine2": "Keine Tools, die",
+    "titleEm": "verkomplizieren.",
+    "text": "Jede Funktion entsteht aus einem echten Problem unserer Kunden. Ein paar Antworten, ein direkt nutzbares Ergebnis.",
+    "askFlux": "Frag",
+    "acquire": "Erwerben"
+  },
+  "tools": [
+    {
+      "label": "Website & SEO",
+      "title": "Baue deine Website und passe sie grenzenlos an",
+      "text": "FLUX erstellt in Sekunden eine schnelle Vitrine, für Google gemacht und perfekt an Safari angepasst.",
+      "result": "In Sekunden online"
+    },
+    {
+      "label": "Kundenbeziehung",
+      "title": "Ruf deine Kunden direkt von der Plattform zurück",
+      "text": "Finde den richtigen Kontakt und starte deinen Anruf mit einem Klick, ohne Tool-Wechsel und ohne den Faden zu verlieren.",
+      "result": "Ein Klick zum Zurückrufen"
+    },
+    {
+      "label": "Termine",
+      "title": "Gib deinen Kunden Termine",
+      "text": "Biete deine Verfügbarkeiten an, organisiere deine Events und lass deine Kunden zur passenden Zeit buchen.",
+      "result": "Ein Kreis, der wächst, selbst wenn du am Herd stehst"
+    },
+    {
+      "label": "Content",
+      "title": "Beiträge, die zu dir passen",
+      "text": "Eine Idee wird zum Post, Reel oder Karussell, fertig zur Veröffentlichung dank FLUX — frag einfach nach.",
+      "result": "2 Std. gespart"
+    },
+    {
+      "label": "Verkauf",
+      "title": "Verkauf deine Produkte und Dienstleistungen direkt",
+      "text": "Erstelle deinen Katalog, präsentiere deine Angebote und mach aus deiner Vitrine einen echten Verkaufskanal.",
+      "result": "Dein Geschäft kassiert"
+    },
+    {
+      "label": "Conversion",
+      "title": "Jede Nachricht kann zum Verkauf werden",
+      "text": "Beantworte Anfragen, hak bei Unentschlossenen nach und bitte um Bewertungen, ohne nach Worten zu suchen — mit einem Klick.",
+      "result": "3 fertige Antworten"
+    },
+    {
+      "label": "Lokales SEO",
+      "title": "Google versteht endlich dein Geschäft",
+      "text": "Beschreibung, Leistungen und lokale Inhalte strukturiert, um die richtigen Suchanfragen anzuziehen.",
+      "result": "Verstärkte Sichtbarkeit"
+    },
+    {
+      "label": "Daten",
+      "title": "Sammle wertvolle Signale vor dem Verkauf",
+      "text": "Zentralisiere Anfragen, Absichten und nützliche Infos, um jeden Interessenten besser zu konvertieren.",
+      "result": "Qualifizierte Interessenten"
+    },
+    {
+      "label": "Credits",
+      "title": "Geh in deinem Tempo voran, ohne Zwangsabo",
+      "text": "Nutze die Tools nach deinem Bedarf und starte mit 100 geschenkten Credits direkt bei der Anmeldung.",
+      "result": "100 Credits geschenkt"
+    }
+  ],
+  "story": {
+    "index": "04 / WARUM WIR",
+    "stamp": "abgeschlossene Projekte",
+    "titleLine1": "Zuerst Entwickler.",
+    "titleLine2": "Immer",
+    "titleEm": "an deiner Seite.",
+    "text": "Wayne Web entstand aus einer einfachen Überzeugung: Technologie soll Unternehmern dienen, sie nicht verlieren. Nach Hunderten von Websites, Automatisierungen und gelösten Business-Problemen",
+    "textGlitch": "haben wir unser Know-how in Flux gebündelt.",
+    "proof1Strong": "1 Sekunde",
+    "proof1": "um deine Website zu veröffentlichen",
+    "proof2Strong": "24/7",
+    "proof2": "im Einsatz für dich",
+    "proof3Strong": "+20 Tools",
+    "proof3": "zum Zeitsparen"
+  },
+  "notForYou": {
+    "index": "05 / DAS IST NICHTS FÜR DICH",
+    "titleLine1": "Das ist nichts für dich",
+    "titleEm": "wenn…",
+    "text": "Flux ist ein starkes Werkzeug, aber kein magisches. Hier sind die Fälle, in denen es keine Wunder für dich vollbringen kann.",
+    "items": [
+      {
+        "title": "Deine Geschäftsidee ist unklar",
+        "text": "Wenn dein Konzept nie an einem echten Markt getestet wurde, wird kein Werkzeug es für dich validieren."
+      },
+      {
+        "title": "Du willst Illegales bewerben",
+        "text": "Wayne Web ist ausschließlich für legale und seriöse Aktivitäten. Ohne Ausnahme."
+      },
+      {
+        "title": "Du suchst einen Zauberstab",
+        "text": "Flux ist eine konkrete, praktische Lösung, kein Wundermittel, das ohne dich arbeitet."
+      },
+      {
+        "title": "Dir fehlt die Geduld",
+        "text": "SEO braucht Zeit: Rechne mit mindestens 3 Monaten Einrichtung, um bei Google gut zu ranken."
+      }
+    ]
+  },
+  "testimonialsSection": {
+    "index": "06 / SIE SAGEN ES BESSER ALS WIR",
+    "titleLine1": "Was sie über",
+    "titleEm": "uns denken.",
+    "text": "Geschäftsleute wie du haben die Kontrolle über ihre Sichtbarkeit zurückgewonnen. Hier ist, was sich ändert, in ihren Worten — nicht in unseren.",
+    "starsAria": "Bewertung: 5 von 5",
+    "cta": "Schließ dich ihnen an: erstelle heute dein Geschäft",
+    "memberCta": "Schon Mitglied? Logg dich ein und check deine Termine"
+  },
+  "testimonials": [
+    {
+      "job": "Floristin · Lyon",
+      "quote": "Früher verschwanden meine Abende in Instagram und meine Website war von 2017. Heute postet Flux für mich, meine Vitrine ist wunderschön und meine Kundinnen buchen ihre Sträuße online. Ich habe meine Sonntage zurückbekommen.",
+      "metric": "6 Std. gespart / Woche"
+    },
+    {
+      "job": "Barbier · Paris 11.",
+      "quote": "Das Online-Terminbuch hat alles verändert: keine Anrufe mehr während eines Haarschnitts. Meine Kunden buchen nachts, ich wache mit vollem Kalender auf. Das ist unbezahlbar.",
+      "metric": "+30 % Buchungen"
+    },
+    {
+      "job": "Schönheitsinstitut · Bordeaux",
+      "quote": "Ich dachte, Google sei nur für große Ketten. Drei Wochen nachdem ich meine Vitrine veröffentlicht hatte, sagte mir eine Kundin: „Ich habe Sie gefunden, als ich nach Institut in meiner Nähe gesucht habe.“ Da bekam ich Gänsehaut.",
+      "metric": "1. Platz lokal bei Google"
+    },
+    {
+      "job": "Gastronom · Marseille",
+      "quote": "Zwischen Herd und Lieferungen hatte ich keine Minute für Digitales. Flux bereitet meine Posts vor und beantwortet meine Bewertungen. Mein Restaurant lebt online, während ich koche.",
+      "metric": "2 Std. gespart / Tag"
+    },
+    {
+      "job": "Fotograf · Nantes",
+      "quote": "Meine Vitrine war noch am selben Abend online. Am nächsten Tag die erste Nachricht eines Paares für eine Hochzeit. Das Angebot ging aus meinem Flux-Bereich raus, unterschrieben innerhalb der Woche. Nie war ich so schnell erfolgreich.",
+      "metric": "1 Hochzeit unterschrieben in 7 Tagen"
+    },
+    {
+      "job": "Autowerkstatt · Lille",
+      "quote": "Ich bin kein Website-Mensch, ich bin ein Motoren-Mensch. Flux hat die Website, die SEO und die Rückrufanfragen erledigt. Mein Umsatz zog nach. Ich empfehle es jedem Handwerker.",
+      "metric": "Umsatz +22 % in 3 Monaten"
+    }
+  ],
+  "faqSection": {
+    "index": "07 / WIR ANTWORTEN DIR",
+    "titleLine1": "Die Fragen, die uns oft",
+    "titleEm": "gestellt werden.",
+    "text": "Alles, was du wissen willst, bevor du loslegst, ohne Um-die-Ecke-Reden. Noch Zweifel? Schreib uns, ein Mensch antwortet dir.",
+    "askCta": "Meine Frage stellen",
+    "finalCta": "Alles klar, ich lege los"
+  },
+  "faq": [
+    {
+      "q": "Wie funktioniert das konkret?",
+      "a": "Du erstellst kostenlos dein Konto, beantwortest ein paar Fragen zu deinem Geschäft, und Flux baut deine Vitrine in Sekunden. Danach aktivierst du die Tools, die du brauchst: Termine, Beiträge, Kundenantworten, lokales SEO … Alles wird von einem einzigen Bereich aus gesteuert, gemacht für Menschen vor Ort."
+    },
+    {
+      "q": "Was kostet das?",
+      "a": "Du startest mit 100 geschenkten Credits, ohne Kreditkarte. Danach nutzt du deine Credits nach deinem echten Bedarf: kein Zwangsabo, keine versteckten Gebühren. Du gehst in deinem Tempo voran und zahlst nur für das, was dein Geschäft voranbringt."
+    },
+    {
+      "q": "Ich bin nicht IT-versiert, ist das ein Problem?",
+      "a": "Im Gegenteil: Flux wurde für dich gebaut. Wenn du eine Nachricht verschicken kannst, kannst du Flux benutzen. Kein Code, kein Fachjargon, keine komplizierten Einstellungen — du beantwortest einfache Fragen und das Tool erledigt die technische Arbeit für dich."
+    },
+    {
+      "q": "Wie schnell ist meine Website online?",
+      "a": "Deine Vitrine geht in 1 Sekunde live, sobald sie fertig ist. Der Bau selbst dauert ein paar Minuten: die Zeit, ein paar Fragen zu deinem Geschäft zu beantworten. Du kannst buchstäblich heute Abend anfangen und morgen früh sichtbar sein."
+    },
+    {
+      "q": "Kann ich meine Termine und Kunden verwalten?",
+      "a": "Ja. Deine Kunden buchen online auf deiner Vitrine, du findest deinen Kalender in deinem Bereich, und du kannst einen Kunden mit einem Klick zurückrufen. Anfragen, Nachrichten und Interessenten sind an einem Ort zentralisiert — Schluss mit Post-its und verpassten Anrufen."
+    },
+    {
+      "q": "Gibt es eine Vertragsbindung? Kann ich jederzeit aufhören?",
+      "a": "Keine Vertragsbindung. Du meldest dich ohne Kreditkarte an, testest mit deinen geschenkten Credits und bleibst nur, wenn Flux dir Zeit und Kunden bringt. Deine Daten gehören dir, Punkt."
+    },
+    {
+      "q": "Und wenn ich Hilfe brauche?",
+      "a": "Wir sind Entwickler, aber vor allem an deiner Seite: Ein echtes Team antwortet auf deine Nachrichten innerhalb von 24 Werkstunden. Schreib uns über das Kontaktformular direkt darunter, wir lesen alles und antworten schnell."
+    }
+  ],
+  "newsletter": {
+    "index": "08 / DER NEWSLETTER",
+    "titleLine1": "Ein Business-Tipp pro Woche.",
+    "titleEm": "Null Blabla.",
+    "text": "Post-Ideen, lokale SEO-Tricks, Flux-Neuigkeiten: eine E-Mail pro Woche, um dein Geschäft wachsen zu lassen, geschrieben von Entwicklern, die deine Sprache sprechen. Abmeldung mit einem Klick.",
+    "emailLabel": "Deine E-Mail-Adresse",
+    "emailPlaceholder": "deine.email@geschaeft.de",
+    "submit": "Ich abonniere",
+    "sending": "Einen Moment…",
+    "success": "Notiert! Der nächste Tipp landet direkt in deinem Postfach.",
+    "error": "Ups, das hat nicht geklappt. Prüf deine Adresse und versuch es erneut."
+  },
+  "contact": {
+    "index": "09 / KONTAKTIERE UNS",
+    "titleLine1": "Eine Frage?",
+    "titleEm": "Lass uns reden.",
+    "text": "Hinter Flux stehen Menschen, die die Praxis kennen. Projekt, Frage, besonderer Bedarf: erzähl uns davon, wir antworten dir innerhalb von 24 Werkstunden — und sagen dir ehrlich, ob Flux zu dir passt.",
+    "nameLabel": "Dein Vorname (oder dein Geschäft)",
+    "namePlaceholder": "Z. B. Sophie, Blumen & Wunder",
+    "emailLabel": "Deine E-Mail",
+    "emailPlaceholder": "deine.email@geschaeft.de",
+    "messageLabel": "Deine Nachricht",
+    "messagePlaceholder": "Erzähl uns von deinem Projekt, deiner Frage, deinem Bedarf … wir lesen alles.",
+    "submit": "Meine Nachricht senden",
+    "sending": "Wird gesendet…",
+    "success": "Nachricht gut angekommen! Wir antworten dir innerhalb von 24 Werkstunden, versprochen.",
+    "doneHint": "In der Zwischenzeit, wie wär's mit einem Vorsprung?",
+    "doneCta": "Mein Geschäft jetzt erstellen",
+    "error": "Das Senden ist fehlgeschlagen. Versuch es erneut oder schreib uns direkt per E-Mail.",
+    "shareIdle": "Teile Flux mit einem Geschäftsinhaber, den du schätzt",
+    "shareCopied": "Link kopiert!",
+    "shareText": "Ich habe das Tool gefunden, das Geschäfte durchstarten lässt. Schau mal:"
+  },
+  "finalCta": {
+    "eyebrow": "Dein nächster Kunde sucht dich schon",
+    "titleLine1": "Zeit, dass er",
+    "titleEm": "dich findet.",
+    "text": "Erstelle deine Vitrine, aktiviere deine Tools und mach aus deiner Online-Präsenz einen echten Wachstumsmotor.",
+    "cta": "Kostenlos starten",
+    "small": "Ohne Vertragsbindung · Ohne Kreditkarte · 100 Credits geschenkt"
+  },
+  "sticky": {
+    "aria": "Schnellzugriff auf Flux",
+    "mainAria": "Flux für mich arbeiten lassen und mein Profil erstellen",
+    "label": "Loslegen lassen",
+    "login": "Login"
+  },
+  "scroller": {
+    "upAria": "Zum vorherigen Abschnitt hochscrollen",
+    "downAria": "Zum nächsten Abschnitt runterscrollen"
+  }
+}

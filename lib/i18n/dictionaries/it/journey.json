@@ -1,0 +1,59 @@
+{
+  "chapters": {
+    "1": {
+      "title": "Il tuo indirizzo",
+      "whyTitle": "Oggi i tuoi clienti ti cercano e non ti trovano.",
+      "whyBody": "Un cliente su due che non trova un indirizzo chiaro chiama il concorrente della porta accanto. Ti daremo un link tutto tuo, che conservi a vita, e che Google può finalmente leggere.",
+      "doneTitle": "Il tuo indirizzo esiste.",
+      "doneBody": "È tuo. Nessuno può più portartelo via — e l'IA ora sa scrivere con le tue parole."
+    },
+    "2": {
+      "title": "Cosa vendi",
+      "whyTitle": "Una vetrina vuota non vende niente.",
+      "whyBody": "Un visitatore decide in 8 secondi. Se non vede né prezzi, né offerte, né orari disponibili, se ne va. Riempiamo la tua vetrina adesso — non «più tardi».",
+      "doneTitle": "I tuoi clienti sanno cosa comprare.",
+      "doneBody": "Un catalogo, un'offerta in evidenza e orari veri. La tua vetrina può incassare una richiesta mentre tu lavori."
+    },
+    "3": {
+      "title": "La tua visibilità",
+      "whyTitle": "La vetrina più bella del mondo non serve a niente se nessuno ci passa.",
+      "whyBody": "È il passaggio che tutti saltano — ed è esattamente quello che riempie un'agenda. Creiamo il tuo primo contenuto e facciamo circolare il tuo link.",
+      "doneTitle": "Il tuo percorso è completo.",
+      "doneBody": "La tua attività è online, piena e condivisibile. Tutto ciò che aggiungi da ora in poi non fa che allargare il distacco."
+    }
+  },
+  "steps": {
+    "1": {
+      "title": "Crea la tua vetrina",
+      "gain": "Un indirizzo tutto tuo, leggibile da Google, pronto in 30 secondi."
+    },
+    "2": {
+      "title": "Insegnale a parlare come te",
+      "gain": "L'IA smette di scrivere come un robot e comincia a scrivere come te."
+    },
+    "3": {
+      "title": "Crea il tuo prodotto",
+      "gain": "Senza un prezzo visibile, un visitatore su due se ne va senza contattarti."
+    },
+    "4": {
+      "title": "Crea le tue offerte",
+      "gain": "L'offerta in evidenza è la prima cosa che vede un cliente. Ed è lei che fa scattare la decisione."
+    },
+    "5": {
+      "title": "Crea la tua agenda",
+      "gain": "I tuoi clienti prenotano di notte, la domenica, mentre tu lavori."
+    },
+    "6": {
+      "title": "Crea il tuo primo contenuto",
+      "gain": "Un post regolare è ciò che fa tornare le persone sulla tua vetrina."
+    },
+    "7": {
+      "title": "Guarda i tuoi risultati",
+      "gain": "Quello che non misuri, non puoi migliorarlo."
+    },
+    "8": {
+      "title": "Condividi la tua attività ovunque",
+      "gain": "Più il tuo link circola, più la tua agenda si riempie da sola."
+    }
+  }
+}

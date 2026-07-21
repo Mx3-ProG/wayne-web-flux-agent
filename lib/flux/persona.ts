@@ -4,7 +4,8 @@
 // source unique.
 
 import type { Page, Service, VoiceProfile } from "@/lib/types";
-import { getVertical } from "@/lib/verticals";
+import { getLocalizedVertical } from "@/lib/verticals-i18n";
+import type { Locale } from "@/lib/i18n/config";
 
 // Identité de FLUX pour les surfaces conversationnelles (chat, brief). FLUX
 // parle en son nom (« je »), mais rédige les contenus de la vitrine À LA PLACE
@@ -16,13 +17,16 @@ export function fluxIdentity(): string {
 // Bloc de contexte métier partagé par tous les prompts FLUX. La sortie doit
 // rester IDENTIQUE à l'ancienne construction inline de buildPrompt (le prompt
 // de /api/generate en dépend, ainsi que le cache implicite d'Anthropic).
-export function businessContext(options: {
+export async function businessContext(options: {
   page: Page | null;
   services: Service[];
   voice: VoiceProfile | null;
-}): string[] {
-  const { page, services, voice } = options;
-  const vertical = getVertical(page?.vertical ?? "autre");
+  locale: Locale;
+}): Promise<string[]> {
+  const { page, services, voice, locale } = options;
+  // La langue du contexte transmis à FLUX suit celle du projet (page.default_locale,
+  // déjà résolue par l'appelant) — jamais figée en français.
+  const vertical = await getLocalizedVertical(page?.vertical ?? "autre", locale);
 
   const parts: string[] = [`Contexte métier : ${vertical.promptContext}`];
 

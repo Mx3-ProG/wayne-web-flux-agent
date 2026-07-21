@@ -20,7 +20,10 @@ import { enforceKarlMada } from "@/lib/karlmada";
 import { sendEmailWithResult } from "@/lib/emails/send";
 import { emailVerificationEmail } from "@/lib/emails/auth-templates";
 import { createVerificationToken, verificationUrl } from "@/lib/email-verification";
+import { healMissingProfile } from "@/lib/profile-heal";
 import type { PageDraftFields, TimeRange, TunnelDraft } from "@/lib/types";
+import { cookies } from "next/headers";
+import { hasLocale, localeHref, LOCALE_COOKIE } from "@/lib/i18n/config";
 
 // Actions du tunnel /commencer.
 //
@@ -38,6 +41,17 @@ import type { PageDraftFields, TimeRange, TunnelDraft } from "@/lib/types";
 
 export type TunnelActionState = { error?: string; message?: string };
 
+// Codes plutôt que texte : createAccount est un "use server" appelé par
+// useActionState, sans accès à la locale du visiteur. Le composant client
+// traduit le code via son dictionnaire (dict.errors).
+export type CreateAccountErrorCode =
+  | "fillAll"
+  | "passwordTooShort"
+  | "accountExists"
+  | "createFailed"
+  | "createdSignInFailed";
+export type CreateAccountState = { error?: CreateAccountErrorCode };
+
 async function currentUser() {
   const supabase = await createClient();
   const {
@@ -49,16 +63,17 @@ async function currentUser() {
 // ---------------------------------------------------------------- compte
 
 export async function createAccount(
-  _prev: TunnelActionState,
+  _prev: CreateAccountState,
   formData: FormData
-): Promise<TunnelActionState> {
+): Promise<CreateAccountState> {
   const name = String(formData.get("name") ?? "").trim();
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
+  const requestedLocale = String(formData.get("locale") ?? "fr");
+  const locale = hasLocale(requestedLocale) ? requestedLocale : "fr";
 
-  if (!name || !email || !password) return { error: "Remplis tous les champs." };
-  if (password.length < 8)
-    return { error: "Le mot de passe doit faire au moins 8 caractères." };
+  if (!name || !email || !password) return { error: "fillAll" };
+  if (password.length < 8) return { error: "passwordTooShort" };
 
   const admin = createAdminClient();
   // email_confirm: true est INDISPENSABLE ici : sans lui, signInWithPassword
@@ -74,10 +89,10 @@ export async function createAccount(
 
   if (error || !data.user) {
     if (error && /already|registered|exists/i.test(error.message)) {
-      return { error: "Un compte existe déjà avec cet email." };
+      return { error: "accountExists" };
     }
     console.error("tunnel: createUser failed", error?.message);
-    return { error: "Impossible de créer ton compte. Réessaie." };
+    return { error: "createFailed" };
   }
 
   // Client SSR (pas admin) : c'est lui qui pose les cookies de session.
@@ -88,8 +103,33 @@ export async function createAccount(
   });
   if (signInError) {
     console.error("tunnel: sign-in after signup failed", signInError.message);
-    return { error: "Compte créé, mais connexion impossible. Essaie de te connecter." };
+    return { error: "createdSignInFailed" };
   }
+
+  // Le choix effectué sur la planète, avant l'identification, devient la
+  // langue gratuite et définitive du premier parcours. Sa persistance ne doit
+  // PAS échouer en silence : un compte resté en 'fr' oblige ensuite à payer 25
+  // crédits pour atteindre sa vraie langue (dashboard). Si la 1re tentative
+  // échoue (profil pas encore matérialisé…), on répare la ligne et on rejoue.
+  let localeError = (
+    await supabase.rpc("set_initial_production_locale", { target_locale: locale })
+  ).error;
+  if (localeError) {
+    await healMissingProfile(supabase, data.user);
+    localeError = (
+      await supabase.rpc("set_initial_production_locale", { target_locale: locale })
+    ).error;
+  }
+  if (localeError) {
+    console.error("tunnel: initial locale could not be persisted", localeError.message);
+  } else {
+    await supabase.from("profiles").update({ onboarding_step: 1 }).eq("user_id", data.user.id);
+  }
+  // Le cookie reflète toujours le choix explicite du visiteur : filet de
+  // sécurité pour getAccountLocale si la ligne profil manque encore.
+  (await cookies()).set(LOCALE_COOKIE, locale, {
+    path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax",
+  });
 
   // Vérification d'adresse en tâche de fond. Contrairement à l'ancien signUp, un
   // échec d'envoi ne supprime PAS le compte : l'utilisateur a déjà sa session et
@@ -103,7 +143,7 @@ export async function createAccount(
     })
     .eq("user_id", data.user.id);
 
-  const mail = emailVerificationEmail(verificationUrl(token));
+  const mail = await emailVerificationEmail(verificationUrl(token), locale);
   const sent = await sendEmailWithResult({
     to: email,
     subject: mail.subject,
@@ -116,10 +156,21 @@ export async function createAccount(
   revalidatePath("/", "layout");
   // Même URL : la page se re-rend en mode connecté et enchaîne sur le Parcours,
   // sans coupure « va voir tes emails ».
-  redirect("/commencer");
+  redirect(localeHref(locale, "/commencer"));
 }
 
 // ------------------------------------------------------------- brouillon
+
+export async function setInitialProductionLocale(locale: string): Promise<{ error?: string }> {
+  if (!hasLocale(locale)) return { error: "invalid_locale" };
+  const { supabase, user } = await currentUser();
+  if (!user) return { error: "notConnected" };
+  const { error } = await supabase.rpc("set_initial_production_locale", { target_locale: locale });
+  if (error) return { error: error.message.includes("locked") ? "initial_locale_locked" : "save_failed" };
+  (await cookies()).set(LOCALE_COOKIE, locale, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax" });
+  revalidatePath("/", "layout");
+  return {};
+}
 
 // La verticale et les objectifs sont choisis AVANT que la vitrine existe : sans
 // cette colonne, un refresh à l'écran 2 repartirait de zéro.
@@ -156,7 +207,7 @@ export async function tunnelCreatePage(input: {
   city: string;
 }): Promise<{ error?: string }> {
   const { supabase, user } = await currentUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "notConnected" };
 
   // Idempotence : revenir sur cet écran ne doit pas créer un second projet.
   const existing = await getActivePage(supabase, user.id);
@@ -175,9 +226,9 @@ export async function tunnelSaveVoice(input: {
   // 1re création gratuite côté saveVoiceProfile ; un repassage coûterait
   // CONTEXT_CHANGE_COST, d'où la garde ci-dessous.
   const { supabase, user } = await currentUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "notConnected" };
   const page = await getActivePage(supabase, user.id);
-  if (!page) return { error: "Crée d'abord ta vitrine." };
+  if (!page) return { error: "createPageFirst" };
 
   const { data: existing } = await supabase
     .from("voice_profiles")
@@ -205,9 +256,9 @@ export async function tunnelCreateCatalog(input: {
   stock: number;
 }): Promise<{ error?: string }> {
   const { supabase, user } = await currentUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "notConnected" };
   const page = await getActivePage(supabase, user.id);
-  if (!page) return { error: "Crée d'abord ta vitrine." };
+  if (!page) return { error: "createPageFirst" };
 
   // GARDE ANTI-ABUS : la gratuité ne vaut que pour un catalogue vierge. Un
   // second passage doit repasser par /produits, qui facture.
@@ -227,14 +278,14 @@ export async function tunnelCreateCatalog(input: {
 
   const categoryName = input.categoryName.trim().slice(0, 60);
   const productName = input.productName.trim().slice(0, 100);
-  if (!categoryName || !productName) return { error: "Remplis les deux champs." };
+  if (!categoryName || !productName) return { error: "twoFieldsRequired" };
 
   const { data: category, error: categoryError } = await supabase
     .from("product_categories")
     .insert({ page_id: page.id, name: categoryName, position: 0 })
     .select("id")
     .single();
-  if (categoryError || !category) return { error: "Création impossible." };
+  if (categoryError || !category) return { error: "catalogCreateFailed" };
 
   const { error: productError } = await supabase.from("products").insert({
     page_id: page.id,
@@ -246,7 +297,7 @@ export async function tunnelCreateCatalog(input: {
     stock: input.trackStock ? Math.max(0, Math.floor(input.stock)) : 0,
     position: 0,
   });
-  if (productError) return { error: "Création impossible." };
+  if (productError) return { error: "catalogCreateFailed" };
 
   revalidatePath("/produits");
   revalidatePath("/ma-page");
@@ -262,9 +313,9 @@ export async function tunnelCreateOffer(input: {
   compareAtCents: number | null;
 }): Promise<{ error?: string }> {
   const { supabase, user } = await currentUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "notConnected" };
   const page = await getActivePage(supabase, user.id);
-  if (!page) return { error: "Crée d'abord ta vitrine." };
+  if (!page) return { error: "createPageFirst" };
 
   // Même garde que le catalogue : offre offerte une seule fois.
   const { count } = await supabase
@@ -281,7 +332,7 @@ export async function tunnelCreateOffer(input: {
   if (moderation.error) return moderation;
 
   const title = input.title.trim().slice(0, 80);
-  if (!title) return { error: "Donne un titre à ton offre." };
+  if (!title) return { error: "offerTitleRequired" };
 
   const kind = getVertical(page.vertical).kind === "service" ? "service" : "produit";
   // draft_status "new" : comme toute création d'offre, elle apparaît sur la
@@ -301,7 +352,7 @@ export async function tunnelCreateOffer(input: {
     active: true,
     position: 0,
   });
-  if (error) return { error: "Création de l'offre impossible." };
+  if (error) return { error: "offerCreateFailed" };
 
   revalidatePath("/offres");
   revalidatePath("/ma-page");
@@ -316,19 +367,19 @@ export async function tunnelSaveSchedules(input: {
   closingTime: string;
 }): Promise<{ error?: string }> {
   const { supabase, user } = await currentUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "notConnected" };
   const page = await getActivePage(supabase, user.id);
-  if (!page) return { error: "Crée d'abord ta vitrine." };
+  if (!page) return { error: "createPageFirst" };
 
   // L'agenda n'existe pas pour une boutique pure : l'écran est sauté côté
   // client, la garde empêche de l'atteindre autrement.
   if (getVertical(page.vertical).kind === "product") {
-    return { error: "Ton activité n'utilise pas d'agenda." };
+    return { error: "noAgendaForVertical" };
   }
 
-  if (input.days.length === 0) return { error: "Choisis au moins un jour." };
+  if (input.days.length === 0) return { error: "chooseOneDay" };
   if (input.openingTime >= input.closingTime) {
-    return { error: "L'heure de fermeture doit suivre l'ouverture." };
+    return { error: "closingAfterOpening" };
   }
 
   // saveSchedules valide déjà le format des heures et upsert sur
@@ -352,14 +403,14 @@ export async function tunnelSaveSchedules(input: {
 // précédents, et part en ligne à la première publication.
 export async function tunnelSaveTheme(kitId: string): Promise<{ error?: string }> {
   const { supabase, user } = await currentUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "notConnected" };
   const page = await getActivePage(supabase, user.id);
-  if (!page) return { error: "Crée d'abord ta vitrine." };
+  if (!page) return { error: "createPageFirst" };
 
   // designKitPatch retombe silencieusement sur un kit par défaut si l'id est
   // inconnu : on refuse explicitement plutôt que d'appliquer autre chose que ce
   // que l'utilisateur a cliqué.
-  if (!DESIGN_KIT_BY_ID.has(kitId)) return { error: "Style inconnu." };
+  if (!DESIGN_KIT_BY_ID.has(kitId)) return { error: "unknownStyle" };
 
   return savePageFields(page.id, designKitPatch(kitId, page));
 }
@@ -382,9 +433,9 @@ export async function tunnelSaveDesign(input: {
   address?: string;
 }): Promise<{ error?: string }> {
   const { supabase, user } = await currentUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "notConnected" };
   const page = await getActivePage(supabase, user.id);
-  if (!page) return { error: "Crée d'abord ta vitrine." };
+  if (!page) return { error: "createPageFirst" };
 
   const fields: Partial<PageDraftFields> = {};
   if (input.logoUrl !== undefined) fields.logo_url = input.logoUrl || null;

@@ -1,0 +1,70 @@
+{
+ "brandHomeAria": "Wayne Web Flux, home",
+ "nav": {
+  "aria": "Navigazione principale",
+  "solution": "La soluzione",
+  "tools": "Gli strumenti",
+  "pricing": "Prezzi",
+  "story": "La nostra storia",
+  "reviews": "Recensioni",
+  "faq": "FAQ",
+  "contact": "Contatti",
+  "home": "Home",
+  "login": "Accedi",
+  "tryFree": "Provalo gratis"
+ },
+ "languageSwitcher": {
+  "aria": "Cambia lingua",
+  "label": "Lingua"
+ },
+ "footer": {
+  "tagline": "La presenza digitale che lavora davvero per la tua attività.",
+  "cta": "Prova FLUX gratis",
+  "product": "Prodotto",
+  "resources": "Risorse",
+  "helpCenter": "Centro assistenza",
+  "contactUs": "Contattaci",
+  "legal": "Legale",
+  "legalNotice": "Note legali",
+  "terms": "Termini e condizioni",
+  "privacy": "Privacy",
+  "safety": "Infrastruttura protetta da KarlMada · Tolleranza zero per contenuti per adulti, droghe, armi, frodi e attività illecite.",
+  "rights": "© 2026 Wayne Web. Tutti i diritti riservati.",
+  "status": "Servizi operativi",
+  "linkedinAria": "Wayne Web su LinkedIn",
+  "instagramAria": "Wayne Web su Instagram"
+ },
+ "cookieConsent": {
+  "kicker": "La tua scelta, in modo semplice",
+  "title": "Cookie per un servizio in continuo miglioramento.",
+  "description": "Utilizziamo cookie facoltativi per capire cosa ti è utile, migliorare Flux e farlo conoscere. Mantieni il controllo.",
+  "categories": {
+   "necessary": {
+    "title": "Necessari",
+    "description": "Accesso, sicurezza e funzionamento del servizio."
+   },
+   "analytics": {
+    "title": "Misurazione del pubblico",
+    "description": "Capire gli utilizzi e migliorare la qualità del servizio."
+   },
+   "personalization": {
+    "title": "Personalizzazione",
+    "description": "Adattare l'esperienza e i contenuti alle tue preferenze."
+   },
+   "marketing": {
+    "title": "Notorietà",
+    "description": "Misurare le nostre campagne e far conoscere i nostri servizi."
+   }
+  },
+  "preferencesAria": "Preferenze sui cookie",
+  "toggleAria": "{title}: {state}",
+  "enabled": "attivato",
+  "disabled": "disattivato",
+  "legalPrefix": "I cookie necessari restano attivi. Consulta la nostra",
+  "privacyPolicy": "informativa sulla privacy",
+  "acceptAll": "Accetta tutto",
+  "saveChoices": "Salva le mie scelte",
+  "customize": "Personalizza",
+  "declineOptional": "Continua senza accettare"
+ }
+}

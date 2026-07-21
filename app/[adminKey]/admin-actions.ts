@@ -233,7 +233,7 @@ export async function inviteAdmin(
   });
   revalidatePath(`${adminBasePath()}/equipe`);
   return sent
-    ? { message: withSpamHint("Invitation envoyée.", "other") }
+    ? { message: await withSpamHint("Invitation envoyée.", "other") }
     : { message: "Rôle créé, mais l’email n’a pas pu être envoyé." };
 }
 

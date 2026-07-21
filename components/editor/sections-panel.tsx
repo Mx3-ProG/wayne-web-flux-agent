@@ -41,6 +41,8 @@ import {
   Settings2,
   Trash2,
 } from "lucide-react";
+import { useI18n } from "@/components/i18n-provider";
+import type { EditorDict } from "@/lib/i18n/get-dictionary";
 
 type Props = {
   sections: PageSection[]; // liste résolue (jamais null)
@@ -70,6 +72,8 @@ function newSectionId(type: string): string {
 // contenu, dupliquer et supprimer les blocs, en ajouter de nouveaux. Chaque
 // mutation écrit la liste complète dans le brouillon via onChange.
 export function SectionsPanel({ sections, userId, pageAddress, onChange, subpage = false }: Props) {
+  const { editor } = useI18n();
+  const t = editor.sectionsPanel;
   const [openSettings, setOpenSettings] = useState<string | null>(null);
   const [openStyle, setOpenStyle] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
@@ -143,10 +147,7 @@ export function SectionsPanel({ sections, userId, pageAddress, onChange, subpage
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-muted-foreground">
-        Fais glisser les sections pour choisir leur ordre, masque celles que tu
-        ne veux pas, et ajoute tes propres blocs.
-      </p>
+      <p className="text-sm text-muted-foreground">{t.hint}</p>
       <DndContext
         sensors={sensors}
         collisionDetection={closestCenter}
@@ -180,6 +181,7 @@ export function SectionsPanel({ sections, userId, pageAddress, onChange, subpage
                 onRemove={() => remove(section.id)}
                 userId={userId}
                 pageAddress={pageAddress}
+                t={t}
               />
             ))}
           </ul>
@@ -187,7 +189,7 @@ export function SectionsPanel({ sections, userId, pageAddress, onChange, subpage
       </DndContext>
       {adding ? (
         <div className="rounded-lg border border-border p-3 space-y-2">
-          <p className="text-sm font-medium">Quel bloc veux-tu ajouter ?</p>
+          <p className="text-sm font-medium">{t.addPrompt}</p>
           <div className="grid grid-cols-2 gap-2">
             {addableTypes.map((type) => (
               <button
@@ -200,14 +202,14 @@ export function SectionsPanel({ sections, userId, pageAddress, onChange, subpage
                 <p className="text-sm font-medium">{SECTION_META[type].label}</p>
                 <p className="text-xs text-muted-foreground">
                   {type === "carte" && !pageAddress.trim()
-                    ? "Renseigne d'abord ton adresse dans « Identité » pour activer la carte."
+                    ? t.mapNeedsAddress
                     : SECTION_META[type].description}
                 </p>
               </button>
             ))}
           </div>
           <Button variant="ghost" size="sm" onClick={() => setAdding(false)}>
-            Annuler
+            {t.cancel}
           </Button>
         </div>
       ) : (
@@ -217,7 +219,7 @@ export function SectionsPanel({ sections, userId, pageAddress, onChange, subpage
           disabled={atLimit}
           onClick={() => setAdding(true)}
         >
-          + Ajouter un bloc
+          {t.addBlock}
         </Button>
       )}
     </div>
@@ -237,6 +239,7 @@ function SortableSectionRow({
   onRemove,
   userId,
   pageAddress,
+  t,
 }: {
   section: PageSection;
   subpage: boolean;
@@ -250,6 +253,7 @@ function SortableSectionRow({
   onRemove: () => void;
   userId: string;
   pageAddress: string;
+  t: EditorDict["sectionsPanel"];
 }) {
   const {
     attributes,
@@ -275,7 +279,7 @@ function SortableSectionRow({
       <div className="flex items-center gap-2 p-2">
         <button
           type="button"
-          aria-label={`Déplacer « ${sectionLabel(section)} »`}
+          aria-label={t.move.replace("{label}", sectionLabel(section))}
           className="cursor-grab touch-none p-1 text-muted-foreground active:cursor-grabbing"
           {...attributes}
           {...listeners}
@@ -292,7 +296,7 @@ function SortableSectionRow({
           <>
             <button
               type="button"
-              aria-label="Réglages du bloc"
+              aria-label={t.settings}
               className={`p-1 ${settingsOpen ? "text-foreground" : "text-muted-foreground"}`}
               onClick={onToggleSettings}
             >
@@ -300,7 +304,7 @@ function SortableSectionRow({
             </button>
             <button
               type="button"
-              aria-label="Dupliquer le bloc"
+              aria-label={t.duplicate}
               className="p-1 text-muted-foreground disabled:opacity-30"
               disabled={atLimit}
               onClick={onDuplicate}
@@ -311,7 +315,7 @@ function SortableSectionRow({
         )}
         <button
           type="button"
-          aria-label="Apparence de la section"
+          aria-label={t.appearance}
           className={`p-1 ${styleOpen || section.style ? "text-foreground" : "text-muted-foreground"}`}
           onClick={onToggleStyle}
         >
@@ -320,7 +324,7 @@ function SortableSectionRow({
         {(!native || subpage) && (
           <button
             type="button"
-            aria-label="Supprimer le bloc"
+            aria-label={t.delete}
             className="p-1 text-destructive"
             onClick={onRemove}
           >
@@ -329,7 +333,7 @@ function SortableSectionRow({
         )}
         <Switch
           checked={section.enabled}
-          aria-label={`Afficher « ${sectionLabel(section)} »`}
+          aria-label={t.show.replace("{label}", sectionLabel(section))}
           onCheckedChange={(enabled) =>
             onUpdate({ ...section, enabled } as PageSection)
           }

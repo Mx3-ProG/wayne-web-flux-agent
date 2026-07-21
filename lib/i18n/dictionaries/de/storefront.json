@@ -1,0 +1,186 @@
+{
+  "verifiedBadge": {
+    "label": "Verifizierter Shop",
+    "title": "Diese Version des Shops wurde von FLUX geprüft."
+  },
+  "header": {
+    "navAria": "Seitennavigation",
+    "lightMode": "Zum hellen Modus wechseln",
+    "darkMode": "Zum dunklen Modus wechseln",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
+    "defaultBusinessName": "Mein Geschäft"
+  },
+  "hero": {
+    "viewOffers": "Angebote ansehen",
+    "book": "Termin buchen",
+    "discover": "Entdecken",
+    "viewServices": "Leistungen ansehen",
+    "discoverShop": "Shop entdecken",
+    "onlineBooking": "Online-Buchung",
+    "onlineOrder": "Online bestellen"
+  },
+  "shell": {
+    "scrollTop": "Nach oben scrollen",
+    "whatsapp": "Auf WhatsApp schreiben",
+    "call": "Anrufen",
+    "viewCart": "Warenkorb ansehen",
+    "stayInTouch": "Bleib in Kontakt",
+    "legalNotice": "Impressum",
+    "terms": "AGB",
+    "termsFull": "Allgemeine Geschäftsbedingungen",
+    "privacy": "Datenschutz",
+    "privacyFull": "Datenschutzerklärung",
+    "close": "Schließen",
+    "poweredBy": "Erstellt mit"
+  },
+  "subpage": {
+    "home": "Startseite",
+    "draftNotice": "Diese Seite wird gerade erstellt."
+  },
+  "booking": {
+    "loadAvailabilityError": "Die Verfügbarkeiten konnten nicht geladen werden.",
+    "loadSlotsError": "Die Termine konnten nicht geladen werden.",
+    "slotTakenError": "Dieser Termin wurde gerade vergeben. Wähl einen anderen.",
+    "genericError": "Die Buchung konnte nicht gespeichert werden. Versuch's noch mal.",
+    "close": "Schließen",
+    "chooseDay": "Wähl einen Tag",
+    "loading": "Einen Moment…",
+    "closed": "geschlossen",
+    "full": "ausgebucht",
+    "slotsCount": "{count} Termine",
+    "changeDay": "← Tag ändern",
+    "changeTime": "← Uhrzeit ändern",
+    "yourDetails": "Deine Angaben",
+    "firstNamePlaceholder": "Dein Vorname",
+    "phonePlaceholder": "Deine Telefonnummer",
+    "emailPlaceholder": "Deine E-Mail (optional)",
+    "confirmationHint": "Um die Bestätigung deines Termins zu erhalten.",
+    "confirm": "Termin bestätigen",
+    "booked": "Gebucht!",
+    "seeYouSoon": "Bis bald.",
+    "at": "um"
+  },
+  "order": {
+    "orderSent": "Bestellung gesendet",
+    "myOrder": "Meine Bestellung",
+    "close": "Schließen",
+    "itemSingular": "Artikel",
+    "itemPlural": "Artikel",
+    "cartEmpty": "Dein Warenkorb ist leer.",
+    "continue": "Weiter",
+    "removeOne": "Einen entfernen",
+    "addOne": "Einen hinzufügen",
+    "backToCart": "← zurück zum Warenkorb",
+    "yourDetails": "Deine Angaben",
+    "firstNamePlaceholder": "Dein Vorname",
+    "phonePlaceholder": "Deine Telefonnummer",
+    "emailPlaceholder": "Deine E-Mail (optional)",
+    "addressPlaceholder": "Deine Adresse (optional)",
+    "notePlaceholder": "Noch eine Anmerkung? (optional)",
+    "contactHint": "Der Anbieter meldet sich bei dir, um die Zahlung zu bestätigen und zu klären.",
+    "sendOrder": "Bestellung senden",
+    "sending": "Einen Moment…",
+    "thanks": "Danke, alles notiert!",
+    "transmitted": "Deine Bestellung wurde erfolgreich übermittelt.",
+    "willContact": "Der Anbieter meldet sich ganz bald bei dir.",
+    "submitError": "Die Bestellung konnte nicht gespeichert werden. Versuch's gleich noch mal."
+  },
+  "sections": {
+    "about": {
+      "eyebrow": "Meine Geschichte",
+      "defaultAlt": "Porträt"
+    },
+    "beforeAfter": {
+      "eyebrow": "Der Beweis in Bildern",
+      "title": "Vorher / Nachher",
+      "before": "Vorher",
+      "after": "Nachher",
+      "compareAria": "Vorher und Nachher vergleichen"
+    },
+    "catalog": {
+      "eyebrow": "Das biete ich an",
+      "comboTitle": "Meine Leistungen",
+      "comboSubtitle": "Produkte zum Bestellen und Termine zum Buchen.",
+      "shopOnlyTitle": "Produkte",
+      "shopOnlySubtitle": "Produkte zum Bestellen.",
+      "servicesOnlyTitle": "Buchungen",
+      "servicesOnlySubtitle": "Termine zum Buchen.",
+      "shopTitle": "Mein Shop",
+      "shopSubtitle": "Produkte zum Bestellen.",
+      "servicesTitle": "Meine Leistungen",
+      "servicesSubtitle": "Termine zum Buchen.",
+      "productsHeading": "Produkte",
+      "reservationsHeading": "Buchungen",
+      "soldOut": "Ausverkauft",
+      "add": "Hinzufügen",
+      "free": "Gratis",
+      "book": "Buchen",
+      "emptyCatalog": "Der Katalog kommt bald."
+    },
+    "faq": {
+      "eyebrow": "Häufige Fragen",
+      "title": "FAQ",
+      "subtitle": "Antworten auf die Fragen, die mir am häufigsten gestellt werden."
+    },
+    "gallery": {
+      "eyebrow": "In Bildern",
+      "title": "Meine Arbeit",
+      "subtitle": "Ein paar Details, die meine Welt zeigen.",
+      "photoAlt": "Foto {index}"
+    },
+    "googleBusiness": {
+      "eyebrow": "Google-Bewertungen",
+      "defaultTitle": "Deine Meinung zählt für uns",
+      "defaultDescription": "Sieh dir die Bewertungen unserer Kunden an oder teile deine Erfahrung in wenigen Sekunden.",
+      "leaveReview": "Bewertung abgeben",
+      "viewProfile": "Google-Eintrag ansehen"
+    },
+    "hours": {
+      "eyebrow": "Wann vorbeikommen",
+      "title": "Meine Öffnungszeiten",
+      "subtitle": "Finde mich zur richtigen Zeit."
+    },
+    "map": {
+      "eyebrow": "Wo du mich findest",
+      "title": "Komm vorbei",
+      "mapTitle": "Karte: {query}"
+    },
+    "newsletter": {
+      "eyebrow": "Bleiben wir in Kontakt",
+      "title": "Bleib informiert",
+      "subtitle": "Erhalte meine Angebote und Neuigkeiten, ganz ohne Spam.",
+      "emailPlaceholder": "deine@email.de",
+      "emailAria": "Deine E-Mail-Adresse",
+      "subscribe": "Anmelden",
+      "sending": "…",
+      "done": "Danke! Alles notiert. ✨",
+      "error": "Anmeldung gerade nicht möglich. Versuch's später noch mal."
+    },
+    "offers": {
+      "eyebrow": "Nicht verpassen",
+      "title": "Meine Angebote",
+      "subtitle": "Angebote, die es jetzt zu nutzen gilt.",
+      "kindProduit": "Produkt",
+      "kindService": "Service",
+      "kindEvenement": "Event",
+      "orderProduct": "Bestellen",
+      "grabOffer": "Jetzt sichern"
+    },
+    "promo": {
+      "remainingDays": "{days} T {hours} Std",
+      "remainingHours": "{hours} Std {minutes} Min",
+      "countdownPrefix": "⏳ Noch {countdown}",
+      "codeCopied": "Kopiert!",
+      "codeLabel": "Code: {code}"
+    },
+    "reviews": {
+      "eyebrow": "Sie vertrauen mir",
+      "title": "Was man über mich sagt",
+      "subtitle": "Ehrliche Worte, hinterlassen von meinen Kunden."
+    },
+    "video": {
+      "title": "Video"
+    }
+  }
+}

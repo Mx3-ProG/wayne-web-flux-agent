@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useI18n } from "@/components/i18n-provider";
 import styles from "./credits-link.module.css";
 
 export function CreditsLink({
@@ -11,13 +12,14 @@ export function CreditsLink({
   balance: number;
   className?: string;
 }) {
+  const { dictionary } = useI18n();
   const [burst, setBurst] = useState(0);
 
   return (
     <Link
       href="/credits"
       className={`${styles.link} ${className ?? ""}`}
-      aria-label={`${balance} crédits — voir mes crédits`}
+      aria-label={dictionary.creditsLink.aria.replace("{credits}", String(balance))}
       onClick={() => setBurst((value) => value + 1)}
     >
       <span

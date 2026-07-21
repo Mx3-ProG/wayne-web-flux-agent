@@ -1,0 +1,8 @@
+{
+  "kicker": "Error",
+  "titleStart": "Oops.. Something went",
+  "titleEm": "wrong.",
+  "text": "You've got two options:",
+  "reload": "Reload the page",
+  "dashboard": "Go to the dashboard"
+}

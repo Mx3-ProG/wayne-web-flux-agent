@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "Il mio scrigno"
+  },
+  "toolPage": {
+    "howItWorks": "Come funziona",
+    "voicePrefix": "Scrivo come te a",
+    "improveVoice": "Migliora la mia voce",
+    "myVoice": "La mia voce"
+  },
+  "runner": {
+    "choosePlaceholder": "— scegli —",
+    "costLabel": "Costo:",
+    "costCredits": "{cost} crediti",
+    "balanceLabel": "Saldo: {balance}",
+    "running": "L'IA sta scrivendo per te…",
+    "generate": "Genera il mio risultato ({cost} cr.)",
+    "missingCredits": "Ti mancano dei crediti.",
+    "discoverPlans": "Scopri le formule FLUX",
+    "waiting": "Qualche secondo di pazienza, l'IA sta riflettendo per te…",
+    "copy": "Copia",
+    "copied": "Copiato!",
+    "viewInVault": "Vedi nel mio scrigno →",
+    "errors": {
+      "ai_window_expired": "La tua finestra di accesso agli strumenti IA è terminata. Scegli una formula per riattivarla.",
+      "subscription_required": "La tua prova FLUX è terminata. Scegli una formula per continuare a generare.",
+      "insufficient_credits": "Non hai più abbastanza crediti. Passa a una formula FLUX per ricaricare.",
+      "generation_failed": "La generazione è fallita.",
+      "generation_interrupted": "La generazione è stata interrotta."
+    }
+  },
+  "vault": {
+    "overline": "Camera blindata personale",
+    "titleStart": "Il tuo scrigno-",
+    "titleEm": "forte",
+    "emptySubtitle": "Ogni creazione preziosa troverà il suo posto qui.",
+    "treasureSingular": "tesoro plasmato da FLUX, conservato per sempre.",
+    "treasurePlural": "tesori plasmati da FLUX, conservati per sempre.",
+    "creationSingular": "creazione al sicuro",
+    "creationPlural": "creazioni al sicuro",
+    "emptyKicker": "Il primo tesoro ti aspetta",
+    "emptyTitle": "Il tuo know-how merita il suo scrigno.",
+    "emptyText": "Crea il tuo primo contenuto con FLUX. Sarà custodito qui, pronto per essere riletto, copiato e condiviso.",
+    "createFirst": "Crea il mio primo contenuto",
+    "collectionLabel": "La tua collezione",
+    "collectionTitle": "Pezzi unici, pronti a brillare.",
+    "sortedHint": "Ordinate dalla più recente alla più vecchia",
+    "creationLabel": "Creazione FLUX",
+    "creditsSpent": "{cost} crediti",
+    "close": "Chiudi",
+    "discover": "Scopri",
+    "copyCreation": "Copia questa creazione",
+    "copiedToast": "Creazione copiata!"
+  }
+}

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import type { Offer, Page, SitePage } from "@/lib/types";
-import { FONTS, type VerticalKind } from "@/lib/verticals";
+import type { VerticalKind } from "@/lib/verticals";
 import { VITRINE_THEMES } from "@/lib/vitrine-themes";
 import { designKitPatch } from "@/lib/vitrine-design/resolver";
 import {
@@ -22,6 +22,7 @@ import { PublishButton } from "./publish-button";
 import { SectionsPanel } from "./sections-panel";
 import { PagesBar } from "./pages-bar";
 import { NavigationPanel } from "./navigation-panel";
+import { LanguageManager } from "./language-manager";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -47,14 +48,10 @@ import {
   DESIGN_SLOTS,
   VOICE_ARCHETYPES,
   componentsForSlot,
-  type DesignSlot,
 } from "@/lib/vitrine-design";
-
-const DESIGN_SLOT_LABELS: Record<DesignSlot, string> = {
-  button: "Boutons", navigation: "Navigation", header: "En-tête", footer: "Pied de page",
-  section: "Sections", category: "Catégories", product: "Fiches produit", cart: "Panier",
-  order: "Commande", booking: "Réservation", legal: "Pages légales", checkout: "Futur checkout",
-};
+import { useI18n } from "@/components/i18n-provider";
+import { translateActionError } from "./translate-action-error";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
 
 type EditableCatalog = {
   name: string;
@@ -78,6 +75,9 @@ type Props = {
   sitePages?: SitePage[];
   subpageLimit?: number;
   canHideBranding: boolean;
+  // Langue du PROJET (pages.default_locale), pas du dashboard : l'aperçu
+  // live doit s'afficher dans la langue de la boutique éditée.
+  storefrontDict: StorefrontDict;
 };
 
 // Éditeur de vitrine : tout s'enregistre tout seul (autosave débouncé) dans le
@@ -95,7 +95,10 @@ export function PageEditor({
   sitePages = [],
   subpageLimit = 0,
   canHideBranding,
+  storefrontDict,
 }: Props) {
+  const { editor, dictionary, fonts } = useI18n();
+  const t = editor.pageEditor;
   const [page, setPage] = useState<Page>(initialPage);
   const [catalogProducts, setCatalogProducts] =
     useState<CategoryWithProducts[]>(previewProducts);
@@ -123,9 +126,9 @@ export function PageEditor({
       setSaving(true);
       const result = await savePageFields(initialPage.id, fields);
       setSaving(false);
-      if (result.error) toast.error(result.error);
+      if (result.error) toast.error(translateActionError(editor.actionErrors, result.error));
     }, 800);
-  }, [initialPage.id]);
+  }, [initialPage.id, editor.actionErrors]);
 
   function toggleCatalogItem(productId: string, checked: boolean) {
     setSaving(true);
@@ -139,7 +142,7 @@ export function PageEditor({
     );
     updateProduct(productId, { active: checked }).then((result) => {
       setSaving(false);
-      if (result.error) toast.error(result.error);
+      if (result.error) toast.error(translateActionError(editor.actionErrors, result.error));
     });
   }
 
@@ -220,44 +223,36 @@ export function PageEditor({
 
   return (
     <>
-      <div className={styles.mobileSwitch} aria-label="Mode de l’éditeur">
+      <div className={styles.mobileSwitch} aria-label={t.editorMode}>
         <button className={panelMode === "edit" ? styles.active : ""} type="button" onClick={() => setPanelMode("edit")}>
-          Réglages
+          {t.settingsTab}
         </button>
         <button className={panelMode === "preview" ? styles.active : ""} type="button" onClick={() => setPanelMode("preview")}>
-          Aperçu
+          {t.previewTab}
         </button>
       </div>
 
       <section className={styles.royalHero}>
         <span className={styles.overline}>
           <Crown aria-hidden="true" />
-          Atelier royal
+          {t.heroKicker}
         </span>
         <div className={styles.heroMark} aria-hidden="true">
           <Gem />
         </div>
         <h1>
-          Façonne ta <span>marque</span>
+          {t.heroTitleStart} <span>{t.heroTitleEm}</span>
         </h1>
-        <p>
-          Ici, tu crées ta signature: ton nom, tes images, tes couleurs, tes
-          preuves et ton univers. Chaque section mérite ton attention, parce que
-          ta vitrine devient ton royaume.
-        </p>
+        <p>{t.heroText}</p>
         <div className={styles.heroActions}>
           <div className={styles.saveStatus} data-saving={saving}>
             <span />
-            {saving
-              ? "Enregistrement du brouillon..."
-              : dirty
-                ? "Brouillon enregistré — modifications non publiées"
-                : "Ton site en ligne est à jour"}
+            {saving ? t.saving : dirty ? t.unpublished : t.upToDate}
           </div>
           <PublishButton {...publish} hasDraft={dirty} />
           <Button asChild variant="secondary" className={styles.openPage}>
             <Link href={`/p/${page.slug}`} target="_blank">
-              Voir ma page <ExternalLink aria-hidden="true" />
+              {t.viewPage} <ExternalLink aria-hidden="true" />
             </Link>
           </Button>
         </div>
@@ -275,27 +270,24 @@ export function PageEditor({
         )}
         <div className={styles.atelierHead}>
           <div>
-            <p className={styles.editorKicker}>Créateur de vitrine</p>
-            <h2>Les pièces de ton royaume</h2>
-            <p>
-              Avance pièce par pièce. Chaque bloc a son rôle: poser ton identité,
-              montrer ton savoir-faire, rassurer, puis donner envie de te choisir.
-            </p>
+            <p className={styles.editorKicker}>{t.creatorKicker}</p>
+            <h2>{t.creatorTitle}</h2>
+            <p>{t.creatorText}</p>
           </div>
           <span>
             <Palette aria-hidden="true" />
-            Brouillon vivant
+            {t.liveDraft}
           </span>
         </div>
 
-        <nav className={styles.stepNav} aria-label="Étapes de personnalisation">
+        <nav className={styles.stepNav} aria-label={t.stepsAria}>
           {[
-            ["identite", "1", "Identité"],
-            ["photos", "2", "Photos"],
-            ["style", "3", "Style"],
-            [showServices ? "prestations" : "boutique", "4", showServices ? "Prestations" : "Produits"],
-            ["contact", "5", "Contact"],
-            ["sections", "6", "Sections"],
+            ["identite", "1", t.steps.identite],
+            ["photos", "2", t.steps.photos],
+            ["style", "3", t.steps.style],
+            [showServices ? "prestations" : "boutique", "4", showServices ? t.steps.prestations : t.steps.boutique],
+            ["contact", "5", t.steps.contact],
+            ["sections", "6", t.steps.sections],
           ].map(([value, number, label]) => (
             <button
               key={value}
@@ -317,10 +309,10 @@ export function PageEditor({
         >
           {/* Identité */}
           <AccordionItem value="identite" className="border rounded-xl px-4">
-            <AccordionTrigger>Mon commerce — nom, métier, ville</AccordionTrigger>
+            <AccordionTrigger>{t.identite.trigger}</AccordionTrigger>
             <AccordionContent className="space-y-4 pt-1">
               <div className="space-y-2">
-                <Label>Le nom</Label>
+                <Label>{t.identite.name}</Label>
                 <Input
                   value={page.business_name}
                   maxLength={60}
@@ -328,7 +320,7 @@ export function PageEditor({
                 />
               </div>
               <div className="space-y-2">
-                <Label>Ton métier (s&apos;affiche sous le nom)</Label>
+                <Label>{t.identite.job}</Label>
                 <Input
                   value={page.job_title}
                   maxLength={60}
@@ -336,17 +328,17 @@ export function PageEditor({
                 />
               </div>
               <div className="space-y-2">
-                <Label>Ta phrase (celle qui te ressemble)</Label>
+                <Label>{t.identite.tagline}</Label>
                 <Input
                   value={page.tagline}
                   maxLength={120}
-                  placeholder="Ex : Votre voiture comme neuve, sans rendez-vous interminable."
+                  placeholder={t.identite.taglinePlaceholder}
                   onChange={(e) => patch({ tagline: e.target.value })}
                 />
               </div>
               <div className="grid sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label>Ville</Label>
+                  <Label>{t.identite.city}</Label>
                   <Input
                     value={page.city}
                     maxLength={60}
@@ -354,7 +346,7 @@ export function PageEditor({
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Adresse (facultatif)</Label>
+                  <Label>{t.identite.addressOptional}</Label>
                   <Input
                     value={page.address}
                     maxLength={120}
@@ -367,14 +359,15 @@ export function PageEditor({
 
           {/* Photos */}
           <AccordionItem value="photos" className="border rounded-xl px-4">
-            <AccordionTrigger>Mes photos — logo, grande photo, galerie</AccordionTrigger>
+            <AccordionTrigger>{t.photos.trigger}</AccordionTrigger>
             <AccordionContent className="space-y-5 pt-1">
               <div className="space-y-2">
-                <Label>Ton logo ou une photo de toi</Label>
+                <Label>{t.photos.logo}</Label>
                 <div className="flex items-center gap-3">
                   <PhotoUpload
                     userId={page.user_id}
-                    label="Choisir mon logo"
+                    label={t.photos.chooseLogo}
+                    messages={dictionary.photoUpload}
                     onUploaded={(url) => patch({ logo_url: url })}
                   />
                   {page.logo_url && (
@@ -383,17 +376,18 @@ export function PageEditor({
                       size="sm"
                       onClick={() => patch({ logo_url: null })}
                     >
-                      Retirer
+                      {t.photos.remove}
                     </Button>
                   )}
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>La grande photo du haut de ta page</Label>
+                <Label>{t.photos.hero}</Label>
                 <div className="flex items-center gap-3">
                   <PhotoUpload
                     userId={page.user_id}
-                    label="Choisir ma photo"
+                    label={t.photos.choosePhoto}
+                    messages={dictionary.photoUpload}
                     onUploaded={(url) => patch({ hero_url: url })}
                   />
                   {page.hero_url && (
@@ -402,19 +396,20 @@ export function PageEditor({
                       size="sm"
                       onClick={() => patch({ hero_url: null })}
                     >
-                      Retirer
+                      {t.photos.remove}
                     </Button>
                   )}
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Une vidéo d&apos;accueil (à la place de la photo)</Label>
+                <Label>{t.photos.heroVideo}</Label>
                 <div className="flex items-center gap-3">
                   <PhotoUpload
                     userId={page.user_id}
-                    label="Choisir ma vidéo"
+                    label={t.photos.chooseVideo}
                     accept="video/mp4,video/webm"
                     maxMb={50}
+                    messages={dictionary.photoUpload}
                     onUploaded={(url) => patch({ hero_video_url: url })}
                   />
                   {page.hero_video_url && (
@@ -423,21 +418,19 @@ export function PageEditor({
                       size="sm"
                       onClick={() => patch({ hero_video_url: null })}
                     >
-                      Retirer
+                      {t.photos.remove}
                     </Button>
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Courte et sans son, c&apos;est elle qui tourne en haut de ta page.
-                  Ta photo sert d&apos;image d&apos;attente.
-                </p>
+                <p className="text-xs text-muted-foreground">{t.photos.videoHint}</p>
               </div>
               <div className="space-y-2">
-                <Label>Tes plus belles réalisations (galerie)</Label>
+                <Label>{t.photos.gallery}</Label>
                 <PhotoUpload
                   userId={page.user_id}
-                  label="Ajouter des photos"
+                  label={t.photos.addPhotos}
                   multiple
+                  messages={dictionary.photoUpload}
                   onUploaded={(url) =>
                     patch({ gallery: [...page.gallery, { url }] })
                   }
@@ -446,7 +439,9 @@ export function PageEditor({
                   <ul className="text-sm text-muted-foreground space-y-1">
                     {page.gallery.map((photo, i) => (
                       <li key={i} className="flex items-center gap-2">
-                        <span className="truncate flex-1">Photo {i + 1}</span>
+                        <span className="truncate flex-1">
+                          {t.photos.photoLabel.replace("{index}", String(i + 1))}
+                        </span>
                         <button
                           type="button"
                           className="text-destructive text-xs"
@@ -456,7 +451,7 @@ export function PageEditor({
                             })
                           }
                         >
-                          retirer
+                          {t.photos.removePhoto}
                         </button>
                       </li>
                     ))}
@@ -469,7 +464,7 @@ export function PageEditor({
           {/* Prestations */}
           {showServices && (
           <AccordionItem value="prestations" className="border rounded-xl px-4">
-            <AccordionTrigger>Mes prestations — produits et réservations</AccordionTrigger>
+            <AccordionTrigger>{t.prestations.trigger}</AccordionTrigger>
             <AccordionContent className="space-y-4 pt-1">
               {productsByCategory.length > 0 ? (
                 productsByCategory.map((category) => (
@@ -477,7 +472,10 @@ export function PageEditor({
                     <div className="flex items-center justify-between gap-3">
                       <p className="font-medium">{category.name}</p>
                       <span className="text-xs text-muted-foreground">
-                        {category.products.length} produit{category.products.length > 1 ? "s" : ""}
+                        {(category.products.length > 1
+                          ? t.prestations.productCountPlural
+                          : t.prestations.productCount
+                        ).replace("{count}", String(category.products.length))}
                       </span>
                     </div>
                     <div className={styles.productPicker}>
@@ -496,8 +494,11 @@ export function PageEditor({
                               <strong>{product.name}</strong>
                               <small>
                                 {product.kind === "reservation"
-                                  ? `Réservation · ${product.duration_min || 60} min · `
-                                  : "Produit · "}
+                                  ? t.prestations.reservation.replace(
+                                      "{duration}",
+                                      String(product.duration_min || 60)
+                                    )
+                                  : t.prestations.product}
                                 {(product.price_cents / 100).toFixed(2).replace(".", ",")} €
                               </small>
                             </span>
@@ -509,12 +510,9 @@ export function PageEditor({
                 ))
               ) : (
                 <div className="rounded-lg border border-border p-3 space-y-3">
-                  <p className="text-sm text-muted-foreground">
-                    Ajoute d&apos;abord tes produits ou tes réservations. Ils seront
-                    cochés automatiquement ici et visibles sur ta vitrine.
-                  </p>
+                  <p className="text-sm text-muted-foreground">{t.prestations.empty}</p>
                   <Button asChild variant="secondary" size="sm">
-                    <Link href="/produits">Gérer mes produits →</Link>
+                    <Link href="/produits">{t.prestations.manageProducts}</Link>
                   </Button>
                 </div>
               )}
@@ -525,19 +523,15 @@ export function PageEditor({
           {/* Produits & offres — gérés sur leurs pages dédiées */}
           {showShop && (
           <AccordionItem value="boutique" className="border rounded-xl px-4">
-            <AccordionTrigger>Mes produits & offres</AccordionTrigger>
+            <AccordionTrigger>{t.boutique.trigger}</AccordionTrigger>
             <AccordionContent className="space-y-3 pt-1">
-              <p className="text-sm text-muted-foreground">
-                Tes produits (stock, chiffre d&apos;affaires) et tes offres promo se
-                gèrent sur leurs pages dédiées. Ils apparaissent tout de suite dans
-                l&apos;aperçu de ta vitrine.
-              </p>
+              <p className="text-sm text-muted-foreground">{t.boutique.text}</p>
               <div className="flex flex-wrap gap-2">
                 <Button asChild variant="secondary" size="sm">
-                  <Link href="/produits">Gérer mes produits →</Link>
+                  <Link href="/produits">{t.boutique.manageProducts}</Link>
                 </Button>
                 <Button asChild variant="secondary" size="sm">
-                  <Link href="/offres">Gérer mes offres →</Link>
+                  <Link href="/offres">{t.boutique.manageOffers}</Link>
                 </Button>
               </div>
             </AccordionContent>
@@ -546,10 +540,10 @@ export function PageEditor({
 
           {/* Contact */}
           <AccordionItem value="contact" className="border rounded-xl px-4">
-            <AccordionTrigger>Me contacter — téléphone, réseaux</AccordionTrigger>
+            <AccordionTrigger>{t.contact.trigger}</AccordionTrigger>
             <AccordionContent className="space-y-4 pt-1">
               <div className="space-y-2">
-                <Label>Ton téléphone</Label>
+                <Label>{t.contact.phone}</Label>
                 <Input
                   value={page.phone}
                   maxLength={20}
@@ -570,7 +564,9 @@ export function PageEditor({
               {(["instagram", "tiktok", "facebook", "snapchat"] as const).map(
                 (network) => (
                   <div key={network} className="space-y-2">
-                    <Label className="capitalize">{network} (facultatif)</Label>
+                    <Label className="capitalize">
+                      {t.contact.socialOptional.replace("{network}", network)}
+                    </Label>
                     <Input
                       value={page.socials[network] ?? ""}
                       maxLength={80}
@@ -586,11 +582,8 @@ export function PageEditor({
               <div className="space-y-3 rounded-lg border border-border p-3">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <Label>Bouton flottant de contact</Label>
-                    <p className="text-xs text-muted-foreground">
-                      Un bouton toujours visible en bas de ta page pour t&apos;écrire
-                      ou t&apos;appeler.
-                    </p>
+                    <Label>{t.contact.floatingCta}</Label>
+                    <p className="text-xs text-muted-foreground">{t.contact.floatingCtaHint}</p>
                   </div>
                   <Switch
                     checked={Boolean(page.floating_cta)}
@@ -606,7 +599,7 @@ export function PageEditor({
                 {page.floating_cta && (
                   <div className="grid sm:grid-cols-2 gap-3">
                     <div className="space-y-2">
-                      <Label>Type</Label>
+                      <Label>{t.contact.type}</Label>
                       <Select
                         value={page.floating_cta.type}
                         onValueChange={(type) =>
@@ -622,17 +615,17 @@ export function PageEditor({
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="whatsapp">WhatsApp</SelectItem>
-                          <SelectItem value="phone">Appel direct</SelectItem>
+                          <SelectItem value="whatsapp">{t.contact.whatsapp}</SelectItem>
+                          <SelectItem value="phone">{t.contact.directCall}</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label>Numéro</Label>
+                      <Label>{t.contact.number}</Label>
                       <Input
                         value={page.floating_cta.number}
                         maxLength={20}
-                        placeholder="+33 6 12 34 56 78"
+                        placeholder={t.contact.numberPlaceholder}
                         onChange={(e) =>
                           patch({
                             floating_cta: {
@@ -647,13 +640,13 @@ export function PageEditor({
                 )}
               </div>
               <div className="space-y-2">
-                <Label>Tes horaires affichés (facultatif, une ligne par jour)</Label>
+                <Label>{t.contact.hours}</Label>
                 <Textarea
                   value={page.hours_text}
                   rows={4}
                   className={styles.longText}
                   maxLength={400}
-                  placeholder={"Mar-Ven : 9h - 19h\nSam : 9h - 17h"}
+                  placeholder={t.contact.hoursPlaceholder}
                   onChange={(e) => patch({ hours_text: e.target.value })}
                 />
               </div>
@@ -662,10 +655,10 @@ export function PageEditor({
 
           {/* Style */}
           <AccordionItem value="style" className="border rounded-xl px-4">
-            <AccordionTrigger>Le style — couleurs et écriture</AccordionTrigger>
+            <AccordionTrigger>{t.style.trigger}</AccordionTrigger>
             <AccordionContent className="space-y-4 pt-1">
               <div className="space-y-2">
-                <Label>Ambiance de ta vitrine</Label>
+                <Label>{t.style.ambiance}</Label>
                 <div className={styles.themeGrid}>
                   {VITRINE_THEMES.map((theme) => (
                     <button
@@ -678,7 +671,7 @@ export function PageEditor({
                       <span className={styles.themePreview}><i /><i /><i /></span>
                       <strong>
                         {theme.name}
-                        {theme.premium && <em className={styles.themePremium}>Premium</em>}
+                        {theme.premium && <em className={styles.themePremium}>{t.style.premium}</em>}
                       </strong>
                       <small>{theme.description}</small>
                     </button>
@@ -688,11 +681,11 @@ export function PageEditor({
               <div className="space-y-3 rounded-lg border border-border p-3">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-sm font-medium">Bibliothèque de design FLUX</p>
-                    <p className="text-xs text-muted-foreground">Choisis un kit cohérent ou laisse FLUX partir de ton ambiance.</p>
+                    <p className="text-sm font-medium">{t.style.libraryTitle}</p>
+                    <p className="text-xs text-muted-foreground">{t.style.libraryText}</p>
                   </div>
                   <Button type="button" variant="secondary" size="sm" onClick={() => setDesignAdvanced((value) => !value)}>
-                    {designAdvanced ? "Mode simple" : "Personnaliser"}
+                    {designAdvanced ? t.style.simpleMode : t.style.customize}
                   </Button>
                 </div>
                 <Select
@@ -704,8 +697,8 @@ export function PageEditor({
                 >
                   <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="auto">Laisser FLUX choisir depuis l’ambiance</SelectItem>
-                    {DESIGN_KITS.map((kit) => <SelectItem key={kit.id} value={kit.id}>{kit.name}{kit.premium ? " · Premium" : ""}</SelectItem>)}
+                    <SelectItem value="auto">{t.style.autoKit}</SelectItem>
+                    {DESIGN_KITS.map((kit) => <SelectItem key={kit.id} value={kit.id}>{kit.name}{kit.premium ? ` · ${t.style.premium}` : ""}</SelectItem>)}
                   </SelectContent>
                 </Select>
                 {designAdvanced && (
@@ -717,7 +710,7 @@ export function PageEditor({
                       const entries = componentsForSlot(slot, kitId);
                       return (
                         <div key={slot} className="space-y-1.5">
-                          <Label>{DESIGN_SLOT_LABELS[slot]}</Label>
+                          <Label>{t.designSlots[slot]}</Label>
                           {entries.length > 1 ? (
                             <Select value={value} onValueChange={(id) => patch({ design: { kitId, voiceArchetypeId: page.design?.voiceArchetypeId, components: { ...page.design?.components, [slot]: id } } })}>
                               <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
@@ -725,15 +718,15 @@ export function PageEditor({
                             </Select>
                           ) : (
                             <div className="rounded-md border border-border bg-muted/30 px-3 py-2 text-sm text-muted-foreground">
-                              {entries[0]?.name ?? "Inclus dans le kit"}
-                              <span className="mt-0.5 block text-[10px]">Seule variante disponible actuellement</span>
+                              {entries[0]?.name ?? t.style.includedInKit}
+                              <span className="mt-0.5 block text-[10px]">{t.style.onlyVariant}</span>
                             </div>
                           )}
                         </div>
                       );
                     })}
                     <div className="space-y-1.5 sm:col-span-2">
-                      <Label>Voix éditoriale</Label>
+                      <Label>{t.style.editorialVoice}</Label>
                       <Select
                         value={page.design?.voiceArchetypeId ?? (DESIGN_KITS.find((entry) => entry.id === (page.design?.kitId ?? page.theme)) ?? DESIGN_KITS[0]).voiceArchetypeId}
                         onValueChange={(voiceArchetypeId) => patch({ design: { kitId: page.design?.kitId ?? page.theme ?? "editorial", components: page.design?.components, voiceArchetypeId } })}
@@ -748,8 +741,8 @@ export function PageEditor({
               <div className={styles.colorGrid}>
                 {(
                   [
-                    ["primary", "Principale"],
-                    ["dark", "Foncée"],
+                    ["primary", t.style.colorPrimary],
+                    ["dark", t.style.colorDark],
                   ] as const
                 ).map(([key, label]) => (
                   <div key={key} className="space-y-2">
@@ -765,17 +758,14 @@ export function PageEditor({
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-muted-foreground">
-                La principale colore tes boutons et tes prix. La foncée habille le
-                bas de ta page. Les textes s&apos;adaptent automatiquement pour rester lisibles.
-              </p>
+              <p className="text-xs text-muted-foreground">{t.style.colorHint}</p>
               <div className="space-y-3 rounded-lg border border-border p-3">
-                <p className="text-sm font-medium">Couleurs avancées</p>
+                <p className="text-sm font-medium">{t.style.advancedColors}</p>
                 <div className={styles.colorGrid}>
                   {(
                     [
-                      ["background", "Fond de page", "#f1ede7"],
-                      ["card", "Cartes", "#e7e1da"],
+                      ["background", t.style.colorBackground, "#f1ede7"],
+                      ["card", t.style.colorCard, "#e7e1da"],
                     ] as const
                   ).map(([key, label, fallback]) => (
                     <div key={key} className="space-y-2">
@@ -791,7 +781,7 @@ export function PageEditor({
                               patch({ colors: rest });
                             }}
                           >
-                            auto
+                            {t.style.auto}
                           </button>
                         )}
                       </div>
@@ -808,11 +798,8 @@ export function PageEditor({
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <Label>Dégradé en haut de page</Label>
-                    <p className="text-xs text-muted-foreground">
-                      Sans photo ni vidéo, le haut mélange ta couleur foncée et ta
-                      couleur principale.
-                    </p>
+                    <Label>{t.style.heroGradient}</Label>
+                    <p className="text-xs text-muted-foreground">{t.style.heroGradientHint}</p>
                   </div>
                   <Switch
                     checked={page.colors.heroGradient ?? false}
@@ -823,13 +810,13 @@ export function PageEditor({
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Ton style d&apos;écriture</Label>
+                <Label>{t.style.writingStyle}</Label>
                 <Select value={page.font} onValueChange={(font) => patch({ font })}>
                   <SelectTrigger className="w-full">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {FONTS.map((f) => (
+                    {fonts.map((f) => (
                       <SelectItem key={f.id} value={f.id}>
                         {f.label}
                       </SelectItem>
@@ -838,10 +825,10 @@ export function PageEditor({
                 </Select>
               </div>
               <div className="space-y-3 rounded-lg border border-border p-3">
-                <p className="text-sm font-medium">Typographie des titres</p>
+                <p className="text-sm font-medium">{t.style.headingsTitle}</p>
                 <div className="grid sm:grid-cols-2 gap-3">
                   <div className="space-y-2">
-                    <Label>Police des titres</Label>
+                    <Label>{t.style.headingFont}</Label>
                     <Select
                       value={page.typography?.headingFont ?? "same"}
                       onValueChange={(headingFont) =>
@@ -858,10 +845,8 @@ export function PageEditor({
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="same">
-                          Comme le reste de la page
-                        </SelectItem>
-                        {FONTS.map((f) => (
+                        <SelectItem value="same">{t.style.sameAsPage}</SelectItem>
+                        {fonts.map((f) => (
                           <SelectItem key={f.id} value={f.id}>
                             {f.label}
                           </SelectItem>
@@ -870,7 +855,7 @@ export function PageEditor({
                     </Select>
                   </div>
                   <div className="space-y-2">
-                    <Label>Taille des titres</Label>
+                    <Label>{t.style.headingScale}</Label>
                     <Select
                       value={page.typography?.headingScale ?? "m"}
                       onValueChange={(headingScale) =>
@@ -889,10 +874,10 @@ export function PageEditor({
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="s">Discrets</SelectItem>
-                        <SelectItem value="m">Normaux</SelectItem>
-                        <SelectItem value="l">Grands</SelectItem>
-                        <SelectItem value="xl">Spectaculaires</SelectItem>
+                        <SelectItem value="s">{t.style.scaleSmall}</SelectItem>
+                        <SelectItem value="m">{t.style.scaleNormal}</SelectItem>
+                        <SelectItem value="l">{t.style.scaleLarge}</SelectItem>
+                        <SelectItem value="xl">{t.style.scaleXl}</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -903,7 +888,7 @@ export function PageEditor({
 
           {/* Sections de la page */}
           <AccordionItem value="sections" className="border rounded-xl px-4">
-            <AccordionTrigger>Les sections de ma page — ordre et blocs</AccordionTrigger>
+            <AccordionTrigger>{t.sectionsAccordion}</AccordionTrigger>
             <AccordionContent className="pt-1">
               <SectionsPanel
                 sections={resolveSections(page)}
@@ -916,7 +901,7 @@ export function PageEditor({
 
           {/* Menu de navigation & boutons */}
           <AccordionItem value="menu" className="border rounded-xl px-4">
-            <AccordionTrigger>Le menu de navigation & boutons</AccordionTrigger>
+            <AccordionTrigger>{t.menuAccordion}</AccordionTrigger>
             <AccordionContent className="pt-1">
               <NavigationPanel page={page} sitePages={sitePages} patch={patch} />
             </AccordionContent>
@@ -924,18 +909,15 @@ export function PageEditor({
 
           {/* Avis */}
           <AccordionItem value="avis" className="border rounded-xl px-4">
-            <AccordionTrigger>Les avis de tes clients</AccordionTrigger>
+            <AccordionTrigger>{t.avis.trigger}</AccordionTrigger>
             <AccordionContent className="space-y-3 pt-1">
-              <p className="text-sm text-muted-foreground">
-                Recopie les avis que tu as déjà reçus (Google, Instagram, SMS).
-                Si tu n&apos;en mets aucun, la section n&apos;apparaît pas.
-              </p>
+              <p className="text-sm text-muted-foreground">{t.avis.text}</p>
               {page.reviews.map((review, i) => (
                 <div key={i} className="rounded-lg border border-border p-3 space-y-2">
                   <Input
                     value={review.author}
                     maxLength={40}
-                    placeholder="Prénom du client"
+                    placeholder={t.avis.authorPlaceholder}
                     onChange={(e) => {
                       const reviews = [...page.reviews];
                       reviews[i] = { ...reviews[i], author: e.target.value };
@@ -947,7 +929,7 @@ export function PageEditor({
                     rows={2}
                     className={styles.longText}
                     maxLength={300}
-                    placeholder="Son avis"
+                    placeholder={t.avis.textPlaceholder}
                     onChange={(e) => {
                       const reviews = [...page.reviews];
                       reviews[i] = { ...reviews[i], text: e.target.value };
@@ -961,7 +943,7 @@ export function PageEditor({
                       patch({ reviews: page.reviews.filter((_, j) => j !== i) })
                     }
                   >
-                    Retirer
+                    {t.avis.remove}
                   </Button>
                 </div>
               ))}
@@ -972,41 +954,39 @@ export function PageEditor({
                   patch({ reviews: [...page.reviews, { author: "", text: "" }] })
                 }
               >
-                + Ajouter un avis
+                {t.avis.add}
               </Button>
             </AccordionContent>
           </AccordionItem>
 
           {/* Offre */}
           <AccordionItem value="offre" className="border rounded-xl px-4">
-            <AccordionTrigger>Une offre à mettre en avant</AccordionTrigger>
+            <AccordionTrigger>{t.offre.trigger}</AccordionTrigger>
             <AccordionContent className="space-y-4 pt-1">
               <div className="space-y-2">
-                <Label>Ton message</Label>
+                <Label>{t.offre.message}</Label>
                 <Input
                   value={promo.text}
                   maxLength={100}
-                  placeholder="Ex : -20% pour toute première visite en janvier"
+                  placeholder={t.offre.messagePlaceholder}
                   onChange={(e) => patchPromo({ text: e.target.value })}
                 />
-                <p className="text-xs text-muted-foreground">
-                  S&apos;affiche en bandeau tout en haut de ta page. Facultatif.
-                </p>
+                <p className="text-xs text-muted-foreground">{t.offre.messageHint}</p>
               </div>
               <div className="grid sm:grid-cols-2 gap-3">
                 <div className="space-y-2">
-                  <Label>Code promo (facultatif)</Label>
+                  <Label>{t.offre.codeOptional}</Label>
                   <Input
                     value={promo.code ?? ""}
                     maxLength={24}
-                    placeholder="Ex : BIENVENUE20"
+                    placeholder={t.offre.codePlaceholder}
                     onChange={(e) =>
                       patchPromo({ code: e.target.value.toUpperCase() })
                     }
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label>Fin de l&apos;offre (facultatif)</Label>
+                  <Label>{t.offre.endsAtOptional}</Label>
                   <Input
                     type="datetime-local"
                     value={promo.endsAt ? promo.endsAt.slice(0, 16) : ""}
@@ -1020,26 +1000,22 @@ export function PageEditor({
                   />
                 </div>
               </div>
-              <p className="text-xs text-muted-foreground">
-                Avec une date de fin, un compte à rebours s&apos;affiche et le
-                bandeau disparaît tout seul à l&apos;échéance. Le code se copie en
-                un clic.
-              </p>
+              <p className="text-xs text-muted-foreground">{t.offre.hint}</p>
             </AccordionContent>
           </AccordionItem>
 
           {/* Référencement & visibilité */}
           <AccordionItem value="seo" className="border rounded-xl px-4">
-            <AccordionTrigger>Référencement (SEO) & visibilité</AccordionTrigger>
+            <AccordionTrigger>{t.seo.trigger}</AccordionTrigger>
             <AccordionContent className="space-y-4 pt-1">
               <div className="space-y-2">
                 <Label>
-                  Titre Google ({(page.seo?.title ?? "").length}/60)
+                  {t.seo.googleTitle.replace("{count}", String((page.seo?.title ?? "").length))}
                 </Label>
                 <Input
                   value={page.seo?.title ?? ""}
                   maxLength={60}
-                  placeholder="Ex : Barbier à Lyon 3 — Chez Marco"
+                  placeholder={t.seo.googleTitlePlaceholder}
                   onChange={(e) =>
                     patch({ seo: { ...page.seo, title: e.target.value } })
                   }
@@ -1047,25 +1023,29 @@ export function PageEditor({
               </div>
               <div className="space-y-2">
                 <Label>
-                  Description Google ({(page.seo?.description ?? "").length}/160)
+                  {t.seo.googleDescription.replace(
+                    "{count}",
+                    String((page.seo?.description ?? "").length)
+                  )}
                 </Label>
                 <Textarea
                   value={page.seo?.description ?? ""}
                   rows={3}
                   className={styles.longText}
                   maxLength={160}
-                  placeholder="La phrase qui donne envie de cliquer dans les résultats de recherche."
+                  placeholder={t.seo.googleDescriptionPlaceholder}
                   onChange={(e) =>
                     patch({ seo: { ...page.seo, description: e.target.value } })
                   }
                 />
               </div>
               <div className="space-y-2">
-                <Label>Image de partage (réseaux, WhatsApp…)</Label>
+                <Label>{t.seo.shareImage}</Label>
                 <div className="flex items-center gap-3">
                   <PhotoUpload
                     userId={page.user_id}
-                    label={page.seo?.ogImageUrl ? "Changer l'image" : "Choisir une image"}
+                    label={page.seo?.ogImageUrl ? t.seo.changeImage : t.seo.chooseImage}
+                    messages={dictionary.photoUpload}
                     onUploaded={(url) =>
                       patch({ seo: { ...page.seo, ogImageUrl: url } })
                     }
@@ -1080,29 +1060,25 @@ export function PageEditor({
                         patch({ seo });
                       }}
                     >
-                      Retirer
+                      {t.photos.remove}
                     </Button>
                   )}
                 </div>
-                <p className="text-xs text-muted-foreground">
-                  Par défaut, ta grande photo du haut de page est utilisée.
-                </p>
+                <p className="text-xs text-muted-foreground">{t.seo.shareImageHint}</p>
               </div>
               <div className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
                 <div>
-                  <Label>Masquer « Créé avec Wayne Web Flux »</Label>
+                  <Label>{t.seo.hideBranding}</Label>
                   <p
                     id={!canHideBranding ? "branding-entitlement-help" : undefined}
                     className="text-xs text-muted-foreground"
                   >
-                    {canHideBranding
-                      ? "Retire la signature en bas de ta page publique."
-                      : "Fonctionnalité réservée à la formule Entreprise à 89 € par mois."}
+                    {canHideBranding ? t.seo.hideBrandingAllowed : t.seo.hideBrandingRestricted}
                   </p>
                   {!canHideBranding && (
                     <div className="mt-2 text-xs">
                       <Link className="text-primary underline underline-offset-4" href="/formules">
-                        Découvrir la formule Entreprise
+                        {t.seo.discoverEnterprise}
                       </Link>
                     </div>
                   )}
@@ -1110,7 +1086,7 @@ export function PageEditor({
                 <Switch
                   checked={canHideBranding && (page.hide_branding ?? false)}
                   disabled={!canHideBranding}
-                  aria-label="Masquer la signature Wayne Web Flux"
+                  aria-label={t.seo.hideBrandingAria}
                   aria-describedby={!canHideBranding ? "branding-entitlement-help" : undefined}
                   onCheckedChange={(hide_branding) => patch({ hide_branding })}
                 />
@@ -1120,17 +1096,20 @@ export function PageEditor({
 
           {/* Légal */}
           <AccordionItem value="legal" className="border rounded-xl px-4">
-            <AccordionTrigger>Les mentions légales — déjà écrites pour toi</AccordionTrigger>
+            <AccordionTrigger>{t.legal.trigger}</AccordionTrigger>
             <AccordionContent className="space-y-4 pt-1">
-              <p className="text-sm text-muted-foreground">
-                Tout est déjà rédigé. Quand tu as 2 minutes, remplace les
-                [À COMPLÉTER] par tes infos. Rien ne bloque sans.
-              </p>
+              <p className="text-sm text-muted-foreground">{t.legal.text}</p>
+              {page.default_locale !== "fr" &&
+                Object.values(page.legal ?? {}).every((value) => !value?.trim()) && (
+                  <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 p-3 text-sm text-amber-600">
+                    {t.legal.needsLocalReview}
+                  </p>
+                )}
               {(
                 [
-                  ["mentions", "Mentions légales"],
-                  ["cgv", "Conditions de vente"],
-                  ["confidentialite", "Confidentialité"],
+                  ["mentions", t.legal.mentions],
+                  ["cgv", t.legal.cgv],
+                  ["confidentialite", t.legal.confidentialite],
                 ] as const
               ).map(([key, label]) => (
                 <div key={key} className="space-y-2">
@@ -1147,27 +1126,40 @@ export function PageEditor({
               ))}
             </AccordionContent>
           </AccordionItem>
+
+          {/* Langues */}
+          <AccordionItem value="languages" className="border rounded-xl px-4">
+            <AccordionTrigger>{t.languages.trigger}</AccordionTrigger>
+            <AccordionContent className="pt-1">
+              <LanguageManager
+                page={page}
+                balance={publish.balance}
+                t={t.languages}
+                onLocalesChange={(enabledLocales) => setPage((prev) => ({ ...prev, enabled_locales: enabledLocales }))}
+              />
+            </AccordionContent>
+          </AccordionItem>
         </Accordion>
       </div>
 
       {/* Préview live */}
       <div className={`${styles.previewPanel} ${panelMode === "edit" ? styles.panelHidden : ""}`}>
         <div className={styles.previewToolbar}>
-          <p>Ta page, en direct</p>
+          <p>{t.livePreview}</p>
           <div className={styles.deviceToggle}>
             <button
               type="button"
               onClick={() => setPreviewMode("mobile")}
               className={previewMode === "mobile" ? styles.active : ""}
             >
-              Téléphone
+              {t.mobile}
             </button>
             <button
               type="button"
               onClick={() => setPreviewMode("desktop")}
               className={previewMode === "desktop" ? styles.active : ""}
             >
-              Ordi
+              {t.desktop}
             </button>
           </div>
         </div>
@@ -1179,6 +1171,7 @@ export function PageEditor({
               productCategories={visibleProductCategories}
               offers={previewOffers}
               preview
+              t={storefrontDict}
             />
           </div>
         </div>

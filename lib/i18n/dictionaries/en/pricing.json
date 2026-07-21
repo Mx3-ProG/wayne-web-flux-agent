@@ -1,0 +1,63 @@
+{
+  "meta": {
+    "title": "Pricing and credits",
+    "description": "Discover FLUX subscriptions and credit packs to grow your business's digital presence."
+  },
+  "header": {
+    "tryFree": "Try for free"
+  },
+  "hero": {
+    "eyebrow": "Clear pricing. No hidden costs.",
+    "titleLine1": "Choose the pace of",
+    "titleEm": "your growth.",
+    "text": "A subscription to run your space. Credits to create, publish and accelerate when you need it.",
+    "fact1": "days free trial",
+    "fact2": "Cancel anytime",
+    "fact3": "Secure payment by Stripe"
+  },
+  "plans": {
+    "kicker": "Monthly subscriptions",
+    "title": "A plan for every ambition.",
+    "note": "Unused monthly credits add up.",
+    "featured": "Most popular",
+    "perMonth": "/ month",
+    "creditsIncluded": "credits included / month",
+    "showcase": "storefront",
+    "showcases": "storefronts",
+    "activeOffers": "active offers",
+    "subpages": "subpages per storefront",
+    "choose": "Choose",
+    "checkoutNote": "You'll log in or create your account before payment. The subscription is activated after Stripe confirmation."
+  },
+  "planNames": {
+    "basique": "Basic",
+    "pro": "Pro",
+    "business": "Business",
+    "entreprise": "Enterprise"
+  },
+  "features": {
+    "basique": ["Essential customization", "FLUX address included", "FLUX tools included"],
+    "pro": ["Advanced customization", "Premium themes", "FLUX tools included"],
+    "business": ["Custom domain", "Premium themes", "FLUX tools included"],
+    "entreprise": ["10 professional storefronts", "Custom domain", "Hideable Wayne Web signature"]
+  },
+  "credits": {
+    "kicker": "One-time top-ups",
+    "title": "Need a boost?",
+    "note": "No extra subscription. No automatic renewal.",
+    "creditsWord": "credits",
+    "perCredit": "/ credit",
+    "buy": "Buy this pack"
+  },
+  "explainer": {
+    "kicker": "How does it work?",
+    "titleLine1": "The subscription gives access.",
+    "titleLine2": "The credits move you forward.",
+    "step1Title": "Choose your plan",
+    "step1Text": "It determines the number of storefronts, offers and available features.",
+    "step2Title": "Use your credits",
+    "step2Text": "They power the generations, posts and actions that use the FLUX tools.",
+    "step3Title": "Top up if needed",
+    "step3Text": "Add a one-time pack to your balance, without changing your subscription."
+  }
+}

@@ -1,0 +1,53 @@
+{
+ "meta": {
+  "title": "Statistiche"
+ },
+ "hero": {
+  "kicker": "Centro dati",
+  "titleStart": "La tua dashboard",
+  "titleEm": "di controllo",
+  "textStart": "Cosa succede sulla",
+  "textLink": "tua vetrina",
+  "textEnd": ": visite, contatti e iscritti, in tempo reale.",
+  "visitSingular": "visita negli ultimi 30 giorni",
+  "visitPlural": "visite negli ultimi 30 giorni"
+ },
+ "cards": {
+  "visits7": "Visite (7 gg)",
+  "visits30": "Visite (30 gg)",
+  "phoneClicks30": "Clic telefono (30 gg)",
+  "whatsappClicks30": "Clic WhatsApp (30 gg)",
+  "socialClicks30": "Clic social (30 gg)",
+  "newsletterSubscribers": "Iscritti newsletter"
+ },
+ "chart": {
+  "title": "Visite degli ultimi 14 giorni",
+  "empty": "Ancora nessun dato: arriverà non appena la tua vetrina riceverà le prime visite.",
+  "tooltipSingular": "{label}: {count} visita",
+  "tooltipPlural": "{label}: {count} visite"
+ },
+ "subscribers": {
+  "title": "I tuoi iscritti alla newsletter",
+  "hint": "Raccolti dal blocco «Newsletter» della tua vetrina.",
+  "export": "Esporta (CSV)",
+  "empty": "Nessuno per ora. Aggiungi il blocco «Newsletter» nell'editor della tua vetrina (sezione «Sezioni della mia pagina») per raccogliere email.",
+  "csvHeader": "email;iscritto_il"
+ },
+ "tunnel": {
+  "step": "Passaggio {current} di {total}",
+  "exit": "Le mie statistiche",
+  "kicker1": "Fai circolare il tuo link",
+  "title1Start": "Le tue statistiche iniziano con una",
+  "title1Em": "condivisione.",
+  "subtitle1": "Condividi il tuo link con le persone che apprezzano il tuo lavoro, vi trovano valore o conforto. Ogni visita, ogni clic e ogni follower apparirà qui — più il tuo link circola, più i tuoi numeri raccontano la tua storia.",
+  "uniqueLink": "Il tuo link unico",
+  "copyLink": "Copia il mio link",
+  "continueCta": "Continua",
+  "fromTeam": "Da parte di tutto il team",
+  "title2Start": "Grazie per usare FLUX per",
+  "title2Em": "il tuo business.",
+  "text2": "La tua attività merita di essere vista, scelta e consigliata. Ti auguriamo di realizzare grandi cose — e saremo qui per festeggiare ogni vittoria con te.",
+  "back": "Indietro",
+  "viewStats": "Vedi le mie statistiche"
+ }
+}

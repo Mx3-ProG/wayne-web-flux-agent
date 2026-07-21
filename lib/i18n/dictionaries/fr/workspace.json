@@ -1,0 +1,72 @@
+{
+  "meta": {
+    "title": "Mon espace"
+  },
+  "hero": {
+    "eyebrow": "Vue d'ensemble",
+    "greeting": "Bonjour {name}",
+    "greetingNoName": "Bonjour",
+    "text": "Voici ce qui fait avancer ton commerce aujourd'hui.",
+    "cta": "Créer un contenu"
+  },
+  "storefront": {
+    "eyebrow": "Ma vitrine",
+    "titleOnline": "Ta vitrine est en ligne",
+    "titleOffline": "Crée ton adresse sur le web",
+    "textOnline": "Le lien unique à partager avec tes clients, partout où ils te cherchent.",
+    "textOffline": "Une page claire, belle et prête à recevoir tes premières demandes.",
+    "copyLink": "Copier le lien",
+    "emptyText": "Quelques choix suffisent pour préparer ta première vitrine.",
+    "editCta": "Modifier ma vitrine",
+    "createCta": "Créer ma vitrine",
+    "viewCta": "Voir ma vitrine"
+  },
+  "metrics": {
+    "aria": "Indicateurs",
+    "readyLabel": "Ton espace est prêt à",
+    "voiceGood": "Ta voix est bien configurée",
+    "voiceContinue": "Continue de personnaliser ta voix",
+    "upcomingBookings": "Rendez-vous à venir",
+    "agendaSynced": "Agenda synchronisé",
+    "availableCredits": "Crédits disponibles",
+    "contentSingular": "contenu créé",
+    "contentPlural": "contenus créés"
+  },
+  "journey": {
+    "title": "Ton parcours",
+    "subtitle": "Une étape claire à la fois.",
+    "progress": "{completed} / {total} terminé",
+    "done": "Terminé",
+    "todo": "À faire",
+    "nextStep": "Prochaine étape",
+    "todoNow": "À faire maintenant",
+    "viewStep": "Voir l'étape",
+    "validate": "Valider"
+  },
+  "steps": {
+    "openEditor": "Ouvrir l'éditeur de vitrine",
+    "createStorefront": "Créer ma vitrine",
+    "voiceScore": "J'écris comme toi à {percent}%",
+    "voiceHint": "Plus tu lui en donnes, plus l'IA écrit avec ta voix, ton ton, tes mots à toi.",
+    "voiceRefine": "Affiner encore",
+    "voiceMeet": "Faire connaissance (2 min)",
+    "createMoreProducts": "Créer d'autres produits avec Flux",
+    "startProductCreation": "Lancer la création produit Flux",
+    "createNewOffer": "Créer une nouvelle offre avec Flux",
+    "startOfferCreation": "Lancer la création d'offre Flux",
+    "reviewSchedule": "Revoir mes horaires avec Flux",
+    "configureSchedule": "Configurer mes horaires",
+    "toolsHint": "Choisis un outil. Le coût en crédits est affiché avant de lancer.",
+    "creditsLeft": "crédits restants",
+    "viewCredits": "Voir mes crédits",
+    "creationSingular": "création",
+    "creationPlural": "créations",
+    "inYourVault": "dans ton coffre",
+    "openVault": "Ouvrir mon coffre",
+    "upcomingAppointments": "rendez-vous à venir",
+    "openAgenda": "Ouvrir mon agenda",
+    "shareHint": "Bio Instagram, statut WhatsApp, fiche Google : plus ton lien circule, plus ton agenda se remplit tout seul.",
+    "shareWhatsapp": "Partager sur WhatsApp",
+    "whatsappMessage": "Réserve ton rendez-vous en ligne : {url}"
+  }
+}

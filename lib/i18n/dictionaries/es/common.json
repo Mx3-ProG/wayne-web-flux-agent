@@ -1,0 +1,70 @@
+{
+ "brandHomeAria": "Wayne Web Flux, inicio",
+ "nav": {
+  "aria": "Navegación principal",
+  "solution": "La solución",
+  "tools": "Las herramientas",
+  "pricing": "Precios",
+  "story": "Nuestra historia",
+  "reviews": "Opiniones",
+  "faq": "FAQ",
+  "contact": "Contacto",
+  "home": "Inicio",
+  "login": "Iniciar sesión",
+  "tryFree": "Probar gratis"
+ },
+ "languageSwitcher": {
+  "aria": "Cambiar de idioma",
+  "label": "Idioma"
+ },
+ "footer": {
+  "tagline": "La presencia digital que realmente trabaja para tu negocio.",
+  "cta": "Probar FLUX gratis",
+  "product": "Producto",
+  "resources": "Recursos",
+  "helpCenter": "Centro de ayuda",
+  "contactUs": "Contáctanos",
+  "legal": "Legal",
+  "legalNotice": "Aviso legal",
+  "terms": "Condiciones generales",
+  "privacy": "Privacidad",
+  "safety": "Infraestructura protegida por KarlMada · Tolerancia cero con contenidos para adultos, drogas, armas, fraudes y actividades ilícitas.",
+  "rights": "© 2026 Wayne Web. Todos los derechos reservados.",
+  "status": "Servicios operativos",
+  "linkedinAria": "Wayne Web en LinkedIn",
+  "instagramAria": "Wayne Web en Instagram"
+ },
+ "cookieConsent": {
+  "kicker": "Tu elección, sin complicaciones",
+  "title": "Cookies para un servicio que sigue mejorando.",
+  "description": "Usamos cookies opcionales para entender qué te resulta útil, mejorar Flux y darlo a conocer. Tú mantienes el control.",
+  "categories": {
+   "necessary": {
+    "title": "Necesarias",
+    "description": "Conexión, seguridad y funcionamiento del servicio."
+   },
+   "analytics": {
+    "title": "Medición de audiencia",
+    "description": "Entender los usos y mejorar la calidad del servicio."
+   },
+   "personalization": {
+    "title": "Personalización",
+    "description": "Adaptar la experiencia y los contenidos a tus preferencias."
+   },
+   "marketing": {
+    "title": "Notoriedad",
+    "description": "Medir nuestras campañas y dar a conocer nuestros servicios."
+   }
+  },
+  "preferencesAria": "Preferencias de cookies",
+  "toggleAria": "{title}: {state}",
+  "enabled": "activado",
+  "disabled": "desactivado",
+  "legalPrefix": "Las cookies necesarias permanecen activas. Consulta nuestra",
+  "privacyPolicy": "política de privacidad",
+  "acceptAll": "Aceptar todo",
+  "saveChoices": "Guardar mis opciones",
+  "customize": "Personalizar",
+  "declineOptional": "Continuar sin aceptar"
+ }
+}

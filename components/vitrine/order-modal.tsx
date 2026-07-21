@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { submitGuestOrder } from "@/lib/guest-order";
 import { formatPrice } from "@/lib/types";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
+import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
 
 // Ligne de panier générique : produit OU offre. La clé de panier est
 // `${kind}:${id}` pour éviter les collisions d'ids entre tables.
@@ -23,10 +25,11 @@ type Props = {
   onSetQty: (kind: CartLine["kind"], id: string, quantity: number) => void;
   onClose: () => void;
   onDone: () => void;
+  t?: StorefrontDict["order"];
 };
 
 // Commande sans paiement : panier → coordonnées → confirmation. Sans compte.
-export function OrderModal({ pageId, items, accentColor, designId, buttonDesignId, onSetQty, onClose, onDone }: Props) {
+export function OrderModal({ pageId, items, accentColor, designId, buttonDesignId, onSetQty, onClose, onDone, t = frStorefront.order }: Props) {
   const [step, setStep] = useState<"cart" | "form" | "done">("cart");
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -59,7 +62,7 @@ export function OrderModal({ pageId, items, accentColor, designId, buttonDesignI
       return;
     } catch {
       setSubmitting(false);
-      setError("La commande n'a pas pu être enregistrée. Réessaie dans un instant.");
+      setError(t.submitError);
     }
   }
 
@@ -79,12 +82,12 @@ export function OrderModal({ pageId, items, accentColor, designId, buttonDesignI
       >
         <div className="flex items-start justify-between mb-1">
           <h3 className="text-xl font-semibold">
-            {step === "done" ? "Commande envoyée" : "Ma commande"}
+            {step === "done" ? t.orderSent : t.myOrder}
           </h3>
           <button
             type="button"
             onClick={onClose}
-            aria-label="Fermer"
+            aria-label={t.close}
             className="text-2xl leading-none opacity-50 hover:opacity-100"
           >
             ×
@@ -92,7 +95,7 @@ export function OrderModal({ pageId, items, accentColor, designId, buttonDesignI
         </div>
         {step !== "done" && (
           <p className="text-sm opacity-60 mb-5">
-            {count} article{count > 1 ? "s" : ""} · {formatPrice(total)}
+            {count} {count > 1 ? t.itemPlural : t.itemSingular} · {formatPrice(total)}
           </p>
         )}
 
@@ -113,7 +116,7 @@ export function OrderModal({ pageId, items, accentColor, designId, buttonDesignI
                   <div className="flex items-center gap-2">
                     <button
                       type="button"
-                      aria-label="Retirer un"
+                      aria-label={t.removeOne}
                       onClick={() => onSetQty(line.kind, line.id, line.quantity - 1)}
                       className="grid h-8 w-8 place-items-center rounded-full border border-black/10 bg-white text-lg leading-none"
                     >
@@ -122,7 +125,7 @@ export function OrderModal({ pageId, items, accentColor, designId, buttonDesignI
                     <span className="w-5 text-center font-medium">{line.quantity}</span>
                     <button
                       type="button"
-                      aria-label="Ajouter un"
+                      aria-label={t.addOne}
                       onClick={() => onSetQty(line.kind, line.id, line.quantity + 1)}
                       className="grid h-8 w-8 place-items-center rounded-full border border-black/10 bg-white text-lg leading-none"
                     >
@@ -133,7 +136,7 @@ export function OrderModal({ pageId, items, accentColor, designId, buttonDesignI
               ))}
             </ul>
             {items.length === 0 ? (
-              <p className="text-sm opacity-60">Ton panier est vide.</p>
+              <p className="text-sm opacity-60">{t.cartEmpty}</p>
             ) : (
               <button
                 data-vitrine-action
@@ -142,7 +145,7 @@ export function OrderModal({ pageId, items, accentColor, designId, buttonDesignI
                 className="w-full rounded-xl px-4 py-3 font-medium text-white"
                 style={{ backgroundColor: accentColor }}
               >
-                Continuer · {formatPrice(total)}
+                {t.continue} · {formatPrice(total)}
               </button>
             )}
           </>
@@ -155,14 +158,14 @@ export function OrderModal({ pageId, items, accentColor, designId, buttonDesignI
               className="text-sm underline underline-offset-4"
               onClick={() => setStep("cart")}
             >
-              ← retour au panier
+              {t.backToCart}
             </button>
-            <p className="font-medium">Tes coordonnées</p>
+            <p className="font-medium">{t.yourDetails}</p>
             <input
               name="first_name"
               required
               maxLength={60}
-              placeholder="Ton prénom"
+              placeholder={t.firstNamePlaceholder}
               className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5"
             />
             <input
@@ -170,31 +173,29 @@ export function OrderModal({ pageId, items, accentColor, designId, buttonDesignI
               required
               type="tel"
               pattern="[+0-9 ().-]{6,20}"
-              placeholder="Ton téléphone"
+              placeholder={t.phonePlaceholder}
               className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5"
             />
             <input
               name="email"
               type="email"
-              placeholder="Ton email (optionnel)"
+              placeholder={t.emailPlaceholder}
               className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5"
             />
             <input
               name="address"
               maxLength={240}
-              placeholder="Ton adresse (optionnel)"
+              placeholder={t.addressPlaceholder}
               className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5"
             />
             <textarea
               name="note"
               maxLength={500}
               rows={2}
-              placeholder="Une précision ? (optionnel)"
+              placeholder={t.notePlaceholder}
               className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5"
             />
-            <p className="text-xs opacity-60">
-              Le commerçant te recontacte pour confirmer et convenir du paiement.
-            </p>
+            <p className="text-xs opacity-60">{t.contactHint}</p>
             <button
               data-vitrine-action
               type="submit"
@@ -202,7 +203,7 @@ export function OrderModal({ pageId, items, accentColor, designId, buttonDesignI
               className="w-full rounded-xl px-4 py-3 font-medium text-white disabled:opacity-60"
               style={{ backgroundColor: accentColor }}
             >
-              {submitting ? "Un instant…" : `Envoyer la commande · ${formatPrice(total)}`}
+              {submitting ? t.sending : `${t.sendOrder} · ${formatPrice(total)}`}
             </button>
           </form>
         )}
@@ -210,11 +211,11 @@ export function OrderModal({ pageId, items, accentColor, designId, buttonDesignI
         {step === "done" && (
           <div className="text-center py-6">
             <p className="text-4xl mb-3">✓</p>
-            <p className="font-semibold mb-1">Merci, c&apos;est noté !</p>
+            <p className="font-semibold mb-1">{t.thanks}</p>
             <p className="text-sm opacity-70">
-              Ta commande a bien été transmise.
+              {t.transmitted}
               <br />
-              Le commerçant va te recontacter très vite.
+              {t.willContact}
             </p>
             <button
               data-vitrine-action
@@ -226,7 +227,7 @@ export function OrderModal({ pageId, items, accentColor, designId, buttonDesignI
               className="mt-5 rounded-xl px-5 py-2.5 font-medium text-white"
               style={{ backgroundColor: accentColor }}
             >
-              Fermer
+              {t.close}
             </button>
           </div>
         )}

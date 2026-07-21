@@ -53,3 +53,17 @@
   .adventure .primaryAction, .creditCard > a { grid-column: 1 / -1; width: 100%; }
   .section { border-radius: 20px; }
 }
+.languageCard {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--border, #dedede);
+  border-radius: 1rem;
+  background: var(--card, #fff);
+}
+.languageCard h2, .languageCard p { margin: 0; }
+.languageCard p { margin-top: .35rem; }
+.languageCard small { display: block; margin-top: .5rem; opacity: .7; }
+@media (max-width: 720px) { .languageCard { grid-template-columns: auto 1fr; } .languageCard > :last-child { grid-column: 1 / -1; justify-self: start; } }

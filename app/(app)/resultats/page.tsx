@@ -1,10 +1,21 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePageId } from "@/lib/active-project";
 import type { Generation } from "@/lib/types";
+import { getAccountLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { defaultLocale } from "@/lib/i18n/config";
 import { GenerationList } from "@/components/tools/generation-list";
 
-export const metadata = { title: "Mon coffre" };
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const locale = user ? await getAccountLocale(supabase, user.id) : defaultLocale;
+  return { title: (await getDictionary(locale, "tools")).meta.title };
+}
 
 export default async function ResultatsPage() {
   const supabase = await createClient();
@@ -14,7 +25,11 @@ export default async function ResultatsPage() {
   if (!user) redirect("/login");
 
   // Contenus du projet actif.
-  const pageId = await getActivePageId(supabase, user.id);
+  const [pageId, locale] = await Promise.all([
+    getActivePageId(supabase, user.id),
+    getAccountLocale(supabase, user.id),
+  ]);
+  const t = await getDictionary(locale, "tools");
   const { data: generations } = pageId
     ? await supabase
         .from("generations")
@@ -26,6 +41,10 @@ export default async function ResultatsPage() {
     : { data: [] as Generation[] };
 
   return (
-    <GenerationList generations={(generations ?? []) as Generation[]} />
+    <GenerationList
+      generations={(generations ?? []) as Generation[]}
+      t={t}
+      locale={locale}
+    />
   );
 }

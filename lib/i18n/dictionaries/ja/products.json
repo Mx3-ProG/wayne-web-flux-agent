@@ -1,0 +1,179 @@
+{
+ "meta": {
+  "title": "マイ商品",
+  "tunnelTitle": "商品を作成する"
+ },
+ "page": {
+  "eyebrow": "きみのショップ",
+  "title": "マイ商品",
+  "subtitle": "きみのECカタログ：商品を作って、在庫を管理して（予約確定で −1）、それぞれの売上をチェック。サイトの「サービス一覧」に表示されるよ。",
+  "startHint": "まずはカテゴリーを追加、それから中に商品を追加していこう。",
+  "emptyStart": "まずは",
+  "emptyLink": "サイト",
+  "emptyEnd": "を作って、商品を管理しよう。"
+ },
+ "card": {
+  "namePlaceholder": "商品名",
+  "displayed": "表示中",
+  "hidden": "非表示",
+  "reservation": "予約",
+  "product": "商品",
+  "deleteProduct": "商品を削除",
+  "price": "価格（€）",
+  "duration": "所要時間（分）",
+  "description": "説明",
+  "descriptionPlaceholder": "短い説明文",
+  "changePhoto": "写真を変更",
+  "addPhoto": "写真を追加",
+  "removePhoto": "写真を削除",
+  "saved": "保存済み",
+  "saving": "保存中…",
+  "confirm": "選択を確定する",
+  "confirmHintReservation": "名前・価格・所要時間・説明",
+  "confirmHintProduct": "名前・価格・説明",
+  "inStock": "在庫あり",
+  "removeOne": "1つ減らす",
+  "addOne": "1つ追加",
+  "restockPlaceholder": "+ 数量",
+  "restock": "補充",
+  "setExact": "設定する",
+  "stopTracking": "在庫管理をやめる",
+  "trackStock": "在庫を管理する",
+  "soldSingular": "販売",
+  "soldPlural": "販売",
+  "noSales": "販売実績なし"
+ },
+ "category": {
+  "save": "保存",
+  "deleteCategory": "カテゴリーを削除",
+  "otherProducts": "その他の商品",
+  "defaultName": "新しいカテゴリー",
+  "addProduct": "商品を追加 · {cost} クレジット",
+  "addReservation": "予約を追加 · {cost} クレジット"
+ },
+ "manager": {
+  "addCategory": "カテゴリーを追加 ·",
+  "free": "無料",
+  "productNoCategory": "カテゴリーなしの商品 · {cost} クレジット",
+  "reservationNoCategory": "カテゴリーなしの予約 · {cost} クレジット",
+  "defaultProductName": "新しい商品",
+  "defaultReservationName": "新しい予約",
+  "reservationsFamilyName": "予約"
+ },
+ "errors": {
+  "not_authenticated": "続けるにはログインが必要だよ。",
+  "no_active_page": "まずはサイトを作成しよう。",
+  "creation_failed": "作成できませんでした。",
+  "category_not_found": "カテゴリーが見つかりません。",
+  "category_name_required": "カテゴリーに名前を付けてね。",
+  "at_least_one_product": "商品を少なくとも1つ追加してね。",
+  "category_creation_failed": "カテゴリーの作成に失敗しました。",
+  "products_creation_failed": "商品の作成に失敗しました。",
+  "product_not_found": "商品が見つかりません。",
+  "save_failed": "保存できませんでした。",
+  "delete_failed": "削除できませんでした。",
+  "content_blocked": "ヘイトメッセージや露骨なコンテンツはFLUX上で禁止されており、処罰の対象となります。自分自身とまわりの人を大切にしてね。利用規約違反が3回に達すると、アカウントは削除されます。",
+  "insufficientCredits": "このアクションには{cost}クレジット必要ですが、残高が足りません。クレジットページからチャージしてね。",
+  "insufficientCreditsPlural": "このアクションには{cost}クレジット必要ですが、残高が足りません。クレジットページからチャージしてね。",
+  "subscriptionRequired": "FLUXの無料お試し期間が終了し、残高もゼロだよ。続けるにはプランを選んでね。",
+  "unknown": "エラーが発生しました。少し時間をおいて再度お試しください。"
+ },
+ "tunnel": {
+  "myProducts": "マイ商品",
+  "step": "ステップ {current} / 8",
+  "intro": {
+   "kicker": "FLUX 商品作成",
+   "title": "きみのノウハウを、すぐ売れる",
+   "titleEm": "商品に変えよう。",
+   "text": "カテゴリーを1つ、商品を1つ以上作れば、あとはFluxがきみのサイトにすべて整理してくれるよ。",
+   "cta": "商品を作成する"
+  },
+  "category": {
+   "kicker": "きみのカテゴリー",
+   "titleStart": "どんなふうに",
+   "titleEm": "整理したい？",
+   "subtitle": "カテゴリーに名前を付けて、今作りたい商品を全部追加しよう。",
+   "nameLabel": "カテゴリー名",
+   "namePlaceholder": "例：フェイシャルケア",
+   "productLabel": "商品 {index}",
+   "productPlaceholder": "例：ツヤ肌ケア",
+   "removeProduct": "商品 {index} を削除",
+   "addAnother": "もう1つ商品を追加"
+  },
+  "price": {
+   "title": "価格はいくらにする？",
+   "kicker": "ちょうどいい価格",
+   "subtitle": "各商品の価格を入力しよう。あとからいつでも変更できるよ。",
+   "defaultName": "商品 {index}",
+   "priceLabel": "価格（€）",
+   "placeholder": "例：20"
+  },
+  "description": {
+   "title": "何が魅力になる？",
+   "kicker": "説明文",
+   "subtitle": "シンプルな一文でOK。お客さんが選びやすくなるよ。",
+   "placeholder": "お客さんが受け取るもの、感じること、得られるもの…"
+  },
+  "photo": {
+   "kicker": "写真",
+   "titleStart": "見た目の存在感を",
+   "titleEm": "持たせよう。",
+   "subtitle": "商品ごとに写真を1枚。このステップは任意だよ。",
+   "change": "写真を変更",
+   "add": "写真を追加"
+  },
+  "stock": {
+   "kicker": "在庫",
+   "title": "数量を管理する？",
+   "subtitle": "在庫管理をオンにして、今日利用できる数量を入力しよう。",
+   "trackedHint": "在庫がゼロになったらFluxが知らせるよ。",
+   "untrackedHint": "数量の上限は表示されないよ。",
+   "tracked": "在庫管理中",
+   "track": "在庫を管理する",
+   "quantityLabel": "利用可能な数量",
+   "unitSingular": "個",
+   "unitPlural": "個"
+  },
+  "visibility": {
+   "kicker": "公開設定",
+   "title": "公開する準備はできてる？",
+   "subtitle": "非表示の商品は保存されたまま、サイトには表示されないよ。",
+   "yes": "公開する",
+   "no": "下書きのままにする",
+   "toggleAria": "{name}の設定を変更"
+  },
+  "confirm": {
+   "kicker": "確認",
+   "titleStart": "きみの",
+   "titleEm": "ショップの準備完了。",
+   "subtitle": "選択内容を確認しよう：作成後はFluxが営業時間の設定（価格に含まれるよ）に続くよ。",
+   "category": "カテゴリー",
+   "products": "商品",
+   "productSingular": "商品",
+   "productPlural": "商品",
+   "online": "公開中",
+   "draft": "下書き",
+   "inStock": "在庫あり",
+   "totalCost": "合計コスト（商品＋予定表）",
+   "costValue": "{cost} クレジット · 残高：{balance} クレジット",
+   "missingSingular": "あと{count}クレジット足りないよ。",
+   "missingPlural": "あと{count}クレジット足りないよ。",
+   "recharge": "クレジットをチャージする",
+   "edit": "編集する",
+   "creating": "作成中…",
+   "create": "確定して営業時間を設定する（{cost} クレジット）"
+  },
+  "credits": {
+   "trialTitle": "お試し終了＆残高ゼロ",
+   "insufficientTitle": "クレジットが足りません",
+   "trial": "お試し期間が終了し、クレジットの残高もゼロだよ。FLUXのプランなら毎月残高がチャージされて、AI生成も再び使えるようになる — なにも失われないよ。",
+   "insufficient": "商品の作成には{cost}クレジット必要だよ。クレジットをチャージして完了させよう — なにも失われないよ。",
+   "later": "あとで",
+   "choosePlan": "FLUXのプランを選ぶ",
+   "rechargeCredits": "クレジットをチャージする"
+  },
+  "successToast": "商品の準備が整ったよ。最後のステップは営業時間の設定だよ。",
+  "back": "戻る",
+  "continue": "続ける"
+ }
+}

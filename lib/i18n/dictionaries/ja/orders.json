@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "title": "注文一覧"
+  },
+  "status": {
+    "pending": "対応待ち",
+    "accepted": "受付済み",
+    "fulfilled": "完了",
+    "cancelled": "キャンセル済み"
+  },
+  "bookingStatus": {
+    "cancelled": "キャンセル済み",
+    "confirmed": "確定済み"
+  },
+  "itemKind": {
+    "offer": "オファー",
+    "reservation": "予約",
+    "product": "商品"
+  },
+  "clientSheet": {
+    "aria": "顧客カード",
+    "titleWithName": "顧客カード・{name}",
+    "titleDefault": "顧客カード",
+    "interactions": "{count}件のやり取り",
+    "phone": "電話番号",
+    "email": "メール",
+    "notProvided": "未登録",
+    "address": "住所",
+    "addressNotProvided": "未登録"
+  },
+  "history": {
+    "title": "顧客履歴",
+    "purchases": "{count}件の購入",
+    "reservation": "予約"
+  },
+  "orderCard": {
+    "transaction": "FLUX取引",
+    "defaultClient": "お客様",
+    "itemSingular": "点",
+    "itemPlural": "点",
+    "accept": "承認する",
+    "markDone": "完了にする",
+    "cancel": "取り消す",
+    "refuse": "拒否する"
+  },
+  "clientProfile": {
+    "dossier": "顧客ファイル",
+    "interactionSingular": "件のやり取り",
+    "interactionPlural": "件のやり取り"
+  },
+  "hero": {
+    "kicker": "FLUXポートフォリオ",
+    "titleStart": "ビジネス",
+    "titleEm": "センター",
+    "text": "注文を管理し、顧客をすぐに見つけて、あなたのショップをすっきり見やすい入金台帳に変えよう。",
+    "movementSingular": "件の取引を記録",
+    "movementPlural": "件の取引を記録"
+  },
+  "metrics": {
+    "aria": "注文インジケーター",
+    "toProcess": "対応待ち",
+    "accepted": "受付済み",
+    "history": "履歴",
+    "clientSheets": "顧客カード"
+  },
+  "empty": {
+    "noPageStart": "まずは",
+    "noPageLink": "ショップ",
+    "noPageEnd": "を作って注文を受け取ろう。",
+    "noOrdersStart": "まだ注文はありません。あなたの",
+    "noOrdersLink": "ショップ",
+    "noOrdersEnd": "に商品を追加して、リンクをシェアしよう。"
+  },
+  "sections": {
+    "incoming": "新規取引",
+    "toProcess": "対応待ち",
+    "toProcessCount": "{count}件の要確認案件",
+    "openLabel": "進行中の案件",
+    "accepted": "受付済み",
+    "acceptedCount": "{count}件の入金処理中",
+    "ledger": "台帳",
+    "history": "履歴",
+    "historyCount": "{count}件の取引を記録済み",
+    "book": "ビジネス台帳",
+    "clientSheets": "顧客カード",
+    "clientSheetsCount": "{count}件の顧客関係を保存中"
+  },
+  "errors": {
+    "not_authenticated": "続けるにはログインが必要だよ。",
+    "action_failed": "この操作は実行できません。",
+    "unknown": "エラーが発生しました。少し待ってからもう一度試してね。"
+  }
+}

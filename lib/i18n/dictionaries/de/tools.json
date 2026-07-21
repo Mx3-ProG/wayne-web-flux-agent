@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "Mein Tresor"
+  },
+  "toolPage": {
+    "howItWorks": "So funktioniert's",
+    "voicePrefix": "Ich schreibe wie du bei",
+    "improveVoice": "Meine Stimme verbessern",
+    "myVoice": "Meine Stimme"
+  },
+  "runner": {
+    "choosePlaceholder": "— auswählen —",
+    "costLabel": "Kosten:",
+    "costCredits": "{cost} Credits",
+    "balanceLabel": "Guthaben: {balance}",
+    "running": "Die KI schreibt für dich…",
+    "generate": "Mein Ergebnis generieren ({cost} Cr.)",
+    "missingCredits": "Dir fehlen Credits.",
+    "discoverPlans": "FLUX-Tarife entdecken",
+    "waiting": "Nur ein paar Sekunden Geduld, die KI denkt für dich nach…",
+    "copy": "Kopieren",
+    "copied": "Kopiert!",
+    "viewInVault": "Im Tresor ansehen →",
+    "errors": {
+      "ai_window_expired": "Dein Zugangsfenster zu den KI-Tools ist abgelaufen. Wähle einen Tarif, um es zu reaktivieren.",
+      "subscription_required": "Deine FLUX-Testphase ist vorbei. Wähle einen Tarif, um weiter zu generieren.",
+      "insufficient_credits": "Nicht genug Credits. Wechsle zu einem FLUX-Tarif, um aufzuladen.",
+      "generation_failed": "Die Generierung ist fehlgeschlagen.",
+      "generation_interrupted": "Die Generierung wurde unterbrochen."
+    }
+  },
+  "vault": {
+    "overline": "Persönlicher Tresorraum",
+    "titleStart": "Dein Tre-",
+    "titleEm": "sor",
+    "emptySubtitle": "Jede wertvolle Kreation findet hier ihren Platz.",
+    "treasureSingular": "Schatz, von FLUX geformt, für immer bewahrt.",
+    "treasurePlural": "Schätze, von FLUX geformt, für immer bewahrt.",
+    "creationSingular": "Kreation in Sicherheit",
+    "creationPlural": "Kreationen in Sicherheit",
+    "emptyKicker": "Der erste Schatz wartet auf dich",
+    "emptyTitle": "Dein Know-how verdient sein Schmuckkästchen.",
+    "emptyText": "Erstelle deinen ersten Inhalt mit FLUX. Er wird hier aufbewahrt, bereit zum Nachlesen, Kopieren und Teilen.",
+    "createFirst": "Meinen ersten Inhalt erstellen",
+    "collectionLabel": "Deine Sammlung",
+    "collectionTitle": "Einzigartige Stücke, bereit zu glänzen.",
+    "sortedHint": "Sortiert von der neuesten zur ältesten",
+    "creationLabel": "FLUX-Kreation",
+    "creditsSpent": "{cost} Credits",
+    "close": "Schließen",
+    "discover": "Entdecken",
+    "copyCreation": "Diese Kreation kopieren",
+    "copiedToast": "Kreation kopiert!"
+  }
+}

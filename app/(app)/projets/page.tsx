@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePageId } from "@/lib/active-project";
@@ -11,8 +12,18 @@ import { Lock, Plus, Store } from "lucide-react";
 import { ActivateButton } from "./activate-button";
 import { DomainSettings } from "./domain-settings";
 import styles from "./projets.module.css";
+import { getAccountLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { defaultLocale } from "@/lib/i18n/config";
 
-export const metadata = { title: "Mes projets" };
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const locale = user ? await getAccountLocale(supabase, user.id) : defaultLocale;
+  return { title: (await getDictionary(locale, "projects")).meta.title };
+}
 
 export default async function ProjetsPage() {
   const supabase = await createClient();
@@ -21,7 +32,7 @@ export default async function ProjetsPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [{ data: profile }, { data: pages }, activePageId] = await Promise.all([
+  const [{ data: profile }, { data: pages }, activePageId, locale] = await Promise.all([
     supabase.from("profiles").select("plan").eq("user_id", user.id).single(),
     supabase
       .from("pages")
@@ -29,7 +40,9 @@ export default async function ProjetsPage() {
       .eq("user_id", user.id)
       .order("created_at", { ascending: true }),
     getActivePageId(supabase, user.id),
+    getAccountLocale(supabase, user.id),
   ]);
+  const t = await getDictionary(locale, "projects");
 
   const projects = (pages ?? []) as Page[];
   const plan = (profile?.plan as Plan) ?? "basique";
@@ -48,17 +61,15 @@ export default async function ProjetsPage() {
 
   return (
     <div className={styles.page}>
-      <p className={styles.eyebrow}>Ton compte</p>
-      <h1 className={styles.title}>Mes projets</h1>
-      <p className={styles.subtitle}>
-        Chaque projet est une boutique complète : sa vitrine, ses produits, ses
-        commandes, son chiffre d&apos;affaires. Choisis le projet actif pour piloter
-        tout ton espace dessus.
-      </p>
+      <p className={styles.eyebrow}>{t.eyebrow}</p>
+      <h1 className={styles.title}>{t.title}</h1>
+      <p className={styles.subtitle}>{t.subtitle}</p>
 
       <div className={styles.counter}>
-        <b>{projects.length}</b> / {limit} projet{limit > 1 ? "s" : ""} — forfait{" "}
-        {PLAN_LABEL[plan]}
+        {(limit > 1 ? t.counterPlural : t.counter)
+          .replace("{count}", String(projects.length))
+          .replace("{limit}", String(limit))
+          .replace("{plan}", PLAN_LABEL[plan])}
       </div>
 
       <div className={styles.grid}>
@@ -73,22 +84,23 @@ export default async function ProjetsPage() {
               <div className={styles.cardHead}>
                 <span className={styles.emoji}>{vertical.emoji}</span>
                 <div className={styles.cardTitle}>
-                  <strong>{project.business_name || "Sans nom"}</strong>
+                  <strong>{project.business_name || t.noName}</strong>
                   <small>/{project.slug}</small>
                 </div>
               </div>
               <div className={styles.stat}>
-                <span>Chiffre d&apos;affaires</span>
-                <b>{formatPrice(revenues[i])}</b>
+                <span>{t.revenue}</span>
+                <b>{formatPrice(revenues[i], locale)}</b>
               </div>
               <div className={styles.cardActions}>
                 <ActivateButton
                   pageId={project.id}
                   active={active}
                   className={styles.activate}
+                  t={t}
                 />
                 <Link href="/ma-page" className={styles.openLink}>
-                  Ouvrir ↗
+                  {t.open}
                 </Link>
               </div>
             </article>
@@ -98,20 +110,16 @@ export default async function ProjetsPage() {
         {canCreate ? (
           <Link href="/projets/nouveau" className={styles.addCard}>
             <Plus aria-hidden="true" />
-            <span>Nouveau projet</span>
+            <span>{t.newProject}</span>
           </Link>
         ) : (
           <div className={styles.upsell}>
             <Lock aria-hidden="true" />
-            <strong>Plusieurs boutiques</strong>
-            <p>
-              {plan === "basique"
-                ? "Gère plusieurs boutiques (jusqu'à 10) avec les formules supérieures."
-                : "Tu as atteint la limite de projets de ta formule."}
-            </p>
+            <strong>{t.upsellTitle}</strong>
+            <p>{plan === "basique" ? t.upsellBasique : t.upsellLimit}</p>
             {plan === "basique" && (
               <Link href="/formules" className={`flux-button-smooth ${styles.upsellCta}`}>
-                <Store aria-hidden="true" /> Découvrir les formules FLUX
+                <Store aria-hidden="true" /> {t.discoverPlans}
               </Link>
             )}
           </div>
@@ -123,6 +131,7 @@ export default async function ProjetsPage() {
           pageId={activeProject.id}
           domain={activeProject.custom_domain}
           editable={domainEditable}
+          t={t}
         />
       )}
     </div>

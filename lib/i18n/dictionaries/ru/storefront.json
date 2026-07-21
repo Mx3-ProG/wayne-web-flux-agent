@@ -1,0 +1,186 @@
+{
+  "verifiedBadge": {
+    "label": "Проверенный магазин",
+    "title": "Эта версия магазина проверена FLUX."
+  },
+  "header": {
+    "navAria": "Навигация по сайту",
+    "lightMode": "Включить светлый режим",
+    "darkMode": "Включить тёмный режим",
+    "openMenu": "Открыть меню",
+    "closeMenu": "Закрыть меню",
+    "defaultBusinessName": "Мой бизнес"
+  },
+  "hero": {
+    "viewOffers": "Смотреть предложения",
+    "book": "Записаться",
+    "discover": "Узнать больше",
+    "viewServices": "Смотреть услуги",
+    "discoverShop": "Открыть магазин",
+    "onlineBooking": "Онлайн-запись",
+    "onlineOrder": "Онлайн-заказ"
+  },
+  "shell": {
+    "scrollTop": "Наверх страницы",
+    "whatsapp": "Написать в WhatsApp",
+    "call": "Позвонить",
+    "viewCart": "Смотреть корзину",
+    "stayInTouch": "Оставайтесь на связи",
+    "legalNotice": "Юридическая информация",
+    "terms": "Условия",
+    "termsFull": "Общие условия продажи",
+    "privacy": "Конфиденциальность",
+    "privacyFull": "Политика конфиденциальности",
+    "close": "Закрыть",
+    "poweredBy": "Создано с помощью"
+  },
+  "subpage": {
+    "home": "Главная",
+    "draftNotice": "Эта страница пока в разработке."
+  },
+  "booking": {
+    "loadAvailabilityError": "Не удалось загрузить доступное время.",
+    "loadSlotsError": "Не удалось загрузить слоты.",
+    "slotTakenError": "Этот слот только что заняли. Выберите другой.",
+    "genericError": "Не удалось сохранить запись. Попробуйте ещё раз.",
+    "close": "Закрыть",
+    "chooseDay": "Выберите день",
+    "loading": "Секунду…",
+    "closed": "закрыто",
+    "full": "мест нет",
+    "slotsCount": "{count} слотов",
+    "changeDay": "← сменить день",
+    "changeTime": "← сменить время",
+    "yourDetails": "Ваши контакты",
+    "firstNamePlaceholder": "Ваше имя",
+    "phonePlaceholder": "Ваш телефон",
+    "emailPlaceholder": "Ваш email (необязательно)",
+    "confirmationHint": "Чтобы получить подтверждение записи.",
+    "confirm": "Подтвердить запись",
+    "booked": "Готово, вы записаны!",
+    "seeYouSoon": "До скорой встречи.",
+    "at": "в"
+  },
+  "order": {
+    "orderSent": "Заказ отправлен",
+    "myOrder": "Мой заказ",
+    "close": "Закрыть",
+    "itemSingular": "товар",
+    "itemPlural": "товаров",
+    "cartEmpty": "Твоя корзина пуста.",
+    "continue": "Продолжить",
+    "removeOne": "Убрать один",
+    "addOne": "Добавить один",
+    "backToCart": "← вернуться в корзину",
+    "yourDetails": "Твои контакты",
+    "firstNamePlaceholder": "Твоё имя",
+    "phonePlaceholder": "Твой телефон",
+    "emailPlaceholder": "Твой email (необязательно)",
+    "addressPlaceholder": "Твой адрес (необязательно)",
+    "notePlaceholder": "Есть уточнение? (необязательно)",
+    "contactHint": "Продавец свяжется с тобой, чтобы подтвердить заказ и договориться об оплате.",
+    "sendOrder": "Отправить заказ",
+    "sending": "Секунду…",
+    "thanks": "Спасибо, всё записано!",
+    "transmitted": "Твой заказ успешно отправлен.",
+    "willContact": "Продавец скоро с тобой свяжется.",
+    "submitError": "Не удалось сохранить заказ. Попробуй ещё раз через минуту."
+  },
+  "sections": {
+    "about": {
+      "eyebrow": "Моя история",
+      "defaultAlt": "Портрет"
+    },
+    "beforeAfter": {
+      "eyebrow": "Доказательство в фото",
+      "title": "До / после",
+      "before": "До",
+      "after": "После",
+      "compareAria": "Сравнить до и после"
+    },
+    "catalog": {
+      "eyebrow": "Что я предлагаю",
+      "comboTitle": "Мои услуги",
+      "comboSubtitle": "Товары под заказ и запись на приём.",
+      "shopOnlyTitle": "Товары",
+      "shopOnlySubtitle": "Товары под заказ.",
+      "servicesOnlyTitle": "Запись",
+      "servicesOnlySubtitle": "Запись на приём.",
+      "shopTitle": "Мой магазин",
+      "shopSubtitle": "Товары под заказ.",
+      "servicesTitle": "Мои услуги",
+      "servicesSubtitle": "Запись на приём.",
+      "productsHeading": "Товары",
+      "reservationsHeading": "Запись",
+      "soldOut": "Раскуплено",
+      "add": "Добавить",
+      "free": "Бесплатно",
+      "book": "Записаться",
+      "emptyCatalog": "Каталог скоро появится."
+    },
+    "faq": {
+      "eyebrow": "Частые вопросы",
+      "title": "Вопросы и ответы",
+      "subtitle": "Ответы на вопросы, которые мне задают чаще всего."
+    },
+    "gallery": {
+      "eyebrow": "В фото",
+      "title": "Моя работа",
+      "subtitle": "Несколько деталей, которые расскажут о моём стиле.",
+      "photoAlt": "Фото {index}"
+    },
+    "googleBusiness": {
+      "eyebrow": "Отзывы Google",
+      "defaultTitle": "Твоё мнение важно для нас",
+      "defaultDescription": "Посмотри отзывы наших клиентов или поделись своим впечатлением за пару секунд.",
+      "leaveReview": "Оставить отзыв",
+      "viewProfile": "Смотреть профиль Google"
+    },
+    "hours": {
+      "eyebrow": "Когда приходить",
+      "title": "Мои часы работы",
+      "subtitle": "Заходи в нужное время."
+    },
+    "map": {
+      "eyebrow": "Где меня найти",
+      "title": "Приходи в гости",
+      "mapTitle": "Карта: {query}"
+    },
+    "newsletter": {
+      "eyebrow": "Оставайтесь на связи",
+      "title": "Будь в курсе",
+      "subtitle": "Получай мои предложения и новости без спама.",
+      "emailPlaceholder": "your@email.ru",
+      "emailAria": "Твой email",
+      "subscribe": "Подписаться",
+      "sending": "…",
+      "done": "Спасибо! Всё записано. ✨",
+      "error": "Не удалось оформить подписку сейчас. Попробуй позже."
+    },
+    "offers": {
+      "eyebrow": "Не пропусти",
+      "title": "Мои предложения",
+      "subtitle": "Предложения, которые стоит успеть забрать прямо сейчас.",
+      "kindProduit": "Товар",
+      "kindService": "Услуга",
+      "kindEvenement": "Событие",
+      "orderProduct": "Заказать",
+      "grabOffer": "Забрать предложение"
+    },
+    "promo": {
+      "remainingDays": "{days} д {hours} ч",
+      "remainingHours": "{hours} ч {minutes} мин",
+      "countdownPrefix": "⏳ Осталось {countdown}",
+      "codeCopied": "Скопировано!",
+      "codeLabel": "Код: {code}"
+    },
+    "reviews": {
+      "eyebrow": "Мне доверяют",
+      "title": "Что обо мне говорят",
+      "subtitle": "Честные слова от моих клиентов."
+    },
+    "video": {
+      "title": "Видео"
+    }
+  }
+}

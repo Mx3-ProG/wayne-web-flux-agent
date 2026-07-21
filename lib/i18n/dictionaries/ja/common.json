@@ -1,0 +1,70 @@
+{
+ "brandHomeAria": "Wayne Web Flux ホーム",
+ "nav": {
+  "aria": "メインナビゲーション",
+  "solution": "ソリューション",
+  "tools": "ツール",
+  "pricing": "料金",
+  "story": "私たちのストーリー",
+  "reviews": "お客様の声",
+  "faq": "よくある質問",
+  "contact": "お問い合わせ",
+  "home": "ホーム",
+  "login": "ログイン",
+  "tryFree": "無料で試す"
+ },
+ "languageSwitcher": {
+  "aria": "言語を変更",
+  "label": "言語"
+ },
+ "footer": {
+  "tagline": "あなたのビジネスのために本当に働くデジタルプレゼンス。",
+  "cta": "FLUX を無料で試す",
+  "product": "プロダクト",
+  "resources": "リソース",
+  "helpCenter": "ヘルプセンター",
+  "contactUs": "お問い合わせ",
+  "legal": "法的情報",
+  "legalNotice": "法的表示",
+  "terms": "利用規約",
+  "privacy": "プライバシー",
+  "safety": "インフラは KarlMada により保護 · アダルトコンテンツ、薬物、武器、詐欺、違法行為には一切の容赦なし。",
+  "rights": "© 2026 Wayne Web. All rights reserved.",
+  "status": "全サービス稼働中",
+  "linkedinAria": "Wayne Web の LinkedIn",
+  "instagramAria": "Wayne Web の Instagram"
+ },
+ "cookieConsent": {
+  "kicker": "あなたの選択を、シンプルに",
+  "title": "サービス向上のためのクッキー。",
+  "description": "任意のクッキーを使用して、あなたに役立つ情報を把握し、Fluxを改善し、認知度を高めています。コントロールはあなたの手にあります。",
+  "categories": {
+   "necessary": {
+    "title": "必須",
+    "description": "ログイン、セキュリティ、サービスの稼働。"
+   },
+   "analytics": {
+    "title": "アクセス解析",
+    "description": "利用状況を把握し、サービスの品質を向上させます。"
+   },
+   "personalization": {
+    "title": "パーソナライズ",
+    "description": "あなたの好みに合わせて体験やコンテンツを調整します。"
+   },
+   "marketing": {
+    "title": "認知度",
+    "description": "キャンペーンを測定し、サービスを広めます。"
+   }
+  },
+  "preferencesAria": "クッキーの設定",
+  "toggleAria": "{title}：{state}",
+  "enabled": "有効",
+  "disabled": "無効",
+  "legalPrefix": "必須クッキーは常に有効です。詳しくは",
+  "privacyPolicy": "プライバシーポリシー",
+  "acceptAll": "すべて同意する",
+  "saveChoices": "選択内容を保存",
+  "customize": "カスタマイズ",
+  "declineOptional": "同意せずに続ける"
+ }
+}

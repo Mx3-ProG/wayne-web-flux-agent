@@ -3,26 +3,19 @@
 import { CalendarClock } from "lucide-react";
 import { Question } from "@/components/tunnel/question";
 import styles from "@/app/commencer/tunnel.module.css";
-
-const WEEKDAYS = [
-  { id: 1, label: "Lun" },
-  { id: 2, label: "Mar" },
-  { id: 3, label: "Mer" },
-  { id: 4, label: "Jeu" },
-  { id: 5, label: "Ven" },
-  { id: 6, label: "Sam" },
-  { id: 0, label: "Dim" },
-];
+import type { TunnelDict } from "@/lib/i18n/get-dictionary";
 
 // Étape 5 : réservée aux métiers de service — une boutique pure n'a pas de
 // créneaux à proposer, l'écran est alors retiré du Parcours (lib/journey.ts).
 export function StepAgenda({
+  dict,
   days,
   openingTime,
   closingTime,
   gain,
   onChange,
 }: {
+  dict: TunnelDict["agenda"];
   days: number[];
   openingTime: string;
   closingTime: string;
@@ -33,17 +26,18 @@ export function StepAgenda({
     closingTime?: string;
   }) => void;
 }) {
+  const weekdays = [{ id: 1, label: dict.weekdays.mon }, { id: 2, label: dict.weekdays.tue }, { id: 3, label: dict.weekdays.wed }, { id: 4, label: dict.weekdays.thu }, { id: 5, label: dict.weekdays.fri }, { id: 6, label: dict.weekdays.sat }, { id: 0, label: dict.weekdays.sun }];
   return (
     <Question
-      kicker="Étape 5 · Ton agenda"
-      title={<>Quand es-tu <em>disponible ?</em></>}
-      subtitle="Choisis tes jours et une première plage horaire. Tes clients pourront réserver seuls, même quand tu ne réponds pas."
+      kicker={dict.kicker}
+      title={<>{dict.titleStart} <em>{dict.titleEm}</em></>}
+      subtitle={dict.subtitle}
       gain={gain}
     >
       <div className={styles.scheduleCard}>
         <CalendarClock aria-hidden="true" />
         <div className={styles.dayPicker}>
-          {WEEKDAYS.map((day) => (
+          {weekdays.map((day) => (
             <button
               key={day.id}
               type="button"
@@ -63,7 +57,7 @@ export function StepAgenda({
         </div>
         <div className={styles.timeFields}>
           <label>
-            <span>De</span>
+            <span>{dict.from}</span>
             <input
               type="time"
               value={openingTime}
@@ -72,7 +66,7 @@ export function StepAgenda({
           </label>
           <i>→</i>
           <label>
-            <span>À</span>
+            <span>{dict.to}</span>
             <input
               type="time"
               value={closingTime}

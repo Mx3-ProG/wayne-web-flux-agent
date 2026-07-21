@@ -1,0 +1,70 @@
+{
+ "brandHomeAria": "Wayne Web Flux، الصفحة الرئيسية",
+ "nav": {
+  "aria": "التنقل الرئيسي",
+  "solution": "الحل",
+  "tools": "الأدوات",
+  "pricing": "الأسعار",
+  "story": "قصتنا",
+  "reviews": "الآراء",
+  "faq": "الأسئلة الشائعة",
+  "contact": "تواصل معنا",
+  "home": "الرئيسية",
+  "login": "تسجيل الدخول",
+  "tryFree": "جرّب مجانًا"
+ },
+ "languageSwitcher": {
+  "aria": "تغيير اللغة",
+  "label": "اللغة"
+ },
+ "footer": {
+  "tagline": "الحضور الرقمي اللي يشتغل فعلًا لمصلحة تجارتك.",
+  "cta": "جرّب FLUX مجانًا",
+  "product": "المنتج",
+  "resources": "الموارد",
+  "helpCenter": "مركز المساعدة",
+  "contactUs": "تواصل معنا",
+  "legal": "الجوانب القانونية",
+  "legalNotice": "الإشعارات القانونية",
+  "terms": "الشروط العامة",
+  "privacy": "الخصوصية",
+  "safety": "بنية تحتية محمية بواسطة KarlMada · تسامح صفري مع المحتوى للبالغين والمخدرات والأسلحة والاحتيال والأنشطة غير القانونية.",
+  "rights": "© 2026 Wayne Web. جميع الحقوق محفوظة.",
+  "status": "الخدمات تعمل بشكل طبيعي",
+  "linkedinAria": "Wayne Web على LinkedIn",
+  "instagramAria": "Wayne Web على Instagram"
+ },
+ "cookieConsent": {
+  "kicker": "اختيارك، ببساطة",
+  "title": "ملفات تعريف ارتباط لخدمة في تطوّر مستمر.",
+  "description": "نستخدم ملفات تعريف ارتباط اختيارية لفهم ما يفيدك، وتحسين Flux، وزيادة شهرته. يبقى التحكّم بيدك.",
+  "categories": {
+   "necessary": {
+    "title": "ضرورية",
+    "description": "تسجيل الدخول والأمان وتشغيل الخدمة."
+   },
+   "analytics": {
+    "title": "قياس الجمهور",
+    "description": "فهم الاستخدام وتحسين جودة الخدمة."
+   },
+   "personalization": {
+    "title": "التخصيص",
+    "description": "تكييف التجربة والمحتوى وفق تفضيلاتك."
+   },
+   "marketing": {
+    "title": "الشهرة",
+    "description": "قياس حملاتنا والتعريف بخدماتنا."
+   }
+  },
+  "preferencesAria": "تفضيلات ملفات تعريف الارتباط",
+  "toggleAria": "{title}: {state}",
+  "enabled": "مفعّل",
+  "disabled": "غير مفعّل",
+  "legalPrefix": "تبقى ملفات تعريف الارتباط الضرورية مفعّلة. راجع",
+  "privacyPolicy": "سياسة الخصوصية",
+  "acceptAll": "قبول الكل",
+  "saveChoices": "حفظ اختياراتي",
+  "customize": "تخصيص",
+  "declineOptional": "المتابعة دون قبول"
+ }
+}

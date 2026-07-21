@@ -3,6 +3,11 @@
 import { useEffect, useState } from "react";
 import type { Service } from "@/lib/types";
 import { formatDuration, formatPrice } from "@/lib/types";
+import type { Locale } from "@/lib/i18n/config";
+import { defaultLocale } from "@/lib/i18n/config";
+import { formatDate } from "@/lib/i18n/format";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
+import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
 
 type DayAvailability = { date: string; status: "closed" | "full" | "open"; slots: number };
 
@@ -13,18 +18,12 @@ type Props = {
   designId?: string;
   buttonDesignId?: string;
   onClose: () => void;
+  locale?: Locale;
+  t?: StorefrontDict["booking"];
 };
 
-function formatDay(isoDate: string): string {
-  return new Intl.DateTimeFormat("fr-FR", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  }).format(new Date(isoDate + "T12:00:00Z"));
-}
-
 // Réservation en 3 étapes : jour → heure → coordonnées. Sans compte client.
-export function BookingModal({ slug, service, accentColor, designId, buttonDesignId, onClose }: Props) {
+export function BookingModal({ slug, service, accentColor, designId, buttonDesignId, onClose, locale, t = frStorefront.booking }: Props) {
   const [step, setStep] = useState<"day" | "time" | "form" | "done">("day");
   const [days, setDays] = useState<DayAvailability[] | null>(null);
   const [slots, setSlots] = useState<string[] | null>(null);
@@ -33,12 +32,20 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
+  function formatDay(isoDate: string): string {
+    return formatDate(locale ?? defaultLocale, isoDate + "T12:00:00Z", {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    });
+  }
+
   useEffect(() => {
     fetch(`/api/booking/${slug}/days?service=${service.id}`)
       .then((r) => r.json())
       .then((data) => setDays(data.days ?? []))
-      .catch(() => setError("Impossible de charger les disponibilités."));
-  }, [slug, service.id]);
+      .catch(() => setError(t.loadAvailabilityError));
+  }, [slug, service.id, t]);
 
   function pickDay(d: string) {
     setDate(d);
@@ -47,7 +54,7 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
     fetch(`/api/booking/${slug}/slots?service=${service.id}&date=${d}`)
       .then((r) => r.json())
       .then((data) => setSlots(data.slots ?? []))
-      .catch(() => setError("Impossible de charger les créneaux."));
+      .catch(() => setError(t.loadSlotsError));
   }
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
@@ -71,10 +78,10 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
     if (res.status === 204) {
       setStep("done");
     } else if (res.status === 409) {
-      setError("Ce créneau vient d'être pris. Choisis-en un autre.");
+      setError(t.slotTakenError);
       pickDay(date);
     } else {
-      setError("La réservation n'a pas pu être enregistrée. Réessaie.");
+      setError(t.genericError);
     }
   }
 
@@ -97,7 +104,7 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
           <button
             type="button"
             onClick={onClose}
-            aria-label="Fermer"
+            aria-label={t.close}
             className="text-2xl leading-none opacity-50 hover:opacity-100"
           >
             ×
@@ -107,7 +114,7 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
           {formatDuration(service.duration_min)}
           {service.price_cents > 0 && <> · {formatPrice(service.price_cents)}</>}
           {(step === "time" || step === "form") && (
-            <> · {formatDay(date)}{step === "form" && ` à ${time}`}</>
+            <> · {formatDay(date)}{step === "form" && ` ${t.at} ${time}`}</>
           )}
         </p>
 
@@ -115,8 +122,8 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
 
         {step === "day" && (
           <>
-            <p className="font-medium mb-3">Choisissez un jour</p>
-            {!days && <p className="text-sm opacity-60">Un instant…</p>}
+            <p className="font-medium mb-3">{t.chooseDay}</p>
+            {!days && <p className="text-sm opacity-60">{t.loading}</p>}
             <div className="grid grid-cols-2 gap-2">
               {days?.map((d) => (
                 <button
@@ -131,10 +138,10 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
                   </span>
                   <span className="block text-xs opacity-60">
                     {d.status === "closed"
-                      ? "fermé"
+                      ? t.closed
                       : d.status === "full"
-                        ? "complet"
-                        : `${d.slots} créneaux`}
+                        ? t.full
+                        : t.slotsCount.replace("{count}", String(d.slots))}
                   </span>
                 </button>
               ))}
@@ -149,9 +156,9 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
               className="text-sm underline underline-offset-4 mb-3"
               onClick={() => setStep("day")}
             >
-              ← changer de jour
+              {t.changeDay}
             </button>
-            {!slots && <p className="text-sm opacity-60">Un instant…</p>}
+            {!slots && <p className="text-sm opacity-60">{t.loading}</p>}
             <div className="grid grid-cols-4 gap-2">
               {slots?.map((s) => (
                 <button
@@ -177,14 +184,14 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
               className="text-sm underline underline-offset-4"
               onClick={() => setStep("time")}
             >
-              ← changer d&apos;heure
+              {t.changeTime}
             </button>
-            <p className="font-medium">Vos coordonnées</p>
+            <p className="font-medium">{t.yourDetails}</p>
             <input
               name="first_name"
               required
               maxLength={60}
-              placeholder="Votre prénom"
+              placeholder={t.firstNamePlaceholder}
               className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5"
             />
             <input
@@ -192,18 +199,16 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
               required
               type="tel"
               pattern="[+0-9 ().-]{6,20}"
-              placeholder="Votre téléphone"
+              placeholder={t.phonePlaceholder}
               className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5"
             />
             <input
               name="email"
               type="email"
-              placeholder="Votre email (optionnel)"
+              placeholder={t.emailPlaceholder}
               className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5"
             />
-            <p className="text-xs opacity-60">
-              Pour recevoir la confirmation de votre rendez-vous.
-            </p>
+            <p className="text-xs opacity-60">{t.confirmationHint}</p>
             <button
               data-vitrine-action
               type="submit"
@@ -211,7 +216,7 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
               className="w-full rounded-xl px-4 py-3 font-medium text-white disabled:opacity-60"
               style={{ backgroundColor: accentColor }}
             >
-              {submitting ? "Un instant…" : "Confirmer le rendez-vous"}
+              {submitting ? t.loading : t.confirm}
             </button>
           </form>
         )}
@@ -219,10 +224,10 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
         {step === "done" && (
           <div className="text-center py-6">
             <p className="text-4xl mb-3">✓</p>
-            <p className="font-semibold mb-1">C&apos;est réservé !</p>
+            <p className="font-semibold mb-1">{t.booked}</p>
             <p className="text-sm opacity-70">
-              {service.name} · {formatDay(date)} à {time}.
-              <br />À très vite.
+              {service.name} · {formatDay(date)} {t.at} {time}.
+              <br />{t.seeYouSoon}
             </p>
             <button
               data-vitrine-action
@@ -231,7 +236,7 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
               className="mt-5 rounded-xl px-5 py-2.5 font-medium text-white"
               style={{ backgroundColor: accentColor }}
             >
-              Fermer
+              {t.close}
             </button>
           </div>
         )}

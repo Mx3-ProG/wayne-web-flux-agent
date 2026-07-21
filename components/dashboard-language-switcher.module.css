@@ -1,0 +1,11 @@
+.switcher { position: relative; }
+.switcher > summary { display: inline-flex; align-items: center; gap: .35rem; min-height: 2.45rem; padding: .5rem .65rem; border: 1px solid rgba(255,255,255,.14); border-radius: 999px; cursor: pointer; list-style: none; }
+.switcher > summary::-webkit-details-marker { display: none; }
+.switcher > summary svg { width: 1rem; height: 1rem; }
+.popover { position: absolute; right: 0; top: calc(100% + .6rem); z-index: 90; display: grid; gap: .3rem; width: min(20rem, calc(100vw - 2rem)); padding: .8rem; color: #f7f7f8; background: #111116; border: 1px solid rgba(255,255,255,.12); border-radius: 1rem; box-shadow: 0 18px 48px rgba(0,0,0,.45); }
+.popover > strong, .popover > small { padding: 0 .45rem; }
+.popover > small { margin-bottom: .35rem; color: #a9a9b3; line-height: 1.4; }
+.popover button { display: grid; grid-template-columns: 1.5rem 1fr auto; align-items: center; gap: .55rem; width: 100%; padding: .6rem .65rem; color: inherit; text-align: left; background: transparent; border: 0; border-radius: .65rem; cursor: pointer; }
+.popover button:hover { background: rgba(255,255,255,.08); }
+.popover button svg { width: 1rem; height: 1rem; color: #67e8a5; }
+.popover p { margin: .35rem .45rem 0; color: #f4ba62; font-size: .78rem; }

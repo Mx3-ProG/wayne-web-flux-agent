@@ -1,0 +1,379 @@
+{
+ "nav": {
+  "menu": "Menu",
+  "open": "Ouvrir la navigation",
+  "close": "Fermer la navigation",
+  "homeAria": "Accueil WayneWeb FLUX",
+  "mainAria": "Navigation principale",
+  "mobileAria": "Navigation mobile",
+  "title": "Navigation",
+  "activeProject": "Projet actif",
+  "workspace": "Mon espace",
+  "tagline": "Ton commerce. Un seul espace.",
+  "manageCredits": "Gérer mes crédits",
+  "credits": "crédits",
+  "pending": "{count} en attente",
+  "groups": {
+   "control": "Piloter",
+   "sell": "Vendre",
+   "grow": "Développer",
+   "essential": "L’essentiel",
+   "business": "Mon commerce",
+   "account": "Mon compte"
+  },
+  "items": {
+   "home": "Accueil",
+   "stats": "Mes statistiques",
+   "statsShort": "Stats",
+   "orders": "Mes commandes",
+   "ordersShort": "Commandes",
+   "offers": "Mes offres",
+   "offersShort": "Offres",
+   "projects": "Mes projets",
+   "storefront": "Ma vitrine",
+   "products": "Mes produits",
+   "agenda": "Mon agenda",
+   "content": "Mes contenus",
+   "ai": "FLUX – IA",
+   "install": "Installer l’app",
+   "profile": "Mon profil",
+   "viewProfile": "Voir mon profil"
+  }
+ },
+ "language": {
+  "aria": "Langue de l’espace",
+  "title": "Langue de ton espace",
+  "description": "Cette langue suit ton dashboard et devient la langue source de tes nouvelles pages.",
+  "firstChoice": "Le premier choix dans le tunnel est gratuit.",
+  "change": "Changer · {cost} crédits",
+  "changing": "Modification…",
+  "success": "Langue de l’espace modifiée.",
+  "error": "Impossible de changer la langue pour le moment.",
+  "insufficient": "Il faut {cost} crédits pour changer la langue du compte.",
+  "laterChangeCost": "Un changement ultérieur, une fois ta boutique en ligne, coûte {cost} crédits (retraduction incluse)."
+ },
+ "vitrineGuide": {
+  "step": "Étape {current} sur {total}",
+  "fullEditor": "Éditeur complet",
+  "back": "Retour",
+  "continue": "Continuer",
+  "edit": "Modifier",
+  "saving": "Enregistrement…",
+  "draftSaved": "Brouillon enregistré.",
+  "errors": {
+   "blocked": "Ce contenu ne respecte pas les règles de FLUX.",
+   "rate": "Tu as lancé plusieurs générations coup sur coup. Réessaie dans quelques minutes.",
+   "generation": "La génération a échoué — tes crédits n'ont pas été débités.",
+   "brief": "Décris ton commerce en quelques mots d'abord."
+  },
+  "intro": {
+   "kicker": "Assistant vitrine FLUX",
+   "titleStart": "Fais évoluer ta vitrine,",
+   "titleEm": "une décision à la fois.",
+   "text": "FLUX reprend tes informations actuelles et t’accompagne étape par étape. Rien ne change avant ta confirmation finale.",
+   "placeholder": "Décris ton commerce en quelques phrases : ce que tu proposes, ton style, ce qui te distingue… FLUX s'occupe du reste.",
+   "creating": "FLUX crée ta vitrine…",
+   "create": "FLUX crée toute ma vitrine ({cost} cr.)",
+   "recharge": "FLUX crée toute ma vitrine — recharge tes crédits",
+   "working": "FLUX travaille…",
+   "prefill": "Juste pré-remplir les textes ({cost} cr.)",
+   "stepByStep": "Ou modifier étape par étape",
+   "direct": "Aller directement à l’éditeur",
+   "prefillSuccess": "FLUX a pré-rempli ton brouillon. Relis, puis publie.",
+   "generateSuccess": "FLUX a créé ta vitrine. Relis ton brouillon, puis publie."
+  },
+  "identity": {
+   "kicker": "Ton identité",
+   "title": "Que doivent retenir tes clients ?",
+   "subtitle": "Le nom, le métier et la promesse qui apparaissent en premier.",
+   "business": "Nom du commerce",
+   "job": "Ton métier",
+   "tagline": "Ta phrase d’accroche",
+   "taglinePlaceholder": "Ce qui donne envie de te choisir",
+   "city": "Ta ville"
+  },
+  "images": {
+   "kicker": "Tes images",
+   "title": "Quelle image veux-tu laisser ?",
+   "subtitle": "Ajoute ton logo et la grande photo qui accueille tes visiteurs.",
+   "logo": "Logo ou portrait",
+   "logoChange": "Changer le logo",
+   "logoAdd": "Ajouter mon logo",
+   "hero": "Grande photo de couverture",
+   "heroChange": "Changer la photo",
+   "heroAdd": "Ajouter une photo"
+  },
+  "mood": {
+   "kicker": "Ton ambiance",
+   "title": "Quel univers raconte le mieux ton business ?",
+   "subtitle": "La structure reste accessible et responsive, seule l’atmosphère change."
+  },
+  "details": {
+   "kicker": "Les détails",
+   "title": "Comment peut-on te reconnaître et te joindre ?",
+   "subtitle": "Choisis ta typographie, tes couleurs et vérifie tes coordonnées.",
+   "font": "Style d’écriture",
+   "primary": "Couleur principale",
+   "dark": "Couleur foncée",
+   "phone": "Téléphone",
+   "phonePlaceholder": "Ex : 06 12 34 56 78",
+   "address": "Adresse",
+   "optional": "Facultatif"
+  },
+  "confirmation": {
+   "kicker": "Confirmation",
+   "title": "Ta vitrine est prête à évoluer.",
+   "subtitle": "Vérifie l’essentiel : tes modifications partent en brouillon, tu choisis ensuite de les publier.",
+   "business": "Commerce",
+   "positioning": "Positionnement",
+   "mood": "Ambiance",
+   "images": "Images",
+   "imagesCount": "{count} sur 2 ajoutées",
+   "cost": "Coût de l'assistant",
+   "costValue": "{cost} crédits · solde : {balance} cr.",
+   "missing": "Il te manque {count} crédits.",
+   "recharge": "Recharge tes crédits",
+   "freeEditor": "ou passe par l’éditeur complet, gratuit.",
+   "confirm": "Confirmer mes modifications ({cost} cr.)"
+  },
+  "publish": {
+   "kicker": "Publication",
+   "title": "Ton brouillon est prêt. On le met en ligne ?",
+   "subtitle": "Ton site public affiche encore l’ancienne version. Publier une nouvelle version la remplace pour tes clients.",
+   "later": "Plus tard — aller à l’éditeur"
+  },
+  "credits": {
+   "expiredTitle": "Ta fenêtre IA de 6 mois est terminée",
+   "trialTitle": "Tu as terminé ton essai",
+   "insufficientTitle": "Plus assez de crédits",
+   "expired": "Ton achat t’a donné accès à l’IA pendant 6 mois. Tes crédits restants sont toujours disponibles pour publier et gérer ta vitrine ; choisis une formule pour réactiver les générations IA.",
+   "trial": "Tu as terminé ton essai — recharge pour profiter de FLUX à 100 %.",
+   "insufficient": "L'assistant vitrine coûte {cost} crédits. Recharge tes crédits, ou utilise l'éditeur complet (gratuit).",
+   "template": "Partir d'un template",
+   "recharge": "Recharger mes crédits",
+   "plan": "Choisir ma formule FLUX"
+  },
+  "preview": {
+   "aria": "Aperçu actuel de ta vitrine",
+   "live": "Aperçu en direct",
+   "job": "Ton métier",
+   "city": "Ta ville",
+   "business": "Ton commerce",
+   "tagline": "Ta phrase d’accroche apparaîtra ici.",
+   "discover": "Découvrir",
+   "whatsapp": "WhatsApp activé"
+  }
+ },
+ "offerTunnel": {
+  "step": "Étape {current} sur 8",
+  "myOffers": "Mes offres",
+  "back": "Retour",
+  "continue": "Continuer",
+  "creation": "Création d’offre FLUX",
+  "create": "Créer mon offre",
+  "success": "Ton offre est prête. Publie une nouvelle version de ton site pour la mettre en ligne.",
+  "intro": {
+   "title": "Crée une offre qui donne envie de passer à l’action.",
+   "text": "FLUX t’aide à présenter la bonne promesse, au bon prix, directement sur ta vitrine."
+  },
+  "format": {
+   "kicker": "Le format",
+   "title": "Qu’est-ce que tu veux mettre en avant ?",
+   "subtitle": "Choisis le type qui correspond le mieux à ton offre.",
+   "kinds": {
+    "produit": {
+     "title": "Une offre produit",
+     "text": "Un article ou un pack à commander."
+    },
+    "service": {
+     "title": "Une offre service",
+     "text": "Une prestation mise en avant."
+    },
+    "evenement": {
+     "title": "Un événement",
+     "text": "Une expérience avec une date ou une capacité."
+    }
+   }
+  },
+  "promise": {
+   "kicker": "La promesse",
+   "title": "Comment s’appelle ton offre ?",
+   "subtitle": "Un titre court qui se comprend immédiatement.",
+   "label": "Titre de l’offre",
+   "placeholder": "Ex : Pack découverte"
+  },
+  "price": {
+   "kicker": "Le prix",
+   "title": "Quelle valeur veux-tu afficher ?",
+   "subtitle": "Ajoute un prix barré uniquement si l’offre représente une vraie promotion.",
+   "offer": "Prix de l’offre (€)",
+   "offerPlaceholder": "Ex : 49",
+   "compare": "Prix initial barré (€) · facultatif",
+   "comparePlaceholder": "Ex : 120"
+  },
+  "benefit": {
+   "kicker": "Le bénéfice",
+   "title": "Pourquoi ton client doit-il la choisir ?",
+   "subtitle": "Décris simplement ce qui est inclus et ce que le client y gagne.",
+   "label": "Description",
+   "placeholder": "Ce que comprend l’offre, son avantage, sa limite…"
+  },
+  "photo": {
+   "kicker": "La photo",
+   "title": "Donne une image forte à ton offre.",
+   "subtitle": "La photo est facultative, mais elle aide l’offre à ressortir.",
+   "change": "Changer la photo",
+   "add": "Ajouter une photo"
+  },
+  "visibility": {
+   "kicker": "La mise en ligne",
+   "title": "Ton offre est-elle prête à sortir ?",
+   "subtitle": "Tu peux la publier maintenant ou la garder en brouillon.",
+   "online": "Mettre en ligne",
+   "onlineHint": "Visible sur ta vitrine à la prochaine publication.",
+   "draft": "Garder en brouillon",
+   "draftHint": "Prête à être retravaillée plus tard."
+  },
+  "confirm": {
+   "kicker": "Confirmation",
+   "title": "Ton offre est prête à convertir.",
+   "subtitle": "Vérifie les informations avant de la créer.",
+   "type": "Type",
+   "status": "Statut",
+   "offer": "Offre",
+   "price": "Prix",
+   "cost": "Coût de création",
+   "online": "En ligne",
+   "draft": "Brouillon",
+   "instead": "au lieu de",
+   "costValue": "{cost} crédits · solde : {balance} cr.",
+   "extra": "au-delà de ta formule",
+   "missing": "Il te manque {count} crédits pour créer cette offre.",
+   "recharge": "Recharge tes crédits",
+   "edit": "Modifier",
+   "creating": "Création…",
+   "create": "Confirmer et créer ({cost} cr.)"
+  },
+  "limit": {
+   "overTitle": "Tu dépasses la limite de ta formule",
+   "reachedTitle": "Limite de ta formule atteinte",
+   "over": "Ta formule inclut {limit} offres et tu en as déjà {count}. Tu peux quand même créer celle-ci : elle coûtera {extra} crédits au lieu de {normal}.",
+   "reached": "Ta formule inclut {limit} offres et tu en as déjà {count}. Recharge tes crédits pour continuer : une offre supplémentaire coûte {extra} crédits et il t’en reste {balance}.",
+   "view": "Voir mes offres",
+   "continue": "Continuer ({cost} cr.)",
+   "recharge": "Recharger mes crédits"
+  },
+  "credits": {
+   "trialTitle": "Essai terminé et solde vide",
+   "insufficientTitle": "Plus assez de crédits",
+   "trial": "Ton essai est terminé et il ne te reste plus de crédits. Une formule FLUX recharge ton solde chaque mois ; ton offre est prête, rien n’est perdu.",
+   "insufficient": "Créer cette offre coûte {cost} crédits. Recharge tes crédits pour finaliser ; ton offre est prête, rien n’est perdu.",
+   "later": "Plus tard",
+   "plan": "Choisir ma formule FLUX",
+   "recharge": "Recharger mes crédits"
+  },
+  "errors": {
+   "not_authenticated": "Tu dois être connecté pour continuer.",
+   "no_active_page": "Crée d'abord ta vitrine.",
+   "offer_creation_failed": "Création de l'offre impossible.",
+   "content_blocked": "Les messages de haine ou les contenus explicites sont interdits et sanctionnés sur FLUX ; merci de respecter ton environnement et celui des autres. Au bout de 3 infractions à nos conditions d'utilisation, le compte est supprimé.",
+   "unknown": "Une erreur est survenue. Réessaie dans un instant."
+  }
+ },
+ "installer": {
+  "metaTitle": "Installer l’application",
+  "eyebrow": "Toujours à portée de main",
+  "title": "Installe Wayne Web Flux",
+  "subtitle": "Ajoute l’application à ton écran d’accueil pour ouvrir ton dashboard comme une vraie app et voir le nombre de commandes à traiter sur son icône lorsque ton appareil prend en charge les pastilles.",
+  "noteTitle": "Bon à savoir",
+  "note": "La pastille se met à jour à l’ouverture de l’application et disparaît dès qu’il n’y a plus de commande à traiter. Son affichage dépend du téléphone et du navigateur.",
+  "installed": "L’application est installée",
+  "oneMinute": "Installation en une minute",
+  "installedHint": "Tu peux la retrouver sur ton écran d’accueil.",
+  "chooseDevice": "Choisis les étapes correspondant à ton téléphone.",
+  "installNow": "Installer maintenant",
+  "iphonePlatform": "iPhone · Safari",
+  "fromSafari": "Depuis Safari",
+  "iphoneSteps": [
+   "Ouvre cette page dans Safari.",
+   "Appuie sur Partager.",
+   "Choisis Sur l’écran d’accueil, puis Ajouter."
+  ],
+  "androidPlatform": "Android · Chrome",
+  "fromChrome": "Depuis Chrome",
+  "androidSteps": [
+   "Ouvre cette page dans Chrome.",
+   "Appuie sur le menu en haut à droite.",
+   "Choisis Installer l’application ou Ajouter à l’écran d’accueil."
+  ]
+ },
+ "emailVerification": {
+  "banner": "Vérifie ton adresse email pour publier ta vitrine et encaisser tes clients.",
+  "resend": "Renvoyer l'email",
+  "resending": "Envoi…",
+  "sent": "Email envoyé. Regarde ta boîte de réception.",
+  "spamHint": "Si tu ne le vois pas, pense à vérifier tes spams.",
+  "errors": {
+   "not_authenticated": "Tu dois être connecté pour continuer.",
+   "already_verified": "Ton adresse est déjà vérifiée.",
+   "rate_limited": "Patiente une minute avant de redemander un email.",
+   "update_failed": "Impossible d'envoyer l'email. Réessaie plus tard.",
+   "send_failed": "L'email n'est pas parti. Réessaie dans un instant.",
+   "unknown": "Une erreur est survenue. Réessaie dans un instant."
+  }
+ },
+ "trialBanner": {
+  "activeSingular": "Essai FLUX : {days} jour restant pour tout tester.",
+  "activePlural": "Essai FLUX : {days} jours restants pour tout tester.",
+  "viewPlans": "Voir les formules",
+  "creditsActiveSingular": "Tu as terminé ton essai — ton {credits} crédit restant fait toujours tourner FLUX. Recharge pour en profiter à 100 %.",
+  "creditsActivePlural": "Tu as terminé ton essai — tes {credits} crédits restants font toujours tourner FLUX. Recharge pour en profiter à 100 %.",
+  "expiredNoCredits": "Essai terminé et solde vide — ton site reste en ligne, mais les modifications sont en pause.",
+  "choosePlan": "Choisir ma formule FLUX"
+ },
+ "revenueCounter": {
+  "aria": "Chiffre d'affaires généré",
+  "eyebrow": "Ton chiffre d'affaires",
+  "milestoneReached": "🎉 Palier {amount} franchi",
+  "caption": "Ton savoir-faire mérite d'être partagé. Voici ce que ta vitrine FLUX a déjà généré grâce aux rendez-vous honorés et aux commandes acceptées.",
+  "nextMilestone": "Prochain palier : {amount}",
+  "remaining": "Plus que {amount} pour y arriver 💪",
+  "maxed": "Tu exploses tous les paliers 🚀 Continue comme ça !"
+ },
+ "upsellDialog": {
+  "later": "Plus tard",
+  "discoverPlans": "Découvrir les formules",
+  "trial": {
+   "title": "Donne à FLUX les moyens d’aller plus loin",
+   "description": "Ton essai te permet de découvrir les outils IA. Une formule débloque la création complète de vitrine et recharge tes crédits chaque mois."
+  },
+  "trialExpired": {
+   "title": "Tu as terminé ton essai",
+   "description": "Ton solde est vide et ton site reste en ligne. Recharge pour profiter de FLUX à 100 % : modifications, publications et générations."
+  },
+  "trialExpiredWithCredits": {
+   "title": "Tu as terminé ton essai",
+   "description": "Tes crédits restants font toujours tourner FLUX — générations comprises. Recharge pour en profiter à 100 %, avec un solde qui se renouvelle chaque mois."
+  },
+  "creditsActive": {
+   "title": "Passe d’un pack ponctuel à un rythme régulier",
+   "description": "Ton pack te donne encore accès à l’IA. Une formule ajoute une recharge mensuelle et garde FLUX disponible sans attendre un nouvel achat."
+  },
+  "creditsExpired": {
+   "title": "Ta fenêtre IA est terminée, pas tes crédits",
+   "description": "Tes crédits restants servent toujours à publier et gérer ta vitrine. Une formule réactive les générations IA et installe un rythme mensuel."
+  }
+ },
+ "photoUpload": {
+  "uploading": "Envoi…",
+  "tooLarge": "Fichier trop lourd ({max} Mo max).",
+  "failed": "L'envoi a échoué. Réessaie."
+ },
+ "copyButton": {
+  "copy": "Copier",
+  "copied": "Lien copié."
+ },
+ "creditsLink": {
+  "aria": "{credits} crédits — voir mes crédits"
+ }
+}

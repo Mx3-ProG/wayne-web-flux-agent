@@ -2,7 +2,9 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
+import { defaultLocale, hasLocale } from "@/lib/i18n/config";
 import { getVertical } from "@/lib/verticals";
+import { getLocalizedVertical } from "@/lib/verticals-i18n";
 import { defaultLegal } from "@/lib/legal";
 import { projectLimit, PUBLISH_COST, VITRINE_ASSIST_COST } from "@/lib/plans";
 import { spendCredits, refundCredits } from "@/lib/credits";
@@ -24,7 +26,7 @@ export async function createPage(input: {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "not_authenticated" };
 
   const moderation = await enforceKarlMada(input, {
     userId: user.id,
@@ -33,21 +35,27 @@ export async function createPage(input: {
   if (moderation.error) return moderation;
 
   const businessName = input.businessName.trim().slice(0, 60);
-  if (!businessName) return { error: "Donne un nom à ta vitrine." };
+  if (!businessName) return { error: "business_name_required" };
 
   // Limite de projets selon le forfait (gratuit = 1, Plus = 3).
   const [{ data: profile }, { count: pageCount }] = await Promise.all([
-    supabase.from("profiles").select("plan").eq("user_id", user.id).single(),
+    supabase.from("profiles").select("plan, locale").eq("user_id", user.id).single(),
     supabase
       .from("pages")
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id),
   ]);
   if ((pageCount ?? 0) >= projectLimit((profile?.plan as Plan) ?? "basique")) {
-    return { error: "Limite de projets atteinte pour ton forfait." };
+    return { error: "project_limit_reached" };
   }
 
   const vertical = getVertical(input.vertical);
+  const profileLocale = profile?.locale;
+  const locale = profileLocale && hasLocale(profileLocale) ? profileLocale : defaultLocale;
+  // Métier traduit dans la langue de la page : sert au préremplissage des
+  // prestations/produits ci-dessous, quelle que soit la locale (plus de
+  // condition locale === "fr").
+  const localizedVertical = await getLocalizedVertical(input.vertical, locale);
   let slug = slugify(businessName);
   if (slug.length < 3) slug = `page-${slug}`.slice(0, 32);
 
@@ -70,21 +78,29 @@ export async function createPage(input: {
     .insert({
       user_id: user.id,
       slug,
+      default_locale: locale,
+      enabled_locales: [locale],
       vertical: vertical.slug,
       business_name: businessName,
       job_title: input.jobTitle.trim().slice(0, 60),
       city: input.city.trim().slice(0, 60),
       font: "fraunces",
       colors: vertical.defaultColors,
-      legal: defaultLegal(businessName),
+      // defaultLegal(locale) : gabarit juridique FRANÇAIS (SIRET, TVA en
+      // droit français…) uniquement en fr ; les autres locales reçoivent un
+      // gabarit générique natif dans leur langue, avec un avertissement
+      // explicite invitant à une validation juridique locale avant
+      // publication (lib/legal.ts) — jamais du droit français traduit tel
+      // quel.
+      legal: defaultLegal(businessName, locale),
     })
     .select("id, slug")
     .single();
-  if (error || !page) return { error: "Impossible de créer la page." };
+  if (error || !page) return { error: "creation_failed" };
 
-  // Prestations pré-remplies du métier
-  for (let fi = 0; fi < vertical.families.length; fi++) {
-    const fam = vertical.families[fi];
+  // Prestations pré-remplies du métier, dans la langue de la page.
+  for (let fi = 0; fi < localizedVertical.families.length; fi++) {
+    const fam = localizedVertical.families[fi];
     const { data: family } = await supabase
       .from("service_families")
       .insert({ page_id: page.id, name: fam.name, position: fi })
@@ -104,8 +120,9 @@ export async function createPage(input: {
     }
   }
 
-  // Boutique pré-remplie du métier (verticals product/hybrid uniquement).
-  const productCategories = vertical.productCategories ?? [];
+  // Boutique pré-remplie du métier (verticals product/hybrid uniquement),
+  // dans la langue de la page.
+  const productCategories = localizedVertical.productCategories ?? [];
   for (let ci = 0; ci < productCategories.length; ci++) {
     const cat = productCategories[ci];
     const { data: category } = await supabase
@@ -172,10 +189,10 @@ export async function savePageFields(
   if (fields.navigation) {
     const nav = fields.navigation;
     if (nav.items.length > 8) {
-      return { error: "8 liens maximum dans le menu." };
+      return { error: "too_many_nav_links" };
     }
     if (nav.items.some((item) => item.label.length > 40 || item.target.length > 300)) {
-      return { error: "Un des liens du menu est trop long." };
+      return { error: "nav_link_too_long" };
     }
   }
   if (fields.design) {
@@ -188,17 +205,14 @@ export async function savePageFields(
       "can_hide_branding"
     );
     if (entitlementError || allowed !== true) {
-      return {
-        error:
-          "La signature peut uniquement être retirée avec la formule Entreprise à 89 € par mois.",
-      };
+      return { error: "branding_requires_enterprise" };
     }
   }
   const { error } = await supabase.rpc("merge_page_draft", {
     pid: pageId,
     fields,
   });
-  if (error) return { error: "Enregistrement impossible." };
+  if (error) return { error: "save_failed" };
   revalidatePath("/ma-page");
   return {};
 }
@@ -214,7 +228,7 @@ export async function saveVitrineGuide(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "not_authenticated" };
 
   const { data: page } = await supabase
     .from("pages")
@@ -222,7 +236,7 @@ export async function saveVitrineGuide(
     .eq("id", pageId)
     .eq("user_id", user.id)
     .single();
-  if (!page) return { error: "Page introuvable." };
+  if (!page) return { error: "page_not_found" };
 
   const { error: spendError } = await spendCredits(
     user.id,
@@ -335,7 +349,7 @@ export async function syncCatalog(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "not_authenticated" };
 
   const moderation = await enforceKarlMada(families, {
     userId: user.id,
@@ -350,7 +364,7 @@ export async function syncCatalog(
     .eq("id", pageId)
     .eq("user_id", user.id)
     .single();
-  if (!page) return { error: "Page introuvable." };
+  if (!page) return { error: "page_not_found" };
 
   await supabase.from("service_families").delete().eq("page_id", pageId);
 
@@ -407,7 +421,7 @@ export async function syncProducts(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "not_authenticated" };
 
   const moderation = await enforceKarlMada(categories, {
     userId: user.id,
@@ -422,7 +436,7 @@ export async function syncProducts(
     .eq("id", pageId)
     .eq("user_id", user.id)
     .single();
-  if (!page) return { error: "Page introuvable." };
+  if (!page) return { error: "page_not_found" };
 
   const [{ data: existingCats }, { data: existingProds }] = await Promise.all([
     supabase.from("product_categories").select("id").eq("page_id", pageId),

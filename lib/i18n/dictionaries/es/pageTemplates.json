@@ -1,0 +1,43 @@
+{
+  "a-propos": {
+    "label": "Sobre mí",
+    "description": "Tu historia, tu trayectoria, una foto.",
+    "defaultTitle": "Sobre mí",
+    "aProposHistoryTitle": "Mi historia",
+    "aProposHistoryBody": "Cuenta aquí tu trayectoria, tu pasión y lo que hace único tu trabajo.",
+    "aProposMethodTitle": "Mi forma de trabajar",
+    "aProposMethodBody": "Describe tu método, tus valores, lo que tus clientes pueden esperar."
+  },
+  "tarifs": {
+    "label": "Tarifas",
+    "description": "Tus precios, presentados con claridad.",
+    "defaultTitle": "Tarifas",
+    "tarifsTitle": "Mis tarifas",
+    "tarifsBody": "Presenta aquí tus precios y lo que incluyen.",
+    "tarifsFaqTitle": "Preguntas frecuentes",
+    "tarifsFaqQuestion": "¿Qué medios de pago aceptáis?"
+  },
+  "contact": {
+    "label": "Contacto",
+    "description": "Mapa, horarios y datos de contacto.",
+    "defaultTitle": "Contacto",
+    "contactTitle": "Contáctame",
+    "contactBody": "Indica aquí la mejor forma de contactarte."
+  },
+  "galerie": {
+    "label": "Galería",
+    "description": "Tus trabajos en fotos.",
+    "defaultTitle": "Galería"
+  },
+  "faq": {
+    "label": "FAQ",
+    "description": "Las respuestas a las preguntas más comunes.",
+    "defaultTitle": "Preguntas frecuentes",
+    "faqTitle": "Preguntas frecuentes"
+  },
+  "libre": {
+    "label": "Página libre",
+    "description": "Una página vacía, para que la compongas tú mismo.",
+    "defaultTitle": "Nueva página"
+  }
+}

@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { PhotoUpload } from "@/components/editor/photo-upload";
+import { useI18n } from "@/components/i18n-provider";
 import { PublishButton } from "@/components/editor/publish-button";
 import { Input } from "@/components/ui/input";
 import { PriceInput } from "@/components/ui/price-input";
@@ -38,12 +39,8 @@ import {
 } from "lucide-react";
 import { createOffer, deleteOffer, restoreOffer, updateOffer } from "./actions";
 import styles from "./offres-redesign.module.css";
-
-const KINDS: { value: OfferKind; label: string }[] = [
-  { value: "produit", label: "Produit" },
-  { value: "service", label: "Service" },
-  { value: "evenement", label: "Événement" },
-];
+import type { OffersDict } from "@/lib/i18n/get-dictionary";
+import { KARLMADA_BLOCK_MESSAGE } from "@/lib/karlmada-constants";
 
 type Props = {
   initialOffers: Offer[];
@@ -55,6 +52,7 @@ type Props = {
   nextVersion: number;
   // La vitrine (/ma-page) a-t-elle aussi un brouillon en attente ?
   pageHasDraft: boolean;
+  t: OffersDict;
 };
 
 export function OffersManager({
@@ -66,7 +64,18 @@ export function OffersManager({
   balance,
   nextVersion,
   pageHasDraft,
+  t,
 }: Props) {
+  const { dictionary } = useI18n();
+  const KINDS: { value: OfferKind; label: string }[] = [
+    { value: "produit", label: t.kinds.produit },
+    { value: "service", label: t.kinds.service },
+    { value: "evenement", label: t.kinds.evenement },
+  ];
+  function translateError(error: string): string {
+    const code = error === KARLMADA_BLOCK_MESSAGE ? "content_blocked" : error;
+    return t.errors[code as keyof typeof t.errors] ?? t.errors.unknown;
+  }
   // Vue fusionnée : état publié + brouillon par offre. Les modifications
   // restent en brouillon jusqu'à la publication d'une version du site.
   const [offers, setOffers] = useState<Offer[]>(
@@ -105,7 +114,7 @@ export function OffersManager({
     if (timers.current[id]) clearTimeout(timers.current[id]);
     timers.current[id] = setTimeout(async () => {
       const result = await updateOffer(id, fields);
-      if (result.error) toast.error(result.error);
+      if (result.error) toast.error(translateError(result.error));
     }, 700);
   }
 
@@ -120,7 +129,7 @@ export function OffersManager({
         return;
       }
       if (result.error || !result.id) {
-        toast.error(result.error ?? "Création impossible.");
+        toast.error(result.error ? translateError(result.error) : t.errors.creation_failed);
         return;
       }
       // Ajout local (pas de reload → on garde focus et édits en cours).
@@ -129,7 +138,7 @@ export function OffersManager({
         {
           id: result.id!,
           page_id: "",
-          title: "Nouvelle offre",
+          title: t.defaultTitle,
           description: "",
           image_url: null,
           kind: "produit",
@@ -158,7 +167,7 @@ export function OffersManager({
     }
     startTransition(async () => {
       const result = await deleteOffer(id);
-      if (result.error) toast.error(result.error);
+      if (result.error) toast.error(translateError(result.error));
     });
   }
 
@@ -168,14 +177,14 @@ export function OffersManager({
     );
     startTransition(async () => {
       const result = await restoreOffer(id);
-      if (result.error) toast.error(result.error);
+      if (result.error) toast.error(translateError(result.error));
     });
   }
 
   function statusBadge(offer: Offer): string | null {
-    if (offer.draft_status === "new") return "Non publiée";
-    if (offer.draft_status === "deleted") return "Sera supprimée à la publication";
-    if (offer.draft != null) return "Modifications non publiées";
+    if (offer.draft_status === "new") return t.statusNew;
+    if (offer.draft_status === "deleted") return t.statusDeleted;
+    if (offer.draft != null) return t.statusDraft;
     return null;
   }
 
@@ -183,11 +192,11 @@ export function OffersManager({
     <>
       <section className={styles.controlPanel}>
         <div className={styles.counter}>
-          <span>Capacité commerciale</span>
+          <span>{t.capacity}</span>
           <strong>
             {used}<small> / {limit}</small>
           </strong>
-          <p>Formule {PLAN_LABEL[plan]}</p>
+          <p>{t.plan.replace("{plan}", PLAN_LABEL[plan])}</p>
         </div>
 
         <div className={styles.publishBlock}>
@@ -197,11 +206,7 @@ export function OffersManager({
             hasDraft={hasPending}
             nextVersion={nextVersion}
           />
-          <p>
-            {hasPending
-              ? "Tes clients voient encore l'ancienne version de ta vitrine."
-              : "Ta vitrine est alignée avec tes offres actuelles."}
-          </p>
+          <p>{hasPending ? t.pendingPublish : t.upToDate}</p>
         </div>
       </section>
 
@@ -218,12 +223,9 @@ export function OffersManager({
                 </span>
                 <strong className={styles.offerTitle}>{offer.title}</strong>
               </div>
-              <p className={styles.deletedText}>
-                Sera supprimée à la prochaine publication. En attendant, elle
-                reste visible sur ta vitrine.
-              </p>
+              <p className={styles.deletedText}>{t.deletedText}</p>
               <Button variant="secondary" size="sm" onClick={() => restore(offer.id)}>
-                <Undo2 aria-hidden="true" /> Annuler la suppression
+                <Undo2 aria-hidden="true" /> {t.cancelDelete}
               </Button>
             </article>
           ) : (
@@ -258,12 +260,12 @@ export function OffersManager({
                     checked={offer.active}
                     onChange={(e) => patch(offer.id, { active: e.target.checked })}
                   />
-                  {offer.active ? "En ligne" : "Masquée"}
+                  {offer.active ? t.online : t.hidden}
                 </label>
                 <button
                   type="button"
                   className={styles.delete}
-                  aria-label="Supprimer l'offre"
+                  aria-label={t.deleteOffer}
                   onClick={() => remove(offer.id)}
                 >
                   <Trash2 aria-hidden="true" />
@@ -272,27 +274,27 @@ export function OffersManager({
 
               <div className={styles.salesCue}>
                 <Megaphone aria-hidden="true" />
-                <span>Promesse visible en haut de vitrine</span>
+                <span>{t.salesCue}</span>
               </div>
 
               <div className={styles.field}>
-                <Label>Titre</Label>
+                <Label>{t.title}</Label>
                 <Input
                   value={offer.title}
                   maxLength={80}
-                  placeholder="Ex : Pack révision hiver"
+                  placeholder={t.titlePlaceholder}
                   className={styles.input}
                   onChange={(e) => patch(offer.id, { title: e.target.value })}
                 />
               </div>
 
               <div className={styles.field}>
-                <Label>Description</Label>
+                <Label>{t.description}</Label>
                 <Textarea
                   value={offer.description}
                   rows={2}
                   maxLength={300}
-                  placeholder="Ce que comprend l'offre"
+                  placeholder={t.descriptionPlaceholder}
                   className={styles.textarea}
                   onChange={(e) => patch(offer.id, { description: e.target.value })}
                 />
@@ -300,7 +302,7 @@ export function OffersManager({
 
               <div className={styles.prices}>
                 <div className={styles.field}>
-                  <Label>Prix (€)</Label>
+                  <Label>{t.price}</Label>
                   <PriceInput
                     cents={offer.price_cents}
                     placeholder="0"
@@ -309,7 +311,7 @@ export function OffersManager({
                   />
                 </div>
                 <div className={styles.field}>
-                  <Label>Prix barré (€, promo)</Label>
+                  <Label>{t.compareAtPrice}</Label>
                   <PriceInput
                     cents={offer.compare_at_cents ?? 0}
                     placeholder="—"
@@ -320,11 +322,12 @@ export function OffersManager({
               </div>
 
               <div className={styles.field}>
-                <Label>Photo (facultatif)</Label>
+                <Label>{t.photoOptional}</Label>
                 <div className={styles.photoRow}>
                   <PhotoUpload
                     userId={userId}
-                    label={offer.image_url ? "Changer la photo" : "Ajouter une photo"}
+                    label={offer.image_url ? t.changePhoto : t.addPhoto}
+                    messages={dictionary.photoUpload}
                     onUploaded={(url) => patch(offer.id, { image_url: url })}
                   />
                   {offer.image_url && (
@@ -333,7 +336,7 @@ export function OffersManager({
                       className={styles.removePhoto}
                       onClick={() => patch(offer.id, { image_url: null })}
                     >
-                      retirer
+                      {t.removePhoto}
                     </button>
                   )}
                 </div>
@@ -351,20 +354,20 @@ export function OffersManager({
           <span className={styles.addIcon}>
             <Plus aria-hidden="true" />
           </span>
-          <small>{atLimit ? "Au-delà de ta formule" : "Nouvelle tentation"}</small>
-          <span>Créer une offre · {createCost} cr.</span>
+          <small>{atLimit ? t.atLimit : t.newOffer}</small>
+          <span>{t.createOffer.replace("{cost}", String(createCost))}</span>
         </button>
 
         {plan === "basique" && (
           <div className={styles.upsell}>
             <Lock aria-hidden="true" />
-            <strong>Formules FLUX</strong>
-            <p>Jusqu&apos;à 30 offres en avant sur ta vitrine, plus de crédits chaque mois, plus de personnalisation.</p>
+            <strong>{t.upsellTitle}</strong>
+            <p>{t.upsellText}</p>
             <Button asChild variant="secondary" size="sm">
-              <a href="/formules">
+              <Link href="/formules">
                 <Rocket aria-hidden="true" />
-                Découvrir les formules
-              </a>
+                {t.discoverPlans}
+              </Link>
             </Button>
           </div>
         )}
@@ -378,18 +381,20 @@ export function OffersManager({
           <DialogHeader>
             <DialogTitle>
               {creditsDialog === "subscription_required"
-                ? "Essai terminé et solde vide"
-                : "Plus assez de crédits"}
+                ? t.subscriptionRequiredTitle
+                : t.insufficientTitle}
             </DialogTitle>
             <DialogDescription>
               {creditsDialog === "subscription_required"
-                ? "Ton essai est passé et il ne te reste plus de crédits. Une formule FLUX recharge ton solde chaque mois et rouvre les générations IA."
-                : `Créer une offre coûte ${createCost} crédits et il t'en reste ${balance}. Recharge tes crédits pour continuer.`}
+                ? t.subscriptionRequiredText
+                : t.insufficientText
+                    .replace("{cost}", String(createCost))
+                    .replace("{balance}", String(balance))}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setCreditsDialog(null)}>
-              Plus tard
+              {t.later}
             </Button>
             <Button asChild>
               <Link
@@ -400,8 +405,8 @@ export function OffersManager({
                 }
               >
                 {creditsDialog === "subscription_required"
-                  ? "Choisir ma formule FLUX"
-                  : "Recharger mes crédits"}
+                  ? t.choosePlan
+                  : t.rechargeCredits}
               </Link>
             </Button>
           </DialogFooter>

@@ -1,0 +1,143 @@
+{
+  "meta": {
+    "title": "Mi perfil",
+    "billingTitle": "Facturación"
+  },
+  "hero": {
+    "eyebrow": "Tu espacio personal",
+    "title": "Mi perfil",
+    "text": "Todo lo relacionado con tu identidad, tu actividad y tu acceso a FLUX."
+  },
+  "nav": {
+    "aria": "Secciones del perfil",
+    "info": "Información",
+    "adventure": "Empezar la aventura",
+    "invite": "Invitar a un amigo",
+    "credits": "Créditos",
+    "plans": "Planes",
+    "license": "Licencia",
+    "billing": "Facturación"
+  },
+  "info": {
+    "title": "Información personal y profesional",
+    "text": "Esta información es privada y sirve para personalizar tu experiencia."
+  },
+  "profileForm": {
+    "name": "Nombre y apellidos",
+    "email": "Email de acceso",
+    "phone": "Teléfono personal",
+    "company": "Empresa",
+    "job": "Profesión / cargo",
+    "businessEmail": "Email profesional",
+    "siret": "SIRET",
+    "address": "Dirección profesional",
+    "saving": "Guardando…",
+    "save": "Guardar"
+  },
+  "adventure": {
+    "canCreateTitle": "Crea un nuevo escaparate",
+    "limitTitle": "Encuentra tus proyectos",
+    "canCreateText": "Con unas pocas preguntas basta: FLUX prepara la base y tú mantienes el control de todo.",
+    "limitText": "Tu plan ha alcanzado su límite de proyectos. Puedes gestionar tus escaparates existentes.",
+    "startTunnel": "Iniciar el proceso",
+    "viewProjects": "Ver mis proyectos"
+  },
+  "invite": {
+    "title": "Invitar a un amigo",
+    "text": "Dale a conocer FLUX a un comerciante que conozcas: recibirá una invitación y 7 días de prueba gratis.",
+    "emailLabel": "Email de tu amigo",
+    "emailPlaceholder": "amigo@email.es",
+    "sending": "Enviando…",
+    "send": "Enviar invitación"
+  },
+  "credits": {
+    "available": "Créditos disponibles",
+    "nextRecharge": "Próxima recarga el {date}",
+    "trial": "Prueba FLUX: queda {days} día",
+    "trialPlural": "Prueba FLUX: quedan {days} días",
+    "subscribed": "Recarga a través de tu plan FLUX",
+    "trialOver": "Prueba terminada — elige tu plan FLUX",
+    "viewUsage": "Ver mi uso"
+  },
+  "license": {
+    "title": "Licencia de uso",
+    "text": "Sigues siendo propietario de la información y los contenidos que añades. FLUX te ofrece un derecho personal de uso del servicio, sin transferencia de propiedad sobre la plataforma."
+  },
+  "security": {
+    "title": "Seguridad",
+    "text": "Gestiona tus credenciales mediante validaciones seguras por email, o cierra tu sesión en este dispositivo.",
+    "logout": "Cerrar sesión"
+  },
+  "passwordForm": {
+    "title": "Contraseña",
+    "text": "Recibe un enlace seguro en tu dirección de email actual para elegir una nueva contraseña.",
+    "sending": "Enviando…",
+    "cta": "He olvidado mi contraseña"
+  },
+  "emailForm": {
+    "title": "Dirección de email",
+    "text": "Tu dirección actual es {email}. El cambio requiere confirmación desde la antigua y la nueva dirección.",
+    "newEmailLabel": "Nueva dirección de email",
+    "newEmailPlaceholder": "nueva@direccion.es",
+    "sending": "Enviando confirmaciones…",
+    "cta": "Enviar las confirmaciones"
+  },
+  "danger": {
+    "title": "Zona de peligro",
+    "text": "La eliminación borra definitivamente tu cuenta, tus escaparates, clientes, pedidos, citas y contenidos. Esta acción es irreversible.",
+    "confirmLabel": "Escribe {word} para confirmar",
+    "confirmWord": "ELIMINAR",
+    "deleting": "Eliminando…",
+    "delete": "Eliminar definitivamente mi cuenta"
+  },
+  "billing": {
+    "kicker": "Cuenta",
+    "title": "Facturación",
+    "subtitle": "Tu suscripción, tus vencimientos y tus facturas en un mismo sitio.",
+    "portalUnavailable": "El portal de facturación no está disponible en este momento.",
+    "currentPlan": "Plan actual",
+    "noActivePlan": "Ningún plan activo",
+    "price": "Precio",
+    "priceValue": "{price} € / mes",
+    "includedCredits": "Créditos incluidos",
+    "includedCreditsValue": "{credits} por factura pagada",
+    "accessEndsAt": "Fin de acceso previsto",
+    "nextDueDate": "Próximo vencimiento",
+    "toConfirm": "Por confirmar",
+    "manage": "Gestionar suscripción y facturas",
+    "choosePlan": "Elegir un plan",
+    "help": "El portal seguro de Stripe permite modificar el método de pago, descargar las facturas, cambiar de plan o cancelar.",
+    "back": "← Volver al perfil",
+    "status": {
+      "active": "Activo",
+      "trialing": "Periodo de prueba",
+      "past_due": "Pago pendiente de regularizar",
+      "unpaid": "Impagado",
+      "canceled": "Cancelado",
+      "incomplete": "Activación incompleta",
+      "incomplete_expired": "Activación caducada",
+      "paused": "Suspendido"
+    }
+  },
+  "errors": {
+    "session_expired": "Tu sesión ha caducado.",
+    "name_required": "Indica al menos tu nombre.",
+    "save_failed": "No se ha podido guardar el perfil.",
+    "email_send_failed": "No se ha podido enviar el email por ahora.",
+    "invalid_email": "Dirección de email no válida.",
+    "already_current_email": "Ya es tu dirección actual.",
+    "email_change_failed": "No se ha podido iniciar el cambio de email.",
+    "confirmation_mismatch": "Escribe ELIMINAR para confirmar.",
+    "deletion_failed": "La eliminación ha fallado. Inténtalo de nuevo más tarde.",
+    "content_blocked": "Los mensajes de odio o los contenidos explícitos están prohibidos y sancionados en FLUX; por favor, respeta tu entorno y el de los demás. Tras 3 infracciones de nuestras condiciones de uso, la cuenta se elimina.",
+    "unknown": "Se ha producido un error. Inténtalo de nuevo en un momento."
+  },
+  "messages": {
+    "profile_saved": "Perfil guardado.",
+    "reset_email_sent": "Ya se ha enviado un email.",
+    "reset_email_sent_fresh": "Email enviado a tu dirección actual. El enlace es temporal y de un solo uso.",
+    "email_change_pending": "Ya hay una solicitud en curso. Revisa tus dos bandejas de entrada.",
+    "email_change_requested": "Solicitud enviada. Tu dirección solo cambiará tras la confirmación desde tu dirección actual y la nueva.",
+    "invite_sent": "Invitación enviada a {email}."
+  }
+}

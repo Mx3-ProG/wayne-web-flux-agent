@@ -3,12 +3,15 @@
 import { ExternalLink, MessageSquareMore, Star } from "lucide-react";
 import vitrineStyles from "../vitrine.module.css";
 import styles from "./google-business-section.module.css";
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
+import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
 
 type Props = {
   url: string;
   title?: string;
   description?: string;
   first?: boolean;
+  t?: StorefrontDict["sections"]["googleBusiness"];
 };
 
 function safeGoogleUrl(value: string): string | null {
@@ -29,6 +32,7 @@ export function GoogleBusinessSection({
   title,
   description,
   first = false,
+  t = frStorefront.sections.googleBusiness,
 }: Props) {
   const href = safeGoogleUrl(url);
   if (!href) return null;
@@ -44,16 +48,13 @@ export function GoogleBusinessSection({
           <Star />
         </div>
         <div className={styles.copy}>
-          <p className={styles.eyebrow}>Avis Google</p>
-          <h2>{title?.trim() || "Ton avis compte pour nous"}</h2>
-          <p>
-            {description?.trim() ||
-              "Consulte les avis de nos clients ou partage ton expérience en quelques secondes."}
-          </p>
+          <p className={styles.eyebrow}>{t.eyebrow}</p>
+          <h2>{title?.trim() || t.defaultTitle}</h2>
+          <p>{description?.trim() || t.defaultDescription}</p>
         </div>
         <div className={styles.actions}>
           <a href={href} target="_blank" rel="noopener noreferrer">
-            <MessageSquareMore aria-hidden="true" /> Laisser un avis
+            <MessageSquareMore aria-hidden="true" /> {t.leaveReview}
           </a>
           <a
             href={href}
@@ -61,7 +62,7 @@ export function GoogleBusinessSection({
             rel="noopener noreferrer"
             className={styles.secondary}
           >
-            Voir la fiche Google <ExternalLink aria-hidden="true" />
+            {t.viewProfile} <ExternalLink aria-hidden="true" />
           </a>
         </div>
       </div>

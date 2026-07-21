@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "title": "Mon agenda"
+  },
+  "weekdaysShort": {
+    "0": "Dim",
+    "1": "Lun",
+    "2": "Mar",
+    "3": "Mer",
+    "4": "Jeu",
+    "5": "Ven",
+    "6": "Sam"
+  },
+  "weekdaysLong": {
+    "0": "Dimanche",
+    "1": "Lundi",
+    "2": "Mardi",
+    "3": "Mercredi",
+    "4": "Jeudi",
+    "5": "Vendredi",
+    "6": "Samedi"
+  },
+  "rhythms": {
+    "classic": "Journée classique",
+    "extended": "Journée étendue",
+    "split": "Avec pause déjeuner",
+    "morning": "Plutôt le matin",
+    "afternoon": "Plutôt l'après-midi",
+    "evening": "Fin de journée & soirée"
+  },
+  "tunnel": {
+    "myAgenda": "Mon agenda",
+    "step": "Étape {current} sur 4",
+    "intro": {
+      "kicker": "Ton temps, bien organisé",
+      "titleStart": "FLUX, l'agenda au service de",
+      "titleEm": "vos besoins.",
+      "text": "Choisis tes jours et ton rythme. Flux prépare les créneaux que tes clients pourront réserver depuis ta vitrine.",
+      "cta": "Créer mes horaires",
+      "shortcutText": "J'ai déjà fixé mes horaires de business",
+      "shortcutCta": "Revenir à l'agenda"
+    },
+    "days": {
+      "kicker": "Tes jours d'ouverture",
+      "titleStart": "Quels jours veux-tu rendre",
+      "titleEm": "réservables ?",
+      "subtitle": "Sélectionne tous les jours où tes clients peuvent prendre rendez-vous."
+    },
+    "rhythm": {
+      "kicker": "Ton rythme",
+      "titleStart": "À quels moments travailles-tu",
+      "titleEm": "le mieux ?",
+      "subtitle": "Ce rythme sera appliqué aux jours sélectionnés. Tu pourras l'affiner ensuite dans ton agenda."
+    },
+    "variable": {
+      "kicker": "Horaires variables",
+      "titleStart": "Certains jours ont-ils un",
+      "titleEm": "rythme différent ?",
+      "subtitle": "Garde le rythme principal ou adapte chaque journée. Aucun champ à remplir."
+    },
+    "review": {
+      "kicker": "Ton planning est prêt",
+      "title": "Voici les créneaux proposés à tes clients.",
+      "closed": "Fermé",
+      "open": "Ouvert",
+      "unavailable": "Indisponible",
+      "saving": "Création de ton agenda…",
+      "save": "Enregistrer et ouvrir mon agenda",
+      "editAria": "Modifier mes horaires"
+    },
+    "back": "Retour",
+    "continue": "Continuer",
+    "successToast": "Tes horaires sont prêts. Ton agenda est ouvert aux bons moments."
+  },
+  "empty": {
+    "title": "D'abord, ta vitrine",
+    "text": "Ton agenda s'active dès que ta page existe : tes clients y réservent directement.",
+    "cta": "Créer ma vitrine"
+  },
+  "view": {
+    "eyebrow": "Ton agenda Flux",
+    "greeting": "Bonjour{name}.",
+    "noUpcoming": "Ta semaine est calme. Tes créneaux restent ouverts et ta vitrine travaille pour toi.",
+    "upcomingCount": "{count} rendez-vous à venir. Tout est prêt pour accueillir tes clients.",
+    "viewStorefront": "Voir ma vitrine",
+    "statsAria": "Résumé de l'agenda",
+    "upcomingLabel": "Rendez-vous à venir",
+    "syncedHint": "Planning synchronisé",
+    "registeredClients": "Clients enregistrés",
+    "listFillsItself": "La liste se remplit seule",
+    "bookableDays": "Jours réservables",
+    "outOf7": "sur 7 jours",
+    "myWeek": "Ma semaine",
+    "weekHint": "Touche un jour pour voir ta journée. Le point rouge = des rendez-vous.",
+    "noBookingToday": "Aucun rendez-vous ce jour pour l'instant.",
+    "cancel": "Annuler",
+    "bookingCancelled": "Rendez-vous annulé.",
+    "myClients": "Mes clients",
+    "clientsHint": "Cette liste se remplit toute seule à chaque réservation. Touche un client pour son historique et ta note privée.",
+    "searchPlaceholder": "Chercher un prénom ou un numéro…",
+    "firstClientHint": "Ton premier client apparaîtra ici après sa réservation.",
+    "noClientMatch": "Aucun client à ce nom.",
+    "visitSingular": "visite",
+    "visitPlural": "visites",
+    "orderSingular": "commande",
+    "orderPlural": "commandes",
+    "clientRevenue": "CA client",
+    "email": "Email",
+    "hisAppointments": "Ses rendez-vous",
+    "myNote": "Ma note (visible par toi seul)",
+    "save": "Enregistrer",
+    "noteSaved": "Note enregistrée.",
+    "variableHours": "Horaires variables",
+    "variableHoursHint": "Chaque journée peut avoir son propre rythme. Survole une ligne pour la faire apparaître au premier plan.",
+    "removeRange": "Retirer la plage",
+    "addBreak": "+ pause",
+    "saveVariableHours": "Enregistrer mes horaires variables",
+    "variableHoursSaved": "C'est enregistré. Tes clients voient déjà les bons créneaux.",
+    "blockPeriod": "Bloquer une période",
+    "blockPeriodHint": "Congés, rendez-vous perso : personne ne pourra réserver dessus.",
+    "from": "Du",
+    "to": "au",
+    "block": "Bloquer",
+    "periodBlocked": "Période bloquée.",
+    "fromTo": "Du {start} au {end}",
+    "unblock": "débloquer",
+    "googleAgenda": "Dans ton agenda Google",
+    "googleAgendaHint": "Colle ce lien UNE fois dans Google Agenda (+ → « À partir de l'URL ») et tes rendez-vous s'affichent dedans, tout seuls. Lecture seule — garde-le pour toi.",
+    "copy": "Copier",
+    "linkCopied": "Lien copié."
+  },
+  "errors": {
+    "not_authenticated": "Tu dois être connecté pour continuer.",
+    "save_failed": "Enregistrement impossible.",
+    "invalid_dates": "Dates invalides.",
+    "end_before_start": "La fin doit être après le début.",
+    "block_failed": "Impossible de bloquer cette période.",
+    "note_save_failed": "Note non enregistrée.",
+    "cancel_failed": "Annulation impossible.",
+    "unknown": "Une erreur est survenue. Réessaie dans un instant."
+  }
+}

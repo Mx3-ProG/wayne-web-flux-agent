@@ -5,12 +5,8 @@ import type { Offer } from "@/lib/types";
 import { formatPrice } from "@/lib/types";
 import { Tag } from "lucide-react";
 import styles from "../vitrine.module.css";
-
-const OFFER_KIND_LABEL: Record<Offer["kind"], string> = {
-  produit: "Produit",
-  service: "Service",
-  evenement: "Événement",
-};
+import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
+import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
 
 type Props = {
   offers: Offer[]; // offres actives uniquement
@@ -18,16 +14,22 @@ type Props = {
   onAddOffer?: (offer: Offer) => void;
   title?: string;
   subtitle?: string;
+  t?: StorefrontDict["sections"]["offers"];
 };
 
-export function OffersSection({ offers, accent, onAddOffer, title, subtitle }: Props) {
+export function OffersSection({ offers, accent, onAddOffer, title, subtitle, t = frStorefront.sections.offers }: Props) {
   if (offers.length === 0) return null;
+  const OFFER_KIND_LABEL: Record<Offer["kind"], string> = {
+    produit: t.kindProduit,
+    service: t.kindService,
+    evenement: t.kindEvenement,
+  };
   return (
     <section className={styles.offers} id="offres">
       <div className={styles.sectionHeading}>
-        <p>À ne pas manquer</p>
-        <h2>{title || "Mes offres"}</h2>
-        <span>{subtitle || "Des offres à saisir maintenant."}</span>
+        <p>{t.eyebrow}</p>
+        <h2>{title || t.title}</h2>
+        <span>{subtitle || t.subtitle}</span>
       </div>
       <div className={styles.offersGrid}>
         {offers.map((offer) => {
@@ -71,7 +73,7 @@ export function OffersSection({ offers, accent, onAddOffer, title, subtitle }: P
                       className={styles.addButton}
                       style={{ backgroundColor: accent }}
                     >
-                      {offer.kind === "produit" ? "Commander" : "J'en profite"}
+                      {offer.kind === "produit" ? t.orderProduct : t.grabOffer}
                     </button>
                   )}
                 </div>

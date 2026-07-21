@@ -5,33 +5,38 @@ import { toast } from "sonner";
 import { Globe, Lock } from "lucide-react";
 import { setCustomDomain } from "./actions";
 import styles from "./projets.module.css";
+import type { ProjectsDict } from "@/lib/i18n/get-dictionary";
 
 export function DomainSettings({
   pageId,
   domain,
   editable,
+  t,
 }: {
   pageId: string;
   domain: string | null;
   editable: boolean;
+  t: ProjectsDict;
 }) {
   const [value, setValue] = useState(domain ?? "");
   const [pending, startTransition] = useTransition();
+  const [before, after] = t.domain.text.split("{example}");
 
   return (
     <section className={styles.domain}>
       <div className={styles.domainHead}>
         <Globe aria-hidden="true" />
         <div>
-          <strong>Nom de domaine</strong>
+          <strong>{t.domain.title}</strong>
           <p>
-            Branche ton propre domaine (ex. <code>ma-boutique.fr</code>) sur la
-            vitrine du projet actif.
+            {before}
+            <code>ma-boutique.fr</code>
+            {after}
           </p>
         </div>
         {!editable && (
           <span className={styles.soon}>
-            <Lock aria-hidden="true" /> Dès la formule Pro
+            <Lock aria-hidden="true" /> {t.domain.soon}
           </span>
         )}
       </div>
@@ -40,7 +45,7 @@ export function DomainSettings({
         <input
           className={styles.domainInput}
           value={value}
-          placeholder="ma-boutique.fr"
+          placeholder={t.domain.placeholder}
           disabled={!editable || pending}
           onChange={(e) => setValue(e.target.value)}
         />
@@ -51,19 +56,16 @@ export function DomainSettings({
           onClick={() =>
             startTransition(async () => {
               const r = await setCustomDomain(pageId, value);
-              if (r.error) toast.error(r.error);
-              else toast.success("Domaine enregistré.");
+              if (r.error) toast.error(t.errors[r.error as keyof typeof t.errors] ?? t.errors.unknown);
+              else toast.success(t.domain.saved);
             })
           }
         >
-          {pending ? "…" : "Enregistrer"}
+          {pending ? t.domain.saving : t.domain.save}
         </button>
       </div>
       {!editable && (
-        <p className={styles.domainNote}>
-          Cette fonctionnalité arrive prochainement en production. Elle est déjà
-          testable en local.
-        </p>
+        <p className={styles.domainNote}>{t.domain.comingSoon}</p>
       )}
     </section>
   );

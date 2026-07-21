@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/dialog";
 import { createProductsFromTunnel } from "@/app/(app)/produits/actions";
 import styles from "./setup-tunnel.module.css";
+import { useI18n } from "@/components/i18n-provider";
+import { KARLMADA_BLOCK_MESSAGE } from "@/lib/karlmada-constants";
 
 type DraftProduct = {
   name: string;
@@ -44,6 +46,8 @@ const emptyProduct = (): DraftProduct => ({
 
 export function ProductTunnel({ userId, balance }: { userId: string; balance: number }) {
   const router = useRouter();
+  const { products: dict, dictionary } = useI18n();
+  const t = dict.tunnel;
   const [step, setStep] = useState(0);
   const [category, setCategory] = useState("");
   const [products, setProducts] = useState<DraftProduct[]>([emptyProduct()]);
@@ -80,12 +84,13 @@ export function ProductTunnel({ userId, balance }: { userId: string; balance: nu
         return;
       }
       if (result.error) {
-        toast.error(result.error);
+        const code = result.error === KARLMADA_BLOCK_MESSAGE ? "content_blocked" : result.error;
+        toast.error(dict.errors[code as keyof typeof dict.errors] ?? dict.errors.unknown);
         return;
       }
       // Enchaînement FLUX : après les produits, on configure les horaires.
       // Les 15 cr débités ici couvrent les deux tunnels (l'agenda est inclus).
-      toast.success("Tes produits sont prêts. Dernière étape : tes horaires.");
+      toast.success(t.successToast);
       router.push("/agenda");
       router.refresh();
     });
@@ -96,53 +101,53 @@ export function ProductTunnel({ userId, balance }: { userId: string; balance: nu
       <header className={styles.header}>
         <Link href="/espace" className={styles.brand}><FluxBrand /></Link>
         <div className={styles.progressMeta}>
-          <span>Étape {step + 1} sur 8</span>
+          <span>{t.step.replace("{current}", String(step + 1))}</span>
           <div className={styles.progress}><i style={{ width: `${progress}%` }} /></div>
         </div>
-        <Link href="/produits" className={styles.exit}>Mes produits</Link>
+        <Link href="/produits" className={styles.exit}>{t.myProducts}</Link>
       </header>
 
       <main className={styles.stage}>
         {step === 0 && (
           <section className={styles.intro}>
             <span className={styles.icon}><PackagePlus aria-hidden="true" /></span>
-            <p className={styles.kicker}>Création produit FLUX</p>
-            <h1>Transforme ton savoir-faire en produits <em>prêts à vendre.</em></h1>
-            <p>Une catégorie, un ou plusieurs produits, puis Flux organise tout dans ta vitrine.</p>
-            <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={() => setStep(1)}>Créer mes produits <ArrowRight aria-hidden="true" /></button>
+            <p className={styles.kicker}>{t.intro.kicker}</p>
+            <h1>{t.intro.title} <em>{t.intro.titleEm}</em></h1>
+            <p>{t.intro.text}</p>
+            <button className={`flux-button-smooth ${styles.primary}`} type="button" onClick={() => setStep(1)}>{t.intro.cta} <ArrowRight aria-hidden="true" /></button>
           </section>
         )}
 
         {step === 1 && (
-          <Screen kicker="Ta catégorie" title={<>Comment veux-tu <em>les organiser ?</em></>} subtitle="Nomme la catégorie, puis ajoute tous les produits que tu veux créer maintenant.">
+          <Screen kicker={t.category.kicker} title={<>{t.category.titleStart} <em>{t.category.titleEm}</em></>} subtitle={t.category.subtitle}>
             <div className={styles.formGrid}>
-              <label className={styles.field}><span>Nom de la catégorie</span><input className={styles.input} value={category} maxLength={60} placeholder="Ex : Soins du visage" onChange={(event) => setCategory(event.target.value)} /></label>
+              <label className={styles.field}><span>{t.category.nameLabel}</span><input className={styles.input} value={category} maxLength={60} placeholder={t.category.namePlaceholder} onChange={(event) => setCategory(event.target.value)} /></label>
               {products.map((product, index) => (
                 <div className={styles.productRow} key={index}>
-                  <label className={styles.field}><span>Produit {index + 1}</span><input className={styles.input} value={product.name} maxLength={80} placeholder="Ex : Soin éclat" onChange={(event) => patch(index, { name: event.target.value })} /></label>
-                  {products.length > 1 && <button type="button" aria-label={`Retirer le produit ${index + 1}`} onClick={() => setProducts((current) => current.filter((_, itemIndex) => itemIndex !== index))}><Trash2 aria-hidden="true" /></button>}
+                  <label className={styles.field}><span>{t.category.productLabel.replace("{index}", String(index + 1))}</span><input className={styles.input} value={product.name} maxLength={80} placeholder={t.category.productPlaceholder} onChange={(event) => patch(index, { name: event.target.value })} /></label>
+                  {products.length > 1 && <button type="button" aria-label={t.category.removeProduct.replace("{index}", String(index + 1))} onClick={() => setProducts((current) => current.filter((_, itemIndex) => itemIndex !== index))}><Trash2 aria-hidden="true" /></button>}
                 </div>
               ))}
-              {products.length < 8 && <button className={styles.addButton} type="button" onClick={() => setProducts((current) => [...current, emptyProduct()])}><Plus aria-hidden="true" /> Ajouter un autre produit</button>}
+              {products.length < 8 && <button className={styles.addButton} type="button" onClick={() => setProducts((current) => [...current, emptyProduct()])}><Plus aria-hidden="true" /> {t.category.addAnother}</button>}
             </div>
           </Screen>
         )}
 
-        {step === 2 && <ProductFields title="Quel est leur prix ?" kicker="Le juste prix" subtitle="Indique un prix pour chaque produit. Tu pourras toujours le modifier." products={products} render={(product, index) => <label className={styles.field}><span>{product.name || `Produit ${index + 1}`} · Prix en €</span><PriceInput className={styles.input} cents={product.price_cents} placeholder="Ex : 20" onCents={(c) => patch(index, { price_cents: c })} /></label>} />}
-        {step === 3 && <ProductFields title="Qu’est-ce qui les rend désirables ?" kicker="La description" subtitle="Une phrase simple suffit pour aider le client à choisir." products={products} render={(product, index) => <label className={styles.field}><span>{product.name || `Produit ${index + 1}`}</span><textarea className={styles.textarea} maxLength={400} value={product.description} placeholder="Ce que le client reçoit, ressent ou gagne…" onChange={(event) => patch(index, { description: event.target.value })} /></label>} />}
+        {step === 2 && <ProductFields title={t.price.title} kicker={t.price.kicker} subtitle={t.price.subtitle} products={products} render={(product, index) => <label className={styles.field}><span>{product.name || t.price.defaultName.replace("{index}", String(index + 1))} · {t.price.priceLabel}</span><PriceInput className={styles.input} cents={product.price_cents} placeholder={t.price.placeholder} onCents={(c) => patch(index, { price_cents: c })} /></label>} />}
+        {step === 3 && <ProductFields title={t.description.title} kicker={t.description.kicker} subtitle={t.description.subtitle} products={products} render={(product, index) => <label className={styles.field}><span>{product.name || t.price.defaultName.replace("{index}", String(index + 1))}</span><textarea className={styles.textarea} maxLength={400} value={product.description} placeholder={t.description.placeholder} onChange={(event) => patch(index, { description: event.target.value })} /></label>} />}
         {step === 4 && (
-          <Screen kicker="La photo" title={<>Donne-leur une présence <em>visuelle.</em></>} subtitle="Une photo par produit. Cette étape reste facultative.">
-            <div className={styles.photoGrid}>{products.map((product, index) => <article className={styles.photoCard} key={index}><strong>{product.name || `Produit ${index + 1}`}</strong>{product.image_url && <Image src={product.image_url} width={520} height={240} unoptimized alt="" />}<PhotoUpload userId={userId} label={product.image_url ? "Changer la photo" : "Ajouter une photo"} onUploaded={(url) => patch(index, { image_url: url })} /></article>)}</div>
+          <Screen kicker={t.photo.kicker} title={<>{t.photo.titleStart} <em>{t.photo.titleEm}</em></>} subtitle={t.photo.subtitle}>
+            <div className={styles.photoGrid}>{products.map((product, index) => <article className={styles.photoCard} key={index}><strong>{product.name || t.price.defaultName.replace("{index}", String(index + 1))}</strong>{product.image_url && <Image src={product.image_url} width={520} height={240} unoptimized alt="" />}<PhotoUpload userId={userId} label={product.image_url ? t.photo.change : t.photo.add} messages={dictionary.photoUpload} onUploaded={(url) => patch(index, { image_url: url })} /></article>)}</div>
           </Screen>
         )}
         {step === 5 && (
-          <Screen kicker="Le stock" title="Veux-tu suivre les quantités ?" subtitle="Active le suivi puis indique le nombre d’unités disponibles aujourd’hui.">
+          <Screen kicker={t.stock.kicker} title={t.stock.title} subtitle={t.stock.subtitle}>
             <div className={styles.cards}>
               {products.map((product, index) => (
                 <article className={styles.stockCard} key={index}>
                   <div>
                     <strong>{product.name}</strong>
-                    <small>{product.track_stock ? "Flux te préviendra quand le stock arrive à zéro." : "Aucune limite de quantité ne sera affichée."}</small>
+                    <small>{product.track_stock ? t.stock.trackedHint : t.stock.untrackedHint}</small>
                   </div>
                   <button
                     type="button"
@@ -151,11 +156,11 @@ export function ProductTunnel({ userId, balance }: { userId: string; balance: nu
                     onClick={() => patch(index, { track_stock: !product.track_stock })}
                   >
                     {product.track_stock ? <Check aria-hidden="true" /> : <Boxes aria-hidden="true" />}
-                    {product.track_stock ? "Stock suivi" : "Suivre le stock"}
+                    {product.track_stock ? t.stock.tracked : t.stock.track}
                   </button>
                   {product.track_stock && (
                     <label className={styles.stockQuantity}>
-                      <span>Quantité disponible</span>
+                      <span>{t.stock.quantityLabel}</span>
                       <input
                         className={styles.input}
                         type="number"
@@ -169,7 +174,7 @@ export function ProductTunnel({ userId, balance }: { userId: string; balance: nu
                           })
                         }
                       />
-                      <small>unité{product.stock > 1 ? "s" : ""}</small>
+                      <small>{product.stock > 1 ? t.stock.unitPlural : t.stock.unitSingular}</small>
                     </label>
                   )}
                 </article>
@@ -177,17 +182,17 @@ export function ProductTunnel({ userId, balance }: { userId: string; balance: nu
             </div>
           </Screen>
         )}
-        {step === 6 && <ToggleScreen kicker="La mise en ligne" title="Sont-ils prêts à être visibles ?" subtitle="Un produit masqué reste enregistré sans apparaître sur ta vitrine." products={products} field="active" patch={patch} yes="Mettre en ligne" no="Garder en brouillon" />}
+        {step === 6 && <ToggleScreen kicker={t.visibility.kicker} title={t.visibility.title} subtitle={t.visibility.subtitle} products={products} field="active" patch={patch} yes={t.visibility.yes} no={t.visibility.no} toggleAria={t.visibility.toggleAria} />}
         {step === 7 && (
-          <Screen kicker="Confirmation" title={<>Tout est prêt pour ta <em>boutique.</em></>} subtitle="Vérifie tes choix : après la création, Flux enchaîne sur tes horaires (inclus dans le prix).">
+          <Screen kicker={t.confirm.kicker} title={<>{t.confirm.titleStart} <em>{t.confirm.titleEm}</em></>} subtitle={t.confirm.subtitle}>
             <div className={styles.reviewGrid}>
-              <article className={styles.reviewCard}><small>Catégorie</small><strong>{category}</strong></article>
-              <article className={styles.reviewCard}><small>Produits</small><strong>{products.length} produit{products.length > 1 ? "s" : ""}</strong></article>
-              {products.map((product, index) => <article className={styles.reviewCard} key={index}><small>{product.active ? "En ligne" : "Brouillon"}</small><strong>{product.name} · {(product.price_cents / 100).toLocaleString("fr-FR")} €{product.track_stock ? ` · ${product.stock} en stock` : ""}</strong></article>)}
-              <article className={styles.reviewCard}><small>Coût total (produits + agenda)</small><strong>{PRODUCT_CREATE_COST} crédits · solde : {balance} cr.</strong></article>
+              <article className={styles.reviewCard}><small>{t.confirm.category}</small><strong>{category}</strong></article>
+              <article className={styles.reviewCard}><small>{t.confirm.products}</small><strong>{products.length} {products.length > 1 ? t.confirm.productPlural : t.confirm.productSingular}</strong></article>
+              {products.map((product, index) => <article className={styles.reviewCard} key={index}><small>{product.active ? t.confirm.online : t.confirm.draft}</small><strong>{product.name} · {(product.price_cents / 100).toLocaleString("fr-FR")} €{product.track_stock ? ` · ${product.stock} ${t.confirm.inStock}` : ""}</strong></article>)}
+              <article className={styles.reviewCard}><small>{t.confirm.totalCost}</small><strong>{t.confirm.costValue.replace("{cost}", String(PRODUCT_CREATE_COST)).replace("{balance}", String(balance))}</strong></article>
             </div>
-            {!enough && <p className={styles.subtitle}>Il te manque {PRODUCT_CREATE_COST - balance} crédit{PRODUCT_CREATE_COST - balance > 1 ? "s" : ""}. <Link href="/credits" style={{ textDecoration: "underline" }}>Recharge tes crédits</Link>.</p>}
-            <div className={styles.confirm}><button className={styles.back} type="button" onClick={() => setStep(6)}><ArrowLeft aria-hidden="true" /> Modifier</button><button className={`flux-button-smooth ${styles.primary}`} type="button" disabled={pending || !enough} onClick={save}>{pending ? "Création…" : `Confirmer et régler mes horaires (${PRODUCT_CREATE_COST} cr.)`} <Check aria-hidden="true" /></button></div>
+            {!enough && <p className={styles.subtitle}>{(PRODUCT_CREATE_COST - balance > 1 ? t.confirm.missingPlural : t.confirm.missingSingular).replace("{count}", String(PRODUCT_CREATE_COST - balance))} <Link href="/credits" style={{ textDecoration: "underline" }}>{t.confirm.recharge}</Link>.</p>}
+            <div className={styles.confirm}><button className={styles.back} type="button" onClick={() => setStep(6)}><ArrowLeft aria-hidden="true" /> {t.confirm.edit}</button><button className={`flux-button-smooth ${styles.primary}`} type="button" disabled={pending || !enough} onClick={save}>{pending ? t.confirm.creating : t.confirm.create.replace("{cost}", String(PRODUCT_CREATE_COST))} <Check aria-hidden="true" /></button></div>
           </Screen>
         )}
       </main>
@@ -197,31 +202,31 @@ export function ProductTunnel({ userId, balance }: { userId: string; balance: nu
           <DialogHeader>
             <DialogTitle>
               {creditsDialog === "subscription_required"
-                ? "Essai terminé et solde vide"
-                : "Plus assez de crédits"}
+                ? t.credits.trialTitle
+                : t.credits.insufficientTitle}
             </DialogTitle>
             <DialogDescription>
               {creditsDialog === "subscription_required"
-                ? "Ton essai est passé et il ne te reste plus de crédits. Une formule FLUX recharge ton solde chaque mois et rouvre les générations IA — rien n'est perdu."
-                : `Créer tes produits coûte ${PRODUCT_CREATE_COST} crédits. Recharge tes crédits pour finaliser — rien n'est perdu.`}
+                ? t.credits.trial
+                : t.credits.insufficient.replace("{cost}", String(PRODUCT_CREATE_COST))}
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setCreditsDialog(null)}>
-              Plus tard
+              {t.credits.later}
             </Button>
             <Button asChild>
               <Link href={creditsDialog === "subscription_required" ? "/formules" : "/credits"}>
                 {creditsDialog === "subscription_required"
-                  ? "Choisir ma formule FLUX"
-                  : "Recharger mes crédits"}
+                  ? t.credits.choosePlan
+                  : t.credits.rechargeCredits}
               </Link>
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {step > 0 && step < 7 && <footer className={styles.controls}><button className={styles.back} type="button" onClick={() => setStep((current) => current - 1)}><ArrowLeft aria-hidden="true" /> Retour</button><button className={`flux-button-smooth ${styles.primary}`} type="button" disabled={!canContinue} onClick={() => setStep((current) => current + 1)}>Continuer <ArrowRight aria-hidden="true" /></button></footer>}
+      {step > 0 && step < 7 && <footer className={styles.controls}><button className={styles.back} type="button" onClick={() => setStep((current) => current - 1)}><ArrowLeft aria-hidden="true" /> {t.back}</button><button className={`flux-button-smooth ${styles.primary}`} type="button" disabled={!canContinue} onClick={() => setStep((current) => current + 1)}>{t.continue} <ArrowRight aria-hidden="true" /></button></footer>}
     </div>
   );
 }
@@ -234,6 +239,6 @@ function ProductFields({ title, kicker, subtitle, products, render }: { title: s
   return <Screen kicker={kicker} title={title} subtitle={subtitle}><div className={styles.cards}>{products.map(render)}</div></Screen>;
 }
 
-function ToggleScreen({ kicker, title, subtitle, products, field, patch, yes, no }: { kicker: string; title: string; subtitle: string; products: DraftProduct[]; field: "track_stock" | "active"; patch: (index: number, fields: Partial<DraftProduct>) => void; yes: string; no: string }) {
-  return <Screen kicker={kicker} title={title} subtitle={subtitle}><div className={styles.cards}>{products.map((product, index) => <article className={styles.productRow} key={index}><div><strong>{product.name}</strong><p className={styles.subtitle}>{product[field] ? yes : no}</p></div><button type="button" aria-label={`Changer le réglage pour ${product.name}`} onClick={() => patch(index, { [field]: !product[field] })}>{product[field] ? <Check aria-hidden="true" /> : <Boxes aria-hidden="true" />}</button></article>)}</div></Screen>;
+function ToggleScreen({ kicker, title, subtitle, products, field, patch, yes, no, toggleAria }: { kicker: string; title: string; subtitle: string; products: DraftProduct[]; field: "track_stock" | "active"; patch: (index: number, fields: Partial<DraftProduct>) => void; yes: string; no: string; toggleAria: string }) {
+  return <Screen kicker={kicker} title={title} subtitle={subtitle}><div className={styles.cards}>{products.map((product, index) => <article className={styles.productRow} key={index}><div><strong>{product.name}</strong><p className={styles.subtitle}>{product[field] ? yes : no}</p></div><button type="button" aria-label={toggleAria.replace("{name}", product.name)} onClick={() => patch(index, { [field]: !product[field] })}>{product[field] ? <Check aria-hidden="true" /> : <Boxes aria-hidden="true" />}</button></article>)}</div></Screen>;
 }

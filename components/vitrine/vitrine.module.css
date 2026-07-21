@@ -766,6 +766,15 @@
 .modeToggle { display: inline-grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border: 0; border-radius: 999px; background: rgb(255 255 255 / 12%); color: #fff; cursor: pointer; }
 .modeToggle svg { width: 16px; }
 
+/* Globe de langue public (header vitrine + sous-pages). Position logique
+   (inset-inline-*) pour un menu correctement aligné en RTL sans code
+   dupliqué. */
+.langSwitch { position: relative; flex: 0 0 auto; }
+.langMenu { position: absolute; inset-block-start: calc(100% + 8px); inset-inline-end: 0; z-index: 30; display: flex; min-width: 160px; max-height: 320px; flex-direction: column; overflow-y: auto; border-radius: 12px; background: #fff; box-shadow: 0 16px 40px rgb(0 0 0 / 25%); list-style: none; padding: 6px; margin: 0; }
+.langMenuItem, .langMenuItemActive { display: block; border-radius: 8px; padding: 8px 12px; color: #1a181b; font-size: 13px; text-decoration: none; text-align: start; }
+.langMenuItem:hover { background: rgb(0 0 0 / 6%); }
+.langMenuItemActive { background: rgb(0 0 0 / 8%); font-weight: 600; }
+
 /* Bouton flottant WhatsApp / appel (coin bas droit, au-dessus du panier). */
 .contactFab { position: fixed; right: 18px; bottom: 18px; z-index: 41; display: grid; width: 56px; height: 56px; place-items: center; border-radius: 50%; background: var(--client-accent); color: #fff; box-shadow: 0 16px 40px rgb(0 0 0 / 35%); }
 .contactFab svg { width: 24px; }

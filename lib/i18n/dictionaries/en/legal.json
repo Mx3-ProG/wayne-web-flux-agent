@@ -1,0 +1,13 @@
+{
+  "chrome": {
+    "backToSite": "Back to the site",
+    "eyebrow": "Wayne Web Flux · Contractual information",
+    "lastUpdated": "Last updated:",
+    "frenchOnlyNotice": "This contractual document is provided in French, which is the only legally binding version."
+  },
+  "titles": {
+    "terms": "Terms of sale and use",
+    "privacy": "Privacy policy",
+    "legalNotice": "Legal notice"
+  }
+}

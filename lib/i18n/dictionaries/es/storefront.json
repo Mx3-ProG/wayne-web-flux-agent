@@ -1,0 +1,186 @@
+{
+  "verifiedBadge": {
+    "label": "Tienda verificada",
+    "title": "Esta versión de la tienda ha sido revisada por FLUX."
+  },
+  "header": {
+    "navAria": "Navegación del sitio",
+    "lightMode": "Cambiar a modo claro",
+    "darkMode": "Cambiar a modo oscuro",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "defaultBusinessName": "Mi negocio"
+  },
+  "hero": {
+    "viewOffers": "Ver ofertas",
+    "book": "Reservar",
+    "discover": "Descubrir",
+    "viewServices": "Ver servicios",
+    "discoverShop": "Descubrir la tienda",
+    "onlineBooking": "Reserva online",
+    "onlineOrder": "Pedido online"
+  },
+  "shell": {
+    "scrollTop": "Volver arriba",
+    "whatsapp": "Escribir por WhatsApp",
+    "call": "Llamar",
+    "viewCart": "Ver carrito",
+    "stayInTouch": "Sigamos en contacto",
+    "legalNotice": "Aviso legal",
+    "terms": "CGV",
+    "termsFull": "Condiciones generales de venta",
+    "privacy": "Privacidad",
+    "privacyFull": "Política de privacidad",
+    "close": "Cerrar",
+    "poweredBy": "Creado con"
+  },
+  "subpage": {
+    "home": "Inicio",
+    "draftNotice": "Esta página está en construcción."
+  },
+  "booking": {
+    "loadAvailabilityError": "No se pudo cargar la disponibilidad.",
+    "loadSlotsError": "No se pudieron cargar los horarios.",
+    "slotTakenError": "Este horario acaba de ser reservado. Elige otro.",
+    "genericError": "No se pudo registrar la reserva. Inténtalo de nuevo.",
+    "close": "Cerrar",
+    "chooseDay": "Elige un día",
+    "loading": "Un momento…",
+    "closed": "cerrado",
+    "full": "completo",
+    "slotsCount": "{count} horarios",
+    "changeDay": "← cambiar de día",
+    "changeTime": "← cambiar de hora",
+    "yourDetails": "Tus datos",
+    "firstNamePlaceholder": "Tu nombre",
+    "phonePlaceholder": "Tu teléfono",
+    "emailPlaceholder": "Tu email (opcional)",
+    "confirmationHint": "Para recibir la confirmación de tu cita.",
+    "confirm": "Confirmar la cita",
+    "booked": "¡Reservado!",
+    "seeYouSoon": "Hasta pronto.",
+    "at": "a las"
+  },
+  "order": {
+    "orderSent": "Pedido enviado",
+    "myOrder": "Mi pedido",
+    "close": "Cerrar",
+    "itemSingular": "artículo",
+    "itemPlural": "artículos",
+    "cartEmpty": "Tu carrito está vacío.",
+    "continue": "Continuar",
+    "removeOne": "Quitar uno",
+    "addOne": "Añadir uno",
+    "backToCart": "← volver al carrito",
+    "yourDetails": "Tus datos",
+    "firstNamePlaceholder": "Tu nombre",
+    "phonePlaceholder": "Tu teléfono",
+    "emailPlaceholder": "Tu email (opcional)",
+    "addressPlaceholder": "Tu dirección (opcional)",
+    "notePlaceholder": "¿Alguna precisión? (opcional)",
+    "contactHint": "El comercio te contactará de nuevo para confirmar y acordar el pago.",
+    "sendOrder": "Enviar pedido",
+    "sending": "Un momento…",
+    "thanks": "¡Gracias, tomado nota!",
+    "transmitted": "Tu pedido se ha enviado correctamente.",
+    "willContact": "El comercio se pondrá en contacto contigo muy pronto.",
+    "submitError": "No se pudo registrar el pedido. Inténtalo de nuevo en un momento."
+  },
+  "sections": {
+    "about": {
+      "eyebrow": "Mi historia",
+      "defaultAlt": "Retrato"
+    },
+    "beforeAfter": {
+      "eyebrow": "La prueba en imágenes",
+      "title": "Antes / después",
+      "before": "Antes",
+      "after": "Después",
+      "compareAria": "Comparar antes y después"
+    },
+    "catalog": {
+      "eyebrow": "Lo que propongo",
+      "comboTitle": "Mis servicios",
+      "comboSubtitle": "Productos para pedir y citas para reservar.",
+      "shopOnlyTitle": "Productos",
+      "shopOnlySubtitle": "Productos para pedir.",
+      "servicesOnlyTitle": "Reservas",
+      "servicesOnlySubtitle": "Citas para reservar.",
+      "shopTitle": "Mi tienda",
+      "shopSubtitle": "Productos para pedir.",
+      "servicesTitle": "Mis servicios",
+      "servicesSubtitle": "Citas para reservar.",
+      "productsHeading": "Productos",
+      "reservationsHeading": "Reservas",
+      "soldOut": "Agotado",
+      "add": "Añadir",
+      "free": "Gratis",
+      "book": "Reservar",
+      "emptyCatalog": "El catálogo llega muy pronto."
+    },
+    "faq": {
+      "eyebrow": "Preguntas frecuentes",
+      "title": "FAQ",
+      "subtitle": "Las respuestas a las preguntas que más me hacen."
+    },
+    "gallery": {
+      "eyebrow": "En imágenes",
+      "title": "Mi trabajo",
+      "subtitle": "Algunos detalles que cuentan mi universo.",
+      "photoAlt": "Foto {index}"
+    },
+    "googleBusiness": {
+      "eyebrow": "Reseñas de Google",
+      "defaultTitle": "Tu opinión cuenta para nosotros",
+      "defaultDescription": "Consulta las reseñas de nuestros clientes o comparte tu experiencia en unos segundos.",
+      "leaveReview": "Dejar una reseña",
+      "viewProfile": "Ver la ficha de Google"
+    },
+    "hours": {
+      "eyebrow": "Cuándo venir",
+      "title": "Mis horarios",
+      "subtitle": "Encuéntrame en el momento adecuado."
+    },
+    "map": {
+      "eyebrow": "Dónde encontrarme",
+      "title": "Ven a verme",
+      "mapTitle": "Mapa: {query}"
+    },
+    "newsletter": {
+      "eyebrow": "Sigamos en contacto",
+      "title": "Mantente informado",
+      "subtitle": "Recibe mis ofertas y novedades, sin spam.",
+      "emailPlaceholder": "tu@email.es",
+      "emailAria": "Tu dirección de email",
+      "subscribe": "Suscribirme",
+      "sending": "…",
+      "done": "¡Gracias! Tomado nota. ✨",
+      "error": "No podemos inscribirte por ahora. Inténtalo más tarde."
+    },
+    "offers": {
+      "eyebrow": "No te lo pierdas",
+      "title": "Mis ofertas",
+      "subtitle": "Ofertas para aprovechar ahora mismo.",
+      "kindProduit": "Producto",
+      "kindService": "Servicio",
+      "kindEvenement": "Evento",
+      "orderProduct": "Pedir",
+      "grabOffer": "Lo quiero"
+    },
+    "promo": {
+      "remainingDays": "{days} d {hours} h",
+      "remainingHours": "{hours} h {minutes} min",
+      "countdownPrefix": "⏳ Quedan {countdown}",
+      "codeCopied": "¡Copiado!",
+      "codeLabel": "Código: {code}"
+    },
+    "reviews": {
+      "eyebrow": "Confían en mí",
+      "title": "Lo que dicen de mí",
+      "subtitle": "Palabras verdaderas, dejadas por mis clientes."
+    },
+    "video": {
+      "title": "Vídeo"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "chrome": {
+    "backToSite": "サイトに戻る",
+    "eyebrow": "Wayne Web Flux · 契約情報",
+    "lastUpdated": "最終更新日：",
+    "frenchOnlyNotice": "本契約文書はフランス語で提供されており、法的効力を持つのはフランス語版のみです。"
+  },
+  "titles": {
+    "terms": "販売・利用規約",
+    "privacy": "プライバシーポリシー",
+    "legalNotice": "法的表示"
+  }
+}

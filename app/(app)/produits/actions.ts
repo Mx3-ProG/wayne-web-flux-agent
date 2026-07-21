@@ -12,6 +12,24 @@ import {
 import { spendCredits, refundCredits } from "@/lib/credits";
 import type { ProductKind } from "@/lib/types";
 import { enforceKarlMada } from "@/lib/karlmada";
+import { defaultLocale, hasLocale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+
+// Locale principale de la page : source des noms par défaut (catégorie,
+// produit, réservation) créés côté serveur, pour qu'une boutique en allemand
+// ou en arabe ne reçoive jamais de texte français en dur.
+async function getPageLocale(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+  pageId: string
+) {
+  const { data } = await supabase
+    .from("pages")
+    .select("default_locale")
+    .eq("id", pageId)
+    .maybeSingle<{ default_locale: string | null }>();
+  const locale = data?.default_locale;
+  return locale && hasLocale(locale) ? locale : defaultLocale;
+}
 
 type TunnelProduct = {
   name: string;
@@ -54,16 +72,6 @@ export async function setStockExact(productId: string, target: number): Promise<
     p_order: null,
   });
   revalidateAll();
-}
-
-async function ownedPageId(): Promise<string | null> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return null;
-  // Le projet actif du user (multi-boutiques).
-  return getActivePageId(supabase, user.id);
 }
 
 function revalidateAll() {
@@ -137,12 +145,15 @@ async function syncReservationService(productId: string) {
       familyId = insertedFamily?.id ?? null;
     }
   } else {
+    const locale = await getPageLocale(supabase, product.page_id);
+    const reservationsFamilyName = (await getDictionary(locale, "products")).manager
+      .reservationsFamilyName;
     const { data: existingFamily } = await supabase
       .from("service_families")
       .select("id")
       .eq("page_id", product.page_id)
       .is("product_category_id", null)
-      .eq("name", "Réservations")
+      .eq("name", reservationsFamilyName)
       .maybeSingle();
     if (existingFamily?.id) {
       familyId = existingFamily.id;
@@ -151,7 +162,7 @@ async function syncReservationService(productId: string) {
         .from("service_families")
         .insert({
           page_id: product.page_id,
-          name: "Réservations",
+          name: reservationsFamilyName,
           position: 999,
         })
         .select("id")
@@ -187,9 +198,9 @@ export async function createCategory(): Promise<{ error?: string; id?: string; p
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "not_authenticated" };
   const pageId = await getActivePageId(supabase, user.id);
-  if (!pageId) return { error: "Crée d'abord ta vitrine." };
+  if (!pageId) return { error: "no_active_page" };
 
   const { count } = await supabase
     .from("product_categories")
@@ -219,16 +230,18 @@ export async function createCategory(): Promise<{ error?: string; id?: string; p
     if (spendError) return { error: spendError };
   }
 
+  const locale = await getPageLocale(supabase, pageId);
+  const t = await getDictionary(locale, "products");
   const { data, error } = await supabase
     .from("product_categories")
-    .insert({ page_id: pageId, name: "Nouvelle catégorie", position: count ?? 0 })
+    .insert({ page_id: pageId, name: t.category.defaultName, position: count ?? 0 })
     .select("id")
     .single();
   if (error || !data) {
     if (paid) {
       await refundCredits(user.id, CATEGORY_CREATE_COST, "refund:category");
     }
-    return { error: "Création impossible." };
+    return { error: "creation_failed" };
   }
   await revalidatePublicPage(pageId);
   revalidateAll();
@@ -245,7 +258,7 @@ export async function updateCategory(
     .select("page_id, name")
     .eq("id", categoryId)
     .maybeSingle();
-  if (!current) return { error: "Catégorie introuvable." };
+  if (!current) return { error: "category_not_found" };
 
   const moderation = await enforceKarlMada(name, {
     pageId: current.page_id,
@@ -258,7 +271,7 @@ export async function updateCategory(
     .from("product_categories")
     .update({ name: nextName })
     .eq("id", categoryId);
-  if (error) return { error: "Enregistrement impossible." };
+  if (error) return { error: "save_failed" };
   await supabase
     .from("service_families")
     .update({ name: nextName })
@@ -290,7 +303,7 @@ export async function deleteCategory(categoryId: string): Promise<{ error?: stri
     .from("product_categories")
     .delete()
     .eq("id", categoryId);
-  if (error) return { error: "Suppression impossible." };
+  if (error) return { error: "delete_failed" };
   if (current) {
     await supabase
       .from("service_families")
@@ -314,9 +327,9 @@ export async function createProduct(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "not_authenticated" };
   const pageId = await getActivePageId(supabase, user.id);
-  if (!pageId) return { error: "Crée d'abord ta vitrine." };
+  if (!pageId) return { error: "no_active_page" };
 
   // Ajout unitaire : 5 cr pour un produit, 1 cr pour une réservation.
   const cost = kind === "reservation" ? RESERVATION_ADD_COST : PRODUCT_ADD_COST;
@@ -328,13 +341,15 @@ export async function createProduct(
     .from("products")
     .select("id", { count: "exact", head: true })
     .eq("page_id", pageId);
+  const locale = await getPageLocale(supabase, pageId);
+  const t = await getDictionary(locale, "products");
   const { data, error } = await supabase
     .from("products")
     .insert({
       page_id: pageId,
       category_id: categoryId,
       kind,
-      name: kind === "reservation" ? "Nouvelle réservation" : "Nouveau produit",
+      name: kind === "reservation" ? t.manager.defaultReservationName : t.manager.defaultProductName,
       price_cents: 0,
       duration_min: 60,
       position: count ?? 0,
@@ -343,7 +358,7 @@ export async function createProduct(
     .single();
   if (error || !data) {
     await refundCredits(user.id, cost, `refund:${reason.split(":")[0]}`);
-    return { error: "Création impossible." };
+    return { error: "creation_failed" };
   }
   if (kind === "reservation") await syncReservationService(data.id);
   await revalidatePublicPage(pageId);
@@ -359,9 +374,9 @@ export async function createProductsFromTunnel(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "not_authenticated" };
   const pageId = await getActivePageId(supabase, user.id);
-  if (!pageId) return { error: "Crée d'abord ta vitrine." };
+  if (!pageId) return { error: "no_active_page" };
 
   const cleanCategory = categoryName.trim().slice(0, 60);
   const cleanProducts = products
@@ -380,8 +395,8 @@ export async function createProductsFromTunnel(
     .filter((product) => product.name)
     .slice(0, 8);
 
-  if (!cleanCategory) return { error: "Donne un nom à ta catégorie." };
-  if (cleanProducts.length === 0) return { error: "Ajoute au moins un produit." };
+  if (!cleanCategory) return { error: "category_name_required" };
+  if (cleanProducts.length === 0) return { error: "at_least_one_product" };
 
   // Le passage du tunnel coûte un forfait de crédits (jusqu'à 8 produits).
   // Débit AVANT les inserts, refund si la création échoue.
@@ -420,7 +435,7 @@ export async function createProductsFromTunnel(
     .single();
   if (categoryError || !category) {
     await refundCredits(user.id, PRODUCT_CREATE_COST, "refund:product");
-    return { error: "Création de la catégorie impossible." };
+    return { error: "category_creation_failed" };
   }
 
   const { error: productsError } = await supabase.from("products").insert(
@@ -435,7 +450,7 @@ export async function createProductsFromTunnel(
   if (productsError) {
     await supabase.from("product_categories").delete().eq("id", category.id);
     await refundCredits(user.id, PRODUCT_CREATE_COST, "refund:product");
-    return { error: "Création des produits impossible." };
+    return { error: "products_creation_failed" };
   }
 
   await revalidatePublicPage(pageId);
@@ -464,7 +479,7 @@ export async function updateProduct(
     .select("page_id, name, price_cents")
     .eq("id", productId)
     .maybeSingle();
-  if (!current) return { error: "Produit introuvable." };
+  if (!current) return { error: "product_not_found" };
 
   const moderation = await enforceKarlMada(fields, {
     pageId: current.page_id,
@@ -473,7 +488,7 @@ export async function updateProduct(
   if (moderation.error) return moderation;
 
   const { error } = await supabase.from("products").update(fields).eq("id", productId);
-  if (error) return { error: "Enregistrement impossible." };
+  if (error) return { error: "save_failed" };
   const serviceFields: Partial<Pick<ProductFields, "name" | "price_cents" | "duration_min">> = {};
   if (fields.name !== undefined) serviceFields.name = fields.name.trim().slice(0, 80);
   if (fields.price_cents !== undefined) {
@@ -504,7 +519,7 @@ export async function deleteProduct(productId: string): Promise<{ error?: string
     .eq("id", productId)
     .maybeSingle();
   const { error } = await supabase.from("products").delete().eq("id", productId);
-  if (error) return { error: "Suppression impossible." };
+  if (error) return { error: "delete_failed" };
   if (current) {
     await supabase
       .from("services")

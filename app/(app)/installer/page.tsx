@@ -1,29 +1,19 @@
-import { InstallAppGuide } from "./install-app-guide";
-import styles from "./installer.module.css";
+import type { Metadata } from "next";
+import { createClient } from "@/lib/supabase/server";
+import { getAccountLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { defaultLocale } from "@/lib/i18n/config";
+import { InstallerContent } from "./installer-content";
 
-export const metadata = { title: "Installer l’application" };
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const locale = user ? await getAccountLocale(supabase, user.id) : defaultLocale;
+  return { title: (await getDictionary(locale, "dashboard")).installer.metaTitle };
+}
 
 export default function InstallerPage() {
-  return (
-    <div className={styles.page}>
-      <p className={styles.eyebrow}>Toujours à portée de main</p>
-      <h1 className={styles.title}>Installe Wayne Web Flux</h1>
-      <p className={styles.subtitle}>
-        Ajoute l’application à ton écran d’accueil pour ouvrir ton dashboard
-        comme une vraie app et voir le nombre de commandes à traiter sur son
-        icône lorsque ton appareil prend en charge les pastilles.
-      </p>
-
-      <InstallAppGuide />
-
-      <aside className={styles.note}>
-        <strong>Bon à savoir</strong>
-        <p>
-          La pastille se met à jour à l’ouverture de l’application et disparaît
-          dès qu’il n’y a plus de commande « À traiter ». Son affichage dépend
-          du téléphone et du navigateur.
-        </p>
-      </aside>
-    </div>
-  );
+  return <InstallerContent />;
 }

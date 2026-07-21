@@ -1,0 +1,93 @@
+{
+  "meta": {
+    "title": "طلباتي"
+  },
+  "status": {
+    "pending": "قيد المعالجة",
+    "accepted": "مقبولة",
+    "fulfilled": "منتهية",
+    "cancelled": "ملغاة"
+  },
+  "bookingStatus": {
+    "cancelled": "ملغاة",
+    "confirmed": "مؤكدة"
+  },
+  "itemKind": {
+    "offer": "عرض",
+    "reservation": "حجز",
+    "product": "منتج"
+  },
+  "clientSheet": {
+    "aria": "بطاقة العميل",
+    "titleWithName": "بطاقة العميل · {name}",
+    "titleDefault": "بطاقة العميل",
+    "interactions": "{count} تفاعل(ات)",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "notProvided": "غير محدد",
+    "address": "العنوان الفعلي",
+    "addressNotProvided": "غير محدد"
+  },
+  "history": {
+    "title": "سجل العميل",
+    "purchases": "{count} عملية(ات) شراء",
+    "reservation": "حجز"
+  },
+  "orderCard": {
+    "transaction": "معاملة FLUX",
+    "defaultClient": "عميل",
+    "itemSingular": "عنصر",
+    "itemPlural": "عناصر",
+    "accept": "قبول",
+    "markDone": "تحديد كمنتهية",
+    "cancel": "إلغاء",
+    "refuse": "رفض"
+  },
+  "clientProfile": {
+    "dossier": "ملف العميل",
+    "interactionSingular": "تفاعل",
+    "interactionPlural": "تفاعلات"
+  },
+  "hero": {
+    "kicker": "محفظة FLUX",
+    "titleStart": "مركز ",
+    "titleEm": "الأعمال",
+    "text": "تحكّم في طلباتك، أعد اكتشاف كل عميل، ثم حوّل واجهتك إلى دفتر تحصيل نظيف وواضح.",
+    "movementSingular": "حركة متابَعة",
+    "movementPlural": "حركات متابَعة"
+  },
+  "metrics": {
+    "aria": "مؤشرات الطلبات",
+    "toProcess": "قيد المعالجة",
+    "accepted": "مقبولة",
+    "history": "السجل",
+    "clientSheets": "بطاقات العملاء"
+  },
+  "empty": {
+    "noPageStart": "أنشئ أولًا",
+    "noPageLink": "واجهتك",
+    "noPageEnd": "لتبدأ باستقبال الطلبات.",
+    "noOrdersStart": "لا توجد طلبات حتى الآن. أضف منتجات في",
+    "noOrdersLink": "واجهتك",
+    "noOrdersEnd": "وشارك رابطك."
+  },
+  "sections": {
+    "incoming": "المعاملات الواردة",
+    "toProcess": "قيد المعالجة",
+    "toProcessCount": "{count} ملف(ات) بانتظار التحقق",
+    "openLabel": "الملفات المفتوحة",
+    "accepted": "مقبولة",
+    "acceptedCount": "{count} تحصيل(ات) جارية",
+    "ledger": "الدفتر الكبير",
+    "history": "السجل",
+    "historyCount": "{count} معاملة(ات) مصنّفة",
+    "book": "دفتر الأعمال",
+    "clientSheets": "بطاقات العملاء",
+    "clientSheetsCount": "{count} علاقة(ات) محفوظة"
+  },
+  "errors": {
+    "not_authenticated": "يجب أن تكون متصلًا للمتابعة.",
+    "action_failed": "تعذّر تنفيذ الإجراء.",
+    "unknown": "حدث خطأ ما. أعد المحاولة بعد لحظة."
+  }
+}

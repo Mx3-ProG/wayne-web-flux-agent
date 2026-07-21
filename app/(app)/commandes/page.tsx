@@ -1,10 +1,21 @@
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePage } from "@/lib/active-project";
 import type { Booking, OfferKind, Order, OrderItem, ProductKind } from "@/lib/types";
+import { getAccountLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { defaultLocale } from "@/lib/i18n/config";
 import { CommandesLedger } from "./commandes-ledger";
 
-export const metadata = { title: "Mes commandes" };
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const locale = user ? await getAccountLocale(supabase, user.id) : defaultLocale;
+  return { title: (await getDictionary(locale, "orders")).meta.title };
+}
 
 type OrderItemWithCatalog = OrderItem & {
   products: { kind: ProductKind } | null;
@@ -19,7 +30,11 @@ export default async function CommandesPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const page = await getActivePage(supabase, user.id);
+  const [page, locale] = await Promise.all([
+    getActivePage(supabase, user.id),
+    getAccountLocale(supabase, user.id),
+  ]);
+  const t = await getDictionary(locale, "orders");
 
   let orders: OrderWithItems[] = [];
   let bookings: Booking[] = [];
@@ -46,6 +61,8 @@ export default async function CommandesPage() {
       pageExists={Boolean(page)}
       orders={orders}
       bookings={bookings}
+      locale={locale}
+      t={t}
     />
   );
 }

@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "خزنتي"
+  },
+  "toolPage": {
+    "howItWorks": "كيف يعمل الأمر",
+    "voicePrefix": "أكتب بأسلوبك في",
+    "improveVoice": "حسّن أسلوبي",
+    "myVoice": "أسلوبي"
+  },
+  "runner": {
+    "choosePlaceholder": "— اختر —",
+    "costLabel": "التكلفة:",
+    "costCredits": "{cost} نقاط",
+    "balanceLabel": "الرصيد: {balance}",
+    "running": "الذكاء الاصطناعي يكتب من أجلك…",
+    "generate": "أنشئ نتيجتي ({cost} نقطة)",
+    "missingCredits": "تنقصك بعض النقاط.",
+    "discoverPlans": "اكتشف باقات FLUX",
+    "waiting": "بضع ثوانٍ من الصبر، الذكاء الاصطناعي يفكّر من أجلك…",
+    "copy": "نسخ",
+    "copied": "تم النسخ!",
+    "viewInVault": "شاهدها في خزنتي ←",
+    "errors": {
+      "ai_window_expired": "انتهت فترة وصولك إلى أدوات الذكاء الاصطناعي. اختر باقة لإعادة تفعيلها.",
+      "subscription_required": "انتهت فترة تجربتك لـ FLUX. اختر باقة لمواصلة الإنشاء.",
+      "insufficient_credits": "لم يتبقَّ لديك نقاط كافية. انتقل إلى باقة FLUX لإعادة الشحن.",
+      "generation_failed": "فشل الإنشاء.",
+      "generation_interrupted": "تمّ مقاطعة الإنشاء."
+    }
+  },
+  "vault": {
+    "overline": "غرفة الحفظ الخاصة بك",
+    "titleStart": "خزنتك ",
+    "titleEm": "المحصّنة",
+    "emptySubtitle": "كل إنشاء ثمين سيجد مكانه هنا.",
+    "treasureSingular": "كنز صنعه FLUX، محفوظ إلى الأبد.",
+    "treasurePlural": "كنوز صنعها FLUX، محفوظة إلى الأبد.",
+    "creationSingular": "إنشاء بأمان",
+    "creationPlural": "إنشاءات بأمان",
+    "emptyKicker": "الكنز الأول في انتظارك",
+    "emptyTitle": "خبرتك تستحق واجهتها الخاصة.",
+    "emptyText": "أنشئ أول محتوى لك مع FLUX. سيُحفظ هنا، جاهزًا لإعادة قراءته ونسخه ومشاركته.",
+    "createFirst": "أنشئ محتواي الأول",
+    "collectionLabel": "مجموعتك",
+    "collectionTitle": "قطع فريدة، جاهزة للتألق.",
+    "sortedHint": "مرتبة من الأحدث إلى الأقدم",
+    "creationLabel": "إنشاء FLUX",
+    "creditsSpent": "{cost} نقاط",
+    "close": "إغلاق",
+    "discover": "اكتشف",
+    "copyCreation": "نسخ هذا الإنشاء",
+    "copiedToast": "تم نسخ الإنشاء!"
+  }
+}

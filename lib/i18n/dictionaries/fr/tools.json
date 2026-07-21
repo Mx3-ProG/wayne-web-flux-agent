@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "Mon coffre"
+  },
+  "toolPage": {
+    "howItWorks": "Comment ça marche",
+    "voicePrefix": "J'écris comme toi à",
+    "improveVoice": "Améliorer ma voix",
+    "myVoice": "Ma voix"
+  },
+  "runner": {
+    "choosePlaceholder": "— choisir —",
+    "costLabel": "Coût :",
+    "costCredits": "{cost} crédits",
+    "balanceLabel": "Solde : {balance}",
+    "running": "L'IA écrit pour toi…",
+    "generate": "Générer mon résultat ({cost} cr.)",
+    "missingCredits": "Il te manque des crédits.",
+    "discoverPlans": "Découvrir les formules FLUX",
+    "waiting": "Quelques secondes de patience, l'IA réfléchit pour toi…",
+    "copy": "Copier",
+    "copied": "Copié !",
+    "viewInVault": "Voir dans mon coffre →",
+    "errors": {
+      "ai_window_expired": "Ta fenêtre d'accès aux outils IA est terminée. Choisis une formule pour la réactiver.",
+      "subscription_required": "Ton essai FLUX est terminé. Choisis une formule pour continuer à générer.",
+      "insufficient_credits": "Plus assez de crédits. Passe à une formule FLUX pour recharger.",
+      "generation_failed": "La génération a échoué.",
+      "generation_interrupted": "La génération a été interrompue."
+    }
+  },
+  "vault": {
+    "overline": "Chambre forte personnelle",
+    "titleStart": "Ton coffre-",
+    "titleEm": "fort",
+    "emptySubtitle": "Chaque création précieuse trouvera sa place ici.",
+    "treasureSingular": "trésor façonné par FLUX, conservé pour toujours.",
+    "treasurePlural": "trésors façonnés par FLUX, conservés pour toujours.",
+    "creationSingular": "création en sûreté",
+    "creationPlural": "créations en sûreté",
+    "emptyKicker": "Le premier trésor t'attend",
+    "emptyTitle": "Ton savoir-faire mérite son écrin.",
+    "emptyText": "Crée ton premier contenu avec FLUX. Il sera rangé ici, prêt à être relu, copié et partagé.",
+    "createFirst": "Créer mon premier contenu",
+    "collectionLabel": "Ta collection",
+    "collectionTitle": "Des pièces uniques, prêtes à rayonner.",
+    "sortedHint": "Classées de la plus récente à la plus ancienne",
+    "creationLabel": "Création FLUX",
+    "creditsSpent": "{cost} crédits",
+    "close": "Refermer",
+    "discover": "Découvrir",
+    "copyCreation": "Copier cette création",
+    "copiedToast": "Création copiée !"
+  }
+}

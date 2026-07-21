@@ -1,0 +1,142 @@
+{
+  "meta": {
+    "title": "マイスケジュール"
+  },
+  "weekdaysShort": {
+    "0": "日",
+    "1": "月",
+    "2": "火",
+    "3": "水",
+    "4": "木",
+    "5": "金",
+    "6": "土"
+  },
+  "weekdaysLong": {
+    "0": "日曜日",
+    "1": "月曜日",
+    "2": "火曜日",
+    "3": "水曜日",
+    "4": "木曜日",
+    "5": "金曜日",
+    "6": "土曜日"
+  },
+  "rhythms": {
+    "classic": "クラシックな1日",
+    "extended": "ロングデー",
+    "split": "ランチ休憩あり",
+    "morning": "午前中心",
+    "afternoon": "午後中心",
+    "evening": "夕方・夜メイン"
+  },
+  "tunnel": {
+    "myAgenda": "マイスケジュール",
+    "step": "ステップ {current}/4",
+    "intro": {
+      "kicker": "あなたの時間を、きちんと整理",
+      "titleStart": "FLUXは、あなたのニーズに応える",
+      "titleEm": "スケジュール管理。",
+      "text": "曜日とリズムを選ぶだけ。Fluxがお客様が予約できる時間枠を自動で用意します。",
+      "cta": "営業時間を作成する",
+      "shortcutText": "営業時間はもう決まっている",
+      "shortcutCta": "スケジュールに戻る"
+    },
+    "days": {
+      "kicker": "営業日",
+      "titleStart": "どの曜日を予約",
+      "titleEm": "可能にする？",
+      "subtitle": "お客様が予約できる曜日をすべて選んでね。"
+    },
+    "rhythm": {
+      "kicker": "あなたのリズム",
+      "titleStart": "一番働きやすい時間帯は",
+      "titleEm": "いつ？",
+      "subtitle": "このリズムは選んだ曜日に適用されるよ。後からスケジュール内で細かく調整できます。"
+    },
+    "variable": {
+      "kicker": "曜日ごとに違う時間",
+      "titleStart": "曜日によってリズムを",
+      "titleEm": "変えたい？",
+      "subtitle": "基本のリズムのままでもOK、曜日ごとに調整してもOK。面倒な入力は一切なし。"
+    },
+    "review": {
+      "kicker": "スケジュールの準備完了",
+      "title": "お客様に表示される予約枠はこちら。",
+      "closed": "休業",
+      "open": "営業中",
+      "unavailable": "予約不可",
+      "saving": "スケジュールを作成中…",
+      "save": "保存してスケジュールを開く",
+      "editAria": "営業時間を編集"
+    },
+    "back": "戻る",
+    "continue": "次へ",
+    "successToast": "営業時間の設定が完了！ぴったりの時間帯にスケジュールがオープンしたよ。"
+  },
+  "empty": {
+    "title": "まずはあなたのページを",
+    "text": "ページができれば、スケジュールも自動で有効化。お客様がそこから直接予約できるようになるよ。",
+    "cta": "ページを作成する"
+  },
+  "view": {
+    "eyebrow": "あなたのFluxスケジュール",
+    "greeting": "こんにちは{name}。",
+    "noUpcoming": "今週は静かだね。予約枠は開いたままで、あなたのページは今も働いてくれてるよ。",
+    "upcomingCount": "今後の予約は{count}件。お客様を迎える準備は万端。",
+    "viewStorefront": "自分のページを見る",
+    "statsAria": "スケジュールの概要",
+    "upcomingLabel": "今後の予約",
+    "syncedHint": "同期済みのスケジュール",
+    "registeredClients": "登録済みの顧客",
+    "listFillsItself": "リストは自動で増えていくよ",
+    "bookableDays": "予約可能な曜日",
+    "outOf7": "/ 7日中",
+    "myWeek": "今週",
+    "weekHint": "曜日をタップしてその日を確認。赤い点＝予約ありのサイン。",
+    "noBookingToday": "この日はまだ予約なし。",
+    "cancel": "キャンセル",
+    "bookingCancelled": "予約をキャンセルしました。",
+    "myClients": "顧客一覧",
+    "clientsHint": "予約が入るたびにこのリストは自動で増えていくよ。顧客をタップすると履歴とあなただけの非公開メモが見れます。",
+    "searchPlaceholder": "名前や電話番号で検索…",
+    "firstClientHint": "最初のお客様が予約すると、ここに表示されます。",
+    "noClientMatch": "該当する顧客が見つかりません。",
+    "visitSingular": "回来店",
+    "visitPlural": "回来店",
+    "orderSingular": "件の注文",
+    "orderPlural": "件の注文",
+    "clientRevenue": "顧客売上",
+    "email": "メールアドレス",
+    "hisAppointments": "予約履歴",
+    "myNote": "あなただけのメモ（非公開）",
+    "save": "保存",
+    "noteSaved": "メモを保存しました。",
+    "variableHours": "曜日ごとの営業時間",
+    "variableHoursHint": "曜日ごとに独自のリズムを設定できるよ。行にカーソルを合わせると前面に表示されます。",
+    "removeRange": "この時間帯を削除",
+    "addBreak": "+ 休憩を追加",
+    "saveVariableHours": "曜日ごとの営業時間を保存する",
+    "variableHoursSaved": "保存完了！お客様にはすでに正しい予約枠が表示されているよ。",
+    "blockPeriod": "期間をブロックする",
+    "blockPeriodHint": "休暇やプライベートの予定など：この期間は誰も予約できなくなるよ。",
+    "from": "開始日",
+    "to": "終了日",
+    "block": "ブロックする",
+    "periodBlocked": "期間をブロックしました。",
+    "fromTo": "{start} 〜 {end}",
+    "unblock": "解除する",
+    "googleAgenda": "Googleカレンダーで見る",
+    "googleAgendaHint": "このリンクをGoogleカレンダーに一度だけ貼り付ければ（＋ →「URLから追加」）、予約が自動で表示されるよ。閲覧専用なので、リンクは自分だけで管理してね。",
+    "copy": "コピー",
+    "linkCopied": "リンクをコピーしました。"
+  },
+  "errors": {
+    "not_authenticated": "続けるにはログインが必要だよ。",
+    "save_failed": "保存できませんでした。",
+    "invalid_dates": "日付が正しくありません。",
+    "end_before_start": "終了日は開始日より後にしてね。",
+    "block_failed": "この期間をブロックできませんでした。",
+    "note_save_failed": "メモを保存できませんでした。",
+    "cancel_failed": "キャンセルできませんでした。",
+    "unknown": "エラーが発生しました。少し時間をおいて再度お試しください。"
+  }
+}

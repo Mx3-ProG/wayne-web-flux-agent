@@ -11,7 +11,7 @@ type FollowStyle = CSSProperties & {
   "--follow-glow": string;
 };
 
-export function ScrollingAcquireCta() {
+export function ScrollingAcquireCta({ acquireLabel }: { acquireLabel: string }) {
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -65,7 +65,7 @@ export function ScrollingAcquireCta() {
       <Link className={`flux-button-smooth ${styles.askFluxCta}`} href="/commencer">
         <span className={styles.askFluxFill} aria-hidden="true" />
         <span className={styles.askFluxText}>
-          Acquérir{" "}
+          {acquireLabel}{" "}
           <strong className={styles.askFluxGlitch} data-text="FLUX">FLUX</strong>
         </span>
         <ArrowRight aria-hidden="true" />

@@ -1,12 +1,23 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePage } from "@/lib/active-project";
 import type { Product, ProductCategory } from "@/lib/types";
+import { getAccountLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { defaultLocale } from "@/lib/i18n/config";
 import { ProductsManager } from "./products-manager";
 import styles from "./produits.module.css";
 
-export const metadata = { title: "Mes produits" };
+export async function generateMetadata(): Promise<Metadata> {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const locale = user ? await getAccountLocale(supabase, user.id) : defaultLocale;
+  return { title: (await getDictionary(locale, "products")).meta.title };
+}
 
 export default async function ProduitsPage() {
   const supabase = await createClient();
@@ -15,16 +26,20 @@ export default async function ProduitsPage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const page = await getActivePage(supabase, user.id);
+  const [page, locale] = await Promise.all([
+    getActivePage(supabase, user.id),
+    getAccountLocale(supabase, user.id),
+  ]);
+  const t = await getDictionary(locale, "products");
 
   if (!page) {
     return (
       <div className={styles.page}>
-        <p className={styles.eyebrow}>Ta boutique</p>
-        <h1 className={styles.title}>Mes produits</h1>
+        <p className={styles.eyebrow}>{t.page.eyebrow}</p>
+        <h1 className={styles.title}>{t.page.title}</h1>
         <div className={styles.empty}>
-          Crée d&apos;abord ta <Link href="/ma-page">vitrine</Link> pour gérer tes
-          produits.
+          {t.page.emptyStart} <Link href="/ma-page">{t.page.emptyLink}</Link>{" "}
+          {t.page.emptyEnd}
         </div>
       </div>
     );
@@ -75,18 +90,12 @@ export default async function ProduitsPage() {
 
   return (
     <div className={styles.page}>
-      <p className={styles.eyebrow}>Ta boutique</p>
-      <h1 className={styles.title}>Mes produits</h1>
-      <p className={styles.subtitle}>
-        Ton catalogue e-commerce : crée tes produits, suis ton stock (une commande
-        acceptée = −1) et vois ce que chacun te rapporte. Ils s&apos;affichent dans
-        « Mes prestations » sur ta vitrine.
-      </p>
+      <p className={styles.eyebrow}>{t.page.eyebrow}</p>
+      <h1 className={styles.title}>{t.page.title}</h1>
+      <p className={styles.subtitle}>{t.page.subtitle}</p>
 
       {products.length === 0 && categories.length === 0 && (
-        <p className={styles.hint}>
-          Commence par ajouter une catégorie, puis des produits dedans.
-        </p>
+        <p className={styles.hint}>{t.page.startHint}</p>
       )}
 
       <ProductsManager
@@ -95,6 +104,7 @@ export default async function ProduitsPage() {
         sales={sales}
         userId={user.id}
         firstCategoryFree={(accountCategories ?? 0) === 0}
+        t={t}
       />
     </div>
   );

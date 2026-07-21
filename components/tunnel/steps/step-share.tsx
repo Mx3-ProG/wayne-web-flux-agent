@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Copy, Check, MoreVertical, Share2, Smartphone } from "lucide-react";
 import { Question } from "@/components/tunnel/question";
 import styles from "@/app/commencer/tunnel.module.css";
+import type { TunnelDict } from "@/lib/i18n/get-dictionary";
 
 type InstallPromptEvent = Event & {
   prompt: () => Promise<void>;
@@ -15,10 +16,12 @@ type InstallPromptEvent = Event & {
 // ici : elle ne méritait pas un écran à elle seule, mais elle a du sens au
 // moment où l'on parle de garder son lien à portée de main.
 export function StepShare({
+  dict,
   pageUrl,
   gain,
   onShared,
 }: {
+  dict: TunnelDict["share"];
   pageUrl: string | null;
   gain: string;
   onShared: () => void;
@@ -51,9 +54,9 @@ export function StepShare({
 
   return (
     <Question
-      kicker="Étape 8 · Ton lien"
-      title={<>Fais-le <em>circuler.</em></>}
-      subtitle="Bio Instagram, statut WhatsApp, fiche Google, signature d'email. C'est l'étape que tout le monde saute — et celle qui remplit un agenda."
+      kicker={dict.kicker}
+      title={<>{dict.titleStart} <em>{dict.titleEm}</em></>}
+      subtitle={dict.subtitle}
       gain={gain}
     >
       {pageUrl && (
@@ -62,18 +65,18 @@ export function StepShare({
             <code>{pageUrl}</code>
             <button type="button" onClick={copy} className={styles.copyBtn}>
               {copied ? <Check aria-hidden="true" /> : <Copy aria-hidden="true" />}
-              {copied ? "Copié" : "Copier"}
+              {copied ? dict.copied : dict.copy}
             </button>
           </div>
           <div className={styles.shareRow}>
             <a
               className={styles.shareAction}
-              href={`https://wa.me/?text=${encodeURIComponent(`Réserve en ligne : ${pageUrl}`)}`}
+              href={`https://wa.me/?text=${encodeURIComponent(dict.whatsappText.replace("{url}", pageUrl))}`}
               target="_blank"
               rel="noreferrer"
               onClick={onShared}
             >
-              Partager sur WhatsApp
+              {dict.whatsappShare}
             </a>
           </div>
         </>
@@ -82,27 +85,27 @@ export function StepShare({
       <div className={styles.installGuides}>
         <article>
           <strong>
-            <Smartphone aria-hidden="true" /> Sur iPhone
+            <Smartphone aria-hidden="true" /> {dict.iosTitle}
           </strong>
           <span>
-            <Share2 aria-hidden="true" /> Dans Safari, touche « Partager »
+            <Share2 aria-hidden="true" /> {dict.iosStep1}
           </span>
-          <span>Choisis « Sur l&apos;écran d&apos;accueil »</span>
+          <span>{dict.iosStep2}</span>
         </article>
         <article>
           <strong>
-            <Smartphone aria-hidden="true" /> Sur Android
+            <Smartphone aria-hidden="true" /> {dict.androidTitle}
           </strong>
           <span>
-            <MoreVertical aria-hidden="true" /> Ouvre le menu Chrome
+            <MoreVertical aria-hidden="true" /> {dict.androidStep1}
           </span>
-          <span>Choisis « Installer l&apos;application »</span>
+          <span>{dict.androidStep2}</span>
         </article>
       </div>
 
       {installPrompt && (
         <button className={`flux-button-smooth ${styles.installNow}`} type="button" onClick={install}>
-          Installer FLUX maintenant
+          {dict.installNow}
         </button>
       )}
     </Question>

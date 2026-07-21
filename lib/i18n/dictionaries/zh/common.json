@@ -1,0 +1,70 @@
+{
+ "brandHomeAria": "Wayne Web Flux 首页",
+ "nav": {
+  "aria": "主导航",
+  "solution": "解决方案",
+  "tools": "工具",
+  "pricing": "价格",
+  "story": "我们的故事",
+  "reviews": "用户评价",
+  "faq": "常见问题",
+  "contact": "联系我们",
+  "home": "首页",
+  "login": "登录",
+  "tryFree": "免费试用"
+ },
+ "languageSwitcher": {
+  "aria": "切换语言",
+  "label": "语言"
+ },
+ "footer": {
+  "tagline": "真正为你的生意工作的数字化门面。",
+  "cta": "免费试用 FLUX",
+  "product": "产品",
+  "resources": "资源",
+  "helpCenter": "帮助中心",
+  "contactUs": "联系我们",
+  "legal": "法律信息",
+  "legalNotice": "法律声明",
+  "terms": "通用条款",
+  "privacy": "隐私政策",
+  "safety": "基础设施由 KarlMada 保护 · 对成人内容、毒品、武器、欺诈及非法活动零容忍。",
+  "rights": "© 2026 Wayne Web。保留所有权利。",
+  "status": "服务运行正常",
+  "linkedinAria": "Wayne Web 的 LinkedIn",
+  "instagramAria": "Wayne Web 的 Instagram"
+ },
+ "cookieConsent": {
+  "kicker": "你的选择，很简单",
+  "title": "让服务不断进步的 Cookie。",
+  "description": "我们使用可选 Cookie 来了解对你有用的内容、改进 Flux 并提升其知名度。控制权始终在你手中。",
+  "categories": {
+   "necessary": {
+    "title": "必要",
+    "description": "登录、安全与服务运行。"
+   },
+   "analytics": {
+    "title": "受众统计",
+    "description": "了解使用情况并提升服务质量。"
+   },
+   "personalization": {
+    "title": "个性化",
+    "description": "根据你的偏好调整体验和内容。"
+   },
+   "marketing": {
+    "title": "品牌推广",
+    "description": "衡量我们的营销活动并推广我们的服务。"
+   }
+  },
+  "preferencesAria": "Cookie 偏好设置",
+  "toggleAria": "{title}：{state}",
+  "enabled": "已启用",
+  "disabled": "已停用",
+  "legalPrefix": "必要 Cookie 将保持启用。请查看我们的",
+  "privacyPolicy": "隐私政策",
+  "acceptAll": "全部接受",
+  "saveChoices": "保存我的选择",
+  "customize": "自定义",
+  "declineOptional": "继续但不接受"
+ }
+}

@@ -6,14 +6,22 @@ import { trialDaysLeft } from "@/lib/plans";
 import { GOOGLE_FONTS_URL } from "@/lib/verticals";
 import { healMissingProfile } from "@/lib/profile-heal";
 import type { Profile, TunnelDraft } from "@/lib/types";
-import { AccountGate } from "@/components/tunnel/account-gate";
+import { getRequestLocale } from "@/lib/i18n/locale.server";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { languageAlternates } from "@/lib/i18n/seo";
+import { getLocalizedVerticals, getCatalogWording, getLocalizedFonts } from "@/lib/verticals-i18n";
 import { Tunnel } from "./tunnel";
+import { PreAccountStart } from "@/components/tunnel/pre-account-start";
 
-export const metadata: Metadata = {
-  title: "Créons ton espace",
-  description:
-    "Configure gratuitement ton espace Wayne Web Flux et ta présence en ligne en quelques étapes.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  return {
+    title: "Créons ton espace",
+    description:
+      "Configure gratuitement ton espace Wayne Web Flux et ta présence en ligne en quelques étapes.",
+    alternates: languageAlternates(locale, "/commencer"),
+  };
+}
 
 // Le tunnel a deux états, et c'est cette page qui tranche (proxy.ts ne redirige
 // plus /commencer) :
@@ -21,19 +29,43 @@ export const metadata: Metadata = {
 //   - connecté  → suite du Parcours, reprise là où il s'est arrêté.
 export default async function CommencerPage() {
   const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const locale = await getRequestLocale();
+  const [
+    {
+      data: { user },
+    },
+    dict,
+    journeyDict,
+    verticals,
+    catalogWordingService,
+    catalogWordingProduct,
+    catalogWordingHybrid,
+    fonts,
+  ] = await Promise.all([
+    supabase.auth.getUser(),
+    getDictionary(locale, "tunnel"),
+    getDictionary(locale, "journey"),
+    getLocalizedVerticals(locale),
+    getCatalogWording("service", locale),
+    getCatalogWording("product", locale),
+    getCatalogWording("hybrid", locale),
+    getLocalizedFonts(locale),
+  ]);
+  const catalogWordingByKind = {
+    service: catalogWordingService,
+    product: catalogWordingProduct,
+    hybrid: catalogWordingHybrid,
+  };
 
-  if (!user) return <AccountGate />;
+  if (!user) return <PreAccountStart dict={dict} locale={locale} />;
 
   const [profileResult, journey] = await Promise.all([
     supabase
       .from("profiles")
-      .select("name, onboarding_step, onboarding_draft, trial_ends_at")
+      .select("name, onboarding_step, onboarding_draft, trial_ends_at, locale")
       .eq("user_id", user.id)
       .single<
-        Pick<Profile, "name" | "onboarding_step" | "onboarding_draft" | "trial_ends_at">
+        Pick<Profile, "name" | "onboarding_step" | "onboarding_draft" | "trial_ends_at" | "locale">
       >(),
     loadJourneySignals(supabase, user.id),
   ]);
@@ -45,10 +77,10 @@ export default async function CommencerPage() {
   if (!profile && (await healMissingProfile(supabase, user))) {
     ({ data: profile } = await supabase
       .from("profiles")
-      .select("name, onboarding_step, onboarding_draft, trial_ends_at")
+      .select("name, onboarding_step, onboarding_draft, trial_ends_at, locale")
       .eq("user_id", user.id)
       .single<
-        Pick<Profile, "name" | "onboarding_step" | "onboarding_draft" | "trial_ends_at">
+        Pick<Profile, "name" | "onboarding_step" | "onboarding_draft" | "trial_ends_at" | "locale">
       >());
   }
 
@@ -63,6 +95,11 @@ export default async function CommencerPage() {
           choix ne se verrait pas dans l'aperçu. */}
       <link rel="stylesheet" href={GOOGLE_FONTS_URL} />
       <Tunnel
+        dict={dict}
+        journeyDict={journeyDict}
+        verticals={verticals}
+        catalogWordingByKind={catalogWordingByKind}
+        fonts={fonts}
         firstName={profile?.name ?? ""}
         email={user.email ?? ""}
         userId={user.id}

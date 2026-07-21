@@ -1,0 +1,179 @@
+{
+ "meta": {
+  "title": "My products",
+  "tunnelTitle": "Create my products"
+ },
+ "page": {
+  "eyebrow": "Your shop",
+  "title": "My products",
+  "subtitle": "Your e-commerce catalog: create your products, track your stock (one accepted order = −1) and see what each one earns you. They show up under \"My services\" on your site.",
+  "startHint": "Start by adding a category, then products inside it.",
+  "emptyStart": "First create your",
+  "emptyLink": "website",
+  "emptyEnd": "to manage your products."
+ },
+ "card": {
+  "namePlaceholder": "Product name",
+  "displayed": "Shown",
+  "hidden": "Hidden",
+  "reservation": "Booking",
+  "product": "Product",
+  "deleteProduct": "Delete product",
+  "price": "Price (€)",
+  "duration": "Duration (min)",
+  "description": "Description",
+  "descriptionPlaceholder": "Short description",
+  "changePhoto": "Change photo",
+  "addPhoto": "Add a photo",
+  "removePhoto": "remove photo",
+  "saved": "Saved",
+  "saving": "Saving…",
+  "confirm": "Confirm my choices",
+  "confirmHintReservation": "Name · price · duration · description",
+  "confirmHintProduct": "Name · price · description",
+  "inStock": "in stock",
+  "removeOne": "Remove one",
+  "addOne": "Add one",
+  "restockPlaceholder": "+ qty",
+  "restock": "Restock",
+  "setExact": "Set",
+  "stopTracking": "Stop tracking stock",
+  "trackStock": "Track stock",
+  "soldSingular": "sold",
+  "soldPlural": "sold",
+  "noSales": "No sales yet"
+ },
+ "category": {
+  "save": "Save",
+  "deleteCategory": "Delete category",
+  "otherProducts": "Other products",
+  "defaultName": "New category",
+  "addProduct": "Add a product · {cost} cr.",
+  "addReservation": "Add a booking · {cost} cr."
+ },
+ "manager": {
+  "addCategory": "Add a category ·",
+  "free": "free",
+  "productNoCategory": "Product with no category · {cost} cr.",
+  "reservationNoCategory": "Booking with no category · {cost} cr.",
+  "defaultProductName": "New product",
+  "defaultReservationName": "New booking",
+  "reservationsFamilyName": "Bookings"
+ },
+ "errors": {
+  "not_authenticated": "You need to be logged in to continue.",
+  "no_active_page": "First create your website.",
+  "creation_failed": "Creation failed.",
+  "category_not_found": "Category not found.",
+  "category_name_required": "Give your category a name.",
+  "at_least_one_product": "Add at least one product.",
+  "category_creation_failed": "Couldn't create the category.",
+  "products_creation_failed": "Couldn't create the products.",
+  "product_not_found": "Product not found.",
+  "save_failed": "Couldn't save.",
+  "delete_failed": "Couldn't delete.",
+  "content_blocked": "Hate speech or explicit content is forbidden and penalized on FLUX; please respect your environment and everyone else's. After 3 violations of our terms of use, the account gets deleted.",
+  "insufficientCredits": "This action costs {cost} credit and your balance is too low. Top up your credits from the Credits page.",
+  "insufficientCreditsPlural": "This action costs {cost} credits and your balance is too low. Top up your credits from the Credits page.",
+  "subscriptionRequired": "Your FLUX trial is over and your balance is empty. Pick a plan to continue.",
+  "unknown": "Something went wrong. Try again in a moment."
+ },
+ "tunnel": {
+  "myProducts": "My products",
+  "step": "Step {current} of 8",
+  "intro": {
+   "kicker": "FLUX product creation",
+   "title": "Turn your know-how into products",
+   "titleEm": "ready to sell.",
+   "text": "One category, one or more products, and Flux organizes everything on your site.",
+   "cta": "Create my products"
+  },
+  "category": {
+   "kicker": "Your category",
+   "titleStart": "How do you want",
+   "titleEm": "to organize them?",
+   "subtitle": "Name your category, then add all the products you want to create now.",
+   "nameLabel": "Category name",
+   "namePlaceholder": "E.g.: Facial care",
+   "productLabel": "Product {index}",
+   "productPlaceholder": "E.g.: Glow treatment",
+   "removeProduct": "Remove product {index}",
+   "addAnother": "Add another product"
+  },
+  "price": {
+   "title": "What's their price?",
+   "kicker": "The right price",
+   "subtitle": "Set a price for each product. You can always change it later.",
+   "defaultName": "Product {index}",
+   "priceLabel": "Price in €",
+   "placeholder": "E.g.: 20"
+  },
+  "description": {
+   "title": "What makes them desirable?",
+   "kicker": "The description",
+   "subtitle": "One simple sentence is enough to help the customer choose.",
+   "placeholder": "What the customer gets, feels or gains…"
+  },
+  "photo": {
+   "kicker": "The photo",
+   "titleStart": "Give them a visual",
+   "titleEm": "presence.",
+   "subtitle": "One photo per product. This step is optional.",
+   "change": "Change photo",
+   "add": "Add a photo"
+  },
+  "stock": {
+   "kicker": "The stock",
+   "title": "Want to track quantities?",
+   "subtitle": "Turn on tracking, then enter the number of units available today.",
+   "trackedHint": "Flux will let you know when stock hits zero.",
+   "untrackedHint": "No quantity limit will be shown.",
+   "tracked": "Stock tracked",
+   "track": "Track stock",
+   "quantityLabel": "Available quantity",
+   "unitSingular": "unit",
+   "unitPlural": "units"
+  },
+  "visibility": {
+   "kicker": "Going live",
+   "title": "Ready for them to be visible?",
+   "subtitle": "A hidden product stays saved without showing up on your site.",
+   "yes": "Publish",
+   "no": "Keep as draft",
+   "toggleAria": "Change the setting for {name}"
+  },
+  "confirm": {
+   "kicker": "Confirmation",
+   "titleStart": "Everything's ready for your",
+   "titleEm": "shop.",
+   "subtitle": "Check your choices: after creation, Flux moves on to your hours (included in the price).",
+   "category": "Category",
+   "products": "Products",
+   "productSingular": "product",
+   "productPlural": "products",
+   "online": "Live",
+   "draft": "Draft",
+   "inStock": "in stock",
+   "totalCost": "Total cost (products + schedule)",
+   "costValue": "{cost} credits · balance: {balance} cr.",
+   "missingSingular": "You're missing {count} credit.",
+   "missingPlural": "You're missing {count} credits.",
+   "recharge": "Top up your credits",
+   "edit": "Edit",
+   "creating": "Creating…",
+   "create": "Confirm and set my hours ({cost} cr.)"
+  },
+  "credits": {
+   "trialTitle": "Trial over and balance empty",
+   "insufficientTitle": "Not enough credits",
+   "trial": "Your trial has ended and you have no credits left. A FLUX plan tops up your balance every month and reopens AI generations — nothing is lost.",
+   "insufficient": "Creating your products costs {cost} credits. Top up your credits to finish — nothing is lost.",
+   "later": "Later",
+   "choosePlan": "Choose my FLUX plan",
+   "rechargeCredits": "Top up my credits"
+  },
+  "successToast": "Your products are ready. Last step: your hours.",
+  "back": "Back",
+  "continue": "Continue"
+ }
+}

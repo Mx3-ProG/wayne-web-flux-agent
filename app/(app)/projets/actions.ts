@@ -15,13 +15,13 @@ export async function setCustomDomain(
   domain: string
 ): Promise<{ error?: string }> {
   if (!CUSTOM_DOMAIN_ENABLED) {
-    return { error: "Fonction bientôt disponible." };
+    return { error: "feature_coming_soon" };
   }
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "not_authenticated" };
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -29,12 +29,12 @@ export async function setCustomDomain(
     .eq("user_id", user.id)
     .single();
   if (!canUseCustomDomain((profile?.plan as Plan) ?? "basique")) {
-    return { error: "Réservé aux formules Pro et supérieures." };
+    return { error: "plan_restricted" };
   }
 
   const value = domain.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
   if (value && !DOMAIN_RE.test(value)) {
-    return { error: "Nom de domaine invalide (ex. ma-boutique.fr)." };
+    return { error: "invalid_domain" };
   }
 
   // RLS "own page" : seule une page du user est modifiable.
@@ -43,7 +43,7 @@ export async function setCustomDomain(
     .update({ custom_domain: value || null })
     .eq("id", pageId)
     .eq("user_id", user.id);
-  if (error) return { error: "Enregistrement impossible (domaine déjà pris ?)." };
+  if (error) return { error: "save_failed" };
 
   revalidatePath("/projets");
   return {};
@@ -55,7 +55,7 @@ export async function setActiveProject(pageId: string): Promise<{ error?: string
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "not_authenticated" };
 
   const { data: page } = await supabase
     .from("pages")
@@ -63,13 +63,13 @@ export async function setActiveProject(pageId: string): Promise<{ error?: string
     .eq("id", pageId)
     .eq("user_id", user.id)
     .maybeSingle();
-  if (!page) return { error: "Projet introuvable." };
+  if (!page) return { error: "project_not_found" };
 
   const { error } = await supabase
     .from("profiles")
     .update({ active_page_id: pageId })
     .eq("user_id", user.id);
-  if (error) return { error: "Changement impossible." };
+  if (error) return { error: "change_failed" };
 
   // Tout le dashboard dépend du projet actif → on revalide largement.
   revalidatePath("/", "layout");

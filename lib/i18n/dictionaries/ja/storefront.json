@@ -1,0 +1,186 @@
+{
+  "verifiedBadge": {
+    "label": "認証済みショップ",
+    "title": "このショップページはFLUXによって確認されています。"
+  },
+  "header": {
+    "navAria": "サイトナビゲーション",
+    "lightMode": "ライトモードに切り替え",
+    "darkMode": "ダークモードに切り替え",
+    "openMenu": "メニューを開く",
+    "closeMenu": "メニューを閉じる",
+    "defaultBusinessName": "私のお店"
+  },
+  "hero": {
+    "viewOffers": "オファーを見る",
+    "book": "予約する",
+    "discover": "見てみる",
+    "viewServices": "サービスを見る",
+    "discoverShop": "ショップを見る",
+    "onlineBooking": "オンライン予約",
+    "onlineOrder": "オンライン注文"
+  },
+  "shell": {
+    "scrollTop": "ページの一番上へ戻る",
+    "whatsapp": "WhatsAppでメッセージ",
+    "call": "電話する",
+    "viewCart": "カートを見る",
+    "stayInTouch": "つながっておこう",
+    "legalNotice": "法的表示",
+    "terms": "利用規約",
+    "termsFull": "販売条件",
+    "privacy": "プライバシー",
+    "privacyFull": "プライバシーポリシー",
+    "close": "閉じる",
+    "poweredBy": "制作"
+  },
+  "subpage": {
+    "home": "ホーム",
+    "draftNotice": "このページは現在作成中です。"
+  },
+  "booking": {
+    "loadAvailabilityError": "空き状況を読み込めませんでした。",
+    "loadSlotsError": "予約枠を読み込めませんでした。",
+    "slotTakenError": "この枠はたった今埋まってしまいました。別の枠を選んでください。",
+    "genericError": "予約を登録できませんでした。もう一度お試しください。",
+    "close": "閉じる",
+    "chooseDay": "日付を選んでください",
+    "loading": "少々お待ちください…",
+    "closed": "休業",
+    "full": "満席",
+    "slotsCount": "{count} 件の空き枠",
+    "changeDay": "← 日付を変更",
+    "changeTime": "← 時間を変更",
+    "yourDetails": "お客様情報",
+    "firstNamePlaceholder": "お名前",
+    "phonePlaceholder": "電話番号",
+    "emailPlaceholder": "メールアドレス（任意）",
+    "confirmationHint": "ご予約の確認をお送りするために使用します。",
+    "confirm": "予約を確定する",
+    "booked": "予約完了！",
+    "seeYouSoon": "またお会いしましょう。",
+    "at": ""
+  },
+  "order": {
+    "orderSent": "注文を送信しました",
+    "myOrder": "マイオーダー",
+    "close": "閉じる",
+    "itemSingular": "点",
+    "itemPlural": "点",
+    "cartEmpty": "カートは空です。",
+    "continue": "続ける",
+    "removeOne": "1つ減らす",
+    "addOne": "1つ追加",
+    "backToCart": "← カートに戻る",
+    "yourDetails": "お客様情報",
+    "firstNamePlaceholder": "お名前",
+    "phonePlaceholder": "電話番号",
+    "emailPlaceholder": "メールアドレス（任意）",
+    "addressPlaceholder": "ご住所（任意）",
+    "notePlaceholder": "ご要望があれば（任意）",
+    "contactHint": "確認とお支払い方法のご相談のため、店舗から連絡があります。",
+    "sendOrder": "注文を送信する",
+    "sending": "少々お待ちください…",
+    "thanks": "ありがとうございます、承りました！",
+    "transmitted": "ご注文を送信しました。",
+    "willContact": "店舗よりまもなくご連絡いたします。",
+    "submitError": "注文を登録できませんでした。少し時間をおいて再度お試しください。"
+  },
+  "sections": {
+    "about": {
+      "eyebrow": "私のストーリー",
+      "defaultAlt": "ポートレート写真"
+    },
+    "beforeAfter": {
+      "eyebrow": "写真で見る証拠",
+      "title": "ビフォー / アフター",
+      "before": "ビフォー",
+      "after": "アフター",
+      "compareAria": "ビフォーとアフターを比較"
+    },
+    "catalog": {
+      "eyebrow": "ご提供内容",
+      "comboTitle": "私のサービス",
+      "comboSubtitle": "注文できる商品と、予約できるサービスがあります。",
+      "shopOnlyTitle": "商品",
+      "shopOnlySubtitle": "ご注文いただける商品です。",
+      "servicesOnlyTitle": "予約",
+      "servicesOnlySubtitle": "ご予約いただけるサービスです。",
+      "shopTitle": "私のショップ",
+      "shopSubtitle": "ご注文いただける商品です。",
+      "servicesTitle": "私のサービス",
+      "servicesSubtitle": "ご予約いただけるサービスです。",
+      "productsHeading": "商品",
+      "reservationsHeading": "予約",
+      "soldOut": "売り切れ",
+      "add": "追加",
+      "free": "無料",
+      "book": "予約する",
+      "emptyCatalog": "カタログは近日公開予定です。"
+    },
+    "faq": {
+      "eyebrow": "よくある質問",
+      "title": "FAQ",
+      "subtitle": "よく聞かれる質問への答えをまとめました。"
+    },
+    "gallery": {
+      "eyebrow": "写真で見る",
+      "title": "私の仕事",
+      "subtitle": "私の世界観を伝えるディテールをいくつか。",
+      "photoAlt": "写真 {index}"
+    },
+    "googleBusiness": {
+      "eyebrow": "Googleクチコミ",
+      "defaultTitle": "あなたのクチコミが力になります",
+      "defaultDescription": "お客様のクチコミをチェックしたり、数秒であなたの体験をシェアできます。",
+      "leaveReview": "クチコミを投稿する",
+      "viewProfile": "Googleページを見る"
+    },
+    "hours": {
+      "eyebrow": "営業時間",
+      "title": "私の営業時間",
+      "subtitle": "ぴったりのタイミングで会いに来てください。"
+    },
+    "map": {
+      "eyebrow": "アクセス",
+      "title": "お越しください",
+      "mapTitle": "地図：{query}"
+    },
+    "newsletter": {
+      "eyebrow": "つながっておこう",
+      "title": "最新情報をお届け",
+      "subtitle": "スパムなしで、お得な情報や新着情報をお届けします。",
+      "emailPlaceholder": "your@email.jp",
+      "emailAria": "メールアドレス",
+      "subscribe": "登録する",
+      "sending": "…",
+      "done": "ありがとうございます！登録completa。✨",
+      "error": "現在登録できません。後ほど再度お試しください。"
+    },
+    "offers": {
+      "eyebrow": "見逃せない",
+      "title": "私のオファー",
+      "subtitle": "今すぐチェックしたいお得な情報。",
+      "kindProduit": "商品",
+      "kindService": "サービス",
+      "kindEvenement": "イベント",
+      "orderProduct": "注文する",
+      "grabOffer": "利用する"
+    },
+    "promo": {
+      "remainingDays": "残り{days}日{hours}時間",
+      "remainingHours": "残り{hours}時間{minutes}分",
+      "countdownPrefix": "⏳ 残り{countdown}",
+      "codeCopied": "コピーしました！",
+      "codeLabel": "コード：{code}"
+    },
+    "reviews": {
+      "eyebrow": "皆様に信頼いただいています",
+      "title": "お客様からの声",
+      "subtitle": "実際にいただいた、率直な声をご紹介します。"
+    },
+    "video": {
+      "title": "動画"
+    }
+  }
+}

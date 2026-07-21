@@ -1,0 +1,186 @@
+{
+  "verifiedBadge": {
+    "label": "متجر موثّق",
+    "title": "تم التحقق من هذه النسخة من المتجر بواسطة FLUX."
+  },
+  "header": {
+    "navAria": "التنقل في الموقع",
+    "lightMode": "التبديل إلى الوضع الفاتح",
+    "darkMode": "التبديل إلى الوضع الداكن",
+    "openMenu": "فتح القائمة",
+    "closeMenu": "إغلاق القائمة",
+    "defaultBusinessName": "متجري"
+  },
+  "hero": {
+    "viewOffers": "عرض العروض",
+    "book": "الحجز",
+    "discover": "اكتشف",
+    "viewServices": "عرض الخدمات",
+    "discoverShop": "اكتشف المتجر",
+    "onlineBooking": "الحجز عبر الإنترنت",
+    "onlineOrder": "الطلب عبر الإنترنت"
+  },
+  "shell": {
+    "scrollTop": "العودة إلى أعلى الصفحة",
+    "whatsapp": "راسلنا عبر WhatsApp",
+    "call": "اتصال",
+    "viewCart": "عرض السلة",
+    "stayInTouch": "لنبقَ على تواصل",
+    "legalNotice": "الإشعار القانوني",
+    "terms": "الشروط",
+    "termsFull": "الشروط العامة للبيع",
+    "privacy": "الخصوصية",
+    "privacyFull": "سياسة الخصوصية",
+    "close": "إغلاق",
+    "poweredBy": "أُنشئ بواسطة"
+  },
+  "subpage": {
+    "home": "الرئيسية",
+    "draftNotice": "هذه الصفحة قيد التحرير حاليًا."
+  },
+  "booking": {
+    "loadAvailabilityError": "تعذّر تحميل المواعيد المتاحة.",
+    "loadSlotsError": "تعذّر تحميل الفترات الزمنية.",
+    "slotTakenError": "تم للتو حجز هذه الفترة. اختر فترة أخرى.",
+    "genericError": "تعذّر تسجيل الحجز. حاول مجددًا.",
+    "close": "إغلاق",
+    "chooseDay": "اختر يومًا",
+    "loading": "لحظة من فضلك…",
+    "closed": "مغلق",
+    "full": "مكتمل",
+    "slotsCount": "{count} فترات متاحة",
+    "changeDay": "← تغيير اليوم",
+    "changeTime": "← تغيير الوقت",
+    "yourDetails": "بياناتك",
+    "firstNamePlaceholder": "اسمك الأول",
+    "phonePlaceholder": "رقم هاتفك",
+    "emailPlaceholder": "بريدك الإلكتروني (اختياري)",
+    "confirmationHint": "لتستلم تأكيد موعدك.",
+    "confirm": "تأكيد الموعد",
+    "booked": "تم الحجز!",
+    "seeYouSoon": "إلى اللقاء قريبًا.",
+    "at": "الساعة"
+  },
+  "order": {
+    "orderSent": "تم إرسال الطلب",
+    "myOrder": "طلبي",
+    "close": "إغلاق",
+    "itemSingular": "منتج",
+    "itemPlural": "منتجات",
+    "cartEmpty": "سلتك فارغة.",
+    "continue": "متابعة",
+    "removeOne": "إزالة واحد",
+    "addOne": "إضافة واحد",
+    "backToCart": "← العودة إلى السلة",
+    "yourDetails": "بياناتك",
+    "firstNamePlaceholder": "اسمك الأول",
+    "phonePlaceholder": "رقم هاتفك",
+    "emailPlaceholder": "بريدك الإلكتروني (اختياري)",
+    "addressPlaceholder": "عنوانك (اختياري)",
+    "notePlaceholder": "أي ملاحظة؟ (اختياري)",
+    "contactHint": "سيتواصل معك التاجر لتأكيد الطلب والاتفاق على الدفع.",
+    "sendOrder": "إرسال الطلب",
+    "sending": "لحظة من فضلك…",
+    "thanks": "شكرًا، تم التسجيل!",
+    "transmitted": "تم إرسال طلبك بنجاح.",
+    "willContact": "سيتواصل معك التاجر في أقرب وقت.",
+    "submitError": "تعذّر تسجيل الطلب. حاول مجددًا خلال لحظات."
+  },
+  "sections": {
+    "about": {
+      "eyebrow": "قصتي",
+      "defaultAlt": "صورة شخصية"
+    },
+    "beforeAfter": {
+      "eyebrow": "الدليل بالصور",
+      "title": "قبل / بعد",
+      "before": "قبل",
+      "after": "بعد",
+      "compareAria": "مقارنة قبل وبعد"
+    },
+    "catalog": {
+      "eyebrow": "ما أقدّمه",
+      "comboTitle": "خدماتي",
+      "comboSubtitle": "منتجات للطلب ومواعيد للحجز.",
+      "shopOnlyTitle": "منتجات",
+      "shopOnlySubtitle": "منتجات للطلب.",
+      "servicesOnlyTitle": "حجوزات",
+      "servicesOnlySubtitle": "مواعيد للحجز.",
+      "shopTitle": "متجري",
+      "shopSubtitle": "منتجات للطلب.",
+      "servicesTitle": "خدماتي",
+      "servicesSubtitle": "مواعيد للحجز.",
+      "productsHeading": "منتجات",
+      "reservationsHeading": "حجوزات",
+      "soldOut": "نفدت الكمية",
+      "add": "إضافة",
+      "free": "مجانًا",
+      "book": "حجز",
+      "emptyCatalog": "القائمة قادمة قريبًا."
+    },
+    "faq": {
+      "eyebrow": "الأسئلة الشائعة",
+      "title": "الأسئلة الشائعة",
+      "subtitle": "إجابات عن الأسئلة التي تُطرح عليّ أكثر."
+    },
+    "gallery": {
+      "eyebrow": "بالصور",
+      "title": "أعمالي",
+      "subtitle": "بعض التفاصيل التي تحكي عالمي.",
+      "photoAlt": "صورة {index}"
+    },
+    "googleBusiness": {
+      "eyebrow": "آراء Google",
+      "defaultTitle": "رأيك يهمنا",
+      "defaultDescription": "اطّلع على آراء عملائنا أو شارك تجربتك في ثوانٍ معدودة.",
+      "leaveReview": "ترك رأي",
+      "viewProfile": "عرض صفحة Google"
+    },
+    "hours": {
+      "eyebrow": "متى تزورني",
+      "title": "ساعات العمل",
+      "subtitle": "تعال في الوقت المناسب."
+    },
+    "map": {
+      "eyebrow": "أين تجدني",
+      "title": "تعال لزيارتي",
+      "mapTitle": "الخريطة: {query}"
+    },
+    "newsletter": {
+      "eyebrow": "لنبقَ على تواصل",
+      "title": "ابقَ على اطلاع",
+      "subtitle": "استلم عروضي وجديدي، دون أي إزعاج.",
+      "emailPlaceholder": "your@email.com",
+      "emailAria": "بريدك الإلكتروني",
+      "subscribe": "اشتراك",
+      "sending": "…",
+      "done": "شكرًا! تم التسجيل. ✨",
+      "error": "تعذّر تسجيل اشتراكك الآن. حاول لاحقًا."
+    },
+    "offers": {
+      "eyebrow": "لا تفوّتها",
+      "title": "عروضي",
+      "subtitle": "عروض متاحة الآن لاغتنامها.",
+      "kindProduit": "منتج",
+      "kindService": "خدمة",
+      "kindEvenement": "فعالية",
+      "orderProduct": "طلب",
+      "grabOffer": "أستفيد منها"
+    },
+    "promo": {
+      "remainingDays": "{days} يوم {hours} ساعة",
+      "remainingHours": "{hours} ساعة {minutes} دقيقة",
+      "countdownPrefix": "⏳ باقي {countdown}",
+      "codeCopied": "تم النسخ!",
+      "codeLabel": "الرمز: {code}"
+    },
+    "reviews": {
+      "eyebrow": "يثقون بي",
+      "title": "ماذا يقولون عني",
+      "subtitle": "كلمات صادقة من عملائي."
+    },
+    "video": {
+      "title": "فيديو"
+    }
+  }
+}

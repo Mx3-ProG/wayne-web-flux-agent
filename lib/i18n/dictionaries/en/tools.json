@@ -1,0 +1,55 @@
+{
+  "meta": {
+    "title": "My Vault"
+  },
+  "toolPage": {
+    "howItWorks": "How it works",
+    "voicePrefix": "I write like you at",
+    "improveVoice": "Improve my voice",
+    "myVoice": "My voice"
+  },
+  "runner": {
+    "choosePlaceholder": "— choose —",
+    "costLabel": "Cost:",
+    "costCredits": "{cost} credits",
+    "balanceLabel": "Balance: {balance}",
+    "running": "The AI is writing for you…",
+    "generate": "Generate my result ({cost} cr.)",
+    "missingCredits": "You're out of credits.",
+    "discoverPlans": "Discover FLUX plans",
+    "waiting": "Just a few seconds, the AI is thinking for you…",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "viewInVault": "View in my vault →",
+    "errors": {
+      "ai_window_expired": "Your AI tools access window has ended. Choose a plan to reactivate it.",
+      "subscription_required": "Your FLUX trial has ended. Choose a plan to keep generating.",
+      "insufficient_credits": "Not enough credits left. Upgrade to a FLUX plan to recharge.",
+      "generation_failed": "Generation failed.",
+      "generation_interrupted": "Generation was interrupted."
+    }
+  },
+  "vault": {
+    "overline": "Personal vault room",
+    "titleStart": "Your vault",
+    "titleEm": "of gold",
+    "emptySubtitle": "Every precious creation will find its place here.",
+    "treasureSingular": "treasure crafted by FLUX, kept forever.",
+    "treasurePlural": "treasures crafted by FLUX, kept forever.",
+    "creationSingular": "creation safely stored",
+    "creationPlural": "creations safely stored",
+    "emptyKicker": "Your first treasure awaits",
+    "emptyTitle": "Your craft deserves its showcase.",
+    "emptyText": "Create your first content with FLUX. It'll be stored here, ready to reread, copy, and share.",
+    "createFirst": "Create my first content",
+    "collectionLabel": "Your collection",
+    "collectionTitle": "Unique pieces, ready to shine.",
+    "sortedHint": "Sorted from most recent to oldest",
+    "creationLabel": "FLUX Creation",
+    "creditsSpent": "{cost} credits",
+    "close": "Close",
+    "discover": "Discover",
+    "copyCreation": "Copy this creation",
+    "copiedToast": "Creation copied!"
+  }
+}

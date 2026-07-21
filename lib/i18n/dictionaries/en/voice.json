@@ -1,0 +1,285 @@
+{
+ "meta": {
+  "title": "My voice",
+  "tunnelTitle": "Create my voice"
+ },
+ "form": {
+  "summary": {
+   "tone": "Your energy",
+   "addressForm": "Your way of addressing customers",
+   "emojis": "Your use of emojis",
+   "specialty": "Your signature",
+   "oftenTold": "What your customers say about you",
+   "story": "Your story",
+   "vals": "Your values",
+   "fallback": "To be defined",
+   "addressTu": "You're casual with your customers",
+   "addressVous": "You're formal with your customers",
+   "emojisMuch": "Often, they're part of your style",
+   "emojisSome": "In moderation",
+   "emojisNone": "Communication without emojis"
+  },
+  "reviewKicker": "Your voice is ready",
+  "defaultKicker": "Your editorial identity",
+  "reviewTitle": "Here's how Flux will speak for you.",
+  "defaultTitle": "Flux knows your voice.",
+  "reviewText": "Check the summary. If it all sounds like you, all that's left is to save it.",
+  "defaultText": "Find here the choices that guide all your upcoming content.",
+  "completionAria": "Profile {percent}% complete",
+  "completionLabel": "of your voice understood by Flux",
+  "profileLabel": "Your profile",
+  "profileTitle": "What Flux has learned",
+  "redo": "Redo the questionnaire",
+  "allYou": "Does it all sound like you?",
+  "updateCost": "Updating your context costs {cost} cr.",
+  "redoAnytime": "You can redo this questionnaire anytime.",
+  "saving": "Saving…",
+  "saveVoiceUpdate": "Save my voice ({cost} cr.)",
+  "saveVoice": "Save my voice",
+  "updateVoice": "Update my voice",
+  "insufficientCredits": "Editing your context costs {cost} credits and your balance is insufficient. Top up your credits from the Credits page.",
+  "subscriptionRequired": "Your FLUX trial has ended and your balance is empty. Choose a plan to continue.",
+  "saveSuccess": "Your voice is saved. Flux can now speak like you."
+ },
+ "tunnel": {
+  "exit": "Exit",
+  "question": "Question {current} of {total}",
+  "introKicker": "Your brand intelligence",
+  "introTitleStart": "FLUX, developer intelligence at the service of",
+  "introTitleEm": "Driven businesses.",
+  "introText": "No text to write. Just pick what sounds like you, Flux crafts your voice and prepares consistent communication.",
+  "createVoice": "Create my voice",
+  "introHint": "7 choices · less than 2 minutes · editable anytime",
+  "back": "Back",
+  "seeSummary": "See my summary",
+  "continue": "Continue"
+ },
+ "errors": {
+  "not_authenticated": "You need to be logged in to continue.",
+  "no_active_page": "First create your storefront.",
+  "save_failed": "Unable to save.",
+  "content_blocked": "Hate speech or explicit content is forbidden and penalized on FLUX; please respect your environment and that of others. After 3 violations of our terms of use, the account is deleted.",
+  "unknown": "An error occurred. Try again in a moment."
+ },
+ "steps": {
+  "tone": {
+   "kicker": "Your personality",
+   "title": "What energy should people feel in your words?",
+   "subtitle": "Choose how Flux will speak to your customers.",
+   "options": {
+    "complice_chaleureux": {
+     "title": "Warm & close",
+     "text": "Personal and human, like with a loyal customer.",
+     "value": "Warm and close"
+    },
+    "pro_expert": {
+     "title": "Pro & expert",
+     "text": "Clear, reassuring and always credible.",
+     "value": "Professional and expert"
+    },
+    "doux_pose": {
+     "title": "Calm & measured",
+     "text": "Calm, attentive and without pressure.",
+     "value": "Calm and measured"
+    },
+    "solaire_petillant": {
+     "title": "Bright & sparkling",
+     "text": "Positive, lively and full of energy.",
+     "value": "Bright and sparkling"
+    },
+    "chic_raffine": {
+     "title": "Chic & refined",
+     "text": "Elegant, precise and upscale.",
+     "value": "Chic and refined"
+    },
+    "direct_efficace": {
+     "title": "Direct & efficient",
+     "text": "No fluff, a clear promise.",
+     "value": "Direct and to the point"
+    }
+   }
+  },
+  "address_form": {
+   "kicker": "Your customer relationship",
+   "title": "Casual or formal with customers?",
+   "subtitle": "Flux will keep this rule across all your content.",
+   "options": {
+    "tu": {
+     "title": "Casual",
+     "text": "A direct, simple and familiar relationship."
+    },
+    "vous": {
+     "title": "Formal",
+     "text": "A professional and respectful relationship."
+    }
+   }
+  },
+  "emojis": {
+   "kicker": "Your style",
+   "title": "How much room for emojis?",
+   "subtitle": "Just enough to feel like you, never artificial.",
+   "options": {
+    "beaucoup": {
+     "title": "I use them often",
+     "text": "They're part of how I communicate."
+    },
+    "parfois": {
+     "title": "In moderation",
+     "text": "Only an emoji when it adds something."
+    },
+    "jamais": {
+     "title": "No emojis",
+     "text": "I prefer a clean, sober tone."
+    }
+   }
+  },
+  "specialty": {
+   "kicker": "Your signature",
+   "title": "Why do people come to you?",
+   "subtitle": "Choose the strength your customers should remember first.",
+   "options": {
+    "resultat_naturel": {
+     "title": "The natural result",
+     "text": "Honest work, nothing overdone.",
+     "value": "A natural result — only the outcome shows"
+    },
+    "precision": {
+     "title": "Precision",
+     "text": "Every detail matters, down to the finish.",
+     "value": "Precision, clean work"
+    },
+    "qualite_durable": {
+     "title": "Lasting quality",
+     "text": "A result built to hold up over time.",
+     "value": "Quality that lasts"
+    },
+    "sur_mesure": {
+     "title": "Made to measure",
+     "text": "Every customer gets a truly personal answer.",
+     "value": "Made to measure, never the same twice"
+    },
+    "juste_prix": {
+     "title": "Fair pricing",
+     "text": "Real value, clear and no bad surprises.",
+     "value": "Unbeatable value for money"
+    },
+    "reactivite": {
+     "title": "Responsiveness",
+     "text": "Moving fast while staying flawless.",
+     "value": "Speed without cutting corners"
+    }
+   }
+  },
+  "often_told": {
+   "kicker": "The proof",
+   "title": "What do your customers often say?",
+   "subtitle": "Choose the phrase that comes up most after an experience with you.",
+   "options": {
+    "prend_le_temps": {
+     "title": "\"You take the time\"",
+     "text": "Your customers feel heard and valued.",
+     "value": "You can tell you really take the time."
+    },
+    "impeccable": {
+     "title": "\"It's always spot on\"",
+     "text": "The consistency of your work reassures instantly.",
+     "value": "It's always spot on."
+    },
+    "a_laise": {
+     "title": "\"I feel at ease right away\"",
+     "text": "Your welcome transforms the experience.",
+     "value": "You feel at ease right away."
+    },
+    "trouve_solution": {
+     "title": "\"You always find a solution\"",
+     "text": "You reassure even on tricky requests.",
+     "value": "You always find a solution."
+    },
+    "mieux_que_prevu": {
+     "title": "\"Even better than expected\"",
+     "text": "The final result creates a real emotion.",
+     "value": "The result exceeds my expectations."
+    },
+    "compter_sur_toi": {
+     "title": "\"I can really count on you\"",
+     "text": "Your reliability keeps customers coming back.",
+     "value": "I can really count on you."
+    }
+   }
+  },
+  "story": {
+   "kicker": "Your story",
+   "title": "What led you to this trade?",
+   "subtitle": "Flux will turn this origin into a human, credible story.",
+   "options": {
+    "passion": {
+     "title": "A passion that became a job",
+     "text": "You chose to fully live what drove you.",
+     "value": "A passion that became a job over time."
+    },
+    "reconversion": {
+     "title": "A deliberate career change",
+     "text": "You changed paths to get closer to what matters.",
+     "value": "A deliberate career change toward meaningful work."
+    },
+    "savoir_faire_transmis": {
+     "title": "A passed-down craft",
+     "text": "Your trade is part of a bigger story.",
+     "value": "A craft passed down and refined over the years."
+    },
+    "aventure_familiale": {
+     "title": "A family adventure",
+     "text": "Bond and heritage are part of your identity.",
+     "value": "A family adventure built around shared expertise."
+    },
+    "envie_de_mieux": {
+     "title": "The drive to do better",
+     "text": "You created the experience you couldn't find elsewhere.",
+     "value": "The drive to offer a better way of doing things in my field."
+    },
+    "entreprendre_localement": {
+     "title": "Building locally",
+     "text": "Your business is deeply tied to its community.",
+     "value": "The drive to build locally and be useful around me."
+    }
+   }
+  },
+  "vals": {
+   "kicker": "Your values",
+   "title": "What truly matters to you?",
+   "subtitle": "Choose up to three values. They'll guide every piece of content.",
+   "options": {
+    "qualite": {
+     "title": "Quality",
+     "text": "Never deliver something you wouldn't stand behind.",
+     "value": "Quality"
+    },
+    "ecoute": {
+     "title": "Listening",
+     "text": "Understand before proposing.",
+     "value": "Listening"
+    },
+    "confiance": {
+     "title": "Trust",
+     "text": "Build a relationship that lasts.",
+     "value": "Trust"
+    },
+    "authenticite": {
+     "title": "Authenticity",
+     "text": "Stay true, even in how you communicate.",
+     "value": "Authenticity"
+    },
+    "fiabilite": {
+     "title": "Reliability",
+     "text": "Keep your word, respect others' time.",
+     "value": "Reliability"
+    },
+    "proximite": {
+     "title": "Closeness",
+     "text": "Nurture a human, local relationship.",
+     "value": "Closeness"
+    }
+   }
+  }
+ }
+}

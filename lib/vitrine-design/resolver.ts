@@ -2,16 +2,18 @@ import type { Page, PageDraftFields, PageTheme } from "@/lib/types";
 import { DESIGN_COMPONENT_BY_ID, DESIGN_KIT_BY_ID, DESIGN_KITS, VOICE_ARCHETYPE_BY_ID } from "./registry";
 import { DESIGN_SLOTS, type ResolvedVitrineDesign, type VitrineDesignConfig } from "./types";
 
+// Retourne un CODE d'erreur stable (traduit à la frontière d'affichage via
+// editor.actionErrors), ou null si valide.
 export function designConfigError(config: VitrineDesignConfig): string | null {
   const kit = DESIGN_KIT_BY_ID.get(config.kitId);
-  if (!kit) return "Kit de design inconnu.";
+  if (!kit) return "unknown_design_kit";
   for (const [slot, id] of Object.entries(config.components ?? {})) {
-    if (!DESIGN_SLOTS.includes(slot as (typeof DESIGN_SLOTS)[number])) return "Catégorie de design inconnue.";
+    if (!DESIGN_SLOTS.includes(slot as (typeof DESIGN_SLOTS)[number])) return "unknown_design_category";
     const entry = DESIGN_COMPONENT_BY_ID.get(id);
-    if (!entry || entry.slot !== slot) return "Composant de design invalide.";
-    if (entry.compatibleKits && !entry.compatibleKits.includes(kit.id)) return "Composant incompatible avec ce kit.";
+    if (!entry || entry.slot !== slot) return "invalid_design_component";
+    if (entry.compatibleKits && !entry.compatibleKits.includes(kit.id)) return "incompatible_design_component";
   }
-  if (config.voiceArchetypeId && !VOICE_ARCHETYPE_BY_ID.has(config.voiceArchetypeId)) return "Voix éditoriale inconnue.";
+  if (config.voiceArchetypeId && !VOICE_ARCHETYPE_BY_ID.has(config.voiceArchetypeId)) return "unknown_voice_archetype";
   return null;
 }
 

@@ -1,0 +1,348 @@
+{
+  "beaute": {
+    "label": "美容&エステ",
+    "jobTitles": [
+      "エステティシャン",
+      "ネイリスト",
+      "アイリスト",
+      "アートメイクアーティスト"
+    ],
+    "clientWord": "お客様",
+    "promptContext": "美容院/エステサロン：施術、ネイル、まつげ、眉。主に女性客がメイン、温かく安心感のあるトーン。",
+    "families": {
+      "soins-visage": {
+        "name": "フェイシャルケア",
+        "services": {
+          "soin-eclat": "うるつやケア",
+          "soin-anti-age": "アンチエイジングケア"
+        }
+      },
+      "ongles": {
+        "name": "ネイル",
+        "services": {
+          "pose-gel": "ジェルネイル装着",
+          "remplissage": "リフィル",
+          "vernis-semi-permanent": "セミパーマネントネイル"
+        }
+      },
+      "cils-sourcils": {
+        "name": "まつげ&眉",
+        "services": {
+          "extension-cils": "まつげエクステ フル装着",
+          "rehaussement-cils": "まつげパーマ",
+          "restructuration-sourcils": "眉のリストラクチャリング"
+        }
+      }
+    }
+  },
+  "coiffure": {
+    "label": "ヘアサロン&理容",
+    "jobTitles": [
+      "ヘアスタイリスト（女性）",
+      "ヘアスタイリスト（男性）",
+      "バーバー",
+      "カラーリスト"
+    ],
+    "clientWord": "お客様",
+    "promptContext": "ヘアサロンまたは理容室：カット、カラー、ヘアケア。ダイナミックで身近なトーン。",
+    "families": {
+      "coupes": {
+        "name": "カット",
+        "services": {
+          "coupe-femme": "レディースカット",
+          "coupe-homme": "メンズカット",
+          "coupe-barbe": "カット＋ひげ"
+        }
+      },
+      "couleur": {
+        "name": "カラー",
+        "services": {
+          "coloration-complete": "フルカラー",
+          "balayage": "バラージュ"
+        }
+      }
+    }
+  },
+  "restaurant": {
+    "label": "レストラン&ケータリング",
+    "jobTitles": [
+      "レストラン経営者（男性）",
+      "レストラン経営者（女性）",
+      "出張シェフ",
+      "ケータリング業者"
+    ],
+    "clientWord": "ゲスト",
+    "promptContext": "レストラン、ケータリング、シェフ：テーブルまたはイベントの予約。グルメで温かみのあるトーン、食材と手作りの魅力を強調。",
+    "families": {
+      "reservations": {
+        "name": "予約",
+        "services": {
+          "table-dejeuner": "ランチテーブル",
+          "table-diner": "ディナーテーブル"
+        }
+      },
+      "evenements": {
+        "name": "イベント",
+        "services": {
+          "privatisation": "貸切（内金）",
+          "menu-degustation": "試食メニュー"
+        }
+      }
+    }
+  },
+  "auto": {
+    "label": "自動車&整備工場",
+    "jobTitles": [
+      "整備工場経営者",
+      "メカニック",
+      "オートディテーラー",
+      "板金工"
+    ],
+    "clientWord": "お客様",
+    "promptContext": "整備工場、メカニック、カーディテーリング。信頼できるダイレクトなトーン：料金の透明性、真面目さ、納期厳守。",
+    "families": {
+      "entretien": {
+        "name": "メンテナンス",
+        "services": {
+          "vidange-filtres": "オイル交換＋フィルター",
+          "revision-complete": "総合点検",
+          "plaquettes-frein": "ブレーキパッド（車軸単位）"
+        }
+      },
+      "esthetique": {
+        "name": "エステティック",
+        "services": {
+          "lavage-int-ext": "車内外洗車",
+          "polish-ceramique": "ポリッシュ＋セラミックコーティング"
+        }
+      }
+    },
+    "productCategories": {
+      "pieces-accessoires": {
+        "name": "部品&アクセサリー",
+        "products": {
+          "roue": "ホイール（1個）",
+          "balais-essuie-glace": "ワイパーブレードセット",
+          "batterie-12v": "12Vバッテリー"
+        }
+      },
+      "produits-entretien": {
+        "name": "メンテナンス用品",
+        "products": {
+          "huile-moteur-5l": "エンジンオイル5L缶",
+          "kit-lavage-auto": "カー洗車キット"
+        }
+      }
+    }
+  },
+  "artisan": {
+    "label": "職人&建築業",
+    "jobTitles": [
+      "配管工",
+      "電気工事士",
+      "塗装職人",
+      "大工",
+      "何でも屋"
+    ],
+    "clientWord": "お客様",
+    "promptContext": "建築系職人：修理と現場作業。信頼できる分かりやすいトーン：明確な見積もり、時間厳守、丁寧な仕事。",
+    "families": {
+      "interventions": {
+        "name": "作業対応",
+        "services": {
+          "diagnostic-devis": "訪問診断／見積もり",
+          "depannage-urgent": "緊急修理",
+          "petits-travaux": "小規模作業（時間制）"
+        }
+      }
+    }
+  },
+  "commerce": {
+    "label": "商業&ショップ",
+    "jobTitles": [
+      "商店主（男性）",
+      "商店主（女性）",
+      "店舗マネージャー",
+      "販売員（男性）",
+      "販売員（女性）"
+    ],
+    "clientWord": "お客様",
+    "promptContext": "小売業/ショップ：店舗販売とクリック&コレクト。商業的で身近なトーン、新商品・プロモーション・在庫状況を強調。",
+    "families": {},
+    "productCategories": {
+      "nouveautes": {
+        "name": "新着商品",
+        "products": {
+          "article-vedette": "注目アイテム",
+          "coup-de-coeur": "お気に入り"
+        }
+      },
+      "best-sellers": {
+        "name": "ベストセラー",
+        "products": {
+          "produit-populaire": "人気商品",
+          "pack-decouverte": "お試しパック"
+        }
+      }
+    }
+  },
+  "alimentation": {
+    "label": "食品&食料品店",
+    "jobTitles": [
+      "パン職人（男性）",
+      "パン職人（女性）",
+      "パティシエ",
+      "青果商",
+      "食料品店主",
+      "チーズ専門店主",
+      "ワイン商"
+    ],
+    "clientWord": "お客様",
+    "promptContext": "食品専門店（パン屋、パティスリー、青果店、高級食料品店）：生鮮食品の販売と事前注文／クリック&コレクト。グルメで職人技を感じさせる地域密着型トーン、新鮮さと手作りを強調。",
+    "families": {},
+    "productCategories": {
+      "boulangerie": {
+        "name": "パン",
+        "products": {
+          "baguette-tradition": "バゲット・トラディション",
+          "pain-campagne": "カンパーニュ",
+          "croissant": "クロワッサン"
+        }
+      },
+      "patisserie": {
+        "name": "パティスリー",
+        "products": {
+          "eclair": "エクレア",
+          "tarte-du-jour": "本日のタルト（1切れ）",
+          "gateau-a-commander": "オーダーメイドケーキ"
+        }
+      }
+    }
+  },
+  "mode": {
+    "label": "ファッション&アクセサリー",
+    "jobTitles": [
+      "クリエイター（男性）",
+      "クリエイター（女性）",
+      "スタイリスト",
+      "宝飾職人（男性）",
+      "宝飾職人（女性）",
+      "革製品職人"
+    ],
+    "clientWord": "お客様",
+    "promptContext": "既製服、ジュエリー、アクセサリー：オリジナル作品と厳選アイテムのショップ。エレガントで魅力的なトーン、素材、サイズ、限定版にまつわるストーリーテリング。",
+    "families": {},
+    "productCategories": {
+      "vetements": {
+        "name": "衣類",
+        "products": {
+          "t-shirt": "Tシャツ",
+          "robe": "ワンピース",
+          "veste": "ジャケット"
+        }
+      },
+      "accessoires": {
+        "name": "アクセサリー",
+        "products": {
+          "collier": "ネックレス",
+          "sac": "バッグ",
+          "carte-cadeau": "ギフトカード"
+        }
+      }
+    }
+  },
+  "bienetre": {
+    "label": "ウェルネス&コーチング",
+    "jobTitles": [
+      "スポーツコーチ",
+      "ナチュロパス",
+      "フォトグラファー",
+      "ソフロロジスト",
+      "ウェルネス施術者"
+    ],
+    "clientWord": "お客様",
+    "promptContext": "ウェルネス、コーチング、フォトグラフィー：予約制の施術＋パッケージ・コース・商品（セッション、電子書籍、プログラム）の販売。思いやりがあり、やる気を引き出す専門的なトーン、変化と結果を重視。",
+    "families": {
+      "seances": {
+        "name": "セッション",
+        "services": {
+          "seance-decouverte": "体験セッション",
+          "seance-individuelle": "個人セッション",
+          "bilan-complet": "総合カウンセリング"
+        }
+      }
+    },
+    "productCategories": {
+      "forfaits-programmes": {
+        "name": "パッケージ&プログラム",
+        "products": {
+          "forfait-5-seances": "5回セッションパッケージ",
+          "forfait-10-seances": "10回セッションパッケージ",
+          "programme-en-ligne": "オンラインプログラム"
+        }
+      }
+    }
+  },
+  "autre": {
+    "label": "その他の業種",
+    "jobTitles": [
+      "個人事業主（男性）",
+      "個人事業主（女性）"
+    ],
+    "clientWord": "お客様",
+    "promptContext": "地域密着型の商店または個人事業。プロフェッショナルで親しみやすいトーン。",
+    "families": {
+      "prestations": {
+        "name": "サービス",
+        "services": {
+          "rendez-vous-decouverte": "体験予約",
+          "prestation-standard": "標準サービス"
+        }
+      }
+    }
+  },
+  "catalogWording": {
+    "service": {
+      "categoryWord": "サービスカテゴリー",
+      "itemWord": "サービス",
+      "categoryPlaceholder": "例：フェイシャルケア",
+      "itemPlaceholder": "例：うるつやケア 60分",
+      "categoryHint": "料金表でまとめるようなサービスのグループ。",
+      "itemHint": "一番人気のサービス。お客様が最初に予約したくなるもの。"
+    },
+    "product": {
+      "categoryWord": "カテゴリー",
+      "itemWord": "商品",
+      "categoryPlaceholder": "例：ブーケ",
+      "itemPlaceholder": "例：季節のブーケ",
+      "categoryHint": "お客様が探しやすいような、あなたのショップの売り場。",
+      "itemHint": "一番売れている看板商品。"
+    },
+    "hybrid": {
+      "categoryWord": "カテゴリー",
+      "itemWord": "商品またはサービス",
+      "categoryPlaceholder": "例：カット&カラー",
+      "itemPlaceholder": "例：カット＋ブロー",
+      "categoryHint": "商品と予約制サービスの両方をここにまとめられます。",
+      "itemHint": "お客様から一番よく求められるもの。"
+    }
+  },
+  "fontLabels": {
+    "fraunces": "Fraunces — エディトリアル、プレミアム（デフォルト）",
+    "inter": "Inter — モダン、ニュートラル（デフォルト）",
+    "playfair": "Playfair Display — シック、エレガント",
+    "montserrat": "Montserrat — シンプル、プロフェッショナル",
+    "lora": "Lora — 洗練された、優しいセリフ体",
+    "cormorant": "Cormorant Garamond — ラグジュアリー、洗練",
+    "quicksand": "Quicksand — 丸みのある、優しい",
+    "poppins": "Poppins — モダン、優しい",
+    "space-grotesk": "Space Grotesk — テック、力強い",
+    "sora": "Sora — 現代的、シャープ",
+    "manrope": "Manrope — シンプル、読みやすい",
+    "libre-baskerville": "Libre Baskerville — クラシック、文学的",
+    "dm-serif": "DM Serif Display — 目を引く、エディトリアル",
+    "marcellus": "Marcellus — 古典的、格式高い",
+    "josefin": "Josefin Sans — 幾何学的、レトロシック",
+    "bebas": "Bebas Neue — 大文字、インパクト大"
+  }
+}

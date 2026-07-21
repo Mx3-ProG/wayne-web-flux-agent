@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "Mis proyectos",
+    "newTitle": "Nuevo proyecto"
+  },
+  "eyebrow": "Tu cuenta",
+  "title": "Mis proyectos",
+  "subtitle": "Cada proyecto es una tienda completa: su escaparate, sus productos, sus pedidos, su facturación. Elige el proyecto activo para gestionar todo tu espacio desde ahí.",
+  "counter": "{count} / {limit} proyecto — plan {plan}",
+  "counterPlural": "{count} / {limit} proyectos — plan {plan}",
+  "noName": "Sin nombre",
+  "revenue": "Facturación",
+  "open": "Abrir ↗",
+  "newProject": "Nuevo proyecto",
+  "upsellTitle": "Varias tiendas",
+  "upsellBasique": "Gestiona varias tiendas (hasta 10) con los planes superiores.",
+  "upsellLimit": "Has alcanzado el límite de proyectos de tu plan.",
+  "discoverPlans": "Descubrir los planes FLUX",
+  "activeProject": "Proyecto activo",
+  "activating": "…",
+  "activate": "Activar este proyecto",
+  "domain": {
+    "title": "Nombre de dominio",
+    "text": "Conecta tu propio dominio (ej. {example}) al escaparate del proyecto activo.",
+    "soon": "Disponible desde el plan Pro",
+    "placeholder": "mi-tienda.es",
+    "saving": "…",
+    "save": "Guardar",
+    "saved": "Dominio guardado.",
+    "comingSoon": "Esta función llegará pronto a producción. Ya se puede probar en local."
+  },
+  "backToProjects": "← Mis proyectos",
+  "errors": {
+    "feature_coming_soon": "Función disponible próximamente.",
+    "not_authenticated": "No has iniciado sesión.",
+    "plan_restricted": "Reservado a los planes Pro y superiores.",
+    "invalid_domain": "Nombre de dominio no válido (ej. mi-tienda.es).",
+    "save_failed": "No se ha podido guardar (¿dominio ya en uso?).",
+    "project_not_found": "Proyecto no encontrado.",
+    "change_failed": "No se ha podido realizar el cambio.",
+    "content_blocked": "Los mensajes de odio o los contenidos explícitos están prohibidos y sancionados en FLUX; por favor, respeta tu entorno y el de los demás. Tras 3 infracciones de nuestras condiciones de uso, la cuenta se elimina.",
+    "unknown": "Se ha producido un error. Inténtalo de nuevo en un momento."
+  }
+}

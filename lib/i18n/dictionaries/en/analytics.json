@@ -1,0 +1,53 @@
+{
+ "meta": {
+  "title": "Stats"
+ },
+ "hero": {
+  "kicker": "Data center",
+  "titleStart": "Your dash",
+  "titleEm": "board",
+  "textStart": "What's happening on",
+  "textLink": "your site",
+  "textEnd": ": visits, contacts, and subscribers, in real time.",
+  "visitSingular": "visit over the last 30 days",
+  "visitPlural": "visits over the last 30 days"
+ },
+ "cards": {
+  "visits7": "Visits (7 d)",
+  "visits30": "Visits (30 d)",
+  "phoneClicks30": "Phone clicks (30 d)",
+  "whatsappClicks30": "WhatsApp clicks (30 d)",
+  "socialClicks30": "Social clicks (30 d)",
+  "newsletterSubscribers": "Newsletter subscribers"
+ },
+ "chart": {
+  "title": "Visits over the last 14 days",
+  "empty": "No data yet: it'll show up as soon as your site gets its first visits.",
+  "tooltipSingular": "{label}: {count} visit",
+  "tooltipPlural": "{label}: {count} visits"
+ },
+ "subscribers": {
+  "title": "Your newsletter subscribers",
+  "hint": "Collected via the \"Newsletter\" block on your site.",
+  "export": "Export (CSV)",
+  "empty": "No one yet. Add the \"Newsletter\" block in your site editor (\"My page sections\" section) to start collecting emails.",
+  "csvHeader": "email;subscribed_on"
+ },
+ "tunnel": {
+  "step": "Step {current} of {total}",
+  "exit": "My stats",
+  "kicker1": "Get your link out there",
+  "title1Start": "Your stats start with a",
+  "title1Em": "share.",
+  "subtitle1": "Share your link with people who value your work or find comfort in it. Every visit, click and follower will show up here — the more your link travels, the more your numbers tell your story.",
+  "uniqueLink": "Your unique link",
+  "copyLink": "Copy my link",
+  "continueCta": "Continue",
+  "fromTeam": "From the whole team",
+  "title2Start": "Thanks for using FLUX for",
+  "title2Em": "your business.",
+  "text2": "Your business deserves to be seen, chosen and recommended. We wish you great achievements — and we'll be here to count every win with you.",
+  "back": "Back",
+  "viewStats": "View my stats"
+ }
+}
