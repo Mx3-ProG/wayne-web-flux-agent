@@ -12,9 +12,15 @@ import { z } from "zod";
 import type { PageTheme } from "@/lib/types";
 import { DESIGN_COMPONENTS, DESIGN_KITS, VOICE_ARCHETYPES } from "@/lib/vitrine-design/registry";
 
+// La contrainte `pattern` est retirée du schéma ENVOYÉ au modèle (non supportée
+// par les sorties structurées, cf. UNSUPPORTED_KEYWORDS). Sans le `.describe`,
+// le modèle n'aurait AUCUN signal sur le format attendu et renverrait souvent
+// `#fff`, `rgb(...)` ou un nom de couleur → rejet en revalidation → échec +
+// remboursement. Le hint, lui, est conservé dans le schéma envoyé.
 const HexColor = z
   .string()
-  .regex(/^#[0-9a-fA-F]{6}$/, "couleur hexadécimale à 6 chiffres attendue");
+  .regex(/^#[0-9a-fA-F]{6}$/, "couleur hexadécimale à 6 chiffres attendue")
+  .describe("Code couleur hexadécimal 6 chiffres, préfixé de #, ex : #1a2b3c");
 
 const enumValues = <T extends string>(values: T[]) => values as [T, ...T[]];
 
@@ -124,7 +130,12 @@ export const FluxPrefillOutputSchema = z.object({
     title: z.string().max(120),
     body: z.string().max(2000),
   }),
-  faq: z.array(FluxFaqItemSchema).min(3).max(5),
+  // Cible « 3 à 5 » portée par le prompt. La revalidation accepte 1 à 8 : les
+  // sorties structurées n'appliquent PAS minItems/maxItems (retirés avant
+  // envoi), donc une borne stricte ici ne ferait que rejeter — après
+  // facturation — une sortie parfaitement exploitable. La réparation (repair.ts)
+  // borne à 8 en amont.
+  faq: z.array(FluxFaqItemSchema).min(1).max(8),
 });
 export type FluxPrefillOutput = z.infer<typeof FluxPrefillOutputSchema>;
 
@@ -144,7 +155,10 @@ export const FluxSiteOutputSchema = z.object({
     dark: HexColor,
   }),
   design: FluxDesignSchema,
-  sections: z.array(FluxGeneratedSectionSchema).min(2).max(5),
+  // Cible « 2 à 5 » portée par le prompt ; revalidation tolérante (1 à 6, la
+  // réparation borne à 5). Même raison que la FAQ : ne pas rejeter après
+  // facturation une sortie utilisable.
+  sections: z.array(FluxGeneratedSectionSchema).min(1).max(6),
 });
 export type FluxSiteOutput = z.infer<typeof FluxSiteOutputSchema>;
 

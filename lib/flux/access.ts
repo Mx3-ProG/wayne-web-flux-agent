@@ -13,6 +13,8 @@ export type FluxAccess =
   | {
       ok: false;
       reason:
+        // Compte suspendu par la modération (KarlMada). Réversible par un admin.
+        | "account_suspended"
         // Le pack a bien été payé, mais sa fenêtre IA de 6 mois est terminée.
         | "flux_credits_expired"
         // Essai terminé et solde vide.
@@ -22,6 +24,10 @@ export type FluxAccess =
 export async function checkFluxAccess(userId: string): Promise<FluxAccess> {
   const account = await loadAccountAccess(userId);
 
+  // Suspension prioritaire : ni message de paiement, ni de fenêtre écoulée.
+  if (account.status === "suspended") {
+    return { ok: false, reason: "account_suspended" };
+  }
   // Testé avant aiAllowed : la fenêtre écoulée mérite son propre message, les
   // crédits restants servant encore aux actions non-IA.
   if (account.status === "credits_expired") {

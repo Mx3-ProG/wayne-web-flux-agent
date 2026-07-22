@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/dialog";
 import { useI18n } from "@/components/i18n-provider";
 
-type UpsellCopyKey = Exclude<AccountStatus, "subscribed"> | "trial_expired_with_credits";
+type UpsellCopyKey = Exclude<AccountStatus, "subscribed" | "suspended"> | "trial_expired_with_credits";
 type UpsellCopyDictKey =
   | "trial"
   | "trialExpired"
@@ -36,7 +36,7 @@ export function AccountUpsellDialog({
   status,
   balance,
 }: {
-  status: Exclude<AccountStatus, "subscribed">;
+  status: Exclude<AccountStatus, "subscribed" | "suspended">;
   balance: number;
 }) {
   const { dictionary } = useI18n();

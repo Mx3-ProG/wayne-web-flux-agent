@@ -175,7 +175,7 @@ export default async function AppLayout({
         {trialProfile && (
           <TrialBanner profile={trialProfile} balance={balance ?? 0} />
         )}
-        {upsellDue && accountAccess.status !== "subscribed" && (
+        {upsellDue && accountAccess.status !== "subscribed" && accountAccess.status !== "suspended" && (
           <AccountUpsellDialog
             status={accountAccess.status}
             balance={balance ?? 0}

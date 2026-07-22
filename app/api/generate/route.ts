@@ -38,6 +38,9 @@ export async function POST(request: Request) {
   // La fenêtre IA est distincte du droit de publier : on la contrôle avant
   // tout débit et sans modifier has_active_access côté SQL.
   const account = await loadAccountAccess(user.id);
+  if (account.status === "suspended") {
+    return NextResponse.json({ error: "account_suspended" }, { status: 403 });
+  }
   if (!account.aiAllowed) {
     return NextResponse.json({ error: "ai_window_expired" }, { status: 402 });
   }
@@ -162,15 +165,22 @@ export async function POST(request: Request) {
           outcome: "success",
         });
         usageRecorded = true;
-        await admin.from("generations").insert({
-          user_id: user.id,
-          page_id: page?.id ?? null,
-          tool_slug: tool.slug,
-          inputs,
-          output: fullText,
-          credits_spent: tool.cost,
-          ai_usage_event_id: aiUsageEventId,
-        });
+        // Le résultat est déjà produit et facturé : sa sauvegarde au coffre-fort
+        // est best-effort et ne doit jamais transformer un succès en erreur (ni
+        // en remboursement via le catch ci-dessous).
+        try {
+          await admin.from("generations").insert({
+            user_id: user.id,
+            page_id: page?.id ?? null,
+            tool_slug: tool.slug,
+            inputs,
+            output: fullText,
+            credits_spent: tool.cost,
+            ai_usage_event_id: aiUsageEventId,
+          });
+        } catch {
+          // trace non bloquante
+        }
         controller.enqueue(encoder.encode(fullText));
         controller.close();
       } catch (err) {

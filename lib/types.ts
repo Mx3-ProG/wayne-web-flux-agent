@@ -78,6 +78,10 @@ export type Profile = {
   locale: import("./i18n/config").Locale;
   upsell_last_shown_at: string | null;
   last_login_at: string | null;
+  // Suspension réversible par la modération (KarlMada) : IA + publication
+  // coupées tant que suspended_at est non nul. Levée par un admin.
+  suspended_at: string | null;
+  suspended_reason: string | null;
   created_at: string;
 };
 

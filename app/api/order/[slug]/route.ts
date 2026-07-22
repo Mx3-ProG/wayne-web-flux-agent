@@ -92,25 +92,17 @@ export async function POST(
     })),
   ];
 
-  const [{ data: orderedProducts }, { data: orderedOffers }] = await Promise.all([
-    wantedProducts.size
-      ? supabase.from("products").select("id, name, description").eq("page_id", page.id).in("id", [...wantedProducts.keys()])
-      : Promise.resolve({ data: [] }),
-    wantedOffers.size
-      ? supabase.from("offers").select("id, title, description").eq("page_id", page.id).in("id", [...wantedOffers.keys()])
-      : Promise.resolve({ data: [] }),
-  ]);
+  // On ne modère QUE les champs saisis par le client (sans userId : un client
+  // ne peut jamais faire suspendre le marchand). Le catalogue du marchand est
+  // déjà modéré à la création (actions produits/offres) et à la publication :
+  // le re-scanner ici cumulerait des blocages contre le marchand à chaque
+  // commande — retiré volontairement.
   const customerModeration = await enforceKarlMada(
     { firstName, address, note },
     { surface: "order:customer-input" }
   );
-  const catalogModeration = await enforceKarlMada(
-    { products: orderedProducts, offers: orderedOffers },
-    { userId: page.user_id, pageId: page.id, surface: "order:create" }
-  );
-  const moderationError = customerModeration.error ?? catalogModeration.error;
-  if (moderationError) {
-    return NextResponse.json({ error: "content_blocked", message: moderationError }, { status: 422 });
+  if (customerModeration.error) {
+    return NextResponse.json({ error: "content_blocked", message: customerModeration.error }, { status: 422 });
   }
 
   const { data: rpcData, error: rpcError } = await supabase.rpc("create_guest_order", {

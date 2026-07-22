@@ -16,6 +16,7 @@ import {
   FluxSiteOutputSchema,
   toAnthropicSchema,
 } from "@/lib/flux/schemas";
+import { repairFluxPrefillOutput, repairFluxSiteOutput } from "@/lib/flux/repair";
 import { rateLimit } from "@/lib/rate-limit";
 import { resolveSections, SECTION_LIMITS } from "@/lib/sections";
 import { PREFILL_COST } from "@/lib/tools-config";
@@ -27,6 +28,7 @@ import { recordAiUsage } from "@/lib/ai-usage";
 export type FluxPrefillError =
   | "flux_requires_payment"
   | "flux_credits_expired"
+  | "account_suspended"
   | "insufficient_credits"
   | "subscription_required"
   | "too_many_requests"
@@ -67,6 +69,26 @@ export async function fluxPrefill(
     return { error: "too_many_requests" };
   }
 
+  // Contexte : prestations + profil de voix du projet.
+  const [{ data: v }, { data: s }] = await Promise.all([
+    supabase
+      .from("voice_profiles")
+      .select("*")
+      .eq("page_id", page.id)
+      .maybeSingle<VoiceProfile>(),
+    supabase.from("services").select("*").eq("page_id", page.id).order("position"),
+  ]);
+  const voice = v ?? null;
+  const services = (s ?? []) as Service[];
+
+  // Modération du contexte AVANT tout débit : on ne facture jamais un contenu
+  // bloqué (mêmes garanties que fluxGenerateSite sur le brief).
+  const contextModeration = await enforceKarlMada(
+    { page, services, voice },
+    { userId: user.id, pageId, surface: "flux-prefill:input" }
+  );
+  if (contextModeration.error) return { error: "content_blocked" };
+
   // Débit atomique AVANT génération.
   const spend = await spendCredits(user.id, PREFILL_COST, "flux:prefill");
   if (spend.error === "subscription_required") return { error: "subscription_required" };
@@ -75,32 +97,23 @@ export async function fluxPrefill(
 
   const aiStartedAt = Date.now();
   let usageRecorded = false;
+  // Idem fluxGenerateSite : une fois le brouillon écrit, plus de remboursement.
+  let patchApplied = false;
   try {
-    // Contexte : prestations + profil de voix du projet.
-    const [{ data: v }, { data: s }] = await Promise.all([
-      supabase
-        .from("voice_profiles")
-        .select("*")
-        .eq("page_id", page.id)
-        .maybeSingle<VoiceProfile>(),
-      supabase.from("services").select("*").eq("page_id", page.id).order("position"),
-    ]);
-    const voice = v ?? null;
-    const services = (s ?? []) as Service[];
-
-    const contextModeration = await enforceKarlMada(
-      { page, services, voice },
-      { userId: user.id, pageId, surface: "flux-prefill:input" }
-    );
-    if (contextModeration.error) return { error: "content_blocked" };
-
     const system = [
       KARLMADA_AI_POLICY,
       fluxIdentity(),
       ...(await businessContext({ page, services, voice, locale })),
       ...(await learningsContext(page.vertical)),
       registryContext(),
-      "Ta mission : pré-remplir la vitrine de ce commerçant à partir de son métier, sa ville et ses prestations. Écris des contenus concrets, directs, sans jargon marketing ni phrase creuse, directement utilisables. N'invente NI prix NI avis clients. Reste fidèle à son métier et à sa voix.",
+      [
+        "Ta mission : pré-remplir la vitrine de ce commerçant à partir de son métier, sa ville et ses prestations.",
+        "- Accroche : une promesse spécifique au métier ET à la ville.",
+        "- SEO : un titre et une description qui donnent envie de cliquer.",
+        "- Section « à propos » : son histoire ou sa méthode, incarnée et concrète.",
+        "- FAQ (3 à 5) : les vraies questions que ses clients se posent, avec des réponses utiles.",
+        "Contenus directement utilisables, concrets, sans jargon ni phrase creuse. N'invente NI prix NI avis clients. Reste fidèle à son métier et à sa voix.",
+      ].join("\n"),
     ].join("\n\n");
 
     const message = await anthropic.messages.create({
@@ -125,8 +138,26 @@ export async function fluxPrefill(
 
     const raw = message.content.find((b) => b.type === "text");
     if (!raw || raw.type !== "text") throw new Error("no_output");
-    const parsed = FluxPrefillOutputSchema.safeParse(JSON.parse(raw.text));
-    if (!parsed.success) throw new Error("invalid_output");
+
+    // Réparation avant revalidation (cf. repair.ts) : on n'abandonne pas une
+    // sortie presque valide après facturation.
+    let repaired: unknown = null;
+    try {
+      repaired = repairFluxPrefillOutput(JSON.parse(raw.text));
+    } catch {
+      repaired = null;
+    }
+    const parsed = repaired ? FluxPrefillOutputSchema.safeParse(repaired) : null;
+    if (!parsed || !parsed.success) {
+      // Facturé mais inexploitable même après réparation : incident + remboursement.
+      await recordAiUsage({
+        userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-prefill",
+        usage: message.usage, startedAt: aiStartedAt, outcome: "error", errorCode: "unusable_output",
+      });
+      usageRecorded = true;
+      await refundCredits(user.id, PREFILL_COST, "refund:flux-prefill:wasted-spend");
+      return { error: "generation_failed" };
+    }
     const out = parsed.data;
     const generatedModeration = await enforceKarlMada(out, {
       userId: user.id,
@@ -139,6 +170,9 @@ export async function fluxPrefill(
         usage: message.usage, startedAt: aiStartedAt, outcome: "blocked",
       });
       usageRecorded = true;
+      // Sortie IA bloquée : rien d'utilisable appliqué, on rembourse
+      // (cohérent avec fluxGenerateSite).
+      await refundCredits(user.id, PREFILL_COST, "refund:flux-prefill");
       return { error: "content_blocked" };
     }
 
@@ -166,27 +200,36 @@ export async function fluxPrefill(
       ...(sections ? { sections } : {}),
     });
     if (applied.error) throw new Error(applied.error);
+    patchApplied = true;
 
-    // Coffre-fort : trace de la génération.
-    const aiUsageEventId = await recordAiUsage({
-      userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-prefill",
-      usage: message.usage, startedAt: aiStartedAt, outcome: "success",
-    });
-    usageRecorded = true;
-    const admin = createAdminClient();
-    await admin.from("generations").insert({
-      user_id: user.id,
-      page_id: page.id,
-      tool_slug: "flux-prefill",
-      inputs: {},
-      output: raw.text,
-      credits_spent: PREFILL_COST,
-      ai_usage_event_id: aiUsageEventId,
-    });
+    // Coffre-fort : trace best-effort (n'échoue jamais l'action, ne rembourse jamais).
+    try {
+      const aiUsageEventId = await recordAiUsage({
+        userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-prefill",
+        usage: message.usage, startedAt: aiStartedAt, outcome: "success",
+      });
+      usageRecorded = true;
+      const admin = createAdminClient();
+      await admin.from("generations").insert({
+        user_id: user.id,
+        page_id: page.id,
+        tool_slug: "flux-prefill",
+        inputs: {},
+        output: raw.text,
+        credits_spent: PREFILL_COST,
+        ai_usage_event_id: aiUsageEventId,
+      });
+    } catch {
+      // trace non bloquante
+    }
 
     revalidatePath("/ma-page");
     return {};
   } catch {
+    if (patchApplied) {
+      revalidatePath("/ma-page");
+      return {};
+    }
     if (!usageRecorded) {
       await recordAiUsage({
         userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-prefill",
@@ -205,6 +248,7 @@ export type FluxSiteError =
   | "insufficient_credits"
   | "subscription_required"
   | "too_many_requests"
+  | "account_suspended"
   | "empty_brief"
   | "content_blocked"
   | "generation_failed"
@@ -260,6 +304,9 @@ export async function fluxGenerateSite(
 
   const aiStartedAt = Date.now();
   let usageRecorded = false;
+  // Une fois le brouillon écrit, on ne rembourse plus JAMAIS : les tokens sont
+  // facturés et le site est livré. Seul un échec AVANT écriture rembourse.
+  let patchApplied = false;
   try {
     const [{ data: v }, { data: s }] = await Promise.all([
       supabase
@@ -277,7 +324,14 @@ export async function fluxGenerateSite(
       fluxIdentity(),
       ...(await businessContext({ page, services, voice, locale })),
       ...(await learningsContext(page.vertical)),
-      "Ta mission : créer TOUTE la vitrine de ce commerçant à partir de son brief et de son métier. Pars du template de son métier et améliore-le : accroche, SEO, ambiance (thème + couleurs cohérentes), et 2 à 5 sections de contenu (à propos, texte, FAQ). Concret, direct, sans jargon marketing. N'invente NI prix NI avis clients. Reste fidèle à son métier et à sa voix.",
+      [
+        "Ta mission : créer TOUTE la vitrine de ce commerçant à partir de son brief et de son métier. Pars du template de son métier et améliore-le.",
+        "- Accroche (tagline) : une promesse claire et spécifique au métier ET à la ville, jamais un slogan creux.",
+        "- SEO : un titre (≤70 caractères) et une description (≤200 caractères) qui donnent envie de cliquer, avec le métier et la ville.",
+        "- Ambiance : un thème et des couleurs au format hexadécimal #RRGGBB, cohérents avec le métier et l'émotion recherchée.",
+        "- 2 à 5 sections riches et concrètes (à propos, texte, FAQ) : chacune apporte une information utile et différenciante (méthode, bénéfices, garanties, déroulé, réponses aux vraies questions des clients). Zéro remplissage générique.",
+        "Écris à la première personne, concret et direct, sans jargon marketing ni phrase creuse. N'invente NI prix NI avis clients. Reste fidèle à son métier et à sa voix.",
+      ].join("\n"),
     ].join("\n\n");
 
     const message = await anthropic.messages.stream({
@@ -302,8 +356,34 @@ export async function fluxGenerateSite(
 
     const raw = final.content.find((b) => b.type === "text");
     if (!raw || raw.type !== "text") throw new Error("no_output");
-    const parsed = FluxSiteOutputSchema.safeParse(JSON.parse(raw.text));
-    if (!parsed.success) throw new Error("invalid_output");
+
+    // Réparation avant revalidation : on récupère une sortie « presque valide »
+    // (hex approximatif, textes trop longs, trop de sections) au lieu de la
+    // jeter. fallback = couleurs actuelles de la page.
+    const pageColors = (page.colors ?? {}) as PageColors;
+    const fallbackColors = {
+      primary: pageColors.primary || "#1a1a1a",
+      dark: pageColors.dark || "#000000",
+    };
+    let repaired: unknown = null;
+    try {
+      repaired = repairFluxSiteOutput(JSON.parse(raw.text), fallbackColors);
+    } catch {
+      repaired = null;
+    }
+    const parsed = repaired ? FluxSiteOutputSchema.safeParse(repaired) : null;
+    if (!parsed || !parsed.success) {
+      // Tokens facturés mais sortie inexploitable même après réparation : c'est
+      // un incident (bug modèle / troncature), pas un fonctionnement normal. On
+      // le journalise distinctement (wasted_spend) puis on rembourse l'utilisateur.
+      await recordAiUsage({
+        userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-site",
+        usage: final.usage, startedAt: aiStartedAt, outcome: "error", errorCode: "unusable_output",
+      });
+      usageRecorded = true;
+      await refundCredits(user.id, SITE_GENERATE_COST, "refund:flux-site:wasted-spend");
+      return { error: "generation_failed" };
+    }
     const out = parsed.data;
 
     const moderation = await enforceKarlMada(out, {
@@ -340,26 +420,39 @@ export async function fluxGenerateSite(
 
     const applied = await applyFluxPatch(supabase, pageId, { fields, sections });
     if (applied.error) throw new Error(applied.error);
+    // Brouillon écrit : à partir d'ici, plus aucun remboursement.
+    patchApplied = true;
 
-    const aiUsageEventId = await recordAiUsage({
-      userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-site",
-      usage: final.usage, startedAt: aiStartedAt, outcome: "success",
-    });
-    usageRecorded = true;
-    const admin = createAdminClient();
-    await admin.from("generations").insert({
-      user_id: user.id,
-      page_id: page.id,
-      tool_slug: "flux-site",
-      inputs: { brief: cleanBrief },
-      output: raw.text,
-      credits_spent: SITE_GENERATE_COST,
-      ai_usage_event_id: aiUsageEventId,
-    });
+    // Journalisation best-effort : un échec ici ne doit ni faire échouer
+    // l'action (le site est déjà écrit) ni déclencher de remboursement.
+    try {
+      const aiUsageEventId = await recordAiUsage({
+        userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-site",
+        usage: final.usage, startedAt: aiStartedAt, outcome: "success",
+      });
+      usageRecorded = true;
+      const admin = createAdminClient();
+      await admin.from("generations").insert({
+        user_id: user.id,
+        page_id: page.id,
+        tool_slug: "flux-site",
+        inputs: { brief: cleanBrief },
+        output: raw.text,
+        credits_spent: SITE_GENERATE_COST,
+        ai_usage_event_id: aiUsageEventId,
+      });
+    } catch {
+      // trace non bloquante
+    }
 
     revalidatePath("/ma-page");
     return {};
   } catch {
+    // Le site n'a pas été écrit (échec avant/pendant génération) : on rembourse.
+    if (patchApplied) {
+      revalidatePath("/ma-page");
+      return {};
+    }
     if (!usageRecorded) {
       await recordAiUsage({
         userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-site",

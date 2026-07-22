@@ -8,6 +8,7 @@ import { getLocalizedVertical } from "@/lib/verticals-i18n";
 import { defaultLegal } from "@/lib/legal";
 import { projectLimit, PUBLISH_COST, VITRINE_ASSIST_COST } from "@/lib/plans";
 import { spendCredits, refundCredits } from "@/lib/credits";
+import { loadAccountAccess } from "@/lib/account-status";
 import { validateSections } from "@/lib/sections";
 import { slugify } from "@/lib/slug";
 import type { PageDraftFields, Plan } from "@/lib/types";
@@ -262,6 +263,7 @@ export type PublishError =
   | "email_not_verified"
   | "path_taken"
   | "content_blocked"
+  | "account_suspended"
   | "unknown";
 
 // Publie une nouvelle version du site : débit atomique de 5 crédits + merge
@@ -283,6 +285,10 @@ export async function publishPage(
     .eq("user_id", user.id)
     .single();
   if (!page) return { error: "unknown" };
+
+  // Compte suspendu par la modération : publication coupée jusqu'à réactivation.
+  const access = await loadAccountAccess(user.id);
+  if (access.status === "suspended") return { error: "account_suspended" };
 
   // Dernier verrou : on rescane l'intégralité du contenu publiable, y compris
   // les anciens brouillons créés avant KarlMada.

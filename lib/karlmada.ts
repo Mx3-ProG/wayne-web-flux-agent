@@ -34,23 +34,24 @@ const RULES: ReadonlyArray<{
   {
     category: "drugs",
     terms: [
-      "cannabis", "marijuana", "haschich", "cocaine", "heroine", "methamphetamine",
-      "ecstasy", "mdma", "lsd", "fentanyl", "ketamine", "crack", "dealer",
-      "drogue", "drogues", "vente de drogue", "stupéfiant", "stupefiant",
+      "marijuana", "haschich", "cocaine", "heroine", "methamphetamine",
+      "ecstasy", "mdma", "lsd", "fentanyl", "ketamine",
+      "drogue", "drogues", "vente de drogue", "trafic de drogue",
+      "stupéfiant", "stupefiant", "trafic de stupefiant",
     ],
   },
   {
     category: "weapons",
     terms: [
       "arme a feu", "pistolet", "revolver", "fusil d assaut", "kalachnikov", "ak47",
-      "munition", "explosif", "grenade", "bombe artisanale", "silencieux", "taser",
-      "arme", "armes", "poing americain", "vente d arme", "vente arme",
+      "munition", "explosif", "bombe artisanale", "poing americain",
+      "vente d arme", "vente arme", "trafic d arme",
     ],
   },
   {
     category: "illegal",
     terms: [
-      "faux papiers", "carte bancaire volee", "carte bancaire volee", "blanchiment",
+      "faux papiers", "carte bancaire volee", "blanchiment",
       "contrefacon", "ransomware", "malware", "phishing", "piratage de compte",
       "service de piratage", "données volées", "donnees volees", "traite humaine",
       "esclavage", "tueur a gages", "fraude fiscale", "achat de votes", "activité illicite",
@@ -112,6 +113,12 @@ export function inspectWithKarlMada(value: unknown): KarlMadaMatch | null {
   return null;
 }
 
+// Seuil et fenêtre glissante avant suspension automatique. On ne compte que les
+// blocages récents : des faux positifs isolés étalés sur des mois ne doivent
+// jamais cumuler jusqu'à la sanction.
+const SUSPENSION_THRESHOLD = 3;
+const SUSPENSION_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
+
 export async function enforceKarlMada(
   value: unknown,
   context: { userId?: string | null; pageId?: string | null; surface: string }
@@ -142,13 +149,25 @@ export async function enforceKarlMada(
     });
 
     if (!insertError && userId) {
+      const since = new Date(Date.now() - SUSPENSION_WINDOW_MS).toISOString();
       const { count } = await admin
         .from("karlmada_events")
         .select("id", { count: "exact", head: true })
         .eq("user_id", userId)
-        .eq("action", "blocked");
-      if ((count ?? 0) >= 3) {
-        await admin.auth.admin.deleteUser(userId);
+        .eq("action", "blocked")
+        .gte("created_at", since);
+      if ((count ?? 0) >= SUSPENSION_THRESHOLD) {
+        // Suspension RÉVERSIBLE, jamais de suppression : l'IA et la publication
+        // sont coupées et un admin tranche (réactivation possible). On ne
+        // réécrit pas une suspension déjà posée.
+        await admin
+          .from("profiles")
+          .update({
+            suspended_at: new Date().toISOString(),
+            suspended_reason: `KarlMada : ${SUSPENSION_THRESHOLD} blocages en 30 jours (dernier : ${match.category}).`,
+          })
+          .eq("user_id", userId)
+          .is("suspended_at", null);
       }
     }
   } catch {

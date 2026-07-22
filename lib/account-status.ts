@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { isActiveSubscriptionStatus } from "@/lib/plans";
 
 export type AccountStatus =
+  | "suspended"
   | "subscribed"
   | "credits_active"
   | "credits_expired"
@@ -53,11 +54,12 @@ export async function loadAccountAccess(userId: string): Promise<AccountAccess> 
   ] = await Promise.all([
     admin
       .from("profiles")
-      .select("trial_ends_at, subscription_status")
+      .select("trial_ends_at, subscription_status, suspended_at")
       .eq("user_id", userId)
       .maybeSingle<{
         trial_ends_at: string | null;
         subscription_status: string | null;
+        suspended_at: string | null;
       }>(),
     admin
       .from("credit_purchases")
@@ -74,6 +76,19 @@ export async function loadAccountAccess(userId: string): Promise<AccountAccess> 
   if (balanceError) throw new Error(`account_access_balance: ${balanceError.message}`);
 
   const creditBalance = typeof balance === "number" ? balance : 0;
+
+  // Suspension KarlMada : prioritaire sur tout le reste. Le compte reste en
+  // lecture seule (IA coupée) jusqu'à réactivation par un admin. Réversible.
+  if (profile?.suspended_at) {
+    return {
+      status: "suspended",
+      isSubscribed: false,
+      aiAllowed: false,
+      lastPurchaseAt: purchase?.created_at ?? null,
+      aiExpiresAt: null,
+      creditBalance,
+    };
+  }
 
   if (isActiveSubscriptionStatus(profile?.subscription_status)) {
     return {

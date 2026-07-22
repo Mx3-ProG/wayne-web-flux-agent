@@ -237,6 +237,41 @@ export async function inviteAdmin(
     : { message: "Rôle créé, mais l’email n’a pas pu être envoyé." };
 }
 
+// Suspension / réactivation d'un compte marchand. La suspension coupe l'IA et
+// la publication (loadAccountAccess) ; elle est toujours réversible ici. Ne
+// supprime jamais de données.
+export async function setAccountSuspension(formData: FormData) {
+  const context = await requireAdmin("sites.moderate");
+  const userId = z.string().uuid().safeParse(formData.get("userId"));
+  const suspend = String(formData.get("suspend") ?? "") === "true";
+  const rawReason = String(formData.get("reason") ?? "").trim();
+  if (!userId.success) throw new Error("Utilisateur invalide");
+  if (suspend && !reasonSchema.safeParse(rawReason).success) {
+    throw new Error("Un motif de suspension est requis");
+  }
+  const admin = createAdminClient();
+  const { data: before } = await admin
+    .from("profiles")
+    .select("suspended_at, suspended_reason")
+    .eq("user_id", userId.data)
+    .maybeSingle();
+  const after = suspend
+    ? { suspended_at: new Date().toISOString(), suspended_reason: rawReason }
+    : { suspended_at: null, suspended_reason: null };
+  const { error } = await admin.from("profiles").update(after).eq("user_id", userId.data);
+  if (error) throw new Error("Mise à jour impossible");
+  await writeAdminAudit({
+    actorId: context.userId,
+    action: suspend ? "account.suspend" : "account.reactivate",
+    targetType: "profile",
+    targetId: userId.data,
+    reason: suspend ? rawReason : null,
+    before,
+    after,
+  });
+  revalidatePath(`${adminBasePath()}/utilisateurs/${userId.data}`);
+}
+
 export async function updateAdminMembership(formData: FormData) {
   const context = await requireAdmin(undefined, { superadmin: true });
   const userId = z.string().uuid().safeParse(formData.get("userId"));

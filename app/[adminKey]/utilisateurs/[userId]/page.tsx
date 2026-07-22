@@ -4,6 +4,7 @@ import { can, requireAdmin } from "@/lib/admin/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatAdminDate, formatSeconds } from "@/lib/admin/format";
 import { CreditAdjustForm } from "@/components/admin/credit-adjust-form";
+import { setAccountSuspension } from "../../admin-actions";
 import type { Profile } from "@/lib/types";
 import styles from "../../admin.module.css";
 
@@ -85,6 +86,7 @@ export default async function UserAdminDetail({ params }: { params: Promise<{ ad
   const contactRows = [...contacts.values()].sort((a, b) => b.lastActivity.localeCompare(a.lastActivity));
   const canSeeCustomers = can(context.membership, "customers.read");
   const canManageCredits = can(context.membership, "credits.manage");
+  const canModerate = can(context.membership, "sites.moderate");
   const pageById = new Map((pages ?? []).map((page) => [page.id, page.business_name || page.slug]));
 
   return (
@@ -100,6 +102,24 @@ export default async function UserAdminDetail({ params }: { params: Promise<{ ad
         <div className={styles.card}><span className={styles.label}>Crédits</span><p className={styles.metric}>{balance}</p></div>
         <div className={styles.card}><span className={styles.label}>Tokens IA</span><p className={styles.metric}>{inputTokens + outputTokens}</p><small>{inputTokens} entrée · {outputTokens} sortie</small></div>
       </div>
+
+      {profile.suspended_at && (
+        <section className={`${styles.section} ${styles.card}`} style={{ borderLeft: "3px solid #c0392b" }}>
+          <h2>⛔ Compte suspendu</h2>
+          <p>Suspendu le {formatAdminDate(profile.suspended_at)}. IA et publication coupées.</p>
+          {profile.suspended_reason && <p className={styles.muted}>{profile.suspended_reason}</p>}
+        </section>
+      )}
+
+      {canModerate && <section className={`${styles.section} ${styles.card}`}>
+        <h2>{profile.suspended_at ? "Réactiver le compte" : "Suspendre le compte"}</h2>
+        <form action={setAccountSuspension} className={styles.form}>
+          <input type="hidden" name="userId" value={userId} />
+          <input type="hidden" name="suspend" value={profile.suspended_at ? "false" : "true"} />
+          {!profile.suspended_at && <input name="reason" maxLength={500} placeholder="Motif de la suspension" required />}
+          <button type="submit">{profile.suspended_at ? "Réactiver" : "Suspendre"}</button>
+        </form>
+      </section>}
 
       {canManageCredits && <section className={`${styles.section} ${styles.card}`}><h2>Ajuster les crédits</h2><CreditAdjustForm userId={userId} balance={balance} /></section>}
 
