@@ -8,6 +8,7 @@ import { LOCALE_LABELS, locales, type Locale } from "@/lib/i18n/config";
 import { ACCOUNT_LANGUAGE_CHANGE_COST } from "@/lib/plans";
 import { useI18n } from "@/components/i18n-provider";
 import styles from "./dashboard-language-switcher.module.css";
+import { useAssistantMenuPresence } from "@/components/assistant/use-assistant-menu-presence";
 
 const FLAGS: Record<Locale, string> = {
   fr: "🇫🇷", en: "🇬🇧", es: "🇪🇸", de: "🇩🇪", it: "🇮🇹", ru: "🇷🇺", zh: "🇨🇳", ja: "🇯🇵", ar: "🇸🇦",
@@ -19,6 +20,8 @@ export function DashboardLanguageSwitcher() {
   const router = useRouter();
   const [pending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
+  const [open, setOpen] = useState(false);
+  useAssistantMenuPresence("dashboard-language-switcher", open);
 
   function select(target: Locale) {
     if (target === locale || pending) return;
@@ -46,7 +49,7 @@ export function DashboardLanguageSwitcher() {
   }
 
   return (
-    <details className={styles.switcher}>
+    <details className={styles.switcher} onToggle={(event) => setOpen(event.currentTarget.open)}>
       <summary aria-label={dictionary.language.aria}>
         <Globe2 aria-hidden="true" />
         <span>{FLAGS[locale]}</span>

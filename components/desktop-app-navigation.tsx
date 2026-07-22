@@ -27,6 +27,7 @@ import { CreditsLink } from "@/components/credits-link";
 import { DashboardLanguageSwitcher } from "@/components/dashboard-language-switcher";
 import { useI18n } from "@/components/i18n-provider";
 import styles from "@/components/desktop-app-navigation.module.css";
+import { useAssistantMenuPresence } from "@/components/assistant/use-assistant-menu-presence";
 
 type Project = { id: string; business_name: string; slug: string };
 
@@ -90,6 +91,7 @@ export function DesktopAppNavigation({
   ];
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  useAssistantMenuPresence("dashboard-desktop-navigation", open);
 
   useEffect(() => {
     const mobileQuery = window.matchMedia("(max-width: 979px)");

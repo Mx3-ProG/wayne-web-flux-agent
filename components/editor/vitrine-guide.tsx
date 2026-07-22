@@ -20,7 +20,7 @@ import { toast } from "sonner";
 import type { Page } from "@/lib/types";
 import { FONTS } from "@/lib/verticals";
 import { VITRINE_THEMES } from "@/lib/vitrine-themes";
-import { designKitPatch, resolveVitrineDesign } from "@/lib/vitrine-design/resolver";
+import { designKitPatch, legacyAppearance, resolveStorefrontPresentation } from "@/lib/vitrine-design/resolver";
 import { VITRINE_ASSIST_COST, SITE_GENERATE_COST } from "@/lib/plans";
 import { PREFILL_COST } from "@/lib/tools-config";
 import { saveVitrineGuide } from "@/app/(app)/ma-page/actions";
@@ -155,6 +155,7 @@ export function VitrineGuide({
         theme: page.theme,
         font: page.font,
         colors: page.colors,
+        appearance: page.appearance,
         typography: page.typography,
         design: page.design,
       });
@@ -296,8 +297,8 @@ export function VitrineGuide({
                 </select>
               </label>
               <div className={styles.colorFields}>
-                <label><span>{t.details.primary}</span><input type="color" value={page.colors.primary ?? "#ef233c"} onChange={(event) => patch({ colors: { ...page.colors, primary: event.target.value } })} /></label>
-                <label><span>{t.details.dark}</span><input type="color" value={page.colors.dark ?? "#111114"} onChange={(event) => patch({ colors: { ...page.colors, dark: event.target.value } })} /></label>
+                <label><span>{t.details.primary}</span><input type="color" value={legacyAppearance(page).accent} onChange={(event) => patch({ appearance: { ...legacyAppearance(page), accent: event.target.value } })} /></label>
+                <label><span>Ambiance</span><select value={legacyAppearance(page).mode} onChange={(event) => patch({ appearance: { ...legacyAppearance(page), mode: event.target.value as "light" | "dark" } })}><option value="light">Claire</option><option value="dark">Sombre</option></select></label>
               </div>
               <Field label={t.details.phone} value={page.phone} maxLength={30} placeholder={t.details.phonePlaceholder} onChange={(phone) => {
                 const syncFloatingNumber = page.floating_cta && (!page.floating_cta.number || page.floating_cta.number === page.phone);
@@ -397,10 +398,10 @@ function Field({ label, value, placeholder, maxLength, onChange }: { label: stri
 }
 
 function VitrinePreview({ page, dict }: { page: Page; dict: DashboardDict["vitrineGuide"]["preview"] }) {
-  const design = resolveVitrineDesign(page.theme, page.design);
+  const design = resolveStorefrontPresentation(page);
   const font = FONTS.find((item) => item.id === page.font)?.css ?? FONTS[0].css;
-  const primary = page.colors.primary ?? "#ef233c";
-  const dark = page.colors.dark ?? "#111114";
+  const primary = design.tokens.accent;
+  const dark = design.tokens.hero;
 
   return (
     <div

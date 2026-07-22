@@ -13,7 +13,7 @@ import { validateSections } from "@/lib/sections";
 import { slugify } from "@/lib/slug";
 import type { PageDraftFields, Plan } from "@/lib/types";
 import { enforceKarlMada, KARLMADA_BLOCK_MESSAGE } from "@/lib/karlmada";
-import { designConfigError } from "@/lib/vitrine-design/resolver";
+import { appearanceConfigError, designConfigError } from "@/lib/vitrine-design/resolver";
 
 // Crée la vitrine initiale : slug unique, prestations pré-remplies selon le
 // métier, horaires par défaut (mar-sam 9h-19h), textes légaux générés.
@@ -200,6 +200,10 @@ export async function savePageFields(
     const designError = designConfigError(fields.design);
     if (designError) return { error: designError };
   }
+  if (fields.appearance) {
+    const appearanceError = appearanceConfigError(fields.appearance);
+    if (appearanceError) return { error: appearanceError };
+  }
   const supabase = await createClient();
   if (fields.hide_branding === true) {
     const { data: allowed, error: entitlementError } = await supabase.rpc(
@@ -215,6 +219,28 @@ export async function savePageFields(
   });
   if (error) return { error: "save_failed" };
   revalidatePath("/ma-page");
+  return {};
+}
+
+// Réglage fonctionnel immédiat : il ne modifie aucun contenu de la vitrine et
+// n'attend donc pas la prochaine publication payante.
+export async function setStorefrontAssistantEnabled(
+  pageId: string,
+  enabled: boolean,
+): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return { error: "Non connecté." };
+  const { data: page, error } = await supabase
+    .from("pages")
+    .update({ assistant_enabled: enabled })
+    .eq("id", pageId)
+    .eq("user_id", user.id)
+    .select("slug")
+    .single<{ slug: string }>();
+  if (error || !page) return { error: "Réglage impossible." };
+  revalidatePath("/ma-page");
+  revalidatePath(`/p/${page.slug}`);
   return {};
 }
 

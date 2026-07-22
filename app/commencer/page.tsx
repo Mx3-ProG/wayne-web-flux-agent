@@ -12,6 +12,7 @@ import { languageAlternates } from "@/lib/i18n/seo";
 import { getLocalizedVerticals, getCatalogWording, getLocalizedFonts } from "@/lib/verticals-i18n";
 import { Tunnel } from "./tunnel";
 import { PreAccountStart } from "@/components/tunnel/pre-account-start";
+import { FluxAssistantHost } from "@/components/assistant/flux-assistant-host";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
@@ -57,7 +58,14 @@ export default async function CommencerPage() {
     hybrid: catalogWordingHybrid,
   };
 
-  if (!user) return <PreAccountStart dict={dict} locale={locale} />;
+  if (!user) {
+    return (
+      <>
+        <PreAccountStart dict={dict} locale={locale} />
+        <FluxAssistantHost surface="onboarding" />
+      </>
+    );
+  }
 
   const [profileResult, journey] = await Promise.all([
     supabase
@@ -129,6 +137,14 @@ export default async function CommencerPage() {
         balance={journey.balance}
         generationCount={journey.signals.generationCount}
         upcomingBookings={journey.signals.upcomingBookings}
+      />
+      <FluxAssistantHost
+        surface="onboarding"
+        context={{
+          activeProjectId: journey.page?.id,
+          journey: journey.signals,
+        }}
+        persistToAccount
       />
     </>
   );

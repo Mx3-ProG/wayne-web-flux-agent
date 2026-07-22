@@ -2,6 +2,8 @@ import Link from "next/link";
 import { requireAdmin } from "@/lib/admin/auth";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { formatAdminDate } from "@/lib/admin/format";
+import { emailConfigStatus } from "@/lib/emails/send";
+import { EmailDiagnostic } from "@/components/admin/email-diagnostic";
 import styles from "../admin.module.css";
 
 export default async function SecurityAdminPage({ params }: { params: Promise<{ adminKey: string }> }) {
@@ -18,6 +20,10 @@ export default async function SecurityAdminPage({ params }: { params: Promise<{ 
     <>
       <h1 className={styles.title}>Sécurité et activité</h1>
       <p className={styles.muted}>Audit administratif immuable, incidents et connexions récentes.</p>
+      <section className={`${styles.section} ${styles.card}`}>
+        <h2>Diagnostic email (Resend)</h2>
+        <EmailDiagnostic config={emailConfigStatus()} />
+      </section>
       <div className={styles.grid}>
         <div className={styles.card}><span className={styles.label}>Audits chargés</span><p className={styles.metric}>{audits?.length ?? 0}</p></div>
         <div className={styles.card}><span className={styles.label}>Événements applicatifs</span><p className={styles.metric}>{activity?.length ?? 0}</p></div>

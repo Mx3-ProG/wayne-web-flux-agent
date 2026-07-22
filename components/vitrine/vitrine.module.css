@@ -59,6 +59,9 @@
 .offer { position: relative; z-index: 5; display: flex; padding: 10px 20px; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; color: #fff; font-size: 11px; font-weight: 750; letter-spacing: .025em; text-align: center; }
 .offerCountdown { padding: 2px 10px; border-radius: 999px; background: rgb(0 0 0 / 22%); font-variant-numeric: tabular-nums; }
 .offerCode { padding: 2px 10px; border: 1px dashed rgb(255 255 255 / 65%); border-radius: 999px; background: transparent; color: #fff; cursor: pointer; font: inherit; letter-spacing: .06em; }
+.page[data-has-promo="true"] { padding-top: 64px; }
+.page[data-has-promo="true"] > .offer { position: fixed; inset: 0 0 auto; min-height: 64px; }
+.page[data-has-promo="true"] .navSticky { inset-block-start: 76px; }
 .hero { position: relative; min-height: clamp(520px, 72svh, 760px); display: grid; place-items: center; overflow: hidden; padding: 115px max(24px, 6cqi) 80px; background: radial-gradient(circle at 75% 10%, color-mix(in srgb, var(--client-accent) 26%, transparent), transparent 38%), var(--client-dark); color: #f8f5f1; }
 .hero::after { position: absolute; inset: auto 0 0; height: 22%; background: linear-gradient(transparent, rgb(0 0 0 / 22%)); content: ""; pointer-events: none; }
 .heroImage { object-fit: cover; transform: scale(1.02); animation: heroImageIn 1.2s cubic-bezier(.2,.7,.2,1) both; }
@@ -160,6 +163,16 @@
 .tagline { max-width: 610px; margin-top: 24px; color: rgb(255 255 255 / 74%); font-size: clamp(14px, 1.7cqi, 18px); line-height: 1.65; }
 .heroActions { display: flex; margin-top: 34px; align-items: center; gap: 20px; flex-wrap: wrap; }
 .heroCta, .bookButton { display: inline-flex; min-height: 48px; padding: 0 20px; align-items: center; gap: 9px; border: 0; border-radius: 999px; background: var(--client-accent); color: #fff; font-size: 12px; font-weight: 700; text-decoration: none; }
+/* Le texte des boutons accent par défaut suit le token de contraste calculé
+   par le résolveur. Placée ici (avant les variantes data-design-button), elle
+   ne prime pas sur les recettes qui imposent leur propre fond et texte
+   (button-couture, button-outline-luxe, button-orbit, button-performance,
+   prestige…) — sinon leur couleur de texte explicite serait écrasée par un
+   texte pensé pour un fond accent, invisible sur un fond blanc ou sombre.  */
+.page[data-design-version="2"] .heroCta,
+.page[data-design-version="2"] .bookButton,
+.page[data-design-version="2"] .addButton,
+.page[data-design-version="2"] .newsletterForm button { color: var(--client-accent-text); }
 .page[data-design-button="button-smooth-flux"] .heroCta,
 .page[data-design-button="button-smooth-flux"] .bookButton,
 .page[data-design-button="button-smooth-flux"] .addButton,
@@ -812,14 +825,74 @@
 .sectionShell[data-spacing="normal"] .sectionShellInner { padding-block: clamp(72px, 10cqi, 112px); }
 .sectionShell[data-spacing="large"] .sectionShellInner { padding-block: clamp(104px, 14cqi, 168px); }
 .sectionShell[data-align="center"] .sectionShellInner { text-align: center; }
+.sectionShell[data-align="center"] .sectionHeading,
+.sectionShell[data-align="center"] .textBody,
+.sectionShell[data-align="center"] .aboutBody,
+.sectionShell[data-align="center"] .imageTextBody,
+.sectionShell[data-align="center"] .newsletterForm { margin-inline: auto; }
+.sectionShell[data-align="center"] .textBody,
+.sectionShell[data-align="center"] .aboutBody,
+.sectionShell[data-align="center"] .imageTextBody { max-width: 720px; justify-items: center; }
+.sectionShell[data-align="center"] .sectionHeading > span { margin-inline: auto; }
+.sectionShell[data-align="center"] .heroActions,
+.sectionShell[data-align="center"] .newsletterForm { justify-content: center; }
+.sectionShell[data-align="center"] .about { grid-template-columns: minmax(220px, 340px) minmax(0, 720px); justify-content: center; }
+.sectionShell[data-align="center"] .about:not(:has(.aboutPhoto)) { grid-template-columns: minmax(0, 720px); }
+.sectionShell[data-align="center"] .imageText:not(:has(.imageTextImage)) { grid-template-columns: minmax(0, 720px); justify-content: center; }
+.sectionShell[data-align="center"] .gallery,
+.sectionShell[data-align="center"] .reviews,
+.sectionShell[data-align="center"] .shopGrid { margin-inline: auto; }
 .sectionShell[data-surface="dark"] { color: #f8f5f1; }
-.sectionShell[data-surface="dark"] .sectionShellInner { --store-text: #f8f5f1; --store-muted: rgb(248 245 241 / 72%); }
+.sectionShell[data-surface="dark"] .sectionShellInner { --store-text: #f8f5f1; --store-muted: rgb(248 245 241 / 72%); --store-surface: rgb(255 255 255 / 8%); --store-line: rgb(255 255 255 / 16%); }
+.sectionShell[data-surface="light"] { color: #171617; }
+.sectionShell[data-surface="light"] .sectionShellInner { --store-text: #171617; --store-muted: #625f60; --store-surface: rgb(23 22 23 / 5%); --store-line: rgb(23 22 23 / 18%); }
+.sectionShell[data-surface="mixed"] { color: #f8f5f1; }
+.sectionShell[data-surface="mixed"]::before { content: ""; position: absolute; inset: 0; z-index: 1; background: rgb(8 8 10 / 48%); pointer-events: none; }
+.sectionShell[data-surface="mixed"] .sectionShellInner { --store-text: #f8f5f1; --store-muted: rgb(248 245 241 / 78%); --store-surface: rgb(255 255 255 / 10%); --store-line: rgb(248 245 241 / 24%); }
 .sectionShellMedia { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .sectionShellOverlay { position: absolute; inset: 0; background: #0a0a0c; pointer-events: none; }
 .sectionShellInner { position: relative; z-index: 2; margin: 0 auto; }
 .sectionShellInner[data-width="narrow"] { width: min(720px, calc(100% - 36px)); }
 .sectionShellInner[data-width="normal"] { width: min(1040px, calc(100% - 36px)); }
 .sectionShellInner[data-width="full"] { width: calc(100% - 36px); }
+
+/* Moteur V2 : tokens sémantiques et compositions propres aux onze kits. */
+.page[data-design-version="2"] { background: var(--store-bg); color: var(--store-text); }
+.page[data-design-version="2"] .footer { background: var(--store-footer) !important; }
+.page[data-design-version="2"] .storeNav:not(.navTransparent) { background-color: var(--store-nav); }
+
+.page[data-layout-profile="magazine"] [data-section-type="texte"] .contentSection,
+.page[data-layout-profile="heritage"] [data-section-type="texte"] .contentSection { display: grid; grid-template-columns: minmax(220px, .72fr) minmax(0, 1.28fr); gap: clamp(28px, 6cqi, 84px); }
+.page[data-layout-profile="cinematic"] [data-section-type="texte"] .contentSection,
+.page[data-layout-profile="quiet-luxury"] [data-section-type="texte"] .contentSection,
+.page[data-layout-profile="showroom"] [data-section-type="texte"] .contentSection { max-width: 880px; margin-inline: auto; text-align: center; }
+.page[data-layout-profile="cinematic"] [data-section-type="texte"] .textBody,
+.page[data-layout-profile="quiet-luxury"] [data-section-type="texte"] .textBody,
+.page[data-layout-profile="showroom"] [data-section-type="texte"] .textBody { margin-inline: auto; }
+.page[data-layout-profile="local"] [data-section-type="a_propos"] .aboutPhoto { border-radius: 42% 42% 18px 18px; }
+.page[data-layout-profile="impact"] [data-section-type="texte"] .sectionHeading h2 { font-weight: 900; text-transform: uppercase; }
+.page[data-layout-profile="impact"] [data-section-type="texte"] .textBody { border-left: 5px solid var(--client-accent); padding-left: 24px; }
+.page[data-layout-profile="minimal"] .contentSection { border-top: 1px solid var(--store-line); padding-top: clamp(28px, 5cqi, 56px); }
+.page[data-layout-profile="neon"] [data-section-type="texte"] .contentSection { padding: clamp(28px, 5cqi, 56px); border: 1px solid color-mix(in srgb, var(--client-accent) 30%, var(--store-line)); background: radial-gradient(circle at 80% 10%, color-mix(in srgb, var(--client-accent) 15%, transparent), transparent 45%), var(--store-surface); }
+.page[data-layout-profile="performance"] [data-section-type="texte"] .contentSection { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(260px, .7fr); gap: 40px; border-top: 4px solid var(--client-accent); padding-top: 32px; }
+.page[data-layout-profile="collection"] [data-section-type="image_texte"] .imageText { grid-template-columns: 1.35fr .65fr; align-items: end; }
+
+/* Invariant d'alignement : un texte asymétrique (magazine, héritage, impact,
+   performance) demandé centré par le commerçant doit réellement recomposer
+   en colonne unique centrée, pas garder sa grille à deux colonnes avec un
+   simple text-align sur des colonnes toujours étroites. */
+.sectionShell[data-align="center"][data-section-type="texte"] .contentSection { display: block; max-width: 880px; margin-inline: auto; border: 0; padding-top: 0; }
+.sectionShell[data-align="center"][data-section-type="texte"] .textBody { margin-inline: auto; }
+
+@container storefront (max-width: 700px) {
+  .page[data-layout-profile] [data-section-type="texte"] .contentSection,
+  .page[data-layout-profile="performance"] [data-section-type="texte"] .contentSection { display: block; }
+  .page[data-layout-profile="magazine"] [data-section-type="texte"] .textBody,
+  .page[data-layout-profile="heritage"] [data-section-type="texte"] .textBody { margin-top: 24px; }
+  .page[data-layout-profile="collection"] [data-section-type="image_texte"] .imageText { grid-template-columns: 1fr; }
+  .sectionShell[data-align="center"] .about { grid-template-columns: 1fr; }
+  .sectionShell[data-align="center"] .aboutPhoto { margin-inline: auto; }
+}
 
 /* Typographie fine (pages.typography) : échelle des titres et police de
    titres dédiée. Les overrides ne s'activent que si l'attribut est posé —

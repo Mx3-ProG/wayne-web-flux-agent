@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useState } from "react";
 import { Check, ChevronDown, Globe } from "lucide-react";
 import {
   defaultLocale,
@@ -11,6 +12,7 @@ import {
   type Locale,
 } from "@/lib/i18n/config";
 import styles from "./language-switcher.module.css";
+import { useAssistantMenuPresence } from "@/components/assistant/use-assistant-menu-presence";
 
 /**
  * Sélecteur de langue des pages marketing. Le français vit sans préfixe
@@ -25,6 +27,8 @@ export function LanguageSwitcher({
   ariaLabel: string;
 }) {
   const pathname = usePathname() || "/";
+  const [open, setOpen] = useState(false);
+  useAssistantMenuPresence("marketing-language-switcher", open);
 
   // Chemin canonique sans préfixe de langue.
   const first = pathname.split("/")[1] ?? "";
@@ -40,7 +44,7 @@ export function LanguageSwitcher({
   }
 
   return (
-    <details className={styles.switcher}>
+    <details className={styles.switcher} onToggle={(event) => setOpen(event.currentTarget.open)}>
       <summary aria-label={ariaLabel}>
         <Globe aria-hidden="true" />
         <span>{LOCALE_LABELS[locale]}</span>

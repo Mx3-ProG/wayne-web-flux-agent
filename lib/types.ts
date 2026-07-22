@@ -94,6 +94,14 @@ export type PageColors = {
   heroGradient?: boolean;
 };
 
+// Contrat V2 : le commerçant choisit une intention, le moteur dérive les
+// surfaces et contrastes. `colors` reste lu pour les vitrines historiques.
+export type PageAppearance = {
+  accent: string;
+  mode: "light" | "dark";
+  allowVisitorModeToggle: boolean;
+};
+
 export type PageTheme =
   | "editorial"
   | "studio"
@@ -163,6 +171,7 @@ export type Page = {
   phone: string;
   socials: Record<string, string>;
   colors: PageColors;
+  appearance?: PageAppearance | null;
   font: string;
   theme: PageTheme;
   logo_url: string | null;
@@ -181,9 +190,12 @@ export type Page = {
   hide_branding: boolean;
   navigation: PageNavigation | null;
   scroll_top: boolean;
+  // Aide déterministe proposée aux visiteurs de la vitrine (opt-in).
+  assistant_enabled: boolean;
   typography: PageTypography;
   // Registre de conception composable. Absent = kit dérivé de `theme`.
   design: PageDesign | null;
+  design_engine_version?: number;
   moderation_status: ShopModerationStatus;
   verified_by: string | null;
   verified_at: string | null;
@@ -215,6 +227,7 @@ export type PageDraftFields = Pick<
   | "phone"
   | "socials"
   | "colors"
+  | "appearance"
   | "font"
   | "theme"
   | "logo_url"

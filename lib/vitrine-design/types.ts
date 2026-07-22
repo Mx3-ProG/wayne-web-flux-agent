@@ -1,4 +1,5 @@
-import type { PageColors, PageTheme, PageTypography } from "@/lib/types";
+import type { PageAppearance, PageColors, PageTheme, PageTypography } from "@/lib/types";
+import type { SectionType } from "@/lib/sections";
 
 export const DESIGN_SLOTS = [
   "button", "navigation", "header", "footer", "section", "category",
@@ -40,6 +41,17 @@ export type DesignKit = {
   tags: string[];
   status: DesignStatus;
   premium?: boolean;
+  version: 2;
+  layoutProfile: "magazine" | "cinematic" | "local" | "impact" | "quiet-luxury" | "minimal" | "neon" | "showroom" | "performance" | "heritage" | "collection";
+  supportedModes: Array<PageAppearance["mode"]>;
+  compatibleComponents: Record<DesignSlot, string[]>;
+  sectionRecipes: Record<SectionType, string>;
+  rules: {
+    density: "compact" | "balanced" | "spacious";
+    radius: "none" | "small" | "soft" | "round";
+    media: "contained" | "editorial" | "immersive";
+    motion: "quiet" | "editorial" | "dynamic";
+  };
   defaults: {
     colors: Required<PageColors>;
     font: string;
@@ -59,4 +71,26 @@ export type ResolvedVitrineDesign = {
   kit: DesignKit;
   components: Record<DesignSlot, DesignEntry>;
   voice: VoiceArchetype;
+};
+
+export type StorefrontTokens = {
+  background: string;
+  surface: string;
+  elevated: string;
+  text: string;
+  muted: string;
+  line: string;
+  accent: string;
+  accentText: string;
+  hero: string;
+  navigation: string;
+  footer: string;
+};
+
+export type ResolvedStorefrontPresentation = ResolvedVitrineDesign & {
+  version: 2;
+  appearance: PageAppearance;
+  tokens: StorefrontTokens;
+  warnings: string[];
+  sectionRecipes: Record<SectionType, string>;
 };

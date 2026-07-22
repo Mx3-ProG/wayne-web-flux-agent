@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowRight, CalendarClock, LayoutGrid, Sparkles, TrendingUp } from "lucide-react";
 import { FluxBrand } from "@/components/flux-brand";
+import { FluxContextCard } from "@/components/assistant/flux-context-card";
 import styles from "./invitation.module.css";
 
 export const metadata = {
@@ -50,6 +51,8 @@ export default function InvitationPage() {
           agenda et vos contenus dans un seul espace — une connexion, tout votre
           business sous les yeux.
         </p>
+
+        <FluxContextCard messageId="marketing-invitation" />
 
         <div className={styles.benefits}>
           {BENEFITS.map(({ icon: Icon, title, text }) => (

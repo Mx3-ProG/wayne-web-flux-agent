@@ -1,0 +1,24 @@
+.card { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; align-items: center; gap: 16px; }
+.icon { display: grid; width: 46px; height: 46px; place-items: center; border-radius: 14px; background: rgb(239 35 60 / 9%); color: var(--ww-red-soft); }
+.icon svg { width: 21px; }
+.copy h3 { font-size: 14px; }
+.copy p { margin-top: 5px; color: var(--ww-muted); font-size: 11px; line-height: 1.55; }
+.copy small { display: flex; margin-top: 8px; align-items: center; gap: 5px; color: #c8a66b; font-size: 10px; }
+.copy small svg { width: 13px; }
+.copy .saved { color: var(--ww-success); }
+.actions { display: flex; align-items: center; gap: 8px; }
+.actions button { min-height: 40px; border: 1px solid var(--ww-line); border-radius: 999px; color: var(--ww-muted); font: inherit; font-size: 10px; font-weight: 750; cursor: pointer; }
+.actions button[role="switch"] { display: flex; padding: 0 13px 0 6px; align-items: center; gap: 8px; background: rgb(255 255 255 / 4%); }
+.actions button[role="switch"] span { width: 24px; height: 24px; border-radius: 50%; background: #68646c; transition: background .18s ease; }
+.actions button[role="switch"][data-active="true"] { border-color: rgb(255 99 120 / 26%); color: var(--ww-text); }
+.actions button[role="switch"][data-active="true"] span { background: var(--ww-red); box-shadow: inset 0 0 0 7px #fff; }
+.actions .resume { padding: 0 13px; background: transparent; }
+
+@media (max-width: 680px) {
+  .card { grid-template-columns: 42px 1fr; }
+  .actions { grid-column: 1 / -1; flex-wrap: wrap; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .actions button[role="switch"] span { transition: none; }
+}

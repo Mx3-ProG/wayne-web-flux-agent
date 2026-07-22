@@ -35,6 +35,12 @@ export const FluxColorsSchema = z.object({
   heroGradient: z.boolean().optional(),
 });
 
+export const FluxAppearanceSchema = z.object({
+  accent: HexColor,
+  mode: z.enum(["light", "dark"]),
+  allowVisitorModeToggle: z.boolean().default(true),
+});
+
 export const FluxSeoSchema = z.object({
   title: z.string().max(70).optional(),
   description: z.string().max(200).optional(),
@@ -84,7 +90,7 @@ export const FluxWritableFieldsSchema = z.object({
   seo: FluxSeoSchema.optional(),
   theme: z.enum(enumValues(PAGE_THEMES)).optional(),
   font: z.string().max(40).optional(),
-  colors: FluxColorsSchema.optional(),
+  appearance: FluxAppearanceSchema.optional(),
   typography: FluxTypographySchema.optional(),
   design: FluxDesignSchema.optional(),
 });
@@ -150,10 +156,7 @@ export const FluxSiteOutputSchema = z.object({
     description: z.string().max(200),
   }),
   theme: z.enum(enumValues(PAGE_THEMES)),
-  colors: z.object({
-    primary: HexColor,
-    dark: HexColor,
-  }),
+  appearance: FluxAppearanceSchema,
   design: FluxDesignSchema,
   // Cible « 2 à 5 » portée par le prompt ; revalidation tolérante (1 à 6, la
   // réparation borne à 5). Même raison que la FAQ : ne pas rejeter après

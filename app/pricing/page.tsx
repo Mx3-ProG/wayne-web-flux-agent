@@ -11,6 +11,7 @@ import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { localeHref } from "@/lib/i18n/config";
 import { languageAlternates } from "@/lib/i18n/seo";
 import { formatNumber } from "@/lib/i18n/format";
+import { FluxPlanSelector } from "@/components/assistant/flux-plan-selector";
 import styles from "./pricing.module.css";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -56,6 +57,8 @@ export default async function PricingPage() {
           </div>
         </section>
 
+        <FluxPlanSelector />
+
         <section className={styles.section} aria-labelledby="plans-title">
           <div className={styles.sectionHeading}>
             <div><p>{dict.plans.kicker}</p><h2 id="plans-title">{dict.plans.title}</h2></div>
@@ -67,7 +70,7 @@ export default async function PricingPage() {
               const featured = plan === "business";
               const planName = dict.planNames[plan];
               return (
-                <article className={featured ? styles.planFeatured : styles.plan} key={plan}>
+                <article id={`plan-${plan}`} className={featured ? styles.planFeatured : styles.plan} key={plan}>
                   <div className={styles.planTop}>
                     <span>{planName}</span>
                     {featured && <small>{dict.plans.featured}</small>}

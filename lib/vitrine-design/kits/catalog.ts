@@ -1,3 +1,5 @@
+import type { PageTheme } from "@/lib/types";
+import type { SectionType } from "@/lib/sections";
 import type { DesignKit, DesignSlot } from "../types";
 
 const shared = {
@@ -6,6 +8,39 @@ const shared = {
   booking: "booking-modal", legal: "legal-modal", checkout: "checkout-future",
 } satisfies Partial<Record<DesignSlot, string>>;
 
+const sectionTypes: SectionType[] = [
+  "promo", "offres", "boutique", "prestations", "galerie", "avis", "horaires",
+  "texte", "image_texte", "faq", "a_propos", "avant_apres", "carte",
+  "google_business", "newsletter", "video",
+];
+
+const profiles: Record<PageTheme, Pick<DesignKit, "layoutProfile" | "rules">> = {
+  editorial: { layoutProfile: "magazine", rules: { density: "spacious", radius: "small", media: "editorial", motion: "editorial" } },
+  studio: { layoutProfile: "cinematic", rules: { density: "spacious", radius: "soft", media: "immersive", motion: "editorial" } },
+  local: { layoutProfile: "local", rules: { density: "balanced", radius: "round", media: "contained", motion: "quiet" } },
+  bold: { layoutProfile: "impact", rules: { density: "compact", radius: "small", media: "editorial", motion: "dynamic" } },
+  luxe: { layoutProfile: "quiet-luxury", rules: { density: "spacious", radius: "none", media: "editorial", motion: "quiet" } },
+  minimal: { layoutProfile: "minimal", rules: { density: "spacious", radius: "small", media: "contained", motion: "quiet" } },
+  neon: { layoutProfile: "neon", rules: { density: "balanced", radius: "soft", media: "immersive", motion: "dynamic" } },
+  prestige: { layoutProfile: "showroom", rules: { density: "spacious", radius: "none", media: "immersive", motion: "editorial" } },
+  "performance-gt": { layoutProfile: "performance", rules: { density: "compact", radius: "none", media: "immersive", motion: "dynamic" } },
+  "rosso-editorial": { layoutProfile: "heritage", rules: { density: "spacious", radius: "none", media: "editorial", motion: "editorial" } },
+  "maison-couture": { layoutProfile: "collection", rules: { density: "balanced", radius: "none", media: "editorial", motion: "quiet" } },
+};
+
+function curatedComponents(
+  choices: DesignKit["components"]
+): DesignKit["compatibleComponents"] {
+  const compatible = Object.fromEntries(
+    Object.entries(choices).map(([slot, id]) => [slot, [id]])
+  ) as DesignKit["compatibleComponents"];
+  compatible.button = Array.from(new Set([choices.button, "button-pill", "button-smooth-flux"]));
+  compatible.navigation = Array.from(new Set([choices.navigation, "navigation-glass", "navigation-minimal"]));
+  compatible.header = Array.from(new Set([choices.header, "header-editorial", "header-centered"]));
+  compatible.section = Array.from(new Set([choices.section, "section-cards", "section-flat"]));
+  return compatible;
+}
+
 function kit(
   id: DesignKit["legacyTheme"], name: string, description: string,
   tags: string[], premium: boolean,
@@ -13,10 +48,18 @@ function kit(
   choices: Pick<DesignKit["components"], "button" | "navigation" | "header" | "section">,
   voiceArchetypeId: string
 ): DesignKit {
+  const components = { ...shared, ...choices } as Record<DesignSlot, string>;
+  const profile = profiles[id];
   return {
     id, legacyTheme: id, name, description, tags, premium: premium || undefined,
-    status: "stable", voiceArchetypeId, defaults,
-    components: { ...shared, ...choices } as Record<DesignSlot, string>,
+    version: 2, status: "stable", voiceArchetypeId, defaults,
+    ...profile,
+    supportedModes: ["light", "dark"],
+    compatibleComponents: curatedComponents(components),
+    sectionRecipes: Object.fromEntries(
+      sectionTypes.map((type) => [type, `${profile.layoutProfile}-${type}`])
+    ) as Record<SectionType, string>,
+    components,
   };
 }
 
@@ -32,4 +75,7 @@ export const DESIGN_KITS: DesignKit[] = [
   { ...kit("performance-gt", "Performance GT", "Immersif, angulaire et conçu comme une expérience automobile.", ["performance", "automobile", "cinématique"], true, { colors: { primary: "#f2c400", dark: "#090909", text: "#f5f5f2", background: "#0d0d0d", card: "#171717", heroGradient: true }, font: "montserrat", typography: { headingScale: "xl", headingFont: "bebas" } }, { button: "button-performance", navigation: "navigation-performance", header: "header-performance", section: "section-performance" }, "voice-direct"), components: { ...shared, button: "button-performance", navigation: "navigation-performance", header: "header-performance", footer: "footer-performance", section: "section-performance", category: "category-grid", product: "product-card" } as Record<DesignSlot, string> },
   { ...kit("rosso-editorial", "Rosso Editorial", "Élégant, passionné et construit comme un magazine de maison.", ["éditorial", "automobile", "héritage", "luxe"], true, { colors: { primary: "#d71920", dark: "#101010", text: "#f7f4f0", background: "#f3f0eb", card: "#ffffff", heroGradient: true }, font: "inter", typography: { headingScale: "xl", headingFont: "cormorant" } }, { button: "button-orbit", navigation: "navigation-heritage", header: "header-heritage", section: "section-editorial-mosaic" }, "voice-refined"), components: { ...shared, button: "button-orbit", navigation: "navigation-heritage", header: "header-heritage", footer: "footer-editorial", section: "section-editorial-mosaic", category: "category-grid", product: "product-minimal" } as Record<DesignSlot, string> },
   { ...kit("maison-couture", "Maison Couture", "Clair, silencieux et centré sur les collections et le service.", ["mode", "luxe", "collection", "e-commerce"], true, { colors: { primary: "#2b211c", dark: "#171513", text: "#1c1b1a", background: "#f7f6f3", card: "#f0efeb", heroGradient: false }, font: "inter", typography: { headingScale: "l", headingFont: "lora" } }, { button: "button-couture", navigation: "navigation-maison", header: "header-campaign", section: "section-collection-grid" }, "voice-refined"), components: { ...shared, button: "button-couture", navigation: "navigation-maison", header: "header-campaign", footer: "footer-maison", section: "section-collection-grid", category: "category-grid", product: "product-minimal" } as Record<DesignSlot, string> },
-];
+].map((entry) => ({
+  ...entry,
+  compatibleComponents: curatedComponents(entry.components),
+}));

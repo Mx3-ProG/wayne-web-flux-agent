@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Check, ChevronsUpDown, Plus } from "lucide-react";
 import { setActiveProject } from "@/app/(app)/projets/actions";
+import { useAssistantMenuPresence } from "@/components/assistant/use-assistant-menu-presence";
 
 type Project = { id: string; business_name: string; slug: string };
 
@@ -18,6 +19,7 @@ export function ProjectSwitcher({
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
+  useAssistantMenuPresence("dashboard-project-switcher", open);
   const [pending, startTransition] = useTransition();
 
   const active = projects.find((p) => p.id === activeId) ?? projects[0];

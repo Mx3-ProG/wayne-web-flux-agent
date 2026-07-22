@@ -10,7 +10,8 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Page } from "@/lib/types";
 import { Menu, Moon, Sun, X } from "lucide-react";
-import { isDarkTheme, useVisitorMode } from "./visitor-mode";
+import { useVisitorMode } from "./visitor-mode";
+import { resolveStorefrontPresentation } from "@/lib/vitrine-design/resolver";
 import { LanguageGlobe } from "./language-globe";
 import styles from "./vitrine.module.css";
 import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
@@ -37,7 +38,11 @@ export function VitrineHeader({
   availableLocales,
 }: Props) {
   const [open, setOpen] = useState(false);
-  const { effectiveDark, toggleMode } = useVisitorMode(isDarkTheme(page.theme));
+  const appearance = resolveStorefrontPresentation(page).appearance;
+  const { effectiveDark, toggleMode } = useVisitorMode(
+    appearance.mode === "dark",
+    appearance.allowVisitorModeToggle
+  );
   const nav = page.navigation;
   if (!nav) return null;
 
@@ -132,14 +137,14 @@ export function VitrineHeader({
             availableLocales={availableLocales}
           />
         )}
-        <button
+        {appearance.allowVisitorModeToggle && <button
           type="button"
           className={styles.modeToggle}
           onClick={toggleMode}
           aria-label={effectiveDark ? t.lightMode : t.darkMode}
         >
           {effectiveDark ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
-        </button>
+        </button>}
         {nav.cta?.label && (
           <a href={preview ? undefined : hrefOf("anchor", nav.cta.target)}>
             {nav.cta.label}

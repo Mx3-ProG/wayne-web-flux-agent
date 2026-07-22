@@ -32,8 +32,9 @@ const registryErrors = validateDesignRegistry();
 if (registryErrors.length > 0) throw new Error(`Registre de design invalide: ${registryErrors.join(" ")}`);
 
 export function componentsForSlot(slot: DesignSlot, kitId?: string): DesignEntry[] {
+  const kit = kitId ? DESIGN_KIT_BY_ID.get(kitId) : undefined;
   return DESIGN_COMPONENTS.filter(
-    (entry) => entry.slot === slot && (!entry.compatibleKits || !kitId || entry.compatibleKits.includes(kitId))
+    (entry) => entry.slot === slot && (!kit || kit.compatibleComponents[slot].includes(entry.id))
   );
 }
 

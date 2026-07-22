@@ -6,6 +6,8 @@ import { ServiceWorkerRegistration } from "@/components/service-worker-registrat
 import { getRequestLocale } from "@/lib/i18n/locale.server";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { LOCALE_BCP47, LOCALE_OG, isRtl } from "@/lib/i18n/config";
+import { MarketingAssistant } from "@/components/assistant/marketing-assistant";
+import { AssistantI18nProvider } from "@/components/assistant/assistant-i18n-provider";
 import "./globals.css";
 
 // Polices système auto-hébergées (voir les variables --font-* dans
@@ -63,11 +65,14 @@ export default async function RootLayout({
       className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col">
+        <AssistantI18nProvider locale={locale}>
         <FluxLoader />
         <ServiceWorkerRegistration />
         {children}
+        <MarketingAssistant />
         <CookieConsent />
         <Toaster />
+        </AssistantI18nProvider>
       </body>
     </html>
   );

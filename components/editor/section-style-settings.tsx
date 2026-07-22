@@ -53,16 +53,16 @@ export function SectionStyleSettings({ style, userId, onChange }: Props) {
         });
         break;
       case "image":
-        set({ background: { kind: "image", url: "", overlay: 0.35 } });
+        set({ background: { kind: "image", url: "", overlay: 0.45 } });
         break;
       case "video":
-        set({ background: { kind: "video", url: "", overlay: 0.35 } });
+        set({ background: { kind: "video", url: "", overlay: 0.45 } });
         break;
     }
   };
 
   const overlay =
-    bg && (bg.kind === "image" || bg.kind === "video") ? (bg.overlay ?? 0.35) : null;
+    bg && (bg.kind === "image" || bg.kind === "video") ? Math.max(bg.overlay ?? 0.45, 0.42) : null;
 
   return (
     <div className="space-y-4">
@@ -174,7 +174,7 @@ export function SectionStyleSettings({ style, userId, onChange }: Props) {
           <Label>{t.overlayLabel.replace("{percent}", String(Math.round(overlay * 100)))}</Label>
           <input
             type="range"
-            min={0}
+            min={0.42}
             max={0.8}
             step={0.05}
             value={overlay}

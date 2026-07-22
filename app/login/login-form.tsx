@@ -9,6 +9,7 @@ import { FluxBrand } from "@/components/flux-brand";
 import { FluxRouteLoader } from "@/components/flux-route-loader";
 import { localeHref, type Locale } from "@/lib/i18n/config";
 import type { AuthDict } from "@/lib/i18n/get-dictionary";
+import { FluxStepCoach } from "@/components/assistant/flux-step-coach";
 
 const initialState: AuthState = {};
 
@@ -45,6 +46,11 @@ export function LoginForm({
             <span><Sparkles aria-hidden="true" /></span>
             <div><h2>{dict.welcome}</h2><p>{dict.welcomeText}</p></div>
           </div>
+          <FluxStepCoach
+            messageId="marketing-login"
+            errorMessageId="marketing-login-error"
+            hasError={Boolean(loginState.error)}
+          />
           <form action={loginAction}>
             <label>
               <span>{dict.email}</span>

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Activity, Bot, Building2, LayoutDashboard, Shield, Users } from "lucide-react";
+import { Activity, Bot, Building2, LayoutDashboard, Palette, Shield, Users } from "lucide-react";
 import { adminEntryKey } from "@/lib/admin/config";
 import { can, getAdminContext } from "@/lib/admin/auth";
 import { MfaGate } from "@/components/admin/mfa-gate";
@@ -37,6 +37,7 @@ export default async function AdminLayout({
     { href: base, label: "Vue d’ensemble", icon: LayoutDashboard, show: true },
     { href: `${base}/utilisateurs`, label: "Utilisateurs", icon: Users, show: can(context.membership, "users.read") },
     { href: `${base}/boutiques`, label: "Boutiques", icon: Building2, show: can(context.membership, "sites.moderate") },
+    { href: `${base}/design-system`, label: "Design vitrines", icon: Palette, show: can(context.membership, "sites.moderate") },
     { href: `${base}/flux`, label: "FLUX", icon: Bot, show: can(context.membership, "flux.review") },
     { href: `${base}/securite`, label: "Sécurité", icon: Shield, show: can(context.membership, "security.read") },
     { href: `${base}/equipe`, label: "Équipe", icon: Activity, show: context.membership.role === "superadmin" },
@@ -65,4 +66,3 @@ export default async function AdminLayout({
     </div>
   );
 }
-

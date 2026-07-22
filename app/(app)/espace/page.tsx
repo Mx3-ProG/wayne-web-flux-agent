@@ -22,6 +22,8 @@ import {
   Store,
 } from "lucide-react";
 import styles from "./espace.module.css";
+import { FluxContextCard } from "@/components/assistant/flux-context-card";
+import { JOURNEY_GUIDANCE_BY_STEP } from "@/lib/assistant/guidance";
 
 export async function generateMetadata(): Promise<Metadata> {
   const supabase = await createClient();
@@ -239,6 +241,8 @@ export default async function EspacePage() {
           <small>{generations.length} {generations.length > 1 ? t.metrics.contentPlural : t.metrics.contentSingular}</small>
         </article>
       </section>
+
+      {nextStep && <FluxContextCard messageId={JOURNEY_GUIDANCE_BY_STEP[nextStep.n]} />}
 
       <div className={styles.sectionHeader}>
         <div><h2>{t.journey.title}</h2><p>{t.journey.subtitle}</p></div>

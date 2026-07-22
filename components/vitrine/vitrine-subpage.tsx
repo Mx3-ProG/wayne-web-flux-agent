@@ -20,7 +20,8 @@ import { SectionShell } from "./section-shell";
 import { VitrineShell } from "./vitrine-shell";
 import { VitrineHeader } from "./vitrine-header";
 import { LanguageGlobe } from "./language-globe";
-import { isDarkTheme, useVisitorMode } from "./visitor-mode";
+import { useVisitorMode } from "./visitor-mode";
+import { resolveStorefrontPresentation } from "@/lib/vitrine-design/resolver";
 import type { CategoryWithProducts, FamilyWithServices } from "./vitrine-view";
 import styles from "./vitrine.module.css";
 import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
@@ -62,9 +63,13 @@ export function VitrineSubpage({
   locale,
   availableLocales,
 }: Props) {
-  const { effectiveDark, toggleMode } = useVisitorMode(isDarkTheme(page.theme));
+  const presentation = resolveStorefrontPresentation(page);
+  const { effectiveDark, toggleMode } = useVisitorMode(
+    presentation.appearance.mode === "dark",
+    presentation.appearance.allowVisitorModeToggle
+  );
 
-  const accent = page.colors.primary || "#d31212";
+  const accent = presentation.tokens.accent;
   const font = getFont(page.font);
   const activeOffers = offers.filter((o) => o.active);
 
@@ -157,14 +162,14 @@ export function VitrineSubpage({
                 availableLocales={availableLocales}
               />
             )}
-            <button
+            {presentation.appearance.allowVisitorModeToggle && <button
               type="button"
               className={styles.modeToggle}
               onClick={toggleMode}
               aria-label={effectiveDark ? t.header.lightMode : t.header.darkMode}
             >
               {effectiveDark ? <Sun aria-hidden="true" /> : <Moon aria-hidden="true" />}
-            </button>
+            </button>}
             {!preview && <Link href={homeHref}>{t.subpage.home}</Link>}
           </span>
         </div>
@@ -203,6 +208,8 @@ export function VitrineSubpage({
               key={item.section.id}
               id={`s-${item.section.id}`}
               style={item.section.style}
+              sectionType={item.section.type}
+              recipe={presentation.sectionRecipes[item.section.type]}
             >
               <SectionRenderer section={item.section} first ctx={ctx} />
             </SectionShell>
@@ -230,7 +237,7 @@ export function VitrineSubpage({
                 />
               ) : (
                 // Ancre stable pour le menu de navigation (#s-<sectionId>).
-                <div key={entry.key} id={`s-${entry.section.id}`}>
+                <div key={entry.key} id={`s-${entry.section.id}`} data-section-type={entry.section.type} data-section-recipe={presentation.sectionRecipes[entry.section.type]}>
                   <SectionRenderer
                     section={entry.section}
                     first={entryIndex === 0}

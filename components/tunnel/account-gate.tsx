@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ArrowRight, Check, WandSparkles } from "lucide-react";
 import { createAccount, type CreateAccountState } from "@/app/commencer/actions";
 import { FluxBrand } from "@/components/flux-brand";
+import { FluxStepCoach } from "@/components/assistant/flux-step-coach";
 import styles from "@/app/commencer/tunnel.module.css";
 import type { TunnelDict } from "@/lib/i18n/get-dictionary";
 import type { Locale } from "@/lib/i18n/config";
@@ -41,6 +42,12 @@ export function AccountGate({ dict, locale }: { dict: TunnelDict; locale: Locale
             <em>{t.titleEm}</em>
           </h1>
           <p>{t.text}</p>
+
+          <FluxStepCoach
+            messageId="onboarding-account"
+            errorMessageId="onboarding-account-error"
+            hasError={Boolean(state.error)}
+          />
 
           <form action={formAction}>
             <input type="hidden" name="locale" value={locale} />

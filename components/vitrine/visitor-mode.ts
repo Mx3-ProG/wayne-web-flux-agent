@@ -27,23 +27,22 @@ function readVisitorMode(): "dark" | "light" | null {
   }
 }
 
-export function useVisitorMode(darkTheme: boolean) {
-  const visitorMode = useSyncExternalStore(
+export function useVisitorMode(darkTheme: boolean, enabled = true) {
+  const storedMode = useSyncExternalStore(
     subscribeVisitorMode,
     readVisitorMode,
     () => null
   );
+  const visitorMode = enabled ? storedMode : null;
   const effectiveDark = visitorMode ? visitorMode === "dark" : darkTheme;
   const toggleMode = () => {
+    if (!enabled) return;
     try {
       localStorage.setItem(MODE_KEY, effectiveDark ? "light" : "dark");
       window.dispatchEvent(new Event(MODE_EVENT));
     } catch {}
   };
-  // Fond/cartes personnalisés — ignorés quand le visiteur force un mode
-  // opposé au thème (les variables inline gagneraient sur le CSS).
-  const useCustomSurfaces = !visitorMode || (visitorMode === "dark") === darkTheme;
-  return { visitorMode, effectiveDark, toggleMode, useCustomSurfaces };
+  return { visitorMode, effectiveDark, toggleMode };
 }
 
 export function isDarkTheme(theme: string): boolean {

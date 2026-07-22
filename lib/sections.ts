@@ -242,6 +242,11 @@ export function validateSections(sections: PageSection[]): string | null {
     }
     const bg = section.style?.background;
     if (bg) {
+      const isHex = (value: string) => /^#[0-9a-f]{6}$/i.test(value);
+      if (bg.kind === "color" && !isHex(bg.color)) return "invalid_section_color";
+      if (bg.kind === "gradient" && (!isHex(bg.from) || !isHex(bg.to))) {
+        return "invalid_section_color";
+      }
       if (bg.kind === "video") videoBackgrounds++;
       if ("overlay" in bg && bg.overlay !== undefined) {
         if (typeof bg.overlay !== "number" || bg.overlay < 0 || bg.overlay > 0.8) {

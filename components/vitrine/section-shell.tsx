@@ -4,7 +4,7 @@
 // vitrine-subpage pour les items « styled » du plan de rendu.
 
 import Image from "next/image";
-import type { SectionStyle } from "@/lib/sections";
+import type { SectionStyle, SectionType } from "@/lib/sections";
 import styles from "./vitrine.module.css";
 
 // Luminance approximative d'une couleur hex pour choisir la couleur du texte.
@@ -22,26 +22,32 @@ type Props = {
   id?: string;
   style?: SectionStyle;
   children: React.ReactNode;
+  sectionType: SectionType;
+  recipe: string;
 };
 
-export function SectionShell({ id, style, children }: Props) {
+export function SectionShell({ id, style, children, sectionType, recipe }: Props) {
   const bg = style?.background;
   const spacing = style?.spacing ?? "normal";
   const width = style?.width ?? "normal";
   const align = style?.align ?? "left";
 
-  const overlay =
+  const requestedOverlay =
     bg && (bg.kind === "image" || bg.kind === "video")
       ? (bg.overlay ?? 0.35)
       : 0;
-  // Média + voile, dégradé, ou couleur sombre : texte clair forcé.
-  const darkSurface = bg
-    ? bg.kind === "image" || bg.kind === "video"
-      ? overlay > 0.15
+  const overlay = bg && (bg.kind === "image" || bg.kind === "video")
+    ? Math.max(requestedOverlay, 0.42)
+    : requestedOverlay;
+  const surface = !bg
+    ? undefined
+    : bg.kind === "image" || bg.kind === "video"
+      ? "dark"
       : bg.kind === "gradient"
-        ? isDarkColor(bg.from) || isDarkColor(bg.to)
-        : isDarkColor(bg.color)
-    : false;
+        ? isDarkColor(bg.from) === isDarkColor(bg.to)
+          ? isDarkColor(bg.from) ? "dark" : "light"
+          : "mixed"
+        : isDarkColor(bg.color) ? "dark" : "light";
 
   const inline: React.CSSProperties = {};
   if (bg?.kind === "color") inline.background = bg.color;
@@ -55,7 +61,9 @@ export function SectionShell({ id, style, children }: Props) {
       className={styles.sectionShell}
       data-spacing={spacing}
       data-align={align}
-      data-surface={darkSurface ? "dark" : undefined}
+      data-section-type={sectionType}
+      data-section-recipe={recipe}
+      data-surface={surface}
       style={inline}
     >
       {bg?.kind === "image" && bg.url && (

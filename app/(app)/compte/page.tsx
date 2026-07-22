@@ -13,6 +13,7 @@ import { logout } from "@/app/(app)/actions";
 import { healMissingProfile } from "@/lib/profile-heal";
 import { DeleteAccountForm, ProfileForm } from "@/components/account/profile-settings";
 import { PasswordForm } from "@/components/account/password-form";
+import { AssistantPreferencesCard } from "@/components/assistant/assistant-preferences-card";
 import {
   EmailChangeForm,
   InviteFriendForm,
@@ -49,7 +50,13 @@ export default async function ComptePage() {
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
 
-  const [profileResult, topupResult, { count: projectCount }, locale] = await Promise.all([
+  const [
+    profileResult,
+    topupResult,
+    { count: projectCount },
+    locale,
+    assistantPreferenceResult,
+  ] = await Promise.all([
     supabase.from("profiles").select("*").eq("user_id", user.id).single<Profile>(),
     supabase.rpc("apply_plan_topup", { uid: user.id }),
     supabase
@@ -57,6 +64,15 @@ export default async function ComptePage() {
       .select("id", { count: "exact", head: true })
       .eq("user_id", user.id),
     getAccountLocale(supabase, user.id),
+    supabase
+      .from("assistant_preferences")
+      .select("enabled, paused_until, current_goal_id")
+      .eq("user_id", user.id)
+      .maybeSingle<{
+        enabled: boolean;
+        paused_until: string | null;
+        current_goal_id: string | null;
+      }>(),
   ]);
   const t = await getDictionary(locale, "account");
   let { data: profile, error: profileError } = profileResult;
@@ -181,6 +197,20 @@ export default async function ComptePage() {
             <p>{t.license.text}</p>
           </div>
         </div>
+      </section>
+
+      <section className={styles.section}>
+        <AssistantPreferencesCard
+          initialPreference={assistantPreferenceResult.data ? {
+            enabled: assistantPreferenceResult.data.enabled,
+            pausedUntil: assistantPreferenceResult.data.paused_until,
+            currentGoalId: assistantPreferenceResult.data.current_goal_id,
+          } : {
+            enabled: true,
+            pausedUntil: null,
+            currentGoalId: null,
+          }}
+        />
       </section>
 
       <section className={styles.section}>

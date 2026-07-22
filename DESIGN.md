@@ -41,12 +41,63 @@ their chrome.
 - Grids collapse at 760px; editor preview becomes an explicit tab below 1024px.
 - Glass blur is reduced when reduced transparency or reduced motion is requested.
 
-## Storefront themes
+## Storefront engine V2
 
-- `editorial`: bright, spacious and image-led.
-- `studio`: dark, high-contrast and cinematic.
-- `local`: warm, friendly and practical.
-- `bold`: graphic, energetic and conversion-led.
+`resolveStorefrontPresentation()` is the only authority for storefront visuals.
+The editor preview, draft, published page and FLUX generation all consume its
+semantic tokens and curated recipes. Storefront components must never read a
+merchant color to build an independent palette.
 
-Themes control composition and surface treatment. Merchant colors, photography
-and typography remain personal overrides.
+### Merchant appearance contract
+
+`PageAppearance` contains only `accent`, `mode` (`light` or `dark`) and
+`allowVisitorModeToggle`. Historical `colors.primary` remains readable during
+the transition, but is converted to `accent`. The resolver derives background,
+surface, elevated surface, text, muted text, border, accent text, navigation,
+hero and footer tokens. It adjusts unsafe accents to 3:1 against the canvas and
+chooses accent text at 4.5:1 or better. The editor exposes every correction.
+
+Section backgrounds may still be colors, gradients, images or videos. Their
+text treatment is resolved at the section boundary: light surfaces receive dark
+text, dark surfaces receive light text, mixed gradients receive a protective
+veil and media overlays have a safe minimum.
+
+### Kits and composition profiles
+
+| Kit | Profile | Composition intent |
+| --- | --- | --- |
+| `editorial` | magazine | asymmetric editorial rhythm and dominant imagery |
+| `studio` | cinematic | centered cinematic composition and immersive media |
+| `local` | local | warm storytelling, contact and reassurance first |
+| `bold` | impact | massive type, geometry and direct conversion |
+| `luxe` | quiet-luxury | generous space and restrained hierarchy |
+| `minimal` | minimal | strict grid and minimal decoration |
+| `neon` | neon | controlled nocturnal depth and light |
+| `prestige` | showroom | slow showroom rhythm and editorial details |
+| `performance-gt` | performance | technical asymmetry and large media |
+| `rosso-editorial` | heritage | institutional heritage and magazine mosaic |
+| `maison-couture` | collection | full-width collections, commerce grid and services |
+
+Each versioned kit declares supported modes, compatible component identifiers,
+section recipes, media rules, density, radii, rhythm and motion. Overrides are
+accepted only when listed by that kit. Unknown saved legacy combinations are
+normalized to the kit default; unknown writes are rejected.
+
+### Alignment invariant
+
+Section alignment is a composition contract, not only `text-align`. A centered
+section centers its constrained container, headings, body copy, actions, forms
+and the appropriate grid variant. Image/text, about, catalogue and gallery keep
+their content-specific geometry. Templates may change composition without
+changing section order, visibility or merchant content.
+
+### Rendering invariants
+
+- Every surface emits `data-design-version`, `data-layout-profile`,
+  `data-section-type` and `data-section-recipe` where applicable.
+- Preview and publication use the same React components and resolver; preview
+  only disables external or paid interactions.
+- FLUX selects known kit, component, voice, accent and mode identifiers. It
+  cannot emit CSS or independent background, text, dark or card colors.
+- Focus remains visible, controls are at least 44px, reduced motion is honored
+  and text contrast is at least 4.5:1 (3:1 for large text and graphics).

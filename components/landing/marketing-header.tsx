@@ -7,6 +7,7 @@ import { FluxBrand } from "@/components/flux-brand";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import type { Locale } from "@/lib/i18n/config";
 import styles from "./marketing-header.module.css";
+import { useAssistantMenuPresence } from "@/components/assistant/use-assistant-menu-presence";
 
 type NavLabels = {
   solution: string;
@@ -52,6 +53,7 @@ export function MarketingHeader({
   labels: NavLabels;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
+  useAssistantMenuPresence("marketing-navigation", menuOpen);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const firstLinkRef = useRef<HTMLAnchorElement>(null);
   const copy = MENU_COPY[locale];

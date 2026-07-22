@@ -40,6 +40,8 @@ import { StepDetails, type DetailsState } from "@/components/tunnel/steps/step-d
 import { StepPublish } from "@/components/tunnel/steps/step-publish";
 import { StepShare } from "@/components/tunnel/steps/step-share";
 import styles from "./tunnel.module.css";
+import { FluxStepCoach } from "@/components/assistant/flux-step-coach";
+import { TUNNEL_GUIDANCE_BY_SCREEN } from "@/lib/assistant/guidance";
 
 // Écrans du tunnel. Les charnières et célébrations sont des vues dérivées : le
 // vrai état d'avancement, lui, vit en base (Parcours partagé avec /espace).
@@ -365,6 +367,11 @@ export function Tunnel(props: Props) {
       >
         <section className={showPreview ? styles.stageSplit : styles.stage}>
           <div className={styles.stageMain}>
+            <FluxStepCoach
+              messageId={TUNNEL_GUIDANCE_BY_SCREEN[screen]}
+              errorMessageId="onboarding-step-error"
+              hasError={Boolean(error)}
+            />
             {screen === SCREEN.whyChapter1 && (
               <ChapterIntro dict={props.dict.chapterIntro} content={props.dict.chapters["1"]} chapter={1} onNext={() => goTo(nextScreen(screen))} />
             )}

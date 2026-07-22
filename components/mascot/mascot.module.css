@@ -1,0 +1,67 @@
+.mascot {
+  width: var(--mascot-width);
+  height: var(--mascot-height);
+  overflow: hidden;
+  transform: translate3d(var(--mascot-x), var(--mascot-y), 0);
+  user-select: none;
+  touch-action: pan-y;
+}
+
+.mascot canvas {
+  display: block;
+}
+
+.inline {
+  position: relative;
+}
+
+.bottom-right,
+.bottom-left,
+.top-right,
+.top-left {
+  position: fixed;
+  z-index: 40;
+}
+
+.bottom-right { right: 16px; bottom: 16px; }
+.bottom-left { bottom: 16px; left: 16px; }
+.top-right { top: 16px; right: 16px; }
+.top-left { top: 16px; left: 16px; }
+
+.movable {
+  cursor: grab;
+  touch-action: none;
+}
+
+.movable:active { cursor: grabbing; }
+
+.movable:focus-visible {
+  border-radius: 20px;
+  outline: 2px solid #ef233c;
+  outline-offset: 3px;
+}
+
+.loading {
+  width: 100%;
+  height: 100%;
+  border-radius: 28px;
+  background: radial-gradient(circle, rgb(239 35 60 / 16%), transparent 65%);
+  animation: pulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes pulse {
+  to { opacity: .45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .loading { animation: none; }
+}
+
+@media (max-width: 640px) {
+  .bottom-right,
+  .bottom-left { bottom: 8px; }
+  .bottom-right,
+  .top-right { right: 8px; }
+  .bottom-left,
+  .top-left { left: 8px; }
+}

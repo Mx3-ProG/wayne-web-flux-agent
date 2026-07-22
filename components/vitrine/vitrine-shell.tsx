@@ -11,10 +11,11 @@ import type { Page } from "@/lib/types";
 import { getFont } from "@/lib/verticals";
 import { defaultLegal } from "@/lib/legal";
 import { MessageCircle, Phone, ShoppingBag, Sparkles } from "lucide-react";
-import { isDarkTheme, useVisitorMode } from "./visitor-mode";
+import { useVisitorMode } from "./visitor-mode";
 import { ScrollTopButton } from "./scroll-top-button";
 import styles from "./vitrine.module.css";
-import { resolveVitrineDesign } from "@/lib/vitrine-design/resolver";
+import { resolveStorefrontPresentation } from "@/lib/vitrine-design/resolver";
+import { deriveStorefrontTokens } from "@/lib/vitrine-design/palette";
 import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
 import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
 
@@ -36,13 +37,15 @@ export function VitrineShell({
   t = frStorefront.shell,
 }: Props) {
   const [legalOpen, setLegalOpen] = useState<string | null>(null);
-  const design = resolveVitrineDesign(page.theme || "editorial", page.design);
-  const { visitorMode, useCustomSurfaces } = useVisitorMode(isDarkTheme(page.theme));
-
-  const colors = {
-    primary: page.colors.primary || "#d31212",
-    dark: page.colors.dark || "#0a0a0a",
-  };
+  const presentation = resolveStorefrontPresentation(page);
+  const { effectiveDark } = useVisitorMode(
+    presentation.appearance.mode === "dark",
+    presentation.appearance.allowVisitorModeToggle
+  );
+  const tokens = deriveStorefrontTokens(presentation.kit, {
+    ...presentation.appearance,
+    mode: effectiveDark ? "dark" : "light",
+  }).tokens;
   const font = getFont(page.font);
 
   // Typographie fine (pages.typography) : échelle des titres et police de
@@ -61,37 +64,44 @@ export function VitrineShell({
 
   return (
     <div
+      id="top"
       className={styles.page}
       data-theme={page.theme || "editorial"}
-      data-design-kit={design.kit.id}
-      data-design-button={design.components.button.renderId}
-      data-design-navigation={design.components.navigation.renderId}
-      data-design-header={design.components.header.renderId}
-      data-design-footer={design.components.footer.renderId}
-      data-design-section={design.components.section.renderId}
-      data-design-category={design.components.category.renderId}
-      data-design-product={design.components.product.renderId}
-      data-design-cart={design.components.cart.renderId}
-      data-design-order={design.components.order.renderId}
-      data-design-booking={design.components.booking.renderId}
-      data-design-legal={design.components.legal.renderId}
-      data-design-checkout={design.components.checkout.renderId}
-      data-mode={visitorMode ?? undefined}
+      data-design-version="2"
+      data-has-promo={Boolean(page.promo?.text || page.offer)}
+      data-design-kit={presentation.kit.id}
+      data-layout-profile={presentation.kit.layoutProfile}
+      data-design-button={presentation.components.button.renderId}
+      data-design-navigation={presentation.components.navigation.renderId}
+      data-design-header={presentation.components.header.renderId}
+      data-design-footer={presentation.components.footer.renderId}
+      data-design-section={presentation.components.section.renderId}
+      data-design-category={presentation.components.category.renderId}
+      data-design-product={presentation.components.product.renderId}
+      data-design-cart={presentation.components.cart.renderId}
+      data-design-order={presentation.components.order.renderId}
+      data-design-booking={presentation.components.booking.renderId}
+      data-design-legal={presentation.components.legal.renderId}
+      data-design-checkout={presentation.components.checkout.renderId}
+      data-mode={effectiveDark ? "dark" : "light"}
       data-heading-scale={headingScale ? typography.headingScale : undefined}
       data-heading-font={headingFont ? "1" : undefined}
       style={
         {
           fontFamily: font.css,
-          "--client-accent": colors.primary,
-          "--client-dark": colors.dark,
+          "--client-accent": tokens.accent,
+          "--client-accent-text": tokens.accentText,
+          "--client-dark": tokens.hero,
+          "--store-bg": tokens.background,
+          "--store-surface": tokens.surface,
+          "--store-elevated": tokens.elevated,
+          "--store-text": tokens.text,
+          "--store-muted": tokens.muted,
+          "--store-line": tokens.line,
+          "--store-nav": tokens.navigation,
+          "--store-footer": tokens.footer,
           ...(headingScale ? { "--heading-scale": headingScale } : {}),
           ...(headingFont ? { "--client-heading-font": headingFont.css } : {}),
-          ...(page.colors.background && useCustomSurfaces
-            ? { "--store-bg": page.colors.background }
-            : {}),
-          ...(page.colors.card && useCustomSurfaces
-            ? { "--store-surface": page.colors.card }
-            : {}),
         } as React.CSSProperties
       }
     >
@@ -128,7 +138,7 @@ export function VitrineShell({
           type="button"
           onClick={onOpenCart}
           className={styles.cartFab}
-          style={{ backgroundColor: colors.primary }}
+          style={{ backgroundColor: tokens.accent, color: tokens.accentText }}
         >
           <ShoppingBag aria-hidden="true" />
           <span>{t.viewCart}</span>
@@ -137,7 +147,7 @@ export function VitrineShell({
       )}
 
       {/* Footer */}
-      <footer className={styles.footer} style={{ backgroundColor: colors.dark }}>
+      <footer id="contact" className={styles.footer}>
         <p className={styles.footerKicker}>{t.stayInTouch}</p>
         <h2>{page.business_name || frStorefront.header.defaultBusinessName}</h2>
         {page.phone && (

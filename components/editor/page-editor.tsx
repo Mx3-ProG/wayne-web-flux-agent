@@ -6,9 +6,10 @@ import { toast } from "sonner";
 import type { Offer, Page, SitePage } from "@/lib/types";
 import type { VerticalKind } from "@/lib/verticals";
 import { VITRINE_THEMES } from "@/lib/vitrine-themes";
-import { designKitPatch } from "@/lib/vitrine-design/resolver";
+import { designKitPatch, legacyAppearance, resolveStorefrontPresentation } from "@/lib/vitrine-design/resolver";
 import {
   savePageFields,
+  setStorefrontAssistantEnabled,
 } from "@/app/(app)/ma-page/actions";
 import { updateProduct } from "@/app/(app)/produits/actions";
 import {
@@ -41,7 +42,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Crown, ExternalLink, Gem, Palette } from "lucide-react";
+import { Bot, Crown, ExternalLink, Gem, Palette } from "lucide-react";
 import styles from "./page-editor-redesign.module.css";
 import {
   DESIGN_KITS,
@@ -107,8 +108,11 @@ export function PageEditor({
   const [activeSection, setActiveSection] = useState("identite");
   const [designAdvanced, setDesignAdvanced] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [assistantSaving, setAssistantSaving] = useState(false);
   // Modif locale non publiée : dès qu'on touche un champ, il y a un brouillon.
   const [dirty, setDirty] = useState(publish.hasDraft);
+  const appearance = legacyAppearance(page);
+  const presentation = resolveStorefrontPresentation(page);
 
   const showServices = verticalKind !== "product";
   const showShop = verticalKind !== "service";
@@ -117,6 +121,19 @@ export function PageEditor({
   );
 
   const fieldsTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  async function toggleStorefrontAssistant(enabled: boolean) {
+    setAssistantSaving(true);
+    setPage((current) => ({ ...current, assistant_enabled: enabled }));
+    const result = await setStorefrontAssistantEnabled(page.id, enabled);
+    setAssistantSaving(false);
+    if (result.error) {
+      setPage((current) => ({ ...current, assistant_enabled: !enabled }));
+      toast.error(result.error);
+      return;
+    }
+    toast.success(enabled ? "FLUX aidera maintenant les visiteurs." : "L’aide FLUX est désactivée sur la vitrine.");
+  }
 
   const patch = useCallback((fields: Partial<Page>) => {
     setDirty(true);
@@ -738,76 +755,52 @@ export function PageEditor({
                   </div>
                 )}
               </div>
-              <div className={styles.colorGrid}>
-                {(
-                  [
-                    ["primary", t.style.colorPrimary],
-                    ["dark", t.style.colorDark],
-                  ] as const
-                ).map(([key, label]) => (
-                  <div key={key} className="space-y-2">
-                    <Label>{label}</Label>
+              <div className="space-y-3 rounded-lg border border-border p-3">
+                <p className="text-sm font-medium">Couleurs cohérentes</p>
+                <div className={styles.colorGrid}>
+                  <div className="space-y-2">
+                    <Label>{t.style.colorPrimary}</Label>
                     <input
                       type="color"
-                      value={page.colors[key] ?? "#d31212"}
+                      value={appearance.accent}
                       className="h-10 w-full rounded-lg border border-border bg-transparent cursor-pointer"
-                      onChange={(e) =>
-                        patch({ colors: { ...page.colors, [key]: e.target.value } })
-                      }
+                      onChange={(event) => patch({ appearance: { ...appearance, accent: event.target.value } })}
                     />
                   </div>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground">{t.style.colorHint}</p>
-              <div className="space-y-3 rounded-lg border border-border p-3">
-                <p className="text-sm font-medium">{t.style.advancedColors}</p>
-                <div className={styles.colorGrid}>
-                  {(
-                    [
-                      ["background", t.style.colorBackground, "#f1ede7"],
-                      ["card", t.style.colorCard, "#e7e1da"],
-                    ] as const
-                  ).map(([key, label, fallback]) => (
-                    <div key={key} className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <Label>{label}</Label>
-                        {page.colors[key] && (
-                          <button
-                            type="button"
-                            className="text-xs text-muted-foreground underline underline-offset-2"
-                            onClick={() => {
-                              const rest = { ...page.colors };
-                              delete rest[key];
-                              patch({ colors: rest });
-                            }}
-                          >
-                            {t.style.auto}
-                          </button>
-                        )}
-                      </div>
-                      <input
-                        type="color"
-                        value={page.colors[key] ?? fallback}
-                        className="h-10 w-full rounded-lg border border-border bg-transparent cursor-pointer"
-                        onChange={(e) =>
-                          patch({ colors: { ...page.colors, [key]: e.target.value } })
-                        }
-                      />
-                    </div>
-                  ))}
+                  <div className="space-y-2">
+                    <Label>Ambiance</Label>
+                    <Select
+                      value={appearance.mode}
+                      onValueChange={(mode) => patch({ appearance: { ...appearance, mode: mode as "light" | "dark" } })}
+                    >
+                      <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="light">Claire</SelectItem>
+                        <SelectItem value="dark">Sombre</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <Label>{t.style.heroGradient}</Label>
-                    <p className="text-xs text-muted-foreground">{t.style.heroGradientHint}</p>
+                    <Label>Choix clair/sombre pour les visiteurs</Label>
+                    <p className="text-xs text-muted-foreground">Affiche le bouton de changement d’ambiance sur la vitrine.</p>
                   </div>
                   <Switch
-                    checked={page.colors.heroGradient ?? false}
-                    onCheckedChange={(heroGradient) =>
-                      patch({ colors: { ...page.colors, heroGradient } })
+                    checked={appearance.allowVisitorModeToggle}
+                    onCheckedChange={(allowVisitorModeToggle) =>
+                      patch({ appearance: { ...appearance, allowVisitorModeToggle } })
                     }
                   />
                 </div>
+                {presentation.warnings.includes("accent_contrast_adjusted") && (
+                  <p role="status" className="text-xs text-amber-500">
+                    Cette couleur est légèrement adaptée dans l’aperçu pour garantir la lisibilité.
+                  </p>
+                )}
+                <p className="text-xs text-muted-foreground">
+                  Les fonds, textes, bordures et boutons sont calculés automatiquement à partir de ces choix.
+                </p>
               </div>
               <div className="space-y-2">
                 <Label>{t.style.writingStyle}</Label>
@@ -1089,6 +1082,24 @@ export function PageEditor({
                   aria-label={t.seo.hideBrandingAria}
                   aria-describedby={!canHideBranding ? "branding-entitlement-help" : undefined}
                   onCheckedChange={(hide_branding) => patch({ hide_branding })}
+                />
+              </div>
+              <div className="flex items-center justify-between gap-3 rounded-lg border border-border p-3">
+                <div className="flex items-start gap-3">
+                  <Bot className="mt-0.5 size-5 text-primary" aria-hidden="true" />
+                  <div>
+                    <Label>Assistant FLUX pour mes visiteurs</Label>
+                    <p className="text-xs text-muted-foreground">
+                      Ajoute une aide discrète pour trouver tes produits, tes offres,
+                      la réservation et tes coordonnées. Aucun crédit n’est utilisé.
+                    </p>
+                  </div>
+                </div>
+                <Switch
+                  checked={page.assistant_enabled ?? false}
+                  disabled={assistantSaving}
+                  aria-label="Afficher l’assistant FLUX sur ma vitrine"
+                  onCheckedChange={toggleStorefrontAssistant}
                 />
               </div>
             </AccordionContent>

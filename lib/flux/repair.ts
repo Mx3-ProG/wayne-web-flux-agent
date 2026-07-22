@@ -72,15 +72,15 @@ function repairFaqItems(raw: unknown, max: number) {
     .slice(0, max);
 }
 
-// Génération complète (fluxGenerateSite). fallbackColors = couleurs actuelles de
-// la page, utilisées quand le modèle renvoie une couleur irréparable.
+// Génération complète : FLUX choisit seulement l'accent et le mode. Les
+// surfaces et couleurs de texte sont dérivées par le moteur de design V2.
 export function repairFluxSiteOutput(
   raw: unknown,
-  fallbackColors: { primary: string; dark: string }
+  fallbackAppearance: { accent: string; mode: "light" | "dark"; allowVisitorModeToggle: boolean }
 ): unknown {
   const node = asRecord(raw);
   const seo = asRecord(node.seo);
-  const colors = asRecord(node.colors);
+  const appearance = asRecord(node.appearance);
   const sections = (Array.isArray(node.sections) ? node.sections : [])
     .map(repairSection)
     .filter((s): s is RepairedSection => s !== null)
@@ -90,9 +90,14 @@ export function repairFluxSiteOutput(
     ...node,
     tagline: clampText(node.tagline, 160),
     seo: { title: clampText(seo.title, 70), description: clampText(seo.description, 200) },
-    colors: {
-      primary: normalizeHex(colors.primary, fallbackColors.primary),
-      dark: normalizeHex(colors.dark, fallbackColors.dark),
+    appearance: {
+      accent: normalizeHex(appearance.accent, fallbackAppearance.accent),
+      mode: appearance.mode === "light" || appearance.mode === "dark"
+        ? appearance.mode
+        : fallbackAppearance.mode,
+      allowVisitorModeToggle: typeof appearance.allowVisitorModeToggle === "boolean"
+        ? appearance.allowVisitorModeToggle
+        : fallbackAppearance.allowVisitorModeToggle,
     },
     sections,
   };

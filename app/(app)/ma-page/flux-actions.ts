@@ -21,8 +21,9 @@ import { rateLimit } from "@/lib/rate-limit";
 import { resolveSections, SECTION_LIMITS } from "@/lib/sections";
 import { PREFILL_COST } from "@/lib/tools-config";
 import { SITE_GENERATE_COST } from "@/lib/plans";
-import type { PageColors, PageDraftFields, PageSeo, Service, VoiceProfile } from "@/lib/types";
+import type { PageDraftFields, PageSeo, Service, VoiceProfile } from "@/lib/types";
 import { DESIGN_KIT_BY_ID, registryContext } from "@/lib/vitrine-design/registry";
+import { designConfigError, legacyAppearance } from "@/lib/vitrine-design/resolver";
 import { recordAiUsage } from "@/lib/ai-usage";
 
 export type FluxPrefillError =
@@ -328,7 +329,7 @@ export async function fluxGenerateSite(
         "Ta mission : créer TOUTE la vitrine de ce commerçant à partir de son brief et de son métier. Pars du template de son métier et améliore-le.",
         "- Accroche (tagline) : une promesse claire et spécifique au métier ET à la ville, jamais un slogan creux.",
         "- SEO : un titre (≤70 caractères) et une description (≤200 caractères) qui donnent envie de cliquer, avec le métier et la ville.",
-        "- Ambiance : un thème et des couleurs au format hexadécimal #RRGGBB, cohérents avec le métier et l'émotion recherchée.",
+        "- Ambiance : un kit, une couleur d’accent #RRGGBB et un mode clair ou sombre. Ne génère jamais les couleurs de surface ou de texte : le moteur FLUX les dérive.",
         "- 2 à 5 sections riches et concrètes (à propos, texte, FAQ) : chacune apporte une information utile et différenciante (méthode, bénéfices, garanties, déroulé, réponses aux vraies questions des clients). Zéro remplissage générique.",
         "Écris à la première personne, concret et direct, sans jargon marketing ni phrase creuse. N'invente NI prix NI avis clients. Reste fidèle à son métier et à sa voix.",
       ].join("\n"),
@@ -360,14 +361,10 @@ export async function fluxGenerateSite(
     // Réparation avant revalidation : on récupère une sortie « presque valide »
     // (hex approximatif, textes trop longs, trop de sections) au lieu de la
     // jeter. fallback = couleurs actuelles de la page.
-    const pageColors = (page.colors ?? {}) as PageColors;
-    const fallbackColors = {
-      primary: pageColors.primary || "#1a1a1a",
-      dark: pageColors.dark || "#000000",
-    };
+    const fallbackAppearance = legacyAppearance(page);
     let repaired: unknown = null;
     try {
-      repaired = repairFluxSiteOutput(JSON.parse(raw.text), fallbackColors);
+      repaired = repairFluxSiteOutput(JSON.parse(raw.text), fallbackAppearance);
     } catch {
       repaired = null;
     }
@@ -385,6 +382,18 @@ export async function fluxGenerateSite(
       return { error: "generation_failed" };
     }
     const out = parsed.data;
+
+    // Les enums empêchent les identifiants inventés ; cette seconde barrière
+    // refuse aussi une variante réelle mais incompatible avec le kit choisi.
+    if (designConfigError(out.design)) {
+      await recordAiUsage({
+        userId: user.id, pageId, model: GENERATION_MODEL, operation: "flux-site",
+        usage: final.usage, startedAt: aiStartedAt, outcome: "error", errorCode: "incompatible_design",
+      });
+      usageRecorded = true;
+      await refundCredits(user.id, SITE_GENERATE_COST, "refund:flux-site:incompatible-design");
+      return { error: "generation_failed" };
+    }
 
     const moderation = await enforceKarlMada(out, {
       userId: user.id,
@@ -409,7 +418,7 @@ export async function fluxGenerateSite(
       seo: { ...seo, title: out.seo.title, description: out.seo.description },
       theme: DESIGN_KIT_BY_ID.get(out.design.kitId)?.legacyTheme ?? out.theme,
       design: out.design,
-      colors: { ...(page.colors as PageColors), primary: out.colors.primary, dark: out.colors.dark },
+      appearance: out.appearance,
     };
 
     const existing = resolveSections(page);

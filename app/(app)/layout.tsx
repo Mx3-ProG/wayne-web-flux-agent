@@ -24,6 +24,9 @@ import { I18nProvider } from "@/components/i18n-provider";
 import { getLocalizedVerticals, getLocalizedFonts } from "@/lib/verticals-i18n";
 import { getPageTemplates, toPageTemplateMeta } from "@/lib/page-templates-i18n";
 import { DashboardLanguageSwitcher } from "@/components/dashboard-language-switcher";
+import { Suspense } from "react";
+import { AppAssistant } from "@/components/assistant/app-assistant";
+import { AppRouteCoach } from "@/components/assistant/app-route-coach";
 
 export default async function AppLayout({
   children,
@@ -181,9 +184,13 @@ export default async function AppLayout({
             balance={balance ?? 0}
           />
         )}
+        <AppRouteCoach />
         {children}
       </main>
       <MobileBottomNavigation pendingOrders={pendingOrders} lowStock={lowStock} />
+      <Suspense fallback={null}>
+        <AppAssistant userId={user.id} />
+      </Suspense>
     </div>
     </I18nProvider>
   );

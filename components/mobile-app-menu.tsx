@@ -25,6 +25,7 @@ import {
 import styles from "@/app/(app)/app-shell.module.css";
 import { FluxBrand } from "@/components/flux-brand";
 import { useI18n } from "@/components/i18n-provider";
+import { useAssistantMenuPresence } from "@/components/assistant/use-assistant-menu-presence";
 
 type DrawerItem = {
   href: string;
@@ -69,6 +70,7 @@ export function MobileAppMenu({
   const drawerId = useId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const [open, setOpen] = useState(false);
+  useAssistantMenuPresence("dashboard-mobile-navigation", open);
 
   useEffect(() => {
     const desktopQuery = window.matchMedia("(min-width: 980px)");

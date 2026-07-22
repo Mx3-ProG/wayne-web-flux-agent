@@ -14,8 +14,10 @@ import { VitrineSubpage } from "./vitrine-subpage";
 import { BookingModal } from "./booking-modal";
 import { OrderModal, type CartLine } from "./order-modal";
 import { VitrineTracker } from "./vitrine-tracker";
-import { resolveVitrineDesign } from "@/lib/vitrine-design/resolver";
+import { resolveStorefrontPresentation } from "@/lib/vitrine-design/resolver";
 import styles from "./vitrine.module.css";
+import { FluxAssistantHost } from "@/components/assistant/flux-assistant-host";
+import type { AssistantDestination } from "@/lib/assistant/types";
 
 type Props = {
   page: Page;
@@ -55,8 +57,9 @@ export function VitrinePublic({
   const [bookingService, setBookingService] = useState<Service | null>(null);
   const [cart, setCart] = useState<Record<string, CartLine>>({});
   const [cartOpen, setCartOpen] = useState(false);
-  const accent = page.colors.primary || "#d31212";
-  const design = resolveVitrineDesign(page.theme || "editorial", page.design);
+  const presentation = resolveStorefrontPresentation(page);
+  const accent = presentation.tokens.accent;
+  const design = presentation;
 
   function keyOf(kind: CartLine["kind"], id: string) {
     return `${kind}:${id}`;
@@ -91,6 +94,76 @@ export function VitrinePublic({
 
   const lines = Object.values(cart);
   const cartCount = lines.reduce((sum, it) => sum + it.quantity, 0);
+  const storefrontBase = `/p/${page.slug}`;
+  const storefrontDestinations: AssistantDestination[] = [
+    {
+      id: "storefront-home",
+      label: "Revenir à l’accueil",
+      description: "Retourne au début de cette vitrine.",
+      href: storefrontBase,
+      surfaces: ["storefront"],
+      aliases: ["accueil", "début", "page principale"],
+      keywords: ["accueil", "vitrine", "retour"],
+    },
+    {
+      id: "storefront-services",
+      label: "Voir les prestations",
+      description: "Découvre les services et leurs tarifs.",
+      href: `${storefrontBase}#prestations`,
+      anchor: "prestations",
+      surfaces: ["storefront"],
+      aliases: ["services", "prestations", "tarifs"],
+      keywords: ["service", "prestation", "prix"],
+    },
+    {
+      id: "storefront-products",
+      label: "Voir les produits",
+      description: "Parcours les produits disponibles dans cette boutique.",
+      href: `${storefrontBase}#boutique`,
+      anchor: "boutique",
+      surfaces: ["storefront"],
+      aliases: ["boutique", "produits", "catalogue", "acheter"],
+      keywords: ["produit", "article", "prix", "commande"],
+    },
+    {
+      id: "storefront-offers",
+      label: "Voir les offres",
+      description: "Retrouve les offres actuellement proposées.",
+      href: `${storefrontBase}#offres`,
+      anchor: "offres",
+      surfaces: ["storefront"],
+      aliases: ["promotions", "offres", "réduction"],
+      keywords: ["offre", "promotion", "prix"],
+    },
+    {
+      id: "storefront-booking",
+      label: "Réserver un rendez-vous",
+      description: "Choisis une prestation pour accéder aux créneaux disponibles.",
+      href: `${storefrontBase}#reservations`,
+      anchor: "reservations",
+      surfaces: ["storefront"],
+      aliases: ["prendre rendez-vous", "réserver", "créneau"],
+      keywords: ["réservation", "rendez-vous", "horaire", "disponibilité"],
+    },
+    {
+      id: "storefront-contact",
+      label: "Trouver les coordonnées",
+      description: "Retrouve l’adresse, le téléphone et les liens de contact.",
+      href: `${storefrontBase}#contact`,
+      anchor: "contact",
+      surfaces: ["storefront"],
+      aliases: ["contacter", "téléphone", "adresse"],
+      keywords: ["contact", "adresse", "téléphone", "venir"],
+    },
+  ];
+  const availableStorefrontDestinations = [
+    "storefront-home",
+    ...(families.some((family) => family.services.length > 0) ? ["storefront-services"] : []),
+    ...(productCategories.some((category) => category.products.length > 0) ? ["storefront-products"] : []),
+    ...(offers.some((offer) => offer.active) ? ["storefront-offers"] : []),
+    ...(bookingEnabled && families.some((family) => family.services.length > 0) ? ["storefront-booking"] : []),
+    ...((page.phone || page.address || Object.keys(page.socials ?? {}).length > 0) ? ["storefront-contact"] : []),
+  ];
 
   return (
     <>
@@ -158,6 +231,17 @@ export function VitrinePublic({
           onClose={() => setCartOpen(false)}
           onDone={() => setCart({})}
           t={t?.order}
+        />
+      )}
+      {page.assistant_enabled && (
+        <FluxAssistantHost
+          surface="storefront"
+          context={{
+            activeProjectId: page.id,
+            availableDestinationIds: availableStorefrontDestinations,
+          }}
+          extraDestinations={storefrontDestinations}
+          title="Comment puis-je vous aider ?"
         />
       )}
     </>

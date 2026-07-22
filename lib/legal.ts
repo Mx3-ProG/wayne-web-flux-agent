@@ -19,7 +19,7 @@ export type LegalTexts = {
 };
 
 function frLegal(businessName: string): LegalTexts {
-  const name = businessName || "[À COMPLÉTER : Prénom NOM]";
+  const name = businessName || "[FLUX : WAYNE-WEB]";
   return {
     mentions: `MENTIONS LÉGALES
 
@@ -45,13 +45,13 @@ Les prestations proposées sont réalisées sur rendez-vous. Les tarifs affiché
 Toute réservation vaut acceptation des présentes conditions. Un rendez-vous est confirmé après validation du créneau.
 
 3. Annulation / Retard
-Toute annulation doit être signalée au moins [À COMPLÉTER : 24h] à l'avance. En cas de retard, la prestation pourra être écourtée ou reportée.
+Toute annulation doit être signalée au moins de 24h à l'avance. En cas de retard, la prestation pourra être écourtée ou reportée.
 
 4. Paiement
-Le paiement s'effectue [À COMPLÉTER : sur place, en espèces / carte] à l'issue de la prestation.
+Le paiement s'effectue en ligne à l'issue de la prestation.
 
 5. Responsabilité
-Le client s'engage à signaler toute information utile (allergie, contre-indication, contrainte technique) avant la prestation.
+Le client s'engage à signaler toute information utile (contre-indication, contrainte technique) avant la prestation.
 
 Éditeur : ${name} — SIRET : `,
     confidentialite: `POLITIQUE DE CONFIDENTIALITÉ

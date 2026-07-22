@@ -1,0 +1,8 @@
+.title { margin: 0; font-size: clamp(30px, 5vw, 54px); letter-spacing: -.04em; }
+.intro { max-width: 760px; color: #9ba2b0; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+.tabs a { color: #bbc1cc; border: 1px solid #303644; border-radius: 999px; padding: 9px 13px; text-decoration: none; }
+.tabs a[aria-current="page"] { color: #15120a; background: #d8b65a; border-color: #d8b65a; }
+.meta { display: flex; flex-wrap: wrap; gap: 10px 18px; margin-bottom: 12px; color: #99a1af; text-transform: uppercase; letter-spacing: .08em; font-size: 12px; }
+.meta strong { color: #fff; }
+.preview { overflow: hidden; border: 1px solid #303644; border-radius: 24px; background: #fff; container-type: inline-size; }

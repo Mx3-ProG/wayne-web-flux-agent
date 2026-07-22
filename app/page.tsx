@@ -34,6 +34,7 @@ import { getRequestLocale } from "@/lib/i18n/locale.server";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { localeHref, LOCALE_OG } from "@/lib/i18n/config";
 import { languageAlternates } from "@/lib/i18n/seo";
+import { FluxBrandHero } from "@/components/assistant/flux-brand-hero";
 
 const TOOL_ICONS = [
   Globe2,
@@ -105,6 +106,8 @@ export default async function LandingPage() {
         languageAria={common.languageSwitcher.aria}
         labels={common.nav}
       />
+
+      <FluxBrandHero />
 
       <main>
         <section className={styles.hero}>
