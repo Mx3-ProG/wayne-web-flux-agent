@@ -501,7 +501,7 @@
     display: grid;
     height: 68px;
     padding: 7px;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     border: 1px solid var(--ww-line-strong);
     border-radius: 23px;
     background: rgb(20 20 25 / 84%);
@@ -518,7 +518,22 @@
     font-size: 9px;
   }
   .mobileNav .navLink svg, .mobileNav .navLinkActive svg { width: 19px; height: 19px; }
+  .mobileNav .navLink > span:last-child,
+  .mobileNav .navLinkActive > span:last-child {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   .mobileNav .navLinkActive::before { display: none; }
+}
+
+@media (max-width: 360px) {
+  .mobileNav {
+    inset-inline: 8px;
+    padding-inline: 5px;
+  }
+  .mobileNav .navLink, .mobileNav .navLinkActive { font-size: 8px; }
 }
 
 @media (max-width: 440px) {

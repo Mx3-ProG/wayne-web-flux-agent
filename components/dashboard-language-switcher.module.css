@@ -9,3 +9,15 @@
 .popover button:hover { background: rgba(255,255,255,.08); }
 .popover button svg { width: 1rem; height: 1rem; color: #67e8a5; }
 .popover p { margin: .35rem .45rem 0; color: #f4ba62; font-size: .78rem; }
+
+@media (max-width: 979px) {
+  .popover {
+    position: fixed;
+    top: calc(4.5rem + env(safe-area-inset-top));
+    inset-inline: 1rem;
+    width: auto;
+    max-height: calc(100dvh - 6rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}

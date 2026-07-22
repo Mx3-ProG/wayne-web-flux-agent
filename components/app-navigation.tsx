@@ -7,6 +7,7 @@ import {
   ChartLine,
   LayoutDashboard,
   ShoppingBag,
+  Store,
 } from "lucide-react";
 import styles from "@/app/(app)/app-shell.module.css";
 import { useI18n } from "@/components/i18n-provider";
@@ -33,6 +34,7 @@ export function MobileBottomNavigation({
   const items: NavItem[] = [
     { href: "/espace", label: t.items.home, icon: LayoutDashboard },
     { href: "/statistiques", label: t.items.statsShort, icon: ChartLine },
+    { href: "/ma-page", label: t.items.storefront, icon: Store },
     { href: "/commandes", label: t.items.ordersShort, icon: ShoppingBag },
     { href: "/offres/configurer", label: t.items.offersShort, icon: BadgePercent, activeRoot: "/offres" },
   ];
@@ -41,6 +43,7 @@ export function MobileBottomNavigation({
     <nav
       className={styles.mobileNav}
       aria-label={t.mobileAria}
+      data-nav-count={items.length}
     >
       {items.map(({ href, label, icon: Icon, activeRoot }) => {
         const activePath = activeRoot ?? href;
