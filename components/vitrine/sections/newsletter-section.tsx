@@ -7,7 +7,6 @@ import frStorefront from "@/lib/i18n/dictionaries/fr/storefront.json";
 
 type Props = {
   slug: string;
-  accent: string;
   title?: string;
   description?: string;
   interactive?: boolean; // false en préview éditeur
@@ -17,7 +16,6 @@ type Props = {
 
 export function NewsletterSection({
   slug,
-  accent,
   title,
   description,
   interactive = true,
@@ -63,11 +61,7 @@ export function NewsletterSection({
               placeholder={t.emailPlaceholder}
               aria-label={t.emailAria}
             />
-            <button
-              type="submit"
-              disabled={state === "sending"}
-              style={{ backgroundColor: accent }}
-            >
+            <button type="submit" disabled={state === "sending"}>
               {state === "sending" ? t.sending : t.subscribe}
             </button>
           </form>

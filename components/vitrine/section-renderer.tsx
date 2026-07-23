@@ -141,7 +141,6 @@ export function SectionRenderer({
       return (
         <NewsletterSection
           slug={page.slug}
-          accent={ctx.accent}
           title={section.settings.title}
           description={section.settings.description}
           interactive={!ctx.preview}

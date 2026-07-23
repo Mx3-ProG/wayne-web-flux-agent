@@ -56,9 +56,9 @@
   --store-muted: #9298ad;
   color-scheme: dark;
 }
-.offer { position: relative; z-index: 5; display: flex; padding: 10px 20px; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; color: #fff; font-size: 11px; font-weight: 750; letter-spacing: .025em; text-align: center; }
+.offer { position: relative; z-index: 5; display: flex; padding: 10px 20px; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; color: var(--client-accent-text, #fff); font-size: 11px; font-weight: 750; letter-spacing: .025em; text-align: center; }
 .offerCountdown { padding: 2px 10px; border-radius: 999px; background: rgb(0 0 0 / 22%); font-variant-numeric: tabular-nums; }
-.offerCode { padding: 2px 10px; border: 1px dashed rgb(255 255 255 / 65%); border-radius: 999px; background: transparent; color: #fff; cursor: pointer; font: inherit; letter-spacing: .06em; }
+.offerCode { padding: 2px 10px; border: 1px dashed color-mix(in srgb, var(--client-accent-text, #fff) 65%, transparent); border-radius: 999px; background: transparent; color: var(--client-accent-text, #fff); cursor: pointer; font: inherit; letter-spacing: .06em; }
 .page[data-has-promo="true"] { padding-top: 64px; }
 .page[data-has-promo="true"] > .offer { position: fixed; inset: 0 0 auto; min-height: 64px; }
 .page[data-has-promo="true"] .navSticky { inset-block-start: 76px; }
@@ -125,6 +125,12 @@
 /* Thème Minimal : blanc, plat, sans ombres ni fioritures. */
 .page[data-theme="minimal"] .hero { min-height: clamp(440px, 60svh, 620px); background: #101010; }
 .page[data-theme="minimal"] .hero h1 { font-family: var(--font-inter), sans-serif; font-weight: 640; letter-spacing: -.055em; }
+/* L'accent de minimal est volontairement quasi-noir : illisible en tant que
+   couleur de texte sur le hero sombre et le footer sombre (où l'eyebrow/kicker
+   utilisent var(--client-accent)). Ces deux surfaces sont toujours sombres pour
+   minimal → forcer une couleur claire. */
+.page[data-theme="minimal"] .hero .eyebrow,
+.page[data-theme="minimal"] .footerKicker { color: rgb(255 255 255 / 82%); }
 .page[data-theme="minimal"] .sectionHeading h2 { font-family: var(--font-inter), sans-serif; font-weight: 640; letter-spacing: -.045em; }
 .page[data-theme="minimal"] .family,
 .page[data-theme="minimal"] .review,
@@ -359,7 +365,7 @@
 .page[data-design-header="header-heritage"] .hero h1,
 .page[data-design-header="header-heritage"] .tagline { margin-inline: auto; }
 .page[data-design-header="header-heritage"] .hero h1 { font-weight: 480; letter-spacing: -.035em; line-height: .9; }
-.page[data-design-header="header-heritage"] .eyebrow { color: #fff; letter-spacing: .22em; }
+.page[data-design-header="header-heritage"] .hero .eyebrow { color: #fff; letter-spacing: .22em; }
 .page[data-design-header="header-heritage"] .heroActions { justify-content: center; }
 .page[data-design-header="header-campaign"] .hero { min-height: clamp(620px, 92svh, 900px); place-items: end center; }
 .page[data-design-header="header-campaign"] .hero::after { height: 58%; background: linear-gradient(transparent, rgb(0 0 0 / 66%)); }
@@ -369,7 +375,7 @@
 .page[data-design-header="header-campaign"] .hero h1,
 .page[data-design-header="header-campaign"] .tagline { margin-inline: auto; }
 .page[data-design-header="header-campaign"] .hero h1 { font-weight: 470; letter-spacing: -.025em; line-height: .95; }
-.page[data-design-header="header-campaign"] .eyebrow { color: #fff; letter-spacing: .18em; }
+.page[data-design-header="header-campaign"] .hero .eyebrow { color: #fff; letter-spacing: .18em; }
 .page[data-design-header="header-campaign"] .heroActions { justify-content: center; }
 .page[data-design-footer="footer-standard"] .footer { border-top: 0; }
 .page[data-design-footer="footer-prestige"] .footer { border-top: 1px solid color-mix(in srgb, var(--client-accent) 46%, transparent); box-shadow: inset 0 1px color-mix(in srgb, #fff 8%, transparent); }
@@ -386,7 +392,12 @@
 .page[data-design-footer="footer-editorial"] .footer h2 { max-width: 820px; margin-inline: auto; font-weight: 480; }
 .page[data-design-footer="footer-editorial"] .socials { letter-spacing: .1em; text-transform: uppercase; }
 .page[data-design-footer="footer-editorial"] .legalLinks { padding-top: 28px; border-top: 1px solid rgb(255 255 255 / 12%); }
-.page[data-design-footer="footer-maison"] .footer { padding-top: 82px; border-top: 1px solid #d6d2cc; background: #f3f1ed !important; color: #57534f; text-align: left; }
+/* Spécificité renforcée (data-design-version + data-design-footer) : footer-maison
+   est le seul footer clair ; sans ce poids, la règle générique v2
+   `.page[data-design-version="2"] .footer { background: var(--store-footer) !important }`
+   (même spécificité, plus tardive) imposerait un fond sombre → texte sombre sur
+   sombre, footer illisible. */
+.page[data-design-version="2"][data-design-footer="footer-maison"] .footer { padding-top: 82px; border-top: 1px solid #d6d2cc; background: #f3f1ed !important; color: #57534f; text-align: left; }
 .page[data-design-footer="footer-maison"] .footerKicker { color: #1c1b1a; letter-spacing: .12em; }
 .page[data-design-footer="footer-maison"] .footer h2 { max-width: 720px; color: #1c1b1a; font-size: clamp(30px, 5cqi, 50px); font-weight: 480; }
 .page[data-design-footer="footer-maison"] .phone a { color: #1c1b1a; }
