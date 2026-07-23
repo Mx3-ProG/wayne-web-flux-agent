@@ -771,14 +771,18 @@ export function PageEditor({
                     <Label>Ambiance</Label>
                     <Select
                       value={appearance.mode}
+                      disabled={presentation.kit.supportedModes.length < 2}
                       onValueChange={(mode) => patch({ appearance: { ...appearance, mode: mode as "light" | "dark" } })}
                     >
                       <SelectTrigger className="w-full"><SelectValue /></SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="light">Claire</SelectItem>
-                        <SelectItem value="dark">Sombre</SelectItem>
+                        {presentation.kit.supportedModes.includes("light") && <SelectItem value="light">Claire</SelectItem>}
+                        {presentation.kit.supportedModes.includes("dark") && <SelectItem value="dark">Sombre</SelectItem>}
                       </SelectContent>
                     </Select>
+                    {presentation.kit.supportedModes.length < 2 && (
+                      <p className="text-xs text-muted-foreground">Cet univers n’existe qu’en ambiance {presentation.kit.supportedModes[0] === "dark" ? "sombre" : "claire"}.</p>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center justify-between gap-3">

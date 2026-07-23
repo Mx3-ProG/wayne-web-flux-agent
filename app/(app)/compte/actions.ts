@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { after } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
@@ -163,10 +162,11 @@ export async function inviteFriend(
   if (!EMAIL_RE.test(email)) return { error: t.errors.invalid_email };
 
   const fromName = String(user.user_metadata?.name ?? "").trim() || "Un ami";
-  after(() =>
-    sendFriendInvite(email, fromName, locale).catch((e) =>
-      console.error("account: invite email failed", e)
-    )
+  // Envoi AWAITé (et non after()) : sur Vercel, les callbacks after() ne sont
+  // pas honorés ici et l'email ne partait jamais. sendFriendInvite ne throw
+  // jamais (sendEmail capture tout), donc await est sans risque pour l'action.
+  await sendFriendInvite(email, fromName, locale).catch((e) =>
+    console.error("account: invite email failed", e)
   );
   return {
     message: await withSpamHint(t.messages.invite_sent.replace("{email}", email), "other", locale),

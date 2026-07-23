@@ -2,7 +2,6 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { sendPasswordChangedEmail } from "@/lib/emails/account-emails";
 
@@ -32,13 +31,12 @@ export async function updatePassword(
   const { error } = await supabase.auth.updateUser({ password });
   if (error) return { error: "Impossible de mettre à jour le mot de passe." };
 
-  // Notification de sécurité à l'adresse du compte (anti-fraude).
+  // Notification de sécurité à l'adresse du compte (anti-fraude). AWAITé et non
+  // after() : les callbacks after() ne sont pas honorés sur Vercel ici.
   if (user.email) {
     const firstName = String(user.user_metadata?.name ?? "").trim();
-    after(() =>
-      sendPasswordChangedEmail(user.email!, firstName).catch((e) =>
-        console.error("account: password-changed email failed", e)
-      )
+    await sendPasswordChangedEmail(user.email, firstName).catch((e) =>
+      console.error("account: password-changed email failed", e)
     );
   }
 

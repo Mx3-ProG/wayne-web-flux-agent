@@ -56,7 +56,15 @@ export function resolveStorefrontPresentation(
   page: Pick<Page, "theme" | "colors" | "appearance" | "design">
 ): ResolvedStorefrontPresentation {
   const design = resolveVitrineDesign(page.theme || "editorial", page.design);
-  const appearance = legacyAppearance(page);
+  const rawAppearance = legacyAppearance(page);
+  // Filet de sécurité : une donnée héritée ou écrite hors éditeur peut porter
+  // une ambiance que le kit ne sait pas rendre (ex. "light" sur un univers
+  // volontairement sombre, sans fond clair propre). Le contrôle éditeur
+  // masque déjà ce choix, mais la publication ne doit jamais dépendre
+  // uniquement de l'UI pour rester lisible.
+  const appearance = design.kit.supportedModes.includes(rawAppearance.mode)
+    ? rawAppearance
+    : { ...rawAppearance, mode: design.kit.supportedModes[0] };
   const palette = deriveStorefrontTokens(design.kit, appearance);
   return {
     ...design,

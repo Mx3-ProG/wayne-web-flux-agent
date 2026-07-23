@@ -198,7 +198,7 @@ export function BookingModal({ slug, service, accentColor, designId, buttonDesig
               name="phone"
               required
               type="tel"
-              pattern="[+0-9 ().-]{6,20}"
+              pattern="[+0-9 \(\)\.\-]{6,20}"
               placeholder={t.phonePlaceholder}
               className="w-full rounded-lg border border-black/10 bg-white px-3 py-2.5"
             />

@@ -71,6 +71,7 @@ export function VitrineGuide({
   // L'assistant FLUX est payant ; l'éditeur complet reste gratuit.
   const enough = publish.balance >= VITRINE_ASSIST_COST;
   const progress = Math.min(100, ((step + 1) / 6) * 100);
+  const guideKit = resolveStorefrontPresentation(page).kit;
   const canContinue =
     step === 1
       ? Boolean(page.business_name.trim() && page.job_title.trim() && page.city.trim())
@@ -298,7 +299,17 @@ export function VitrineGuide({
               </label>
               <div className={styles.colorFields}>
                 <label><span>{t.details.primary}</span><input type="color" value={legacyAppearance(page).accent} onChange={(event) => patch({ appearance: { ...legacyAppearance(page), accent: event.target.value } })} /></label>
-                <label><span>Ambiance</span><select value={legacyAppearance(page).mode} onChange={(event) => patch({ appearance: { ...legacyAppearance(page), mode: event.target.value as "light" | "dark" } })}><option value="light">Claire</option><option value="dark">Sombre</option></select></label>
+                <label>
+                  <span>Ambiance</span>
+                  <select
+                    value={legacyAppearance(page).mode}
+                    disabled={guideKit.supportedModes.length < 2}
+                    onChange={(event) => patch({ appearance: { ...legacyAppearance(page), mode: event.target.value as "light" | "dark" } })}
+                  >
+                    {guideKit.supportedModes.includes("light") && <option value="light">Claire</option>}
+                    {guideKit.supportedModes.includes("dark") && <option value="dark">Sombre</option>}
+                  </select>
+                </label>
               </div>
               <Field label={t.details.phone} value={page.phone} maxLength={30} placeholder={t.details.phonePlaceholder} onChange={(phone) => {
                 const syncFloatingNumber = page.floating_cta && (!page.floating_cta.number || page.floating_cta.number === page.phone);

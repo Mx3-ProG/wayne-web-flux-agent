@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { after } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { sendOrderStatusEmail } from "@/lib/emails/order-emails";
 import type { OrderStatus } from "@/lib/types";
@@ -82,10 +81,8 @@ export async function acceptOrder(orderId: string): Promise<void> {
     accepted_at: new Date().toISOString(),
   });
   if (!error) {
-    after(() =>
-      sendOrderStatusEmail(orderId, "accepted").catch((e) =>
-        console.error("order: status email failed", e)
-      )
+    await sendOrderStatusEmail(orderId, "accepted").catch((e) =>
+      console.error("order: status email failed", e)
     );
   }
   if (order?.status === "pending") {
@@ -98,10 +95,8 @@ export async function acceptOrder(orderId: string): Promise<void> {
 export async function fulfillOrder(orderId: string): Promise<void> {
   const { error } = await setOrderStatus(orderId, "fulfilled");
   if (!error) {
-    after(() =>
-      sendOrderStatusEmail(orderId, "ready").catch((e) =>
-        console.error("order: status email failed", e)
-      )
+    await sendOrderStatusEmail(orderId, "ready").catch((e) =>
+      console.error("order: status email failed", e)
     );
   }
 }
@@ -117,10 +112,8 @@ export async function cancelOrder(orderId: string): Promise<void> {
   const wasDecremented = order?.status === "accepted" || order?.status === "fulfilled";
   const { error } = await setOrderStatus(orderId, "cancelled");
   if (!error) {
-    after(() =>
-      sendOrderStatusEmail(orderId, "cancelled").catch((e) =>
-        console.error("order: status email failed", e)
-      )
+    await sendOrderStatusEmail(orderId, "cancelled").catch((e) =>
+      console.error("order: status email failed", e)
     );
   }
   if (wasDecremented) {

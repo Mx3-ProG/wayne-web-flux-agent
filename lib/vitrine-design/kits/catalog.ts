@@ -79,3 +79,13 @@ export const DESIGN_KITS: DesignKit[] = [
   ...entry,
   compatibleComponents: curatedComponents(entry.components),
 }));
+
+// Cinq univers n'ont jamais reçu de fond clair propre (leur `background`
+// est une teinte sombre, pas une variante claire) : forcer "light" y produit
+// un texte sombre sur fond sombre, illisible. Restreindre côté kit pour que
+// l'éditeur masque le contrôle "Ambiance" incompatible plutôt que de laisser
+// le commerçant casser son propre rendu.
+const DARK_ONLY_KIT_IDS = new Set(["studio", "luxe", "neon", "prestige", "performance-gt"]);
+for (const entry of DESIGN_KITS) {
+  if (DARK_ONLY_KIT_IDS.has(entry.id)) entry.supportedModes = ["dark"];
+}

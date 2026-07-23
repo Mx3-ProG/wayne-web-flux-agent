@@ -1,4 +1,4 @@
-import { NextResponse, after } from "next/server";
+import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { sendOrderCreatedEmails } from "@/lib/emails/order-emails";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
@@ -138,23 +138,24 @@ export async function POST(
     body: `${firstName} · ${count} article${count > 1 ? "s" : ""} · ${formatPrice(total)}`,
   });
 
-  // Emails (acheteur + vendeur) après la réponse : jamais bloquant.
-  after(async () => {
-    try {
-      await sendOrderCreatedEmails({
-        orderId,
-        pageId: page.id,
-        firstName,
-        phone,
-        buyerEmail: email,
-        address,
-        note,
-        totalCents: total,
-      });
-    } catch (e) {
-      console.error("order: email dispatch failed", e);
-    }
-  });
+  // Emails (acheteur + vendeur) AWAITés avant la réponse : les callbacks after()
+  // ne sont pas honorés sur Vercel ici (waitUntil non tenu), l'email au vendeur
+  // ne partait jamais. Le try/catch garantit qu'un échec d'envoi ne casse pas la
+  // commande — la réponse 201 part quoi qu'il arrive.
+  try {
+    await sendOrderCreatedEmails({
+      orderId,
+      pageId: page.id,
+      firstName,
+      phone,
+      buyerEmail: email,
+      address,
+      note,
+      totalCents: total,
+    });
+  } catch (e) {
+    console.error("order: email dispatch failed", e);
+  }
 
   return NextResponse.json({ ok: true, order_id: orderId, total_cents: total }, { status: 201 });
 }
