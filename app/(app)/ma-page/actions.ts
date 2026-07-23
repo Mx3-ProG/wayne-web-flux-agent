@@ -320,7 +320,7 @@ export async function publishPage(
   // les anciens brouillons créés avant KarlMada.
   const [{ data: fullPage }, { data: products }, { data: offers }, { data: services }, { data: sitePages }] =
     await Promise.all([
-      supabase.from("pages").select("business_name, job_title, tagline, city, draft, legal, sections, seo, promo, reviews").eq("id", pageId).single(),
+      supabase.from("pages").select("business_name, job_title, tagline, city, draft, legal, sections, seo, promo, reviews, default_locale").eq("id", pageId).single(),
       supabase.from("products").select("name, description").eq("page_id", pageId),
       supabase.from("offers").select("title, description, draft, draft_status").eq("page_id", pageId),
       supabase.from("services").select("name").eq("page_id", pageId),
@@ -328,7 +328,7 @@ export async function publishPage(
     ]);
   const moderation = await enforceKarlMada(
     { page: fullPage, products, offers, services, sitePages },
-    { userId: user.id, pageId, surface: "page:publish" }
+    { userId: user.id, pageId, locale: fullPage?.default_locale, surface: "page:publish" }
   );
   if (moderation.error) {
     // La tentative de publication interdite est facturée, sans appliquer le

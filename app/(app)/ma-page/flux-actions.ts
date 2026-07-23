@@ -86,7 +86,7 @@ export async function fluxPrefill(
   // bloqué (mêmes garanties que fluxGenerateSite sur le brief).
   const contextModeration = await enforceKarlMada(
     { page, services, voice },
-    { userId: user.id, pageId, surface: "flux-prefill:input" }
+    { userId: user.id, pageId, locale, surface: "flux-prefill:input" }
   );
   if (contextModeration.error) return { error: "content_blocked" };
 
@@ -163,6 +163,7 @@ export async function fluxPrefill(
     const generatedModeration = await enforceKarlMada(out, {
       userId: user.id,
       pageId,
+      locale,
       surface: "flux-prefill:output",
     });
     if (generatedModeration.error) {
@@ -294,6 +295,7 @@ export async function fluxGenerateSite(
   const briefModeration = await enforceKarlMada(cleanBrief, {
     userId: user.id,
     pageId,
+    locale,
     surface: "flux-site:brief",
   });
   if (briefModeration.error) return { error: "content_blocked" };
@@ -398,6 +400,7 @@ export async function fluxGenerateSite(
     const moderation = await enforceKarlMada(out, {
       userId: user.id,
       pageId,
+      locale,
       surface: "flux-site:output",
     });
     if (moderation.error) {

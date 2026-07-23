@@ -96,6 +96,7 @@ export async function POST(request: Request) {
   const moderation = await enforceKarlMada(inputs, {
     userId: user.id,
     pageId: page?.id,
+    locale: page?.default_locale,
     surface: `ai-tool:${tool.slug}`,
   });
   if (moderation.error) {
@@ -136,6 +137,7 @@ export async function POST(request: Request) {
         const outputModeration = await enforceKarlMada(fullText, {
           userId: user.id,
           pageId: page?.id,
+          locale: page?.default_locale,
           surface: `ai-tool:${tool.slug}:output`,
         });
         if (outputModeration.error) {

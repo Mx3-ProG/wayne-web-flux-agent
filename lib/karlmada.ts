@@ -1,69 +1,37 @@
 import "server-only";
 
-import profanity from "leo-profanity";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { KARLMADA_BLOCK_MESSAGE } from "@/lib/karlmada-constants";
+import { defaultLocale, hasLocale, type Locale } from "@/lib/i18n/config";
+import {
+  ILLICIT_TERMS,
+  ILLICIT_TERMS_COMMON,
+  type IllicitCategory,
+} from "@/lib/karlmada-terms";
 
 export { KARLMADA_BLOCK_MESSAGE };
 
-type KarlMadaCategory = "adult" | "drugs" | "weapons" | "illegal" | "profanity";
-
 type KarlMadaMatch = {
-  category: KarlMadaCategory;
+  category: IllicitCategory;
   rule: string;
 };
 
-// Les listes de leo-profanity (Shutterstock + dictionnaire français) complètent
-// nos règles métier. Les termes restent côté serveur afin de ne pas fournir une
-// liste de contournement au navigateur.
-profanity.loadDictionary("en");
-profanity.add(profanity.getDictionary("fr"));
+// Langues à écriture latine : matching MOT-ENTIER après normalisation (accents
+// + leetspeak). Les autres (ru, zh, ja, ar) utilisent le matching en sous-chaîne
+// (normalizeUnicode) car il n'y a pas de frontières de mots exploitables — et le
+// leetspeak n'y a pas de sens.
+const LATIN_LOCALES: ReadonlySet<Locale> = new Set<Locale>([
+  "fr", "en", "es", "de", "it",
+]);
 
-const RULES: ReadonlyArray<{
-  category: Exclude<KarlMadaCategory, "profanity">;
-  terms: readonly string[];
-}> = [
-  {
-    category: "adult",
-    terms: [
-      "porn", "pornographie", "porno", "escort", "escorte sexuelle", "camgirl",
-      "cam boy", "onlyfans", "massage erotique", "service sexuel", "contenu adulte",
-      "nude", "nudite explicite", "hentai", "prostitution",
-    ],
-  },
-  {
-    category: "drugs",
-    terms: [
-      "marijuana", "haschich", "cocaine", "heroine", "methamphetamine",
-      "ecstasy", "mdma", "lsd", "fentanyl", "ketamine",
-      "drogue", "drogues", "vente de drogue", "trafic de drogue",
-      "stupéfiant", "stupefiant", "trafic de stupefiant",
-    ],
-  },
-  {
-    category: "weapons",
-    terms: [
-      "arme a feu", "pistolet", "revolver", "fusil d assaut", "kalachnikov", "ak47",
-      "munition", "explosif", "bombe artisanale", "poing americain",
-      "vente d arme", "vente arme", "trafic d arme",
-    ],
-  },
-  {
-    category: "illegal",
-    terms: [
-      "faux papiers", "carte bancaire volee", "blanchiment",
-      "contrefacon", "ransomware", "malware", "phishing", "piratage de compte",
-      "service de piratage", "données volées", "donnees volees", "traite humaine",
-      "esclavage", "tueur a gages", "fraude fiscale", "achat de votes", "activité illicite",
-      "activite illicite", "produit illicite", "service illicite",
-    ],
-  },
-] as const;
-
-function normalize(value: string): string {
+// Normalisation latine : neutralise accents et leetspeak, réduit à [a-z0-9] +
+// espaces. Sert au matching mot-entier des langues latines ET des termes
+// universels (ILLICIT_TERMS_COMMON), qui apparaissent souvent en caractères
+// latins même au sein d'un texte non latin.
+function normalizeLatin(value: string): string {
   return value
     .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .toLowerCase()
     .replace(/0/g, "o")
     .replace(/[1!|]/g, "i")
@@ -72,6 +40,18 @@ function normalize(value: string): string {
     .replace(/5|\$/g, "s")
     .replace(/7/g, "t")
     .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Normalisation « tous scripts » : conserve les lettres (cyrillique, CJK, arabe),
+// passe en minuscules, retire les diacritiques arabes et le tatweel, compacte les
+// espaces. Sert au matching en sous-chaîne des langues non latines.
+function normalizeUnicode(value: string): string {
+  return value
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[ؐ-ًؚ-ٰٟۖ-ۭـ]/g, "")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -93,22 +73,58 @@ function collectStrings(value: unknown, out: string[], depth = 0): void {
   }
 }
 
-export function inspectWithKarlMada(value: unknown): KarlMadaMatch | null {
+// Contrôle un texte contre un groupe de termes selon la stratégie du script.
+function matchGroups(
+  latinText: string,
+  unicodeText: string,
+  groups: readonly { category: IllicitCategory; terms: readonly string[] }[],
+  latinStrategy: boolean
+): KarlMadaMatch | null {
+  const paddedLatin = ` ${latinText} `;
+  for (const group of groups) {
+    for (const term of group.terms) {
+      if (latinStrategy) {
+        // Mot-entier : le terme normalisé doit apparaître entouré d'espaces.
+        if (paddedLatin.includes(` ${normalizeLatin(term)} `)) {
+          return { category: group.category, rule: term };
+        }
+      } else {
+        // Sous-chaîne : pas de frontières de mots en CJK/arabe/cyrillique.
+        const needle = normalizeUnicode(term);
+        if (needle && unicodeText.includes(needle)) {
+          return { category: group.category, rule: term };
+        }
+      }
+    }
+  }
+  return null;
+}
+
+// Vérifie le contenu contre la bibliothèque de la LANGUE de la page (plus jamais
+// le mélange global multi-langues) + les termes universels (latins) sur tout
+// contenu, quelle que soit sa langue.
+export function inspectWithKarlMada(
+  value: unknown,
+  locale: Locale = defaultLocale
+): KarlMadaMatch | null {
   const strings: string[] = [];
   collectStrings(value, strings);
 
+  const localeGroups = ILLICIT_TERMS[locale] ?? ILLICIT_TERMS[defaultLocale];
+  const isLatin = LATIN_LOCALES.has(locale);
+
   for (const raw of strings) {
-    const text = normalize(raw);
-    for (const group of RULES) {
-      const paddedText = ` ${text} `;
-      const rule = group.terms.find((term) =>
-        paddedText.includes(` ${normalize(term)} `)
-      );
-      if (rule) return { category: group.category, rule };
-    }
-    if (profanity.check(text)) {
-      return { category: "profanity", rule: "library-match" };
-    }
+    const latinText = normalizeLatin(raw);
+    const unicodeText = isLatin ? "" : normalizeUnicode(raw);
+
+    // 1. Termes universels : toujours en latin/mot-entier (ils s'écrivent en
+    //    caractères latins même dans un texte non latin, ex. « MDMA »).
+    const common = matchGroups(latinText, "", ILLICIT_TERMS_COMMON, true);
+    if (common) return common;
+
+    // 2. Termes propres à la langue de la page, selon son script.
+    const localeMatch = matchGroups(latinText, unicodeText, localeGroups, isLatin);
+    if (localeMatch) return localeMatch;
   }
   return null;
 }
@@ -119,16 +135,45 @@ export function inspectWithKarlMada(value: unknown): KarlMadaMatch | null {
 const SUSPENSION_THRESHOLD = 3;
 const SUSPENSION_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
 
+export type KarlMadaContext = {
+  userId?: string | null;
+  pageId?: string | null;
+  // Langue du contenu à modérer. Si absente mais pageId fourni, on lit
+  // pages.default_locale ; sinon on retombe sur la langue par défaut.
+  locale?: Locale | string | null;
+  surface: string;
+};
+
 export async function enforceKarlMada(
   value: unknown,
-  context: { userId?: string | null; pageId?: string | null; surface: string }
+  context: KarlMadaContext
 ): Promise<{ error?: string }> {
-  const match = inspectWithKarlMada(value);
+  const admin = createAdminClient();
+
+  // Résolution de la langue à contrôler : explicite → via la page → défaut.
+  let locale: Locale = defaultLocale;
+  if (context.locale && hasLocale(context.locale)) {
+    locale = context.locale;
+  } else if (context.pageId) {
+    try {
+      const { data: page } = await admin
+        .from("pages")
+        .select("default_locale")
+        .eq("id", context.pageId)
+        .maybeSingle<{ default_locale: string | null }>();
+      if (page?.default_locale && hasLocale(page.default_locale)) {
+        locale = page.default_locale;
+      }
+    } catch {
+      // Langue par défaut : ne bloque jamais la modération sur une erreur de lecture.
+    }
+  }
+
+  const match = inspectWithKarlMada(value, locale);
   if (!match) return {};
 
   // Best effort : un problème de journalisation ne doit jamais autoriser le contenu.
   try {
-    const admin = createAdminClient();
     let userId = context.userId ?? null;
     if (!userId && context.pageId) {
       const { data: owner } = await admin
