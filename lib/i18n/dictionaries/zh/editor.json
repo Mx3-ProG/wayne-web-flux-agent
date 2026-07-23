@@ -452,6 +452,9 @@
   "toastNothingToPublish": "没有可发布的内容：你的网站已是最新版本。",
   "toastContentBlocked": "FLUX 禁止并将处罚仇恨言论或露骨内容；请尊重你和他人所处的环境。违反使用条款满3次后，账号将被删除。",
   "toastGenericError": "发布失败，请稍后再试。",
-  "toastSuccess": "第 {version} 版已发布！你的网站已是最新版本。余额：{balance} 积分。"
+  "toastSuccess": "第 {version} 版已发布！你的网站已是最新版本。余额：{balance} 积分。",
+  "toastPathTaken": "你网站的两个页面使用了相同的地址。请重命名其中一个后再发布。",
+  "toastSuspended": "你的账户已被暂时暂停。请联系客服以重新启用。",
+  "toastInvalidAppearance": "你店铺的外观无效（强调色或模式）。请在主题中调整后再发布。"
  }
 }

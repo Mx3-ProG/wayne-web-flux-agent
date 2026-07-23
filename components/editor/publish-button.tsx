@@ -72,6 +72,18 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion, redirect
         toast.error(t.toastContentBlocked);
         return;
       }
+      if (result.error === "path_taken") {
+        toast.error(t.toastPathTaken);
+        return;
+      }
+      if (result.error === "account_suspended") {
+        toast.error(t.toastSuspended);
+        return;
+      }
+      if (result.error === "invalid_appearance") {
+        toast.error(t.toastInvalidAppearance);
+        return;
+      }
       if (result.error) {
         toast.error(t.toastGenericError);
         return;

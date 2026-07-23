@@ -452,6 +452,9 @@
   "toastNothingToPublish": "Nada que publicar: tu sitio ya está actualizado.",
   "toastContentBlocked": "Los mensajes de odio o los contenidos explícitos están prohibidos y sancionados en FLUX; por favor respeta tu entorno y el de los demás. Tras 3 infracciones de nuestras condiciones de uso, la cuenta se elimina.",
   "toastGenericError": "No se pudo publicar. Inténtalo de nuevo en un momento.",
-  "toastSuccess": "¡Versión {version} publicada! Tu sitio está actualizado. Saldo: {balance} cr."
+  "toastSuccess": "¡Versión {version} publicada! Tu sitio está actualizado. Saldo: {balance} cr.",
+  "toastPathTaken": "Dos páginas de tu sitio usan la misma dirección. Renombra una y vuelve a publicar.",
+  "toastSuspended": "Tu cuenta está suspendida temporalmente. Contacta con soporte para reactivarla.",
+  "toastInvalidAppearance": "La apariencia de tu tienda no es válida (color de acento o modo). Ajústala en el tema y vuelve a publicar."
  }
 }

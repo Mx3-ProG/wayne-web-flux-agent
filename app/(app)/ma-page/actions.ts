@@ -288,6 +288,7 @@ export type PublishError =
   | "subscription_required"
   | "email_not_verified"
   | "path_taken"
+  | "invalid_appearance"
   | "content_blocked"
   | "account_suspended"
   | "unknown";
@@ -356,6 +357,18 @@ export async function publishPage(
     if (error.message.includes("path_taken")) {
       return { error: "path_taken" };
     }
+    // Apparence de vitrine invalide (triggers V2, migration 00042) : accent
+    // hors #RRGGBB, mode ≠ light/dark, ou toggle non booléen dans le brouillon.
+    if (error.message.includes("invalid_appearance")) {
+      return { error: "invalid_appearance" };
+    }
+    // `forbidden` et tout autre échec inattendu (contrainte, trigger, type…)
+    // tombaient silencieusement sur "unknown" → toast générique « réessaie »,
+    // sans trace exploitable. On journalise le message brut côté serveur pour
+    // pouvoir diagnostiquer en production, puis on renvoie un code générique.
+    console.error(
+      `[publishPage] échec publish_page pour page=${pageId}: ${error.code ?? ""} ${error.message}`
+    );
     return { error: "unknown" };
   }
 

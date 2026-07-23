@@ -452,6 +452,9 @@
   "toastNothingToPublish": "Nothing to publish: your site is already up to date.",
   "toastContentBlocked": "Hate speech or explicit content is forbidden and penalized on FLUX; please respect your environment and that of others. After 3 violations of our terms of use, the account is deleted.",
   "toastGenericError": "Unable to publish. Try again in a moment.",
-  "toastSuccess": "Version {version} published! Your site is up to date. Balance: {balance} cr."
+  "toastSuccess": "Version {version} published! Your site is up to date. Balance: {balance} cr.",
+  "toastPathTaken": "Two of your site's pages use the same address. Rename one of them, then publish again.",
+  "toastSuspended": "Your account is temporarily suspended. Contact support to reactivate it.",
+  "toastInvalidAppearance": "Your storefront's appearance is invalid (accent color or mode). Adjust it in the theme, then publish again."
  }
 }

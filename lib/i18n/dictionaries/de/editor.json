@@ -452,6 +452,9 @@
   "toastNothingToPublish": "Nichts zu veröffentlichen: deine Website ist bereits aktuell.",
   "toastContentBlocked": "Hassbotschaften oder explizite Inhalte sind auf FLUX verboten und werden geahndet; bitte respektiere dein Umfeld und das der anderen. Nach 3 Verstößen gegen unsere Nutzungsbedingungen wird das Konto gelöscht.",
   "toastGenericError": "Veröffentlichung nicht möglich. Versuch es gleich noch einmal.",
-  "toastSuccess": "Version {version} veröffentlicht! Deine Website ist aktuell. Guthaben: {balance} Cr."
+  "toastSuccess": "Version {version} veröffentlicht! Deine Website ist aktuell. Guthaben: {balance} Cr.",
+  "toastPathTaken": "Zwei Seiten deiner Website verwenden dieselbe Adresse. Benenne eine um und veröffentliche erneut.",
+  "toastSuspended": "Dein Konto ist vorübergehend gesperrt. Wende dich an den Support, um es zu reaktivieren.",
+  "toastInvalidAppearance": "Das Erscheinungsbild deines Shops ist ungültig (Akzentfarbe oder Modus). Passe es im Theme an und veröffentliche erneut."
  }
 }
