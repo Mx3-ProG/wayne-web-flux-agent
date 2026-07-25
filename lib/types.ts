@@ -215,7 +215,7 @@ export type Page = {
 
 // Champs de la vitrine éditables via le brouillon (pages.draft).
 // ⚠️ Tout ajout ici exige une mise à jour du UPDATE de publish_page
-// (dernière version : supabase/migrations/00023_themes_typography.sql),
+// (dernière version : supabase/migrations/00026_onboarding_email_verification.sql),
 // sinon le champ resterait en brouillon sans jamais être publié.
 export type PageDraftFields = Pick<
   Page,
@@ -273,7 +273,7 @@ export type SitePage = {
 
 // Champs d'une sous-page éditables via le brouillon (site_pages.draft).
 // ⚠️ Tout ajout ici exige une mise à jour du UPDATE site_pages de publish_page
-// (dernière version : supabase/migrations/00023_themes_typography.sql).
+// (dernière version : supabase/migrations/00026_onboarding_email_verification.sql).
 export type SitePageDraftFields = Pick<
   SitePage,
   "path" | "title" | "subtitle" | "hero_url" | "seo" | "sections"

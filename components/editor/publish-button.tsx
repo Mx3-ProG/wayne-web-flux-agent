@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useEffect, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -40,8 +40,14 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion, redirect
   const [outOfCredits, setOutOfCredits] = useState(false);
   const [trialOver, setTrialOver] = useState(false);
   const [pending, startTransition] = useTransition();
+  // Suivre la balance en état local pour refléter les mises à jour du parent
+  // (ex. après router.refresh() suite à une action qui dépense des crédits).
+  const [liveBalance, setLiveBalance] = useState(balance);
+  useEffect(() => {
+    setLiveBalance(balance);
+  }, [balance]);
 
-  const enough = balance >= PUBLISH_COST;
+  const enough = liveBalance >= PUBLISH_COST;
 
   function confirm() {
     startTransition(async () => {
@@ -138,7 +144,7 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion, redirect
               <DialogDescription>
                 {t.insufficientText
                   .replace("{cost}", String(PUBLISH_COST))
-                  .replace("{balance}", String(balance))}
+                  .replace("{balance}", String(liveBalance))}
               </DialogDescription>
             </DialogHeader>
             <p className="text-sm text-muted-foreground">{t.plansHint}</p>
@@ -165,7 +171,7 @@ export function PublishButton({ pageId, balance, hasDraft, nextVersion, redirect
             <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2 text-sm">
               <span className="text-muted-foreground">{t.balance}</span>
               <span>
-                {balance} cr. → <strong>{balance - PUBLISH_COST} cr.</strong>
+                {liveBalance} cr. → <strong>{liveBalance - PUBLISH_COST} cr.</strong>
               </span>
             </div>
             <DialogFooter>

@@ -90,9 +90,7 @@ export function designKitPatch(
     appearance: {
       accent: kit.defaults.colors.primary,
       mode: DARK_THEMES.includes(kit.legacyTheme) ? "dark" : "light",
-      allowVisitorModeToggle: current?.appearance
-        ? current.appearance.allowVisitorModeToggle
-        : true,
+      allowVisitorModeToggle: current?.appearance?.allowVisitorModeToggle ?? true,
     },
     font: kit.defaults.font,
     typography: { ...kit.defaults.typography },
