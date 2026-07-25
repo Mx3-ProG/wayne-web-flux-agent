@@ -52,6 +52,8 @@ begin
       new.draft := jsonb_set(new.draft, '{appearance}', app);
     end if;
     if not public.valid_page_appearance(app) then
+      -- valid_page_appearance vérifie : accent=#RRGGBB, mode∈{light,dark}, allowVisitorModeToggle=boolean.
+      -- Si ce check échoue après l'auto-fix, l'accent ou le mode est corrompu → rejet légitime.
       raise exception 'invalid_appearance' using errcode = 'P0001';
     end if;
   end if;
@@ -62,6 +64,8 @@ $$;
 -- 2. Backfill : corriger les brouillons existants avec appearance invalide.
 --    Le trigger enforce_page_draft_appearance (maintenant résilient) est actif
 --    durant cette UPDATE et verra les données déjà corrigées.
+--    La table pages est typiquement petite (une ligne par commerçant) ;
+--    l'index sur `draft IS NOT NULL` n'existe pas, mais le filtre est sélectif.
 update public.pages
 set draft = jsonb_set(
   draft,
