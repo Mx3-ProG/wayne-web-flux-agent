@@ -51,7 +51,7 @@ begin
       app := app || '{"allowVisitorModeToggle": true}'::jsonb;
       new.draft := jsonb_set(new.draft, '{appearance}', app);
     end if;
-    if not public.valid_page_appearance(new.draft->'appearance') then
+    if not public.valid_page_appearance(app) then
       raise exception 'invalid_appearance' using errcode = 'P0001';
     end if;
   end if;
