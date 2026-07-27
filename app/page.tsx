@@ -57,6 +57,16 @@ const TESTIMONIAL_PROFILES = [
   { name: "Laurent", initials: "LA", photo: "/temoignages/laurent_garagiste_prestige.jpg" },
 ];
 
+const VIDEO_TESTIMONIALS = Array.from({ length: 6 }, (_, index) => {
+  const number = String(index + 1).padStart(2, "0");
+
+  return {
+    src: `/temoignages/video-avis/avis-${number}.mp4`,
+    poster: `/temoignages/video-avis/avis-${number}-poster.jpg`,
+    number,
+  };
+});
+
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
   const dict = await getDictionary(locale, "landing");
@@ -241,6 +251,20 @@ export default async function LandingPage() {
             <div>
               <p>{dict.manifesto.p1}</p>
               <p>{dict.manifesto.p2}</p>
+              <video
+                className={styles.manifestoVideo}
+                controls
+                playsInline
+                preload="none"
+                poster="/temoignages/histoire/metier-digital-poster.jpg"
+                aria-label={`${dict.manifesto.titleLine1} ${dict.manifesto.titleLine2} ${dict.manifesto.titleEm}`}
+              >
+                <source
+                  src="/temoignages/histoire/metier-digital.mp4"
+                  type="video/mp4"
+                />
+                Votre navigateur ne prend pas en charge la lecture vidéo.
+              </video>
             </div>
           </div>
         </section>
@@ -424,6 +448,26 @@ export default async function LandingPage() {
               </h2>
             </div>
             <p>{dict.testimonialsSection.text}</p>
+          </div>
+          <div className={styles.videoTestimonialGrid}>
+            {VIDEO_TESTIMONIALS.map((video) => (
+              <figure key={video.src} className={styles.videoTestimonialCard}>
+                <video
+                  controls
+                  playsInline
+                  preload="none"
+                  poster={video.poster}
+                  aria-label={`${dict.testimonialsSection.titleLine1} ${dict.testimonialsSection.titleEm} — ${video.number}`}
+                >
+                  <source src={video.src} type="video/mp4" />
+                  Votre navigateur ne prend pas en charge la lecture vidéo.
+                </video>
+                <figcaption aria-hidden="true">
+                  <span>{video.number}</span>
+                  <small>/ 06</small>
+                </figcaption>
+              </figure>
+            ))}
           </div>
           <div className={styles.testimonialGrid}>
             {dict.testimonials.map((t, index) => {

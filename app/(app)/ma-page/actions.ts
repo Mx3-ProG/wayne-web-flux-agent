@@ -303,7 +303,12 @@ export async function publishPage(
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) return { error: "unknown" };
+  if (!user) {
+    // Session non lue côté serveur (cookie/env) : l'utilisateur se croit connecté
+    // (éditeur affiché) mais la Server Action n'a pas de session. Prod-typique.
+    console.error(`[publishPage] pas de session serveur pour page=${pageId}`);
+    return { error: "unknown" };
+  }
 
   const { data: page } = await supabase
     .from("pages")
@@ -311,72 +316,93 @@ export async function publishPage(
     .eq("id", pageId)
     .eq("user_id", user.id)
     .single();
-  if (!page) return { error: "unknown" };
-
-  // Compte suspendu par la modération : publication coupée jusqu'à réactivation.
-  const access = await loadAccountAccess(user.id);
-  if (access.status === "suspended") return { error: "account_suspended" };
-
-  // Dernier verrou : on rescane l'intégralité du contenu publiable, y compris
-  // les anciens brouillons créés avant KarlMada.
-  const [{ data: fullPage }, { data: products }, { data: offers }, { data: services }, { data: sitePages }] =
-    await Promise.all([
-      supabase.from("pages").select("business_name, job_title, tagline, city, draft, legal, sections, seo, promo, reviews, default_locale").eq("id", pageId).single(),
-      supabase.from("products").select("name, description").eq("page_id", pageId),
-      supabase.from("offers").select("title, description, draft, draft_status").eq("page_id", pageId),
-      supabase.from("services").select("name").eq("page_id", pageId),
-      supabase.from("site_pages").select("title, subtitle, draft, sections, seo, draft_status").eq("page_id", pageId),
-    ]);
-  const moderation = await enforceKarlMada(
-    { page: fullPage, products, offers, services, sitePages },
-    { userId: user.id, pageId, locale: fullPage?.default_locale, surface: "page:publish" }
-  );
-  if (moderation.error) {
-    // La tentative de publication interdite est facturée, sans appliquer le
-    // brouillon. Une absence de solde n'annule pas l'infraction KarlMada.
-    await spendCredits(user.id, PUBLISH_COST, "karlmada:publish-blocked");
-    return { error: "content_blocked" };
-  }
-
-  const { data: balance, error } = await supabase.rpc("publish_page", {
-    pid: pageId,
-  });
-  if (error) {
-    if (error.message.includes("insufficient_credits")) {
-      return { error: "insufficient_credits" };
-    }
-    if (error.message.includes("nothing_to_publish")) {
-      return { error: "nothing_to_publish" };
-    }
-    if (error.message.includes("subscription_required")) {
-      return { error: "subscription_required" };
-    }
-    if (error.message.includes("email_not_verified")) {
-      return { error: "email_not_verified" };
-    }
-    if (error.message.includes("path_taken")) {
-      return { error: "path_taken" };
-    }
-    // Apparence de vitrine invalide (triggers V2, migration 00042) : accent
-    // hors #RRGGBB, mode ≠ light/dark, ou toggle non booléen dans le brouillon.
-    if (error.message.includes("invalid_appearance")) {
-      return { error: "invalid_appearance" };
-    }
-    // `forbidden` et tout autre échec inattendu (contrainte, trigger, type…)
-    // tombaient silencieusement sur "unknown" → toast générique « réessaie »,
-    // sans trace exploitable. On journalise le message brut côté serveur pour
-    // pouvoir diagnostiquer en production, puis on renvoie un code générique.
-    console.error(
-      `[publishPage] échec publish_page pour page=${pageId}: ${error.code ?? ""} ${error.message}`
-    );
+  if (!page) {
+    console.error(`[publishPage] page introuvable/non possédée page=${pageId} user=${user.id}`);
     return { error: "unknown" };
   }
 
-  revalidatePath("/ma-page");
-  revalidatePath("/offres");
-  // "layout" : invalide la home ET toutes les sous-pages /p/slug/*.
-  revalidatePath(`/p/${page.slug}`, "layout");
-  return { balance: balance ?? undefined };
+  try {
+    // Compte suspendu par la modération : publication coupée jusqu'à réactivation.
+    const access = await loadAccountAccess(user.id);
+    if (access.status === "suspended") return { error: "account_suspended" };
+
+    // Dernier verrou : on rescane l'intégralité du contenu publiable, y compris
+    // les anciens brouillons créés avant KarlMada.
+    const [{ data: fullPage }, { data: products }, { data: offers }, { data: services }, { data: sitePages }] =
+      await Promise.all([
+        supabase.from("pages").select("business_name, job_title, tagline, city, draft, legal, sections, seo, promo, reviews, default_locale").eq("id", pageId).single(),
+        supabase.from("products").select("name, description").eq("page_id", pageId),
+        supabase.from("offers").select("title, description, draft, draft_status").eq("page_id", pageId),
+        supabase.from("services").select("name").eq("page_id", pageId),
+        supabase.from("site_pages").select("title, subtitle, draft, sections, seo, draft_status").eq("page_id", pageId),
+      ]);
+    const moderation = await enforceKarlMada(
+      { page: fullPage, products, offers, services, sitePages },
+      { userId: user.id, pageId, locale: fullPage?.default_locale, surface: "page:publish" }
+    );
+    if (moderation.error) {
+      // La tentative de publication interdite est facturée, sans appliquer le
+      // brouillon. Une absence de solde n'annule pas l'infraction KarlMada.
+      await spendCredits(user.id, PUBLISH_COST, "karlmada:publish-blocked");
+      return { error: "content_blocked" };
+    }
+
+    const { data: balance, error } = await supabase.rpc("publish_page", {
+      pid: pageId,
+    });
+    if (error) {
+      if (error.message.includes("insufficient_credits")) {
+        return { error: "insufficient_credits" };
+      }
+      if (error.message.includes("nothing_to_publish")) {
+        return { error: "nothing_to_publish" };
+      }
+      if (error.message.includes("subscription_required")) {
+        return { error: "subscription_required" };
+      }
+      if (error.message.includes("email_not_verified")) {
+        return { error: "email_not_verified" };
+      }
+      if (error.message.includes("path_taken")) {
+        return { error: "path_taken" };
+      }
+      // Apparence de vitrine invalide (triggers V2, migration 00042) : accent
+      // hors #RRGGBB, mode ≠ light/dark, ou toggle non booléen dans le brouillon.
+      if (error.message.includes("invalid_appearance")) {
+        return { error: "invalid_appearance" };
+      }
+      // `forbidden` et tout autre échec inattendu (contrainte, trigger, type…)
+      // tombaient silencieusement sur "unknown" → toast générique « réessaie »,
+      // sans trace exploitable. On journalise le message brut côté serveur pour
+      // pouvoir diagnostiquer en production, puis on renvoie un code générique.
+      console.error(
+        `[publishPage] échec publish_page pour page=${pageId}: ${error.code ?? ""} ${error.message}`
+      );
+      return { error: "unknown" };
+    }
+
+    // Publication réussie côté SQL (version créée, crédits débités) : à partir
+    // d'ici, plus RIEN ne doit transformer ce succès en échec — sinon l'utilisateur
+    // reclique et rebrûle 5 crédits (double-publication observée en prod). Les
+    // revalidations best-effort ne peuvent pas faire échouer l'action.
+    try {
+      revalidatePath("/ma-page");
+      revalidatePath("/offres");
+      // "layout" : invalide la home ET toutes les sous-pages /p/slug/*.
+      revalidatePath(`/p/${page.slug}`, "layout");
+    } catch (revalidateErr) {
+      console.error(`[publishPage] revalidate après succès page=${pageId}:`, revalidateErr);
+    }
+    return { balance: balance ?? undefined };
+  } catch (err) {
+    // Exception inattendue (loadAccountAccess, modération, transport RPC…) :
+    // en prod elle remontait en erreur opaque. On la journalise pour diagnostic.
+    console.error(
+      `[publishPage] exception page=${pageId}:`,
+      err instanceof Error ? `${err.message}\n${err.stack ?? ""}` : err
+    );
+    return { error: "unknown" };
+  }
 }
 
 export type CatalogFamily = {
