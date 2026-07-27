@@ -47,7 +47,7 @@ const bodySchema = z.discriminatedUnion("kind", [
 ]);
 
 export async function POST(request: Request) {
-  if (!rateLimit(`assistant:${clientIp(request)}`, 60, 60_000)) {
+  if (!await rateLimit(`assistant:${clientIp(request)}`, 60, 60_000)) {
     return NextResponse.json({ error: "rate_limited" }, { status: 429 });
   }
   const parsed = bodySchema.safeParse(await request.json().catch(() => null));

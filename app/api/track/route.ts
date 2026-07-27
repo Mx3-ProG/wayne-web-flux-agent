@@ -7,7 +7,7 @@ const KINDS = new Set(["view", "phone_click", "social_click", "whatsapp_click"])
 // Tracking anonyme de la vitrine publique (sendBeacon-friendly).
 // `newsletter_signup` est enregistré côté /api/subscribe, pas ici.
 export async function POST(request: Request) {
-  if (!rateLimit(`track:${clientIp(request)}`, 30, 60_000)) {
+  if (!await rateLimit(`track:${clientIp(request)}`, 30, 60_000)) {
     return NextResponse.json({ error: "too_many_requests" }, { status: 429 });
   }
 

@@ -85,7 +85,7 @@ export async function requestAccountPasswordReset(
   if (!user?.email) return { error: (await fallbackDict()).errors.session_expired };
   const { t, locale } = await accountDict(supabase, user.id);
 
-  if (!rateLimit(`account-password-reset:${user.id}`, 3, 3_600_000)) {
+  if (!await rateLimit(`account-password-reset:${user.id}`, 3, 3_600_000)) {
     return {
       message: await withSpamHint(t.messages.reset_email_sent, "self", locale),
     };
@@ -124,7 +124,7 @@ export async function changeEmail(
   if (user.email?.toLowerCase() === email.toLowerCase())
     return { error: t.errors.already_current_email };
 
-  if (!rateLimit(`account-email-change:${user.id}`, 3, 3_600_000)) {
+  if (!await rateLimit(`account-email-change:${user.id}`, 3, 3_600_000)) {
     return {
       message: t.messages.email_change_pending,
     };
@@ -189,6 +189,15 @@ export async function deleteAccount(
   }
 
   const admin = createAdminClient();
+
+  // Droit à l'effacement : la newsletter marketing est indexée par email (pas
+  // par user_id) et n'est donc pas couverte par la cascade de deleteUser. On la
+  // purge explicitement avant de supprimer le compte. Les inscrits des vitrines
+  // (page_subscribers) cascadent via page_id → user_id.
+  if (user.email) {
+    await admin.from("marketing_subscribers").delete().eq("email", user.email);
+  }
+
   const { error } = await admin.auth.admin.deleteUser(user.id);
   if (error) return { error: t.errors.deletion_failed };
 

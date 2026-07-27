@@ -11,7 +11,7 @@ const CONTACT_INBOX = process.env.CONTACT_EMAIL || "contact@wayne-web.com";
 // Le message est stocké en base (source de vérité), puis notifié par
 // email à l'équipe — l'échec d'envoi ne fait pas échouer la demande.
 export async function POST(request: Request) {
-  if (!rateLimit(`marketing-contact:${clientIp(request)}`, 3, 60_000)) {
+  if (!await rateLimit(`marketing-contact:${clientIp(request)}`, 3, 60_000)) {
     return NextResponse.json({ error: "too_many_requests" }, { status: 429 });
   }
 

@@ -21,7 +21,7 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  if (!rateLimit(`generate:${user.id}`, 10, 60_000)) {
+  if (!await rateLimit(`generate:${user.id}`, 10, 60_000)) {
     return NextResponse.json({ error: "too_many_requests" }, { status: 429 });
   }
 

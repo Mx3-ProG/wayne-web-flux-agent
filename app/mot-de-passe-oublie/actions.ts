@@ -25,7 +25,7 @@ export async function requestPasswordReset(
   if (!email) return { error: "Indique ton email." };
 
   // Limite les demandes par email pour éviter le harcèlement de boîte mail.
-  if (!rateLimit(`reset:${email.toLowerCase()}`, 3, 3_600_000)) {
+  if (!await rateLimit(`reset:${email.toLowerCase()}`, 3, 3_600_000)) {
     return { message: await neutralMessage() };
   }
 

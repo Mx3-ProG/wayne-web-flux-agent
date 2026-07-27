@@ -103,7 +103,7 @@ export async function sendOrderCreatedEmails(args: {
 
   if (
     args.buyerEmail &&
-    rateLimit(`email:${args.buyerEmail}`, 3, 3_600_000)
+    await rateLimit(`email:${args.buyerEmail}`, 3, 3_600_000)
   ) {
     sends.push(
       buyerOrderConfirmation(base, ctx.buyerLocale).then((tpl) =>
@@ -131,7 +131,7 @@ export async function sendOrderStatusEmail(
     .eq("id", orderId)
     .maybeSingle();
   if (!order?.email) return;
-  if (!rateLimit(`email:${order.email}`, 5, 3_600_000)) return;
+  if (!await rateLimit(`email:${order.email}`, 5, 3_600_000)) return;
 
   const { data: page } = await supabase
     .from("pages")

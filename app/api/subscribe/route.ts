@@ -6,7 +6,7 @@ const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
 
 // Inscription newsletter depuis la vitrine publique (bloc newsletter).
 export async function POST(request: Request) {
-  if (!rateLimit(`subscribe:${clientIp(request)}`, 5, 60_000)) {
+  if (!await rateLimit(`subscribe:${clientIp(request)}`, 5, 60_000)) {
     return NextResponse.json({ error: "too_many_requests" }, { status: 429 });
   }
 
@@ -34,11 +34,13 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
   }
 
+  // Upsert avec preuve de consentement horodatée. Une réinscription réactive un
+  // abonné précédemment désinscrit (unsubscribed_at remis à null).
   const { error } = await supabase
     .from("page_subscribers")
     .upsert(
-      { page_id: page.id, email },
-      { onConflict: "page_id,email", ignoreDuplicates: true }
+      { page_id: page.id, email, consented_at: new Date().toISOString(), unsubscribed_at: null },
+      { onConflict: "page_id,email" }
     );
   if (error) {
     console.error("subscribe: insert failed", { slug, error });

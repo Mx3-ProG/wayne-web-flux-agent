@@ -18,7 +18,7 @@ export async function sendPasswordChangedEmail(
 ): Promise<void> {
   if (!to) return;
   // Un email de confirmation suffit ; on borne pour éviter les rafales.
-  if (!rateLimit(`pwd-changed:${to.toLowerCase()}`, 3, 3_600_000)) return;
+  if (!await rateLimit(`pwd-changed:${to.toLowerCase()}`, 3, 3_600_000)) return;
   const tpl = await passwordChangedSecurity({ firstName: firstName || "" }, locale);
   await sendEmail({
     to,
@@ -35,7 +35,7 @@ export async function sendFriendInvite(
 ): Promise<void> {
   if (!toEmail) return;
   // Anti-abus : un même expéditeur ne peut pas spammer la même adresse.
-  if (!rateLimit(`invite:${toEmail.toLowerCase()}`, 3, 86_400_000)) return;
+  if (!await rateLimit(`invite:${toEmail.toLowerCase()}`, 3, 86_400_000)) return;
   // Page d'accueil dédiée aux invités (pitch + CTA vers le tunnel) plutôt que
   // le tunnel brut : le destinataire ne connaît pas encore FLUX.
   const signupUrl = `${process.env.NEXT_PUBLIC_SITE_URL || ""}/invitation`;

@@ -8,7 +8,7 @@ export async function GET(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  if (!rateLimit(`slots:${clientIp(request)}`, 60, 60_000)) {
+  if (!await rateLimit(`slots:${clientIp(request)}`, 60, 60_000)) {
     return NextResponse.json({ error: "too_many_requests" }, { status: 429 });
   }
 

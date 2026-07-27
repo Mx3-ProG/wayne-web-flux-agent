@@ -10,7 +10,7 @@ export async function POST(
   { params }: { params: Promise<{ slug: string }> }
 ) {
   const { slug } = await params;
-  if (!rateLimit(`event:${clientIp(request)}`, 5, 60_000)) {
+  if (!await rateLimit(`event:${clientIp(request)}`, 5, 60_000)) {
     return NextResponse.json({ error: "too_many_requests" }, { status: 429 });
   }
 

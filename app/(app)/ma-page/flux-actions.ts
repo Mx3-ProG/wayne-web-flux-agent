@@ -66,7 +66,7 @@ export async function fluxPrefill(
   const access = await checkFluxAccess(user.id);
   if (!access.ok) return { error: access.reason };
 
-  if (!rateLimit(`flux-prefill:${user.id}`, 3, 300_000)) {
+  if (!await rateLimit(`flux-prefill:${user.id}`, 3, 300_000)) {
     return { error: "too_many_requests" };
   }
 
@@ -287,7 +287,7 @@ export async function fluxGenerateSite(
   const access = await checkFluxAccess(user.id);
   if (!access.ok) return { error: access.reason };
 
-  if (!rateLimit(`flux-site:${user.id}`, 3, 600_000)) {
+  if (!await rateLimit(`flux-site:${user.id}`, 3, 600_000)) {
     return { error: "too_many_requests" };
   }
 
