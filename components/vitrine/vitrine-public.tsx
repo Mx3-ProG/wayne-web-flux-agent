@@ -241,7 +241,6 @@ export function VitrinePublic({
             availableDestinationIds: availableStorefrontDestinations,
           }}
           extraDestinations={storefrontDestinations}
-          title="Comment puis-je vous aider ?"
         />
       )}
     </>

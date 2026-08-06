@@ -50,15 +50,178 @@ const LABELS: Record<Locale, string[]> = {
 
 const TERMS: Record<Locale, string> = {fr:"aide page action parcours",en:"help page action setup",es:"ayuda página acción configuración",de:"Hilfe Seite Aktion Einrichtung",it:"aiuto pagina azione configurazione",ru:"помощь страница действие настройка",zh:"帮助 页面 操作 设置",ja:"ヘルプ ページ 操作 設定",ar:"مساعدة صفحة إجراء إعداد"};
 
+type DestinationTerms = { aliases: string[]; keywords: string[] };
+
+/**
+ * Vocabulaire de recherche propre à chaque destination, par langue.
+ *
+ * `LABELS` est indexé par position ; ici on indexe par `id`, parce qu'un
+ * vocabulaire attribué à la mauvaise destination est bien plus difficile à
+ * repérer qu'un libellé décalé. Un test de parité (search.test.ts) garantit
+ * que chaque langue présente ici couvre tout le catalogue.
+ *
+ * Ce n'est pas de la traduction mot à mot du français : ce sont les termes que
+ * l'utilisateur tape réellement dans sa langue. D'où les doublets orthographiques
+ * (colour/color, catalogue/catalog) et les tournures familières
+ * («how much does it cost», «put it on my phone»).
+ *
+ * Les langues absentes retombent sur `TERMS`, un repli générique où seul le
+ * libellé discrimine — la recherche y reste pauvre tant qu'elles ne sont pas
+ * traitées à leur tour.
+ */
+const SEARCH_TERMS: Partial<Record<Locale, Record<string, DestinationTerms>>> = {
+  en: {
+    "app-home": {
+      aliases: ["home", "dashboard", "next step", "what should i do", "where am i"],
+      keywords: ["journey", "progress", "help", "start", "goal", "todo", "overview"],
+    },
+    projects: {
+      aliases: ["my projects", "switch project", "another business", "change project"],
+      keywords: ["project", "business", "company", "switch", "select", "storefront"],
+    },
+    "project-new": {
+      aliases: ["new project", "new storefront", "add a business", "start another site"],
+      keywords: ["project", "create", "new", "business", "storefront", "add"],
+    },
+    "storefront-editor": {
+      aliases: ["edit my site", "change my page", "my storefront", "edit my website"],
+      keywords: ["site", "website", "page", "photo", "image", "text", "colour", "color", "logo", "design", "layout"],
+    },
+    voice: {
+      aliases: ["set up flux voice", "my tone", "the way i speak", "flux ai", "get to know me"],
+      keywords: ["voice", "tone", "values", "story", "personalise", "personalize", "context", "style", "ai"],
+    },
+    products: {
+      aliases: ["add a product", "new product", "create a product", "sell something"],
+      keywords: ["product", "price", "stock", "inventory", "catalogue", "catalog", "item", "sell"],
+    },
+    "products-manage": {
+      aliases: ["my products", "edit a product", "manage stock", "product list"],
+      keywords: ["product", "catalogue", "catalog", "stock", "inventory", "edit", "disable"],
+    },
+    offers: {
+      aliases: ["add an offer", "new offer", "create a promotion", "add a deal"],
+      keywords: ["offer", "promotion", "promo", "discount", "deal", "package", "price"],
+    },
+    "offers-manage": {
+      aliases: ["my offers", "edit an offer", "manage promotions", "offer list"],
+      keywords: ["offer", "promotion", "discount", "deal", "package", "edit", "disable"],
+    },
+    agenda: {
+      aliases: ["add my opening hours", "my appointments", "my availability", "open a slot", "set my hours"],
+      keywords: ["calendar", "agenda", "schedule", "opening", "hours", "slot", "booking", "availability", "appointment", "diary"],
+    },
+    content: {
+      aliases: ["create a post", "write a post", "content tool", "make a publication"],
+      keywords: ["content", "post", "instagram", "publication", "social", "media", "caption", "text", "write"],
+    },
+    results: {
+      aliases: ["my content", "my creations", "find a post", "my vault", "past results"],
+      keywords: ["result", "content", "history", "creation", "vault", "saved", "library"],
+    },
+    orders: {
+      aliases: ["where are my orders", "customer order", "new order", "my sales"],
+      keywords: ["order", "sale", "customer", "payment", "cart", "checkout", "purchase"],
+    },
+    statistics: {
+      aliases: ["my statistics", "see my results", "how many visits", "my analytics"],
+      keywords: ["statistics", "stats", "analytics", "visit", "traffic", "click", "result", "performance", "numbers"],
+    },
+    install: {
+      aliases: ["install flux", "put it on my phone", "mobile app", "add to home screen"],
+      keywords: ["install", "app", "application", "phone", "mobile", "shortcut", "pwa"],
+    },
+    account: {
+      aliases: ["my account", "my profile", "change my password", "account settings"],
+      keywords: ["account", "profile", "security", "password", "billing", "subscription", "email", "settings"],
+    },
+    billing: {
+      aliases: ["my invoices", "my billing", "subscription renewal", "payment history"],
+      keywords: ["invoice", "billing", "subscription", "payment", "renewal", "receipt", "vat"],
+    },
+    plans: {
+      aliases: ["change plan", "my subscription", "upgrade", "flux plans"],
+      keywords: ["plan", "subscription", "tier", "price", "upgrade", "downgrade", "package"],
+    },
+    credits: {
+      aliases: ["my credits", "top up", "buy credits", "my balance"],
+      keywords: ["credit", "credits", "balance", "topup", "pack", "payment", "refill", "buy"],
+    },
+    "onboarding-resume": {
+      aliases: ["continue", "resume", "finish my signup", "next step"],
+      keywords: ["setup", "signup", "onboarding", "journey", "continue", "resume", "finish"],
+    },
+    "marketing-start": {
+      aliases: ["get started", "try it", "create an account", "sign up"],
+      keywords: ["free", "signup", "trial", "start", "account", "register"],
+    },
+    "marketing-login": {
+      aliases: ["log in", "sign in", "find my account", "my space"],
+      keywords: ["login", "account", "workspace", "password", "resume"],
+    },
+    "marketing-pricing": {
+      aliases: ["how much does it cost", "price", "pricing", "subscription cost"],
+      keywords: ["price", "pricing", "cost", "plan", "credit", "subscription", "payment", "fee"],
+    },
+    "marketing-features": {
+      aliases: ["what does flux do", "features", "the tools", "what is it for"],
+      keywords: ["tool", "feature", "site", "seo", "content", "calendar", "sales", "capability"],
+    },
+    "marketing-contact": {
+      aliases: ["contact", "talk to someone", "i need help", "email the team"],
+      keywords: ["help", "support", "contact", "question", "team", "assistance"],
+    },
+    "storefront-home": {
+      aliases: ["home", "top", "back to top", "start"],
+      keywords: ["home", "top", "start", "storefront", "beginning"],
+    },
+    "storefront-services": {
+      aliases: ["services", "what do you offer", "rates", "treatments"],
+      keywords: ["service", "services", "price", "rate", "book", "offering"],
+    },
+    "storefront-products": {
+      aliases: ["shop", "products", "catalogue", "buy"],
+      keywords: ["product", "item", "price", "order", "buy", "shop", "store"],
+    },
+    "storefront-offers": {
+      aliases: ["promotions", "offers", "deals", "discounts"],
+      keywords: ["offer", "promotion", "deal", "discount", "price", "package"],
+    },
+    "storefront-booking": {
+      aliases: ["book an appointment", "make a booking", "see the hours", "available slots"],
+      keywords: ["booking", "appointment", "reserve", "hours", "slot", "availability", "schedule"],
+    },
+    "storefront-contact": {
+      aliases: ["contact", "phone", "address", "where are you"],
+      keywords: ["contact", "address", "phone", "email", "directions", "location"],
+    },
+  },
+};
+
+/** Langues dont le vocabulaire de recherche est traduit destination par destination. */
+export const LOCALES_WITH_SEARCH_TERMS = Object.keys(SEARCH_TERMS) as Locale[];
+
+/** Ids couverts par le vocabulaire traduit d'une langue (vide = repli générique). */
+export function searchTermIds(locale: Locale): string[] {
+  return Object.keys(SEARCH_TERMS[locale] ?? {});
+}
+
 export function localizeDestinations(destinations: AssistantDestination[], locale: Locale) {
   if (locale === "fr") return destinations;
-  return destinations.map((destination, index) => ({
-    ...destination,
-    label: LABELS[locale][index] ?? destination.label,
-    description: ASSISTANT_COPY[locale].pageDescription,
-    aliases: [LABELS[locale][index] ?? destination.label, ...TERMS[locale].split(" ")],
-    keywords: [...TERMS[locale].split(" "), destination.id.replaceAll("-", " ")],
-  }));
+  const localeTerms = SEARCH_TERMS[locale];
+  return destinations.map((destination, index) => {
+    const label = LABELS[locale][index] ?? destination.label;
+    const terms = localeTerms?.[destination.id];
+    return {
+      ...destination,
+      label,
+      description: ASSISTANT_COPY[locale].pageDescription,
+      aliases: [label, ...(terms ? terms.aliases : TERMS[locale].split(" "))],
+      keywords: terms
+        ? terms.keywords
+        : [...TERMS[locale].split(" "), destination.id.replaceAll("-", " ")],
+    };
+  });
 }
 
 export function localizeGuidance(message: FluxGuidanceMessage, locale: Locale, destinations: AssistantDestination[]): FluxGuidanceMessage {

@@ -815,14 +815,20 @@
 .navLink, .navLinkActive { padding: 8px 12px; border-radius: 999px; color: rgb(255 255 255 / 82%); font-size: 11px; font-weight: 650; text-decoration: none; white-space: nowrap; }
 .navLink:hover { background: rgb(255 255 255 / 10%); color: #fff; }
 .navLinkActive { background: rgb(255 255 255 / 14%); color: #fff; }
-.navBurger { display: grid; }
+.navBurger { display: none; }
 .navMobile { position: absolute; inset: calc(100% + 8px) 0 auto; display: grid; padding: 10px; gap: 2px; border: 1px solid rgb(255 255 255 / 13%); border-radius: 16px; background: rgb(12 12 15 / 92%); backdrop-filter: blur(18px) saturate(150%); }
 .navMobile .navLink, .navMobile .navLinkActive { padding: 12px 14px; font-size: 12px; }
 .navSticky { position: fixed; inset: 12px max(20px, 4cqi) auto; z-index: 60; }
 .navTransparent { border-color: transparent; background: transparent; box-shadow: none; backdrop-filter: none; }
-@media (min-width: 860px) {
-  .navLinks { display: flex; }
-  .navBurger { display: none; }
+.customNav[data-navigation-collapsed="false"] .navLinks { display: flex; }
+.customNav[data-navigation-collapsed="true"] .navBurger { display: grid; }
+
+@container storefront (max-width: 640px) {
+  .customNav[data-navigation-collapsed="false"] { gap: 8px; }
+  .customNav[data-navigation-collapsed="false"] .storeNavName b { display: none; }
+  .customNav[data-navigation-collapsed="false"] .navLinks { gap: 0; }
+  .customNav[data-navigation-collapsed="false"] .navLink,
+  .customNav[data-navigation-collapsed="false"] .navLinkActive { min-width: 0; overflow: hidden; padding-inline: 8px; text-overflow: ellipsis; }
 }
 
 /* Bouton flottant « remonter en haut » (coin bas gauche). */

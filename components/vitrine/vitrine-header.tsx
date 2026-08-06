@@ -12,6 +12,7 @@ import type { Page } from "@/lib/types";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { useVisitorMode } from "./visitor-mode";
 import { resolveStorefrontPresentation } from "@/lib/vitrine-design/resolver";
+import { shouldCollapseStorefrontNavigation } from "@/lib/vitrine-design/navigation";
 import { LanguageGlobe } from "./language-globe";
 import styles from "./vitrine.module.css";
 import type { StorefrontDict } from "@/lib/i18n/get-dictionary";
@@ -60,6 +61,7 @@ export function VitrineHeader({
   }
 
   const showLogo = nav.showLogo !== false;
+  const collapsed = shouldCollapseStorefrontNavigation(nav.items.length);
 
   const links = (
     <>
@@ -113,6 +115,7 @@ export function VitrineHeader({
       className={`${styles.storeNav} ${styles.customNav} ${
         nav.sticky ? styles.navSticky : ""
       } ${nav.transparent ? styles.navTransparent : ""}`}
+      data-navigation-collapsed={collapsed}
     >
       <span className={styles.storeNavName}>
         {showLogo &&
@@ -161,7 +164,7 @@ export function VitrineHeader({
         </button>
       </span>
 
-      {open && (
+      {collapsed && open && (
         <nav className={styles.navMobile} aria-label={t.navAria}>
           {links}
         </nav>

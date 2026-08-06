@@ -83,4 +83,21 @@ export function localeHref(locale: Locale, path: string): string {
   return normalized === "/" ? `/${locale}` : `/${locale}${normalized}`;
 }
 
+/**
+ * Inverse de `localeHref` : `/en/pricing` → `/pricing`, `/en` → `/`.
+ *
+ * Indispensable côté client. Le proxy réécrit `/en` vers la route `/` côté
+ * serveur, mais `usePathname()` rend l'URL telle qu'elle est dans la barre
+ * d'adresse — donc préfixée. Comparer `usePathname()` à un chemin littéral
+ * sans passer par ici ne matche jamais en dehors du français.
+ */
+export function stripLocalePrefix(pathname: string): string {
+  for (const locale of locales) {
+    if (locale === defaultLocale) continue;
+    if (pathname === `/${locale}`) return "/";
+    if (pathname.startsWith(`/${locale}/`)) return pathname.slice(locale.length + 1);
+  }
+  return pathname;
+}
+
 export const LOCALE_COOKIE = "NEXT_LOCALE";

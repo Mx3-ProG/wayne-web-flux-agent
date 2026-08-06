@@ -2,6 +2,8 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import { ASSISTANT_DESTINATIONS } from "./catalog";
 import { normalizeAssistantText, searchAssistantDestinations } from "./search";
+import { localizeDestinations, LOCALES_WITH_SEARCH_TERMS, searchTermIds } from "./i18n";
+import { locales } from "@/lib/i18n/config";
 import type { AssistantContext } from "./types";
 
 const appContext: AssistantContext = { surface: "app", pathname: "/espace" };
@@ -62,5 +64,48 @@ test("le catalogue ne contient que des liens internes ou des ancres", () => {
   for (const destination of ASSISTANT_DESTINATIONS) {
     assert.match(destination.href, /^(\/|#)/, destination.id);
     assert.doesNotMatch(destination.href, /^(?:javascript|data):/i, destination.id);
+  }
+});
+
+test("les scripts non latins survivent à la normalisation", () => {
+  // Un filtre limité à [a-z0-9] vidait la requête ET les libellés du catalogue :
+  // la recherche renvoyait zéro résultat en russe, chinois, japonais et arabe.
+  for (const [langue, texte] of [
+    ["ru", "часы работы"],
+    ["zh", "营业时间"],
+    ["ja", "営業時間"],
+    ["ar", "ساعات العمل"],
+  ]) {
+    assert.ok(normalizeAssistantText(texte).length >= 2, langue);
+  }
+});
+
+test("chaque langue traduite couvre tout le catalogue, sans id orphelin", () => {
+  const catalogIds = ASSISTANT_DESTINATIONS.map((destination) => destination.id).sort();
+  for (const locale of LOCALES_WITH_SEARCH_TERMS) {
+    // Dans les deux sens : une destination ajoutée au catalogue sans vocabulaire
+    // retomberait en silence sur le repli générique, et un id renommé laisserait
+    // derrière lui une entrée morte que plus rien ne rattache au catalogue.
+    assert.deepEqual(searchTermIds(locale).sort(), catalogIds, locale);
+  }
+});
+
+test("chaque destination se retrouve par son propre libellé, dans toutes les langues", () => {
+  for (const locale of locales) {
+    const catalog = localizeDestinations(ASSISTANT_DESTINATIONS, locale);
+    for (const surface of ["marketing", "app", "storefront"] as const) {
+      for (const destination of catalog.filter((item) => item.surfaces.includes(surface))) {
+        const results = searchAssistantDestinations(
+          destination.label,
+          { surface, pathname: "/" },
+          [],
+          catalog,
+        );
+        assert.ok(
+          results.some((result) => result.destination.id === destination.id),
+          `${locale}/${surface}/${destination.id} introuvable par son libellé`,
+        );
+      }
+    }
   }
 });

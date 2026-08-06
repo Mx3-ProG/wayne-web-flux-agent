@@ -38,7 +38,10 @@ const csp = [
   // `'self'` est indispensable : la page d'accueil encadre ses propres démos
   // (<iframe src="/demo/…">). Sans lui le navigateur bloque le cadrage et
   // laisse un rectangle blanc à la place de l'aperçu.
-  `frame-src 'self' ${stripeFrame} https://player.vimeo.com https://www.youtube-nocookie.com https://www.youtube.com`,
+  // Les sections « Carte » utilisent l'embed public de Google Maps depuis
+  // www.google.com (sans clé API). `connect-src maps.googleapis.com` ne couvre
+  // pas cet iframe : son origine doit être autorisée explicitement ici.
+  `frame-src 'self' ${stripeFrame} https://www.google.com https://player.vimeo.com https://www.youtube-nocookie.com https://www.youtube.com`,
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self'",

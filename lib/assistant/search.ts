@@ -6,12 +6,22 @@ import type {
   AssistantSearchResult,
 } from "./types";
 
+// Repli de casse et d'accents commun \u00e0 toutes les langues de l'app.
+//
+// La classe de caract\u00e8res doit rester unicode : un `[^a-z0-9\s-]` effa\u00e7ait le
+// cyrillique, le chinois, le japonais et l'arabe, si bien que la requ\u00eate ET les
+// libell\u00e9s du catalogue se r\u00e9duisaient \u00e0 une cha\u00eene vide \u2014 la recherche
+// renvoyait syst\u00e9matiquement z\u00e9ro r\u00e9sultat dans ces quatre langues.
+//
+// La d\u00e9composition NFD ne retire que les diacritiques latins et cyrilliques
+// (bloc U+0300\u2013U+036F) : \u00e9\u2192e, \u0439\u2192\u0438. Les diacritiques arabes vivent ailleurs
+// (U+064B\u2013U+065F) et sont pr\u00e9serv\u00e9s, comme les id\u00e9ogrammes et les kana.
 export function normalizeAssistantText(value: string) {
   return value
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
-    .toLocaleLowerCase("fr")
-    .replace(/[^a-z0-9\s-]/g, " ")
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s-]/gu, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
@@ -37,9 +47,21 @@ function editDistance(a: string, b: string) {
   return previous[b.length];
 }
 
+// Longueur minimale du préfixe commun pour que la correspondance partielle
+// compte. Sans ce garde-fou, les mots outils présents dans les alias («up»,
+// «to», «me», «un») préfixent quantité de requêtes et jouent les jokers :
+// «upgrade my subscription» matchait «set up flux voice» aussi fort que
+// «change plan». Deux caractères ne portent pas d'intention, trois si.
+const MIN_PREFIX_MATCH = 3;
+
 function tokenSimilarity(queryToken: string, candidateToken: string) {
   if (queryToken === candidateToken) return 1;
-  if (candidateToken.startsWith(queryToken) || queryToken.startsWith(candidateToken)) return 0.88;
+  if (
+    Math.min(queryToken.length, candidateToken.length) >= MIN_PREFIX_MATCH &&
+    (candidateToken.startsWith(queryToken) || queryToken.startsWith(candidateToken))
+  ) {
+    return 0.88;
+  }
   if (queryToken.length < 4 || candidateToken.length < 4) return 0;
   const distance = editDistance(queryToken, candidateToken);
   return Math.max(0, 1 - distance / Math.max(queryToken.length, candidateToken.length));

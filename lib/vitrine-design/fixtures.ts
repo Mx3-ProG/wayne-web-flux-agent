@@ -31,7 +31,7 @@ export function storefrontGalleryFixture(theme: PageTheme): Page {
     offer: "Découverte de la maison", hours_text: "Mardi — samedi · 10h — 19h",
     legal: {}, sections, seo: {}, promo: { text: "Livraison offerte cette semaine", code: "MAISON" },
     floating_cta: { type: "whatsapp", number: "+33400000000" }, hero_video_url: null,
-    hide_branding: false, navigation: { sticky: true, transparent: true, showLogo: true, items: [{ id: "home", label: "Accueil", kind: "page", target: "" }, { id: "collection", label: "Collection", kind: "anchor", target: "#prestations" }], cta: { label: "Nous rencontrer", target: "#prestations" } },
+    hide_branding: false, navigation: { sticky: true, transparent: true, showLogo: true, items: [{ id: "home", label: "Accueil", kind: "page", target: "" }, { id: "collection", label: "Collection", kind: "anchor", target: "#prestations" }, { id: "story", label: "Notre histoire", kind: "anchor", target: "#s-about" }], cta: { label: "Nous rencontrer", target: "#prestations" } },
     scroll_top: true, assistant_enabled: false, typography: kit.defaults.typography, design: { kitId: kit.id }, design_engine_version: 2,
     moderation_status: "verified", verified_by: null, verified_at: null, verified_version: null,
     archived_by: null, archived_at: null, archive_reason: null, moderation_was_published: true,
