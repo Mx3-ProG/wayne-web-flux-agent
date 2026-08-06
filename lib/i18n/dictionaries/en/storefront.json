@@ -57,8 +57,8 @@
     "emailPlaceholder": "Your email (optional)",
     "confirmationHint": "So you can get your appointment confirmation.",
     "confirm": "Confirm appointment",
-    "booked": "Booked!",
-    "seeYouSoon": "See you soon.",
+    "booked": "Request sent!",
+    "seeYouSoon": "The professional will confirm your appointment.",
     "at": "at"
   },
   "order": {

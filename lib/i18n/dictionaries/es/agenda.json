@@ -127,7 +127,13 @@
     "googleAgenda": "En tu Google Calendar",
     "googleAgendaHint": "Pega este enlace UNA vez en Google Calendar (+ → «Desde URL») y tus citas se mostrarán ahí solas. Solo lectura — guárdalo para ti.",
     "copy": "Copiar",
-    "linkCopied": "Enlace copiado."
+    "linkCopied": "Enlace copiado.",
+    "accept": "Aceptar",
+    "refuse": "Rechazar",
+    "pendingTitle": "Solicitudes por validar",
+    "pendingHint": "Acepta o rechaza las nuevas solicitudes de cita.",
+    "bookingAccepted": "Cita aceptada.",
+    "bookingRefused": "Cita rechazada."
   },
   "errors": {
     "not_authenticated": "Debes estar conectado para continuar.",
@@ -137,6 +143,8 @@
     "block_failed": "No se ha podido bloquear este periodo.",
     "note_save_failed": "Nota no guardada.",
     "cancel_failed": "No se ha podido cancelar.",
-    "unknown": "Ha ocurrido un error. Inténtalo de nuevo en un momento."
+    "unknown": "Ha ocurrido un error. Inténtalo de nuevo en un momento.",
+    "accept_failed": "No se pudo aceptar. Inténtalo de nuevo.",
+    "refuse_failed": "No se pudo rechazar. Inténtalo de nuevo."
   }
 }

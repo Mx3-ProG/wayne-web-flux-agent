@@ -157,7 +157,7 @@ function ClientHistoryList({ history, locale, t }: { history: ClientHistory; loc
             <span className={styles.historyType}>{t.history.reservation}</span>
             <span className={styles.historyName}>{booking.service_name}</span>
             <span className={styles.historyMeta}>
-              {booking.status === "cancelled" ? t.bookingStatus.cancelled : t.bookingStatus.confirmed} ·{" "}
+              {t.bookingStatus[booking.status] ?? t.bookingStatus.confirmed} ·{" "}
               {formatBookingDate(locale, booking)} · {formatPrice(booking.price_cents, locale)}
             </span>
           </div>

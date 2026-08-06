@@ -100,3 +100,30 @@ export async function cancelBooking(bookingId: string): Promise<{ error?: string
   revalidatePath("/agenda");
   return {};
 }
+
+// Validation obligatoire : accepter une demande en attente (pending → confirmed).
+// On ne bascule que depuis 'pending' pour ne pas « ressusciter » un rdv annulé.
+export async function acceptBooking(bookingId: string): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("bookings")
+    .update({ status: "confirmed" })
+    .eq("id", bookingId)
+    .eq("status", "pending"); // RLS protège
+  if (error) return { error: "accept_failed" };
+  revalidatePath("/agenda");
+  return {};
+}
+
+// Refuser une demande en attente (pending → refused). Le créneau est libéré.
+export async function refuseBooking(bookingId: string): Promise<{ error?: string }> {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("bookings")
+    .update({ status: "refused" })
+    .eq("id", bookingId)
+    .eq("status", "pending"); // RLS protège
+  if (error) return { error: "refuse_failed" };
+  revalidatePath("/agenda");
+  return {};
+}

@@ -46,6 +46,8 @@ export function getPack(id: string): CreditPack | undefined {
   return CREDIT_PACKS.find((pack) => pack.id === id);
 }
 
+// Premier nom = canonique, second = alias historique (même price id). Voir la
+// note équivalente dans lib/plans.ts.
 const PACK_PRICE_ENV: Record<string, readonly string[]> = {
   pack50: ["STRIPE_PRICE_CREDITS_PACK50", "STRIPE_50_CREDIT_FLUX"],
   pack150: ["STRIPE_PRICE_CREDITS_PACK150", "STRIPE_150_CREDIT_FLUX"],

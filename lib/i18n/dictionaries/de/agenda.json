@@ -127,7 +127,13 @@
     "googleAgenda": "In deinem Google Kalender",
     "googleAgendaHint": "Füge diesen Link EINMAL in Google Kalender ein (+ → „Aus URL“) und deine Termine erscheinen dort ganz von allein. Nur Lesezugriff — behalte ihn für dich.",
     "copy": "Kopieren",
-    "linkCopied": "Link kopiert."
+    "linkCopied": "Link kopiert.",
+    "accept": "Annehmen",
+    "refuse": "Ablehnen",
+    "pendingTitle": "Anfragen zur Prüfung",
+    "pendingHint": "Nimm neue Terminanfragen an oder lehne sie ab.",
+    "bookingAccepted": "Termin angenommen.",
+    "bookingRefused": "Termin abgelehnt."
   },
   "errors": {
     "not_authenticated": "Du musst angemeldet sein, um fortzufahren.",
@@ -137,6 +143,8 @@
     "block_failed": "Dieser Zeitraum kann nicht blockiert werden.",
     "note_save_failed": "Notiz nicht gespeichert.",
     "cancel_failed": "Stornierung nicht möglich.",
-    "unknown": "Ein Fehler ist aufgetreten. Versuch's gleich noch einmal."
+    "unknown": "Ein Fehler ist aufgetreten. Versuch's gleich noch einmal.",
+    "accept_failed": "Annahme fehlgeschlagen. Erneut versuchen.",
+    "refuse_failed": "Ablehnung fehlgeschlagen. Erneut versuchen."
   }
 }

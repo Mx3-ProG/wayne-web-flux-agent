@@ -49,6 +49,8 @@ export async function POST(
     return NextResponse.json({ error: "slot_taken" }, { status: 409 });
   }
 
+  // Validation obligatoire : la demande arrive en attente, la commerçante
+  // l'accepte ou la refuse depuis son agenda.
   const { error: insertError } = await ctx.supabase.from("bookings").insert({
     page_id: ctx.page.id,
     service_id: ctx.service.id,
@@ -60,6 +62,7 @@ export async function POST(
     first_name: firstName,
     phone,
     email,
+    status: "pending",
   });
   if (insertError) {
     return NextResponse.json({ error: "insert_failed" }, { status: 500 });

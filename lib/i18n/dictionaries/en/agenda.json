@@ -127,7 +127,13 @@
     "googleAgenda": "In your Google Calendar",
     "googleAgendaHint": "Paste this link ONCE into Google Calendar (+ → \"From URL\") and your appointments show up there automatically. Read-only — keep it to yourself.",
     "copy": "Copy",
-    "linkCopied": "Link copied."
+    "linkCopied": "Link copied.",
+    "accept": "Accept",
+    "refuse": "Decline",
+    "pendingTitle": "Requests to review",
+    "pendingHint": "Accept or decline new appointment requests.",
+    "bookingAccepted": "Appointment accepted.",
+    "bookingRefused": "Appointment declined."
   },
   "errors": {
     "not_authenticated": "You need to be logged in to continue.",
@@ -137,6 +143,8 @@
     "block_failed": "Couldn't block this period.",
     "note_save_failed": "Note not saved.",
     "cancel_failed": "Couldn't cancel.",
-    "unknown": "Something went wrong. Try again in a moment."
+    "unknown": "Something went wrong. Try again in a moment.",
+    "accept_failed": "Could not accept. Try again.",
+    "refuse_failed": "Could not decline. Try again."
   }
 }

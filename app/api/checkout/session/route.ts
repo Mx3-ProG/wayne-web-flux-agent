@@ -66,7 +66,15 @@ export async function POST(request: Request) {
     if (error) return NextResponse.json({ error: "Impossible de préparer le paiement." }, { status: 500 });
   }
 
-  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.flux-wayne.com";
+  // En production l'URL de retour vient de la configuration, jamais de la
+  // requête : un `Host` forgé redirigerait le client (et l'id de session) vers
+  // un domaine tiers. En développement on suit l'origine réelle, sinon un
+  // paiement lancé depuis localhost renvoie sur la prod et le tunnel est
+  // intestable en local.
+  const site =
+    process.env.NODE_ENV === "development"
+      ? new URL(request.url).origin
+      : (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.flux-wayne.com");
   const common = {
     // Stripe SDK v22 nomme le mode Custom Checkout `elements`.
     ui_mode: "elements" as const,

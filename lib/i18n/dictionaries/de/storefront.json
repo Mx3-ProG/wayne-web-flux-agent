@@ -57,8 +57,8 @@
     "emailPlaceholder": "Deine E-Mail (optional)",
     "confirmationHint": "Um die Bestätigung deines Termins zu erhalten.",
     "confirm": "Termin bestätigen",
-    "booked": "Gebucht!",
-    "seeYouSoon": "Bis bald.",
+    "booked": "Anfrage gesendet!",
+    "seeYouSoon": "Der Anbieter wird deinen Termin bestätigen.",
     "at": "um"
   },
   "order": {

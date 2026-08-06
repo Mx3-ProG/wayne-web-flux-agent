@@ -10,10 +10,22 @@ import type { NextConfig } from "next";
 // injection de <script src> externe, ce qui ferme le vecteur XSS principal.
 // React utilise eval() en mode développement (reconstruction de call-stacks,
 // overlay d'erreurs). Jamais en production. On l'autorise donc uniquement en dev.
+const stripeScript = "https://js.stripe.com https://*.js.stripe.com";
 const scriptSrc =
   process.env.NODE_ENV === "development"
-    ? "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com"
-    : "script-src 'self' 'unsafe-inline' https://js.stripe.com";
+    ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${stripeScript}`
+    : `script-src 'self' 'unsafe-inline' ${stripeScript}`;
+
+// Stripe. `js.stripe.com` sert Stripe.js et les iframes d'Elements ; les
+// sous-domaines `*.js.stripe.com` servent les ressources récentes.
+// `m.stripe.network` porte la détection de fraude, `r.stripe.com` la remontée
+// d'erreurs, et `maps.googleapis.com` l'autocomplétion d'adresse du
+// BillingAddressElement — sans eux le paiement fonctionne mais dégradé
+// (signaux anti-fraude absents, saisie d'adresse entièrement manuelle).
+const stripeFrame =
+  "https://js.stripe.com https://*.js.stripe.com https://hooks.stripe.com https://m.stripe.network";
+const stripeConnect =
+  "https://api.stripe.com https://m.stripe.network https://r.stripe.com https://maps.googleapis.com";
 
 const csp = [
   "default-src 'self'",
@@ -22,8 +34,11 @@ const csp = [
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob: https:",
   "media-src 'self' blob: https:",
-  "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.stripe.com",
-  "frame-src https://js.stripe.com https://hooks.stripe.com https://player.vimeo.com https://www.youtube-nocookie.com https://www.youtube.com",
+  `connect-src 'self' https://*.supabase.co wss://*.supabase.co ${stripeConnect}`,
+  // `'self'` est indispensable : la page d'accueil encadre ses propres démos
+  // (<iframe src="/demo/…">). Sans lui le navigateur bloque le cadrage et
+  // laisse un rectangle blanc à la place de l'aperçu.
+  `frame-src 'self' ${stripeFrame} https://player.vimeo.com https://www.youtube-nocookie.com https://www.youtube.com`,
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self'",

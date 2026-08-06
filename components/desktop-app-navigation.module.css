@@ -16,6 +16,7 @@
 }
 
 .menuButton {
+  position: relative;
   display: inline-flex;
   width: fit-content;
   min-height: 48px;
@@ -30,6 +31,27 @@
   font-weight: 800;
   letter-spacing: .04em;
   text-transform: uppercase;
+}
+
+/* Pastille « attention » (commandes + stock + stats) sur l'icône du menu
+   quand il est fermé — l'équivalent header desktop des badges de nav. */
+.menuBadge {
+  position: absolute;
+  top: 2px;
+  left: 14px;
+  display: inline-grid;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--ww-red-soft, #ff6378);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
 .menuButton svg { width: 24px; height: 24px; stroke-width: 1.5; }

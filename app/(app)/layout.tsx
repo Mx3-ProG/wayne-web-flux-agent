@@ -111,10 +111,14 @@ export default async function AppLayout({
   const projects = pages ?? [];
 
   // Badges de la nav : uniquement le PROJET ACTIF (pas tous les projets).
+  // statsAttention = notifications non lues qui pointent vers les statistiques
+  // (nouvel abonné newsletter, vues quotidiennes) — le signal « attention » de
+  // l'onglet Stats, comme pendingOrders l'est pour Commandes.
   let pendingOrders = 0;
   let lowStock = 0;
+  let statsAttention = 0;
   if (activePageId) {
-    const [{ count: pending }, { count: low }] = await Promise.all([
+    const [{ count: pending }, { count: low }, { count: stats }] = await Promise.all([
       supabase
         .from("orders")
         .select("id", { count: "exact", head: true })
@@ -126,9 +130,16 @@ export default async function AppLayout({
         .eq("page_id", activePageId)
         .eq("track_stock", true)
         .lte("stock", 0),
+      supabase
+        .from("notifications")
+        .select("id", { count: "exact", head: true })
+        .eq("page_id", activePageId)
+        .eq("read", false)
+        .in("type", ["newsletter_signup", "daily_views"]),
     ]);
     pendingOrders = pending ?? 0;
     lowStock = low ?? 0;
+    statsAttention = stats ?? 0;
   }
 
   return (
@@ -153,6 +164,7 @@ export default async function AppLayout({
               balance={balance ?? 0}
               pendingOrders={pendingOrders}
               lowStock={lowStock}
+              statsAttention={statsAttention}
               projects={projects}
               activeProjectId={activePageId}
             />
@@ -167,6 +179,7 @@ export default async function AppLayout({
               balance={balance ?? 0}
               pendingOrders={pendingOrders}
               lowStock={lowStock}
+              statsAttention={statsAttention}
             />
           </div>
         </div>
@@ -187,7 +200,11 @@ export default async function AppLayout({
         <AppRouteCoach />
         {children}
       </main>
-      <MobileBottomNavigation pendingOrders={pendingOrders} lowStock={lowStock} />
+      <MobileBottomNavigation
+        pendingOrders={pendingOrders}
+        lowStock={lowStock}
+        statsAttention={statsAttention}
+      />
       <Suspense fallback={null}>
         <AppAssistant userId={user.id} />
       </Suspense>

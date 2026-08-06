@@ -127,7 +127,13 @@
     "googleAgenda": "Dans ton agenda Google",
     "googleAgendaHint": "Colle ce lien UNE fois dans Google Agenda (+ → « À partir de l'URL ») et tes rendez-vous s'affichent dedans, tout seuls. Lecture seule — garde-le pour toi.",
     "copy": "Copier",
-    "linkCopied": "Lien copié."
+    "linkCopied": "Lien copié.",
+    "accept": "Accepter",
+    "refuse": "Refuser",
+    "pendingTitle": "Demandes à valider",
+    "pendingHint": "Accepte ou refuse les nouvelles demandes de rendez-vous.",
+    "bookingAccepted": "Rendez-vous accepté.",
+    "bookingRefused": "Rendez-vous refusé."
   },
   "errors": {
     "not_authenticated": "Tu dois être connecté pour continuer.",
@@ -137,6 +143,8 @@
     "block_failed": "Impossible de bloquer cette période.",
     "note_save_failed": "Note non enregistrée.",
     "cancel_failed": "Annulation impossible.",
-    "unknown": "Une erreur est survenue. Réessaie dans un instant."
+    "unknown": "Une erreur est survenue. Réessaie dans un instant.",
+    "accept_failed": "L'acceptation a échoué. Réessaie.",
+    "refuse_failed": "Le refus a échoué. Réessaie."
   }
 }

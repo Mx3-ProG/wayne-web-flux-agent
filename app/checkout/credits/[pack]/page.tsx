@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { CustomCheckout } from "@/components/checkout/custom-checkout";
+import { VerifyEmailGate } from "@/components/checkout/verify-email-gate";
 import { getPack, packUnitPrice } from "@/lib/credit-packs";
 import { getAccountLocale } from "@/lib/i18n/locale.server";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -26,6 +27,26 @@ export default async function CreditsCheckoutPage({ params }: { params: Promise<
   if (!key) redirect("/credits?achat=indisponible");
   const locale = await getAccountLocale(supabase, user.id);
   const t = (await getDictionary(locale, "billing")).checkout;
+
+  // Même verrou que l'API de création de session : on l'applique ici pour ne
+  // pas monter le formulaire Stripe dans le vide. L'utilisateur repart avec un
+  // bouton de renvoi plutôt qu'un message d'erreur sans issue.
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("email_verified_at")
+    .eq("user_id", user.id)
+    .maybeSingle<{ email_verified_at: string | null }>();
+  if (!profile?.email_verified_at) {
+    return (
+      <VerifyEmailGate
+        email={user.email ?? null}
+        backHref="/credits"
+        t={(await getDictionary(locale, "dashboard")).emailVerification}
+        tCheckout={t}
+      />
+    );
+  }
+
   const price = formatCurrency(locale, pack.priceCents / 100);
   return (
     <CustomCheckout

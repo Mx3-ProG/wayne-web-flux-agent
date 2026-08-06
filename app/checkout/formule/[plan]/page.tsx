@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { CustomCheckout } from "@/components/checkout/custom-checkout";
+import { VerifyEmailGate } from "@/components/checkout/verify-email-gate";
 import {
   FLUX_PLANS,
   PLAN_LABEL,
@@ -31,9 +32,9 @@ export default async function PlanCheckoutPage({ params }: { params: Promise<{ p
   if (!user) redirect(`/login?next=/checkout/formule/${plan}`);
   const { data: profile } = await supabase
     .from("profiles")
-    .select("subscription_status")
+    .select("subscription_status, email_verified_at")
     .eq("user_id", user.id)
-    .single<Pick<Profile, "subscription_status">>();
+    .single<Pick<Profile, "subscription_status" | "email_verified_at">>();
   if (isActiveSubscriptionStatus(profile?.subscription_status)) {
     redirect("/compte/facturation");
   }
@@ -42,6 +43,20 @@ export default async function PlanCheckoutPage({ params }: { params: Promise<{ p
   const limits = PLAN_LIMITS[plan];
   const locale = await getAccountLocale(supabase, user.id);
   const t = (await getDictionary(locale, "billing")).checkout;
+
+  // Même verrou que l'API de création de session : sans adresse prouvée le
+  // formulaire Stripe ne servirait à rien (403 au premier appel).
+  if (!profile?.email_verified_at) {
+    return (
+      <VerifyEmailGate
+        email={user.email ?? null}
+        backHref="/formules"
+        t={(await getDictionary(locale, "dashboard")).emailVerification}
+        tCheckout={t}
+      />
+    );
+  }
+
   return (
     <CustomCheckout
       publishableKey={key}

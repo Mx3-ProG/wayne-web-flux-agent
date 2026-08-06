@@ -127,7 +127,13 @@
     "googleAgenda": "Googleカレンダーで見る",
     "googleAgendaHint": "このリンクをGoogleカレンダーに一度だけ貼り付ければ（＋ →「URLから追加」）、予約が自動で表示されるよ。閲覧専用なので、リンクは自分だけで管理してね。",
     "copy": "コピー",
-    "linkCopied": "リンクをコピーしました。"
+    "linkCopied": "リンクをコピーしました。",
+    "accept": "承認",
+    "refuse": "却下",
+    "pendingTitle": "承認待ちの予約",
+    "pendingHint": "新しい予約リクエストを承認または却下します。",
+    "bookingAccepted": "予約を承認しました。",
+    "bookingRefused": "予約を却下しました。"
   },
   "errors": {
     "not_authenticated": "続けるにはログインが必要だよ。",
@@ -137,6 +143,8 @@
     "block_failed": "この期間をブロックできませんでした。",
     "note_save_failed": "メモを保存できませんでした。",
     "cancel_failed": "キャンセルできませんでした。",
-    "unknown": "エラーが発生しました。少し時間をおいて再度お試しください。"
+    "unknown": "エラーが発生しました。少し時間をおいて再度お試しください。",
+    "accept_failed": "承認できませんでした。再試行してください。",
+    "refuse_failed": "却下できませんでした。再試行してください。"
   }
 }

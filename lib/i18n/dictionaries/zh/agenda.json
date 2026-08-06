@@ -127,7 +127,13 @@
     "googleAgenda": "同步到你的 Google 日历",
     "googleAgendaHint": "把这个链接粘贴到 Google 日历里一次即可（+ → “从网址订阅”），之后你的预约会自动显示在里面。仅供查看——请妥善保管，不要外传。",
     "copy": "复制",
-    "linkCopied": "链接已复制。"
+    "linkCopied": "链接已复制。",
+    "accept": "接受",
+    "refuse": "拒绝",
+    "pendingTitle": "待确认的预约",
+    "pendingHint": "接受或拒绝新的预约请求。",
+    "bookingAccepted": "预约已接受。",
+    "bookingRefused": "预约已拒绝。"
   },
   "errors": {
     "not_authenticated": "请先登录再继续。",
@@ -137,6 +143,8 @@
     "block_failed": "无法锁定该时间段。",
     "note_save_failed": "备注未能保存。",
     "cancel_failed": "无法取消。",
-    "unknown": "出现了一个错误，请稍后重试。"
+    "unknown": "出现了一个错误，请稍后重试。",
+    "accept_failed": "接受失败，请重试。",
+    "refuse_failed": "拒绝失败，请重试。"
   }
 }

@@ -24,9 +24,11 @@ type NavItem = {
 export function MobileBottomNavigation({
   pendingOrders = 0,
   lowStock = 0,
+  statsAttention = 0,
 }: {
   pendingOrders?: number;
   lowStock?: number;
+  statsAttention?: number;
 }) {
   const pathname = usePathname();
   const { dictionary } = useI18n();
@@ -52,9 +54,11 @@ export function MobileBottomNavigation({
         const badge =
           href === "/commandes"
             ? pendingOrders
-            : href === "/produits"
-              ? lowStock
-              : 0;
+            : href === "/statistiques"
+              ? statsAttention
+              : href === "/produits"
+                ? lowStock
+                : 0;
         return (
           <Link
             href={href}

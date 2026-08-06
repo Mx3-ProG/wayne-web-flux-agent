@@ -57,8 +57,8 @@
     "emailPlaceholder": "您的邮箱（选填）",
     "confirmationHint": "用于接收您的预约确认信息。",
     "confirm": "确认预约",
-    "booked": "预约成功！",
-    "seeYouSoon": "很快见！",
+    "booked": "请求已发送！",
+    "seeYouSoon": "商家将确认您的预约。",
     "at": "于"
   },
   "order": {

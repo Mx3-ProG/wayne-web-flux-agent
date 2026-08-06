@@ -57,8 +57,8 @@
     "emailPlaceholder": "La tua email (facoltativo)",
     "confirmationHint": "Per ricevere la conferma del tuo appuntamento.",
     "confirm": "Conferma l'appuntamento",
-    "booked": "Prenotato!",
-    "seeYouSoon": "A prestissimo.",
+    "booked": "Richiesta inviata!",
+    "seeYouSoon": "Il professionista confermerà il tuo appuntamento.",
     "at": "alle"
   },
   "order": {

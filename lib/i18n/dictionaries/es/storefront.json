@@ -57,8 +57,8 @@
     "emailPlaceholder": "Tu email (opcional)",
     "confirmationHint": "Para recibir la confirmación de tu cita.",
     "confirm": "Confirmar la cita",
-    "booked": "¡Reservado!",
-    "seeYouSoon": "Hasta pronto.",
+    "booked": "¡Solicitud enviada!",
+    "seeYouSoon": "El profesional confirmará tu cita.",
     "at": "a las"
   },
   "order": {

@@ -1,0 +1,30 @@
+.page { min-height: 100vh; background: radial-gradient(circle at 12% 20%, rgb(239 35 60 / 13%), transparent 29%), #080809; color: #f7f5f2; }
+.page > header { display: flex; width: min(1180px, calc(100% - 40px)); height: 78px; margin: 0 auto; align-items: center; justify-content: space-between; border-bottom: 1px solid rgb(255 255 255 / 8%); }
+.page > header a { color: #aaa7a8; font-size: 13px; text-decoration: none; }
+.page > header span { display: flex; align-items: center; gap: 8px; color: #858187; font-size: 11px; text-transform: uppercase; letter-spacing: .1em; }
+.page > header svg { width: 15px; }
+
+.panel { width: min(560px, calc(100% - 40px)); margin: 0 auto; padding: 44px 40px 40px; margin-top: 80px; border: 1px solid rgb(255 255 255 / 10%); border-radius: 25px; background: rgb(17 17 20 / 92%); box-shadow: 0 35px 90px rgb(0 0 0 / 32%); text-align: center; }
+.icon { display: grid; width: 54px; height: 54px; margin: 0 auto 22px; place-items: center; border: 1px solid rgb(239 35 60 / 30%); border-radius: 999px; background: rgb(239 35 60 / 10%); }
+.icon svg { width: 23px; color: #ff6378; }
+.eyebrow { color: #ff6378; font-size: 10px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.panel h1 { margin-top: 13px; font-family: var(--font-fraunces), serif; font-size: clamp(28px, 4vw, 38px); font-weight: 550; letter-spacing: -.04em; line-height: 1.1; }
+.lead { margin-top: 16px; color: #9b979c; font-size: 14px; line-height: 1.7; }
+.address { display: inline-block; margin-top: 4px; color: #d6d2d5; font-weight: 650; }
+
+.actions { display: grid; margin-top: 30px; gap: 12px; }
+.resend { display: flex; min-height: 54px; padding: 0 22px; align-items: center; justify-content: center; gap: 10px; border: 0; border-radius: 999px; background: #ef233c; color: #fff; cursor: pointer; font: inherit; font-size: 14px; font-weight: 800; transition: transform .2s ease, background .2s ease; }
+.resend:hover:not(:disabled) { transform: translateY(-2px); background: #ff2c47; }
+.resend:disabled { cursor: not-allowed; opacity: .55; }
+.resend svg { width: 17px; }
+.secondary { display: flex; min-height: 46px; align-items: center; justify-content: center; color: #aaa7a8; font-size: 13px; text-decoration: none; }
+.secondary:hover { color: #f7f5f2; }
+
+.feedback { margin-top: 20px; padding: 12px 14px; border-radius: 12px; font-size: 12.5px; line-height: 1.6; }
+.ok { background: rgb(45 178 118 / 10%); color: #63d3a1; }
+.ko { background: rgb(239 35 60 / 8%); color: #ff8797; }
+.hint { margin-top: 22px; color: #69656c; font-size: 11px; line-height: 1.6; }
+
+@media (max-width: 640px) {
+  .panel { margin-top: 40px; padding: 34px 24px 30px; }
+}

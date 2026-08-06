@@ -327,7 +327,7 @@ export type Booking = {
   first_name: string;
   phone: string;
   email: string | null;
-  status: "confirmed" | "cancelled";
+  status: "pending" | "confirmed" | "refused" | "cancelled";
   created_at: string;
 };
 

@@ -32,7 +32,9 @@ export async function loadBookingContext(slug: string, serviceId: string) {
         .from("bookings")
         .select("date, start_time, duration_min, status")
         .eq("page_id", page.id)
-        .eq("status", "confirmed")
+        // Une demande en attente réserve déjà le créneau (pas de double-booking
+        // pendant que la commerçante décide).
+        .in("status", ["pending", "confirmed"])
         .gte("date", new Date().toISOString().slice(0, 10)),
     ]);
 

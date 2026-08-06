@@ -71,6 +71,10 @@ export const PLAN_LABEL: Record<Plan, string> = {
 // Ordre d'affichage sur la page pricing (/formules).
 export const FLUX_PLANS: Plan[] = ["basique", "pro", "business", "entreprise"];
 
+// Premier nom = canonique, second = alias historique gardé le temps que les
+// environnements déployés soient nettoyés. Les deux portent aujourd'hui le même
+// price id ; le jour où l'alias disparaît de Vercel, ce tableau n'a plus qu'à
+// perdre sa seconde entrée.
 const PLAN_PRICE_ENV: Record<Plan, readonly string[]> = {
   basique: ["STRIPE_PRICE_BASIQUE", "STRIPE_BASIQUE_FORFAIT"],
   pro: ["STRIPE_PRICE_PRO", "STRIPE_PRO_FORFAIT"],

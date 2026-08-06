@@ -68,7 +68,12 @@ export function slotsForDate(date: string, input: SlotInput): string[] {
   if (date < now.date) return [];
 
   const busy = bookings
-    .filter((b) => b.date === date && b.status === "confirmed")
+    // Une demande en attente bloque déjà le créneau (comme un rdv confirmé).
+    .filter(
+      (b) =>
+        b.date === date &&
+        (b.status === "confirmed" || b.status === "pending")
+    )
     .map((b) => {
       const start = toMinutes(String(b.start_time).slice(0, 5));
       return [start, start + b.duration_min] as const;

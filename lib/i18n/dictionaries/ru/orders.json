@@ -10,7 +10,9 @@
   },
   "bookingStatus": {
     "cancelled": "Отменена",
-    "confirmed": "Подтверждена"
+    "confirmed": "Подтверждена",
+    "pending": "Ожидает",
+    "refused": "Отклонено"
   },
   "itemKind": {
     "offer": "Предложение",

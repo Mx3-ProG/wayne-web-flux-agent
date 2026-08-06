@@ -35,7 +35,7 @@ type DesktopNavItem = {
   href: string;
   label: string;
   icon: LucideIcon;
-  badge?: "orders" | "stock";
+  badge?: "orders" | "stock" | "stats";
   activeRoot?: string;
 };
 
@@ -48,9 +48,11 @@ function getBadge(
   badge: DesktopNavItem["badge"],
   pendingOrders: number,
   lowStock: number,
+  statsAttention: number,
 ) {
   if (badge === "orders") return pendingOrders;
   if (badge === "stock") return lowStock;
+  if (badge === "stats") return statsAttention;
   return 0;
 }
 
@@ -58,12 +60,14 @@ export function DesktopAppNavigation({
   balance,
   pendingOrders,
   lowStock,
+  statsAttention = 0,
   projects,
   activeProjectId,
 }: {
   balance: number;
   pendingOrders: number;
   lowStock: number;
+  statsAttention?: number;
   projects: Project[];
   activeProjectId: string | null;
 }) {
@@ -80,7 +84,7 @@ export function DesktopAppNavigation({
       { href: "/offres/configurer", label: t.items.offers, icon: BadgePercent, activeRoot: "/offres" },
       { href: "/produits/configurer", label: t.items.products, icon: Boxes, badge: "stock", activeRoot: "/produits" },
       { href: "/agenda", label: t.items.agenda, icon: CalendarDays },
-      { href: "/statistiques", label: t.items.stats, icon: ChartLine },
+      { href: "/statistiques", label: t.items.stats, icon: ChartLine, badge: "stats" },
     ] },
     { label: t.groups.grow, items: [
       { href: "/resultats", label: t.items.content, icon: FolderOpen },
@@ -92,6 +96,9 @@ export function DesktopAppNavigation({
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   useAssistantMenuPresence("dashboard-desktop-navigation", open);
+  // Total « attention » affiché sur le bouton menu quand il est fermé : la
+  // somme de tout ce qui requiert une action (commandes, stock, stats).
+  const totalAttention = pendingOrders + lowStock + statsAttention;
 
   useEffect(() => {
     const mobileQuery = window.matchMedia("(max-width: 979px)");
@@ -131,6 +138,14 @@ export function DesktopAppNavigation({
         >
           {open ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
           <span>{t.menu}</span>
+          {!open && totalAttention > 0 && (
+            <span
+              className={styles.menuBadge}
+              aria-label={t.pending.replace("{count}", String(totalAttention))}
+            >
+              {totalAttention > 99 ? "99+" : totalAttention}
+            </span>
+          )}
         </button>
 
         <Link href="/espace" className={styles.logo} aria-label={t.homeAria}>
@@ -173,7 +188,7 @@ export function DesktopAppNavigation({
                   {group.items.map((item) => {
                     const Icon = item.icon;
                     const active = isActive(pathname, item);
-                    const badge = getBadge(item.badge, pendingOrders, lowStock);
+                    const badge = getBadge(item.badge, pendingOrders, lowStock, statsAttention);
 
                     return (
                       <Link

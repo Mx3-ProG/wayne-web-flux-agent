@@ -10,7 +10,9 @@
   },
   "bookingStatus": {
     "cancelled": "Storniert",
-    "confirmed": "Bestätigt"
+    "confirmed": "Bestätigt",
+    "pending": "Ausstehend",
+    "refused": "Abgelehnt"
   },
   "itemKind": {
     "offer": "Angebot",

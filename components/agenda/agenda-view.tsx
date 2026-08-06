@@ -15,8 +15,10 @@ import type {
 import { formatPrice } from "@/lib/types";
 import { addDays, parisNow } from "@/lib/slots";
 import {
+  acceptBooking,
   addBlockedPeriod,
   cancelBooking,
+  refuseBooking,
   removeBlockedPeriod,
   saveCustomerNote,
   saveSchedules,
@@ -30,12 +32,14 @@ import {
   ArrowUpRight,
   CalendarCheck2,
   CalendarDays,
+  Check,
   Clock3,
   Copy,
   Link2,
   Search,
   Settings2,
   Users,
+  X,
 } from "lucide-react";
 import {
   Card,
@@ -112,6 +116,16 @@ export function AgendaView({
 
   const confirmed = useMemo(
     () => bookings.filter((b) => b.status === "confirmed"),
+    [bookings]
+  );
+  // Demandes en attente de validation (toutes dates), triées par date puis heure.
+  const pending = useMemo(
+    () =>
+      bookings
+        .filter((b) => b.status === "pending")
+        .sort((a, b) =>
+          `${a.date}${a.start_time}`.localeCompare(`${b.date}${b.start_time}`)
+        ),
     [bookings]
   );
   const upcoming = confirmed.filter((b) => b.date >= today);
@@ -205,6 +219,62 @@ export function AgendaView({
           <i>{t.view.outOf7}</i>
         </article>
       </section>
+
+      {/* Demandes à valider (validation obligatoire) */}
+      {pending.length > 0 && (
+        <Card className={styles.glassPanel}>
+          <CardHeader>
+            <CardTitle><Clock3 aria-hidden="true" /> {t.view.pendingTitle}</CardTitle>
+            <CardDescription>{t.view.pendingHint}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {pending.map((b) => (
+                <li key={b.id} className={styles.bookingRow}>
+                  <div>
+                    <p className="font-medium">
+                      {fmtDay(b.date)} · {String(b.start_time).slice(0, 5)} · {b.service_name}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {b.first_name} · {b.phone}
+                      {b.price_cents > 0 && <> · {formatPrice(b.price_cents, locale)}</>}
+                    </p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      disabled={isPending}
+                      onClick={() =>
+                        startTransition(async () => {
+                          const r = await acceptBooking(b.id);
+                          if (r.error) toast.error(translateError(r.error));
+                          else toast.success(t.view.bookingAccepted);
+                        })
+                      }
+                    >
+                      <Check aria-hidden="true" /> {t.view.accept}
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      disabled={isPending}
+                      onClick={() =>
+                        startTransition(async () => {
+                          const r = await refuseBooking(b.id);
+                          if (r.error) toast.error(translateError(r.error));
+                          else toast.success(t.view.bookingRefused);
+                        })
+                      }
+                    >
+                      <X aria-hidden="true" /> {t.view.refuse}
+                    </Button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Semaine */}
       <Card className={`${styles.glassPanel} ${styles.weekPanel}`}>

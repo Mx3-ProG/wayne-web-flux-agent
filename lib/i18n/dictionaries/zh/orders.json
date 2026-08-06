@@ -10,7 +10,9 @@
   },
   "bookingStatus": {
     "cancelled": "已取消",
-    "confirmed": "已确认"
+    "confirmed": "已确认",
+    "pending": "待确认",
+    "refused": "已拒绝"
   },
   "itemKind": {
     "offer": "优惠",

@@ -10,7 +10,9 @@
   },
   "bookingStatus": {
     "cancelled": "キャンセル済み",
-    "confirmed": "確定済み"
+    "confirmed": "確定済み",
+    "pending": "承認待ち",
+    "refused": "却下"
   },
   "itemKind": {
     "offer": "オファー",

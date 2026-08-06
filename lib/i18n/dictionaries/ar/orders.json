@@ -10,7 +10,9 @@
   },
   "bookingStatus": {
     "cancelled": "ملغاة",
-    "confirmed": "مؤكدة"
+    "confirmed": "مؤكدة",
+    "pending": "قيد الانتظار",
+    "refused": "مرفوض"
   },
   "itemKind": {
     "offer": "عرض",

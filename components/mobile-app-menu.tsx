@@ -31,7 +31,7 @@ type DrawerItem = {
   href: string;
   label: string;
   icon: LucideIcon;
-  badge?: "orders" | "stock";
+  badge?: "orders" | "stock" | "stats";
   activeRoot?: string;
 };
 
@@ -39,10 +39,12 @@ export function MobileAppMenu({
   balance,
   pendingOrders,
   lowStock,
+  statsAttention = 0,
 }: {
   balance: number;
   pendingOrders: number;
   lowStock: number;
+  statsAttention?: number;
 }) {
   const pathname = usePathname();
   const { dictionary } = useI18n();
@@ -58,7 +60,7 @@ export function MobileAppMenu({
     { label: t.groups.business, items: [
       { href: "/produits/configurer", label: t.items.products, icon: Boxes, badge: "stock", activeRoot: "/produits" },
       { href: "/agenda", label: t.items.agenda, icon: CalendarDays },
-      { href: "/statistiques", label: t.items.stats, icon: ChartLine },
+      { href: "/statistiques", label: t.items.stats, icon: ChartLine, badge: "stats" },
       { href: "/resultats", label: t.items.content, icon: FolderOpen },
       { href: "/installer", label: t.items.install, icon: Smartphone },
       { href: "/contexte/configurer", label: t.items.ai, icon: MessageSquareText, activeRoot: "/contexte" },
@@ -169,7 +171,9 @@ export function MobileAppMenu({
                         ? pendingOrders
                         : badge === "stock"
                           ? lowStock
-                          : 0;
+                          : badge === "stats"
+                            ? statsAttention
+                            : 0;
 
                     return (
                       <Link

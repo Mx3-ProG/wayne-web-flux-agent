@@ -32,6 +32,9 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+# Le gabarit ne contient que des placeholders : c'est lui qui fait foi sur les
+# variables attendues (une var absente d'ici finit par manquer en production).
+!.env.example
 
 # vercel
 .vercel
