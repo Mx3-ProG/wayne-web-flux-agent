@@ -66,5 +66,15 @@
   "saveChoices": "Guardar mis opciones",
   "customize": "Personalizar",
   "declineOptional": "Continuar sin aceptar"
+ },
+ "unsubscribe": {
+  "metaTitle": "Baja de la lista",
+  "okTitle": "Hecho ✅",
+  "okBody": "Ya no recibirás nuestros emails. Puedes volver a suscribirte cuando quieras.",
+  "invalidTitle": "Enlace no válido",
+  "invalidBody": "Este enlace de baja es incorrecto o ha caducado. Contáctanos si el problema persiste.",
+  "errorTitle": "Se ha producido un error",
+  "errorBody": "No hemos podido procesar tu solicitud. Inténtalo de nuevo en un momento.",
+  "backHome": "← Volver al inicio"
  }
 }

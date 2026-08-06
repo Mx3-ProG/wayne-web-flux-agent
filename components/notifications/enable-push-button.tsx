@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Bell, BellOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -17,41 +17,81 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
   return out;
 }
 
-type State = "loading" | "unsupported" | "denied" | "off" | "on" | "working";
+export type PushButtonDict = {
+  loading: string;
+  enable: string;
+  enabling: string;
+  disable: string;
+  blocked: string;
+  deviceFallback: string;
+};
 
-// Bouton autonome d'activation des notifications push. À placer où tu veux
-// (page Notifications, réglages, header…). Il gère : support, permission,
-// souscription pushManager, envoi de l'abonnement au serveur, et désabonnement.
-export function EnablePushButton() {
-  const [state, setState] = useState<State>("loading");
+// Capacité du navigateur + permission : deux valeurs synchrones côté client,
+// mais indisponibles au rendu serveur. useSyncExternalStore livre le bon
+// snapshot après hydratation sans mismatch NI setState dans un effet (même
+// approche que components/cookie-consent.tsx). Les lire dans un useEffect
+// déclenchait un rendu en cascade — voir react-hooks/set-state-in-effect.
+type Support = "unsupported" | "denied" | "available";
+
+function subscribeToNothing(): () => void {
+  return () => {};
+}
+
+function supportSnapshot(): Support {
+  if (
+    !("serviceWorker" in navigator) ||
+    !("PushManager" in window) ||
+    !VAPID
+  ) {
+    return "unsupported";
+  }
+  return Notification.permission === "denied" ? "denied" : "available";
+}
+
+// Au rendu serveur on ne sait rien du navigateur : "unsupported" ne rend rien,
+// donc aucun contenu ne saute au moment de l'hydratation.
+function serverSupportSnapshot(): Support {
+  return "unsupported";
+}
+
+// Souscription courante de CET appareil. "loading" tant que le service worker
+// n'a pas répondu ; les transitions suivantes viennent des clics.
+type Subscription = "loading" | "on" | "off" | "working" | "denied";
+
+// Bouton autonome d'activation des notifications push. Il gère : support,
+// permission, souscription pushManager, envoi de l'abonnement au serveur, et
+// désabonnement.
+export function EnablePushButton({ t }: { t: PushButtonDict }) {
+  const support = useSyncExternalStore(
+    subscribeToNothing,
+    supportSnapshot,
+    serverSupportSnapshot
+  );
+  const [subscription, setSubscription] = useState<Subscription>("loading");
 
   useEffect(() => {
-    if (
-      typeof window === "undefined" ||
-      !("serviceWorker" in navigator) ||
-      !("PushManager" in window) ||
-      !VAPID
-    ) {
-      setState("unsupported");
-      return;
-    }
-    if (Notification.permission === "denied") {
-      setState("denied");
-      return;
-    }
+    if (support !== "available") return;
+    let cancelled = false;
     navigator.serviceWorker.ready
       .then((reg) => reg.pushManager.getSubscription())
-      .then((sub) => setState(sub ? "on" : "off"))
-      .catch(() => setState("off"));
-  }, []);
+      .then((sub) => {
+        if (!cancelled) setSubscription(sub ? "on" : "off");
+      })
+      .catch(() => {
+        if (!cancelled) setSubscription("off");
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [support]);
 
   async function enable() {
     if (!VAPID) return;
-    setState("working");
+    setSubscription("working");
     try {
       const permission = await Notification.requestPermission();
       if (permission !== "granted") {
-        setState(permission === "denied" ? "denied" : "off");
+        setSubscription(permission === "denied" ? "denied" : "off");
         return;
       }
       const reg = await navigator.serviceWorker.ready;
@@ -66,17 +106,17 @@ export function EnablePushButton() {
         body: JSON.stringify({
           endpoint: json.endpoint,
           keys: json.keys,
-          deviceName: navigator.platform || "Appareil",
+          deviceName: navigator.platform || t.deviceFallback,
         }),
       });
-      setState(res.ok ? "on" : "off");
+      setSubscription(res.ok ? "on" : "off");
     } catch {
-      setState("off");
+      setSubscription("off");
     }
   }
 
   async function disable() {
-    setState("working");
+    setSubscription("working");
     try {
       const reg = await navigator.serviceWorker.ready;
       const sub = await reg.pushManager.getSubscription();
@@ -88,37 +128,34 @@ export function EnablePushButton() {
         });
         await sub.unsubscribe();
       }
-      setState("off");
+      setSubscription("off");
     } catch {
-      setState("on");
+      setSubscription("on");
     }
   }
 
-  if (state === "unsupported") return null;
-  if (state === "loading") {
+  if (support === "unsupported") return null;
+  if (support === "denied" || subscription === "denied") {
+    return <p className="text-sm text-muted-foreground">{t.blocked}</p>;
+  }
+  if (subscription === "loading") {
     return (
       <Button variant="secondary" disabled>
-        <Bell aria-hidden="true" /> Notifications…
+        <Bell aria-hidden="true" /> {t.loading}
       </Button>
     );
   }
-  if (state === "denied") {
+  if (subscription === "on") {
     return (
-      <p className="text-sm text-muted-foreground">
-        Notifications bloquées dans le navigateur. Autorise-les dans les réglages du site.
-      </p>
-    );
-  }
-  if (state === "on") {
-    return (
-      <Button variant="ghost" onClick={disable} disabled={false}>
-        <BellOff aria-hidden="true" /> Désactiver les notifications
+      <Button variant="ghost" onClick={disable}>
+        <BellOff aria-hidden="true" /> {t.disable}
       </Button>
     );
   }
   return (
-    <Button onClick={enable} disabled={state === "working"}>
-      <Bell aria-hidden="true" /> {state === "working" ? "Activation…" : "Activer les notifications"}
+    <Button onClick={enable} disabled={subscription === "working"}>
+      <Bell aria-hidden="true" />{" "}
+      {subscription === "working" ? t.enabling : t.enable}
     </Button>
   );
 }

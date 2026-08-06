@@ -1,93 +1,144 @@
 {
-  "footer": {
-    "default": "Email transactionnel envoyé automatiquement, merci de ne pas y répondre.",
-    "tagline": "— votre vitrine, vos commandes, votre chiffre d'affaires."
+ "footer": {
+  "default": "Email transactionnel envoyé automatiquement, merci de ne pas y répondre.",
+  "tagline": "— votre vitrine, vos commandes, votre chiffre d'affaires."
+ },
+ "total": "Total",
+ "order": {
+  "buyerConfirmation": {
+   "subject": "Votre commande chez {shopName} est confirmée",
+   "title": "Commande confirmée",
+   "preheader": "Commande #{orderId} · {total}",
+   "greeting": "Bonjour {firstName},",
+   "body": "Votre commande <strong>#{orderId}</strong> chez <strong>{shopName}</strong> a bien été enregistrée. Le vendeur va la traiter et vous recontacter si besoin.",
+   "addressLabel": "Adresse indiquée : {address}",
+   "paymentNote": "Le paiement s'effectue directement auprès du vendeur."
   },
-  "total": "Total",
-  "order": {
-    "buyerConfirmation": {
-      "subject": "Votre commande chez {shopName} est confirmée",
-      "title": "Commande confirmée",
-      "preheader": "Commande #{orderId} · {total}",
-      "greeting": "Bonjour {firstName},",
-      "body": "Votre commande <strong>#{orderId}</strong> chez <strong>{shopName}</strong> a bien été enregistrée. Le vendeur va la traiter et vous recontacter si besoin.",
-      "addressLabel": "Adresse indiquée : {address}",
-      "paymentNote": "Le paiement s'effectue directement auprès du vendeur."
-    },
-    "sellerNewOrder": {
-      "subject": "Nouvelle commande — {firstName} · {total}",
-      "title": "Nouvelle commande",
-      "preheader": "{firstName} · {total}",
-      "body": "Vous avez reçu une nouvelle commande <strong>#{orderId}</strong>.",
-      "contactTitle": "Coordonnées du client",
-      "contactName": "Prénom : {value}",
-      "contactPhone": "Téléphone : {value}",
-      "contactEmail": "Email : {value}",
-      "contactAddress": "Adresse : {value}",
-      "contactNote": "Note : {value}",
-      "viewOrders": "Voir mes commandes",
-      "footerReply": "Répondez à cet email pour contacter directement votre client.",
-      "footerAuto": "Email transactionnel envoyé automatiquement."
-    },
-    "buyerAccepted": {
-      "subject": "Commande acceptée ✓ — {shopName}",
-      "title": "Commande acceptée",
-      "greeting": "Bonjour {firstName},",
-      "body": "Bonne nouvelle : votre commande <strong>#{orderId}</strong> chez <strong>{shopName}</strong> a été acceptée et est en cours de préparation.",
-      "note": "Le vendeur vous contactera pour la suite si nécessaire."
-    },
-    "buyerReady": {
-      "subject": "Votre commande est prête ✓ — {shopName}",
-      "title": "Commande prête",
-      "preheader": "Commande #{orderId} prête à être récupérée",
-      "greeting": "Bonjour {firstName},",
-      "body": "Votre commande <strong>#{orderId}</strong> chez <strong>{shopName}</strong> est <strong>prête</strong> ! Vous pouvez venir la récupérer.",
-      "note": "Le vendeur vous précisera les modalités de retrait si nécessaire."
-    },
-    "buyerCancelled": {
-      "subject": "Commande annulée — {shopName}",
-      "title": "Commande annulée",
-      "greeting": "Bonjour {firstName},",
-      "body": "Votre commande <strong>#{orderId}</strong> chez <strong>{shopName}</strong> a été annulée.",
-      "note": "Pour toute question, contactez directement le vendeur."
-    },
-    "defaultShopName": "votre commerçant"
+  "sellerNewOrder": {
+   "subject": "Nouvelle commande — {firstName} · {total}",
+   "title": "Nouvelle commande",
+   "preheader": "{firstName} · {total}",
+   "body": "Vous avez reçu une nouvelle commande <strong>#{orderId}</strong>.",
+   "contactTitle": "Coordonnées du client",
+   "contactName": "Prénom : {value}",
+   "contactPhone": "Téléphone : {value}",
+   "contactEmail": "Email : {value}",
+   "contactAddress": "Adresse : {value}",
+   "contactNote": "Note : {value}",
+   "viewOrders": "Voir mes commandes",
+   "footerReply": "Répondez à cet email pour contacter directement votre client.",
+   "footerAuto": "Email transactionnel envoyé automatiquement."
   },
-  "account": {
-    "passwordChanged": {
-      "subject": "Votre mot de passe FLUX a été modifié",
-      "title": "Mot de passe modifié",
-      "preheader": "Confirmation de sécurité — votre mot de passe a changé",
-      "greeting": "Bonjour {firstName},",
-      "body": "Le mot de passe de votre compte FLUX vient d'être <strong>modifié</strong>. Si vous êtes à l'origine de ce changement, aucune action n'est nécessaire.",
-      "note": "Vous ne reconnaissez pas cette action ? Réinitialisez immédiatement votre mot de passe et vérifiez la sécurité de votre boîte mail.",
-      "cta": "Sécuriser mon compte"
-    },
-    "friendInvite": {
-      "subject": "{fromName} vous invite à essayer FLUX",
-      "title": "Reprenez la main sur votre commerce",
-      "preheader": "{fromName} pense que FLUX peut vous faire gagner un temps précieux",
-      "intro": "<strong>{fromName}</strong> vous invite à découvrir <strong>FLUX</strong>.",
-      "pitch": "FLUX réunit au même endroit votre vitrine en ligne, vos commandes, vos rendez-vous et vos contenus. Fini les dizaines d'outils éparpillés : une seule connexion, tout votre commerce sous les yeux.",
-      "gainsIntro": "Ce que {fromName} y a gagné :",
-      "gain1": "Des heures économisées chaque semaine sur la gestion",
-      "gain2": "Une vitrine pro en ligne en quelques minutes",
-      "gain3": "Ses commandes et son chiffre d'affaires suivis en un coup d'œil",
-      "cta": "Créer ma vitrine en 2 minutes",
-      "trial": "7 jours d'essai offerts, sans engagement.",
-      "footer": "Vous recevez cet email car un utilisateur de FLUX vous a invité. Aucune action n'est requise si cela ne vous intéresse pas."
-    }
+  "buyerAccepted": {
+   "subject": "Commande acceptée ✓ — {shopName}",
+   "title": "Commande acceptée",
+   "greeting": "Bonjour {firstName},",
+   "body": "Bonne nouvelle : votre commande <strong>#{orderId}</strong> chez <strong>{shopName}</strong> a été acceptée et est en cours de préparation.",
+   "note": "Le vendeur vous contactera pour la suite si nécessaire."
   },
-  "verification": {
-    "subject": "Vérifiez votre adresse — FLUX",
-    "title": "Vérifiez votre adresse",
-    "preheader": "Débloquez la publication de votre vitrine",
-    "body": "Votre espace FLUX est prêt et vous pouvez déjà l'utiliser. Il ne reste qu'à confirmer que cette adresse est bien la vôtre pour débloquer la publication de votre vitrine et les paiements.",
-    "cta": "Vérifier mon adresse",
-    "note": "Si vous n'êtes pas à l'origine de cette inscription, ignorez simplement cet email."
+  "buyerReady": {
+   "subject": "Votre commande est prête ✓ — {shopName}",
+   "title": "Commande prête",
+   "preheader": "Commande #{orderId} prête à être récupérée",
+   "greeting": "Bonjour {firstName},",
+   "body": "Votre commande <strong>#{orderId}</strong> chez <strong>{shopName}</strong> est <strong>prête</strong> ! Vous pouvez venir la récupérer.",
+   "note": "Le vendeur vous précisera les modalités de retrait si nécessaire."
   },
-  "hints": {
-    "spamSelf": "Si tu ne le vois pas, pense à vérifier tes spams.",
-    "spamOther": "L'email peut atterrir dans les spams : préviens la personne."
+  "buyerCancelled": {
+   "subject": "Commande annulée — {shopName}",
+   "title": "Commande annulée",
+   "greeting": "Bonjour {firstName},",
+   "body": "Votre commande <strong>#{orderId}</strong> chez <strong>{shopName}</strong> a été annulée.",
+   "note": "Pour toute question, contactez directement le vendeur."
+  },
+  "defaultShopName": "votre commerçant"
+ },
+ "account": {
+  "passwordChanged": {
+   "subject": "Votre mot de passe FLUX a été modifié",
+   "title": "Mot de passe modifié",
+   "preheader": "Confirmation de sécurité — votre mot de passe a changé",
+   "greeting": "Bonjour {firstName},",
+   "body": "Le mot de passe de votre compte FLUX vient d'être <strong>modifié</strong>. Si vous êtes à l'origine de ce changement, aucune action n'est nécessaire.",
+   "note": "Vous ne reconnaissez pas cette action ? Réinitialisez immédiatement votre mot de passe et vérifiez la sécurité de votre boîte mail.",
+   "cta": "Sécuriser mon compte"
+  },
+  "friendInvite": {
+   "subject": "{fromName} vous invite à essayer FLUX",
+   "title": "Reprenez la main sur votre commerce",
+   "preheader": "{fromName} pense que FLUX peut vous faire gagner un temps précieux",
+   "intro": "<strong>{fromName}</strong> vous invite à découvrir <strong>FLUX</strong>.",
+   "pitch": "FLUX réunit au même endroit votre vitrine en ligne, vos commandes, vos rendez-vous et vos contenus. Fini les dizaines d'outils éparpillés : une seule connexion, tout votre commerce sous les yeux.",
+   "gainsIntro": "Ce que {fromName} y a gagné :",
+   "gain1": "Des heures économisées chaque semaine sur la gestion",
+   "gain2": "Une vitrine pro en ligne en quelques minutes",
+   "gain3": "Ses commandes et son chiffre d'affaires suivis en un coup d'œil",
+   "cta": "Créer ma vitrine en 2 minutes",
+   "trial": "7 jours d'essai offerts, sans engagement.",
+   "footer": "Vous recevez cet email car un utilisateur de FLUX vous a invité. Aucune action n'est requise si cela ne vous intéresse pas."
   }
+ },
+ "verification": {
+  "subject": "Vérifiez votre adresse — FLUX",
+  "title": "Vérifiez votre adresse",
+  "preheader": "Débloquez la publication de votre vitrine",
+  "body": "Votre espace FLUX est prêt et vous pouvez déjà l'utiliser. Il ne reste qu'à confirmer que cette adresse est bien la vôtre pour débloquer la publication de votre vitrine et les paiements.",
+  "cta": "Vérifier mon adresse",
+  "note": "Si vous n'êtes pas à l'origine de cette inscription, ignorez simplement cet email."
+ },
+ "hints": {
+  "spamSelf": "Si tu ne le vois pas, pense à vérifier tes spams.",
+  "spamOther": "L'email peut atterrir dans les spams : préviens la personne."
+ },
+ "booking": {
+  "buyerRequest": {
+   "subject": "Votre demande de rendez-vous chez {shopName}",
+   "title": "Demande envoyée",
+   "preheader": "{serviceName} · {when}",
+   "greeting": "Bonjour {firstName},",
+   "body": "Votre demande de rendez-vous chez <strong>{shopName}</strong> a bien été envoyée.",
+   "serviceLabel": "Prestation : {value}",
+   "whenLabel": "Créneau souhaité : {value}",
+   "pendingNote": "Le professionnel doit encore confirmer ce créneau. Vous recevrez un email dès que ce sera fait."
+  },
+  "sellerNew": {
+   "subject": "Nouvelle réservation — {firstName} · {when}",
+   "title": "Nouvelle réservation",
+   "preheader": "{firstName} · {serviceName} · {when}",
+   "body": "<strong>{firstName}</strong> demande un rendez-vous. Il reste à confirmer depuis votre agenda.",
+   "serviceLabel": "Prestation : {value}",
+   "whenLabel": "Créneau : {value}",
+   "contactTitle": "Coordonnées du client",
+   "contactName": "Prénom : {value}",
+   "contactPhone": "Téléphone : {value}",
+   "contactEmail": "Email : {value}",
+   "viewAgenda": "Ouvrir mon agenda"
+  },
+  "buyerConfirmed": {
+   "subject": "Rendez-vous confirmé ✓ — {shopName}",
+   "title": "Rendez-vous confirmé",
+   "preheader": "{serviceName} · {when}",
+   "greeting": "Bonjour {firstName},",
+   "body": "C'est confirmé : votre rendez-vous chez <strong>{shopName}</strong> est réservé.",
+   "serviceLabel": "Prestation : {value}",
+   "whenLabel": "Créneau : {value}",
+   "note": "Un empêchement ? Prévenez le professionnel au plus tôt."
+  },
+  "buyerRefused": {
+   "subject": "Créneau indisponible — {shopName}",
+   "title": "Créneau indisponible",
+   "greeting": "Bonjour {firstName},",
+   "body": "Le créneau demandé chez <strong>{shopName}</strong> n'est finalement pas disponible.",
+   "whenLabel": "Créneau demandé : {value}",
+   "note": "Vous pouvez choisir un autre créneau directement sur la page du professionnel."
+  },
+  "buyerCancelled": {
+   "subject": "Rendez-vous annulé — {shopName}",
+   "title": "Rendez-vous annulé",
+   "greeting": "Bonjour {firstName},",
+   "body": "Votre rendez-vous chez <strong>{shopName}</strong> a été annulé.",
+   "whenLabel": "Créneau annulé : {value}",
+   "note": "Pour reprendre un rendez-vous, rendez-vous sur la page du professionnel."
+  }
+ }
 }

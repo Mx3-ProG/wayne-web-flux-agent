@@ -66,5 +66,15 @@
   "saveChoices": "Meine Auswahl speichern",
   "customize": "Anpassen",
   "declineOptional": "Weiter ohne zu akzeptieren"
+ },
+ "unsubscribe": {
+  "metaTitle": "Abmeldung",
+  "okTitle": "Erledigt ✅",
+  "okBody": "Du erhältst keine E-Mails mehr von uns. Du kannst dich jederzeit wieder anmelden.",
+  "invalidTitle": "Ungültiger Link",
+  "invalidBody": "Dieser Abmeldelink ist falsch oder abgelaufen. Melde dich bei uns, wenn das Problem bestehen bleibt.",
+  "errorTitle": "Ein Fehler ist aufgetreten",
+  "errorBody": "Wir konnten deine Anfrage nicht verarbeiten. Bitte versuche es gleich noch einmal.",
+  "backHome": "← Zurück zur Startseite"
  }
 }

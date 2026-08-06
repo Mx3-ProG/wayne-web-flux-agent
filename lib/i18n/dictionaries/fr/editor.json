@@ -180,7 +180,12 @@
    "hideBrandingAllowed": "Retire la signature en bas de ta page publique.",
    "hideBrandingRestricted": "Fonctionnalité réservée à la formule Entreprise à 89 € par mois.",
    "discoverEnterprise": "Découvrir la formule Entreprise",
-   "hideBrandingAria": "Masquer la signature Wayne Web Flux"
+   "hideBrandingAria": "Masquer la signature Wayne Web Flux",
+   "storefrontAssistantLabel": "Assistant FLUX pour mes visiteurs",
+   "storefrontAssistantHint": "Ajoute une aide discrète pour trouver tes produits, tes offres, la réservation et tes coordonnées. Aucun crédit n’est utilisé.",
+   "storefrontAssistantAria": "Afficher l’assistant FLUX sur ma vitrine",
+   "storefrontAssistantEnabled": "FLUX aidera maintenant les visiteurs.",
+   "storefrontAssistantDisabled": "L’aide FLUX est désactivée sur la vitrine."
   },
   "legal": {
    "trigger": "Les mentions légales — déjà écrites pour toi",

@@ -180,7 +180,12 @@
    "hideBrandingAllowed": "Убери подпись внизу своей публичной страницы.",
    "hideBrandingRestricted": "Функция доступна только в тарифе Enterprise за 89 € в месяц.",
    "discoverEnterprise": "Узнать о тарифе Enterprise",
-   "hideBrandingAria": "Скрыть подпись Wayne Web Flux"
+   "hideBrandingAria": "Скрыть подпись Wayne Web Flux",
+   "storefrontAssistantLabel": "Помощник FLUX для посетителей",
+   "storefrontAssistantHint": "Добавляет ненавязчивую помощь: найти товары, предложения, запись и контакты. Кредиты не расходуются.",
+   "storefrontAssistantAria": "Показывать помощника FLUX на моей витрине",
+   "storefrontAssistantEnabled": "Теперь FLUX будет помогать посетителям.",
+   "storefrontAssistantDisabled": "Помощь FLUX отключена на витрине."
   },
   "legal": {
    "trigger": "Юридическая информация — уже написана за тебя",

@@ -66,5 +66,15 @@
   "saveChoices": "Enregistrer mes choix",
   "customize": "Personnaliser",
   "declineOptional": "Continuer sans accepter"
+ },
+ "unsubscribe": {
+  "metaTitle": "Désinscription",
+  "okTitle": "C’est fait ✅",
+  "okBody": "Vous ne recevrez plus nos emails. Vous pouvez vous réinscrire à tout moment.",
+  "invalidTitle": "Lien invalide",
+  "invalidBody": "Ce lien de désinscription est incorrect ou a expiré. Contactez-nous si le problème persiste.",
+  "errorTitle": "Une erreur est survenue",
+  "errorBody": "Nous n’avons pas pu traiter votre demande. Merci de réessayer dans un instant.",
+  "backHome": "← Retour à l’accueil"
  }
 }

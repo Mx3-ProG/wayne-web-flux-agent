@@ -4,6 +4,8 @@ import { sendOrderCreatedEmails } from "@/lib/emails/order-emails";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { formatPrice } from "@/lib/types";
 import { enforceKarlMada } from "@/lib/karlmada";
+import { defaultLocale, hasLocale } from "@/lib/i18n/config";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
 
 const PHONE_RE = /^[+0-9 ().-]{6,20}$/;
 
@@ -127,15 +129,29 @@ export async function POST(
     return NextResponse.json({ error: "insert_failed" }, { status: 500 });
   }
 
-  // Notification propriétaire (hook de rétention : badge dashboard).
-  const count = rpcItems.reduce((n, it) => n + it.quantity, 0);
+  // Notification propriétaire (hook de rétention : badge dashboard + payload
+  // push envoyé tel quel par le cron push-deliveries). Écrite dans la langue du
+  // compte du marchand, et avec les libellés de l'email qu'il reçoit au même
+  // moment : une seule formulation à maintenir. Le nombre d'articles est laissé
+  // de côté — il imposerait des règles de pluriel dans 9 langues pour une
+  // information que l'email détaille déjà.
+  const { data: owner } = await supabase
+    .from("profiles")
+    .select("locale")
+    .eq("user_id", page.user_id)
+    .maybeSingle<{ locale: string | null }>();
+  const ownerLocale =
+    owner?.locale && hasLocale(owner.locale) ? owner.locale : defaultLocale;
+  const ownerDict = await getDictionary(ownerLocale, "emails");
   await supabase.from("notifications").insert({
     user_id: page.user_id,
     page_id: page.id,
     type: "order",
     ref_id: orderId,
-    title: "Nouvelle commande",
-    body: `${firstName} · ${count} article${count > 1 ? "s" : ""} · ${formatPrice(total)}`,
+    title: ownerDict.order.sellerNewOrder.title,
+    body: ownerDict.order.sellerNewOrder.preheader
+      .replaceAll("{firstName}", firstName)
+      .replaceAll("{total}", formatPrice(total)),
   });
 
   // Emails (acheteur + vendeur) AWAITés avant la réponse : les callbacks after()

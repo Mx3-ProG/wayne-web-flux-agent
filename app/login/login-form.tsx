@@ -61,7 +61,12 @@ export function LoginForm({
               <div><LockKeyhole aria-hidden="true" /><input name="password" type="password" placeholder="••••••••" required autoComplete="current-password" /></div>
             </label>
             <Link className={styles.forgot} href={href("/mot-de-passe-oublie")}>{dict.forgot}</Link>
-            {loginState.error && <p className={styles.error}>{loginState.error}</p>}
+            {loginState.error && (
+              <p className={styles.error}>
+                {dict.errors[loginState.error as keyof typeof dict.errors] ??
+                  dict.errors.unknown}
+              </p>
+            )}
             <button className={`flux-button-smooth ${styles.primary}`} type="submit" disabled={loginPending}>
               {loginPending ? dict.submitting : dict.submit}
               {!loginPending && <ArrowRight aria-hidden="true" />}

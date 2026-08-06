@@ -1,143 +1,153 @@
 {
-  "meta": {
-    "title": "我的资料",
-    "billingTitle": "账单"
-  },
-  "hero": {
-    "eyebrow": "你的专属空间",
-    "title": "我的资料",
-    "text": "关于你的身份、业务以及 FLUX 访问权限的一切都在这里。"
-  },
-  "nav": {
-    "aria": "个人资料板块",
-    "info": "基本信息",
-    "adventure": "开启冒险",
-    "invite": "邀请好友",
-    "credits": "积分",
-    "plans": "套餐",
-    "license": "许可协议",
-    "billing": "账单"
-  },
-  "info": {
-    "title": "个人及职业信息",
-    "text": "这些信息完全私密，仅用于个性化你的体验。"
-  },
-  "profileForm": {
-    "name": "姓名",
-    "email": "登录邮箱",
-    "phone": "个人电话",
-    "company": "企业名称",
-    "job": "职业 / 职位",
-    "businessEmail": "职业邮箱",
-    "siret": "企业注册号（SIRET）",
-    "address": "企业地址",
-    "saving": "保存中…",
-    "save": "保存"
-  },
-  "adventure": {
-    "canCreateTitle": "创建一个全新展示站",
-    "limitTitle": "查看你的项目",
-    "canCreateText": "只需回答几个问题：FLUX 会搭建好基础框架，一切尽在你的掌控。",
-    "limitText": "你的套餐已达到项目数量上限，你可以管理已有的展示站。",
-    "startTunnel": "启动创建流程",
-    "viewProjects": "查看我的项目"
-  },
-  "invite": {
-    "title": "邀请好友",
-    "text": "把 FLUX 推荐给你认识的商家：对方将收到邀请，并获得 7 天免费试用。",
-    "emailLabel": "好友的邮箱",
-    "emailPlaceholder": "friend@email.fr",
-    "sending": "发送中…",
-    "send": "发送邀请"
-  },
-  "credits": {
-    "available": "可用积分",
-    "nextRecharge": "下次充值日期：{date}",
-    "trial": "FLUX 试用：剩余 {days} 天",
-    "trialPlural": "FLUX 试用：剩余 {days} 天",
-    "subscribed": "通过你的 FLUX 套餐充值",
-    "trialOver": "试用已结束 — 选择你的 FLUX 套餐",
-    "viewUsage": "查看我的使用情况"
-  },
-  "license": {
-    "title": "使用许可",
-    "text": "你添加的所有信息和内容归你所有。FLUX 仅授予你个人使用服务的权利，不涉及平台所有权的转让。"
-  },
-  "security": {
-    "title": "安全",
-    "text": "通过邮箱安全验证管理你的登录信息，或退出此设备上的登录会话。",
-    "logout": "退出登录"
-  },
-  "passwordForm": {
-    "title": "密码",
-    "text": "系统会向你当前的邮箱发送一个安全链接，方便你设置新密码。",
-    "sending": "发送中…",
-    "cta": "我忘记密码了"
-  },
-  "emailForm": {
-    "title": "邮箱地址",
-    "text": "你当前的地址是 {email}。修改邮箱需要通过旧地址和新地址分别确认。",
-    "newEmailLabel": "新邮箱地址",
-    "newEmailPlaceholder": "new@address.fr",
-    "sending": "发送确认邮件中…",
-    "cta": "发送确认邮件"
-  },
-  "danger": {
-    "title": "危险操作区",
-    "text": "删除操作将永久清除你的账户、展示站、客户、订单、预约及所有内容，此操作不可撤销。",
-    "confirmLabel": "输入 {word} 以确认",
-    "confirmWord": "删除",
-    "deleting": "删除中…",
-    "delete": "永久删除我的账户"
-  },
-  "billing": {
-    "kicker": "账户",
-    "title": "账单",
-    "subtitle": "你的订阅、账期与发票，一目了然。",
-    "portalUnavailable": "账单管理入口暂时无法使用。",
-    "currentPlan": "当前套餐",
-    "noActivePlan": "暂无有效套餐",
-    "price": "价格",
-    "priceValue": "{price} 欧元 / 月",
-    "includedCredits": "包含积分",
-    "includedCreditsValue": "每次付款发票含 {credits}",
-    "accessEndsAt": "预计访问结束时间",
-    "nextDueDate": "下次到期日",
-    "toConfirm": "待确认",
-    "manage": "管理订阅与发票",
-    "choosePlan": "选择套餐",
-    "help": "通过 Stripe 安全支付入口，你可以修改支付方式、下载发票、更换套餐或取消订阅。",
-    "back": "← 返回个人资料",
-    "status": {
-      "active": "生效中",
-      "trialing": "试用期",
-      "past_due": "待补缴",
-      "unpaid": "未支付",
-      "canceled": "已取消",
-      "incomplete": "激活未完成",
-      "incomplete_expired": "激活已过期",
-      "paused": "已暂停"
-    }
-  },
-  "errors": {
-    "session_expired": "你的会话已过期。",
-    "name_required": "请至少填写你的姓名。",
-    "save_failed": "无法保存资料。",
-    "email_send_failed": "暂时无法发送邮件。",
-    "invalid_email": "邮箱地址无效。",
-    "already_current_email": "这已经是你当前使用的地址了。",
-    "email_change_failed": "无法发起邮箱更改流程。",
-    "confirmation_mismatch": "请输入“删除”以确认。",
-    "deletion_failed": "删除失败，请稍后重试。",
-    "content_blocked": "FLUX 严禁并将惩处仇恨言论或色情内容，请尊重你自己及他人的使用环境。违反使用条款 3 次后，账户将被删除。",
-    "unknown": "发生了一个错误，请稍后再试。"
-  },
-  "messages": {
-    "profile_saved": "资料已保存。",
-    "reset_email_sent": "邮件已经发送过了。",
-    "reset_email_sent_fresh": "邮件已发送至你当前的地址，链接为一次性且限时有效。",
-    "email_change_pending": "已有一个请求正在处理中，请查看你的两个邮箱收件箱。",
-    "email_change_requested": "请求已发送。只有当你的当前地址和新地址都完成确认后，邮箱才会更改。",
-    "invite_sent": "邀请已发送至 {email}。"
+ "meta": {
+  "title": "我的资料",
+  "billingTitle": "账单"
+ },
+ "hero": {
+  "eyebrow": "你的专属空间",
+  "title": "我的资料",
+  "text": "关于你的身份、业务以及 FLUX 访问权限的一切都在这里。"
+ },
+ "nav": {
+  "aria": "个人资料板块",
+  "info": "基本信息",
+  "adventure": "开启冒险",
+  "invite": "邀请好友",
+  "credits": "积分",
+  "plans": "套餐",
+  "license": "许可协议",
+  "billing": "账单"
+ },
+ "info": {
+  "title": "个人及职业信息",
+  "text": "这些信息完全私密，仅用于个性化你的体验。"
+ },
+ "profileForm": {
+  "name": "姓名",
+  "email": "登录邮箱",
+  "phone": "个人电话",
+  "company": "企业名称",
+  "job": "职业 / 职位",
+  "businessEmail": "职业邮箱",
+  "siret": "企业注册号（SIRET）",
+  "address": "企业地址",
+  "saving": "保存中…",
+  "save": "保存"
+ },
+ "adventure": {
+  "canCreateTitle": "创建一个全新展示站",
+  "limitTitle": "查看你的项目",
+  "canCreateText": "只需回答几个问题：FLUX 会搭建好基础框架，一切尽在你的掌控。",
+  "limitText": "你的套餐已达到项目数量上限，你可以管理已有的展示站。",
+  "startTunnel": "启动创建流程",
+  "viewProjects": "查看我的项目"
+ },
+ "invite": {
+  "title": "邀请好友",
+  "text": "把 FLUX 推荐给你认识的商家：对方将收到邀请，并获得 7 天免费试用。",
+  "emailLabel": "好友的邮箱",
+  "emailPlaceholder": "friend@email.fr",
+  "sending": "发送中…",
+  "send": "发送邀请"
+ },
+ "credits": {
+  "available": "可用积分",
+  "nextRecharge": "下次充值日期：{date}",
+  "trial": "FLUX 试用：剩余 {days} 天",
+  "trialPlural": "FLUX 试用：剩余 {days} 天",
+  "subscribed": "通过你的 FLUX 套餐充值",
+  "trialOver": "试用已结束 — 选择你的 FLUX 套餐",
+  "viewUsage": "查看我的使用情况"
+ },
+ "license": {
+  "title": "使用许可",
+  "text": "你添加的所有信息和内容归你所有。FLUX 仅授予你个人使用服务的权利，不涉及平台所有权的转让。"
+ },
+ "security": {
+  "title": "安全",
+  "text": "通过邮箱安全验证管理你的登录信息，或退出此设备上的登录会话。",
+  "logout": "退出登录"
+ },
+ "passwordForm": {
+  "title": "密码",
+  "text": "系统会向你当前的邮箱发送一个安全链接，方便你设置新密码。",
+  "sending": "发送中…",
+  "cta": "我忘记密码了"
+ },
+ "emailForm": {
+  "title": "邮箱地址",
+  "text": "你当前的地址是 {email}。修改邮箱需要通过旧地址和新地址分别确认。",
+  "newEmailLabel": "新邮箱地址",
+  "newEmailPlaceholder": "new@address.fr",
+  "sending": "发送确认邮件中…",
+  "cta": "发送确认邮件"
+ },
+ "danger": {
+  "title": "危险操作区",
+  "text": "删除操作将永久清除你的账户、展示站、客户、订单、预约及所有内容，此操作不可撤销。",
+  "confirmLabel": "输入 {word} 以确认",
+  "confirmWord": "删除",
+  "deleting": "删除中…",
+  "delete": "永久删除我的账户"
+ },
+ "billing": {
+  "kicker": "账户",
+  "title": "账单",
+  "subtitle": "你的订阅、账期与发票，一目了然。",
+  "portalUnavailable": "账单管理入口暂时无法使用。",
+  "currentPlan": "当前套餐",
+  "noActivePlan": "暂无有效套餐",
+  "price": "价格",
+  "priceValue": "{price} 欧元 / 月",
+  "includedCredits": "包含积分",
+  "includedCreditsValue": "每次付款发票含 {credits}",
+  "accessEndsAt": "预计访问结束时间",
+  "nextDueDate": "下次到期日",
+  "toConfirm": "待确认",
+  "manage": "管理订阅与发票",
+  "choosePlan": "选择套餐",
+  "help": "通过 Stripe 安全支付入口，你可以修改支付方式、下载发票、更换套餐或取消订阅。",
+  "back": "← 返回个人资料",
+  "status": {
+   "active": "生效中",
+   "trialing": "试用期",
+   "past_due": "待补缴",
+   "unpaid": "未支付",
+   "canceled": "已取消",
+   "incomplete": "激活未完成",
+   "incomplete_expired": "激活已过期",
+   "paused": "已暂停"
   }
+ },
+ "errors": {
+  "session_expired": "你的会话已过期。",
+  "name_required": "请至少填写你的姓名。",
+  "save_failed": "无法保存资料。",
+  "email_send_failed": "暂时无法发送邮件。",
+  "invalid_email": "邮箱地址无效。",
+  "already_current_email": "这已经是你当前使用的地址了。",
+  "email_change_failed": "无法发起邮箱更改流程。",
+  "confirmation_mismatch": "请输入“删除”以确认。",
+  "deletion_failed": "删除失败，请稍后重试。",
+  "content_blocked": "FLUX 严禁并将惩处仇恨言论或色情内容，请尊重你自己及他人的使用环境。违反使用条款 3 次后，账户将被删除。",
+  "unknown": "发生了一个错误，请稍后再试。"
+ },
+ "messages": {
+  "profile_saved": "资料已保存。",
+  "reset_email_sent": "邮件已经发送过了。",
+  "reset_email_sent_fresh": "邮件已发送至你当前的地址，链接为一次性且限时有效。",
+  "email_change_pending": "已有一个请求正在处理中，请查看你的两个邮箱收件箱。",
+  "email_change_requested": "请求已发送。只有当你的当前地址和新地址都完成确认后，邮箱才会更改。",
+  "invite_sent": "邀请已发送至 {email}。"
+ },
+ "notifications": {
+  "title": "通知",
+  "text": "有新订单或预约时，即使 FLUX 已关闭，也能在本设备收到提醒。",
+  "loading": "通知…",
+  "enable": "开启通知",
+  "enabling": "正在开启…",
+  "disable": "关闭通知",
+  "blocked": "浏览器已阻止通知。请在网站设置中允许。",
+  "deviceFallback": "设备"
+ }
 }

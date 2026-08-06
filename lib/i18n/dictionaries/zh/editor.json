@@ -180,7 +180,12 @@
    "hideBrandingAllowed": "移除你公开页面底部的署名标识。",
    "hideBrandingRestricted": "此功能仅限每月89€的企业版套餐使用。",
    "discoverEnterprise": "了解企业版套餐",
-   "hideBrandingAria": "隐藏 Wayne Web Flux 署名"
+   "hideBrandingAria": "隐藏 Wayne Web Flux 署名",
+   "storefrontAssistantLabel": "面向访客的 FLUX 助手",
+   "storefrontAssistantHint": "添加低调的帮助，便于访客找到你的商品、优惠、预约和联系方式。不消耗任何积分。",
+   "storefrontAssistantAria": "在我的店铺页面显示 FLUX 助手",
+   "storefrontAssistantEnabled": "FLUX 现在会为访客提供帮助。",
+   "storefrontAssistantDisabled": "店铺页面的 FLUX 帮助已关闭。"
   },
   "legal": {
    "trigger": "法律声明——已经为你写好",

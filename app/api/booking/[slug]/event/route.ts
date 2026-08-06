@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { slotsForDate } from "@/lib/slots";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
+import { getDictionary } from "@/lib/i18n/get-dictionary";
+import { enforceKarlMada } from "@/lib/karlmada";
+import { sendBookingCreatedEmails } from "@/lib/emails/booking-emails";
 import { loadBookingContext } from "../route-helpers";
 
 const PHONE_RE = /^[+0-9 ().-]{6,20}$/;
@@ -33,6 +36,21 @@ export async function POST(
   }
   if (!firstName || !PHONE_RE.test(phone)) {
     return NextResponse.json({ error: "invalid_contact" }, { status: 400 });
+  }
+
+  // Même règle que pour les commandes : on ne modère QUE les champs saisis par
+  // le visiteur, et sans userId — un client ne doit jamais pouvoir faire
+  // suspendre le compte du professionnel. Le prénom atterrit dans le CRM, dans
+  // l'agenda et dans une notification push : il ne peut pas rester libre.
+  const customerModeration = await enforceKarlMada(
+    { firstName },
+    { surface: "booking:customer-input" }
+  );
+  if (customerModeration.error) {
+    return NextResponse.json(
+      { error: "content_blocked", message: customerModeration.error },
+      { status: 422 }
+    );
   }
 
   const ctx = await loadBookingContext(slug, serviceId);
@@ -76,15 +94,37 @@ export async function POST(
       { onConflict: "page_id,phone" }
     );
 
-  // Notification propriétaire (feed générique commandes + réservations).
+  // Notification propriétaire (feed générique commandes + réservations), dans
+  // la langue de son compte. Le libellé est partagé avec l'email qu'il reçoit
+  // au même moment, pour ne pas maintenir deux formulations.
+  const ownerDict = await getDictionary(ctx.ownerLocale, "emails");
+  const notificationTitle = ownerDict.booking.sellerNew.title;
   await ctx.supabase.from("notifications").insert({
     user_id: ctx.page.user_id,
     page_id: ctx.page.id,
     type: "booking",
     ref_id: null,
-    title: "Nouvelle réservation",
-    body: `${firstName} · ${ctx.service.name} · ${date} à ${time}`,
+    title: notificationTitle,
+    body: `${firstName} · ${ctx.service.name} · ${date} ${time}`,
   });
+
+  // Emails AWAITés avant la réponse, comme pour les commandes : les callbacks
+  // after() ne sont pas honorés ici sur Vercel. Le client repart avec un accusé
+  // de réception écrit (la demande part en `pending`), le professionnel avec
+  // l'alerte. Un échec d'envoi ne casse pas la réservation déjà enregistrée.
+  try {
+    await sendBookingCreatedEmails({
+      pageId: ctx.page.id,
+      firstName,
+      phone,
+      buyerEmail: email,
+      serviceName: ctx.service.name,
+      date,
+      startTime: time,
+    });
+  } catch (e) {
+    console.error("booking: email dispatch failed", e);
+  }
 
   return new NextResponse(null, { status: 204 });
 }

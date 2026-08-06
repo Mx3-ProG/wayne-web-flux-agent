@@ -66,5 +66,15 @@
   "saveChoices": "保存我的选择",
   "customize": "自定义",
   "declineOptional": "继续但不接受"
+ },
+ "unsubscribe": {
+  "metaTitle": "退订",
+  "okTitle": "已完成 ✅",
+  "okBody": "你将不再收到我们的邮件。随时可以重新订阅。",
+  "invalidTitle": "链接无效",
+  "invalidBody": "该退订链接不正确或已过期。若问题持续，请联系我们。",
+  "errorTitle": "出错了",
+  "errorBody": "我们无法处理你的请求，请稍后再试。",
+  "backHome": "← 返回首页"
  }
 }

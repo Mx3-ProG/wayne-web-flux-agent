@@ -230,7 +230,7 @@ export async function setStorefrontAssistantEnabled(
 ): Promise<{ error?: string }> {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { error: "Non connecté." };
+  if (!user) return { error: "not_authenticated" };
   const { data: page, error } = await supabase
     .from("pages")
     .update({ assistant_enabled: enabled })
@@ -238,7 +238,7 @@ export async function setStorefrontAssistantEnabled(
     .eq("user_id", user.id)
     .select("slug")
     .single<{ slug: string }>();
-  if (error || !page) return { error: "Réglage impossible." };
+  if (error || !page) return { error: "save_failed" };
   revalidatePath("/ma-page");
   revalidatePath(`/p/${page.slug}`);
   return {};

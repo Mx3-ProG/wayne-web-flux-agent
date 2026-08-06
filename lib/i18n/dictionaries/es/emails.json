@@ -1,93 +1,144 @@
 {
-  "footer": {
-    "default": "Email transaccional enviado automáticamente, por favor no respondas.",
-    "tagline": "— tu escaparate, tus pedidos, tu facturación."
+ "footer": {
+  "default": "Email transaccional enviado automáticamente, por favor no respondas.",
+  "tagline": "— tu escaparate, tus pedidos, tu facturación."
+ },
+ "total": "Total",
+ "order": {
+  "buyerConfirmation": {
+   "subject": "Tu pedido en {shopName} está confirmado",
+   "title": "Pedido confirmado",
+   "preheader": "Pedido #{orderId} · {total}",
+   "greeting": "Hola {firstName},",
+   "body": "Tu pedido <strong>#{orderId}</strong> en <strong>{shopName}</strong> se ha registrado correctamente. El vendedor lo procesará y te contactará si es necesario.",
+   "addressLabel": "Dirección indicada: {address}",
+   "paymentNote": "El pago se realiza directamente con el vendedor."
   },
-  "total": "Total",
-  "order": {
-    "buyerConfirmation": {
-      "subject": "Tu pedido en {shopName} está confirmado",
-      "title": "Pedido confirmado",
-      "preheader": "Pedido #{orderId} · {total}",
-      "greeting": "Hola {firstName},",
-      "body": "Tu pedido <strong>#{orderId}</strong> en <strong>{shopName}</strong> se ha registrado correctamente. El vendedor lo procesará y te contactará si es necesario.",
-      "addressLabel": "Dirección indicada: {address}",
-      "paymentNote": "El pago se realiza directamente con el vendedor."
-    },
-    "sellerNewOrder": {
-      "subject": "Nuevo pedido — {firstName} · {total}",
-      "title": "Nuevo pedido",
-      "preheader": "{firstName} · {total}",
-      "body": "Has recibido un nuevo pedido <strong>#{orderId}</strong>.",
-      "contactTitle": "Datos de contacto del cliente",
-      "contactName": "Nombre: {value}",
-      "contactPhone": "Teléfono: {value}",
-      "contactEmail": "Email: {value}",
-      "contactAddress": "Dirección: {value}",
-      "contactNote": "Nota: {value}",
-      "viewOrders": "Ver mis pedidos",
-      "footerReply": "Responde a este email para contactar directamente con tu cliente.",
-      "footerAuto": "Email transaccional enviado automáticamente."
-    },
-    "buyerAccepted": {
-      "subject": "Pedido aceptado ✓ — {shopName}",
-      "title": "Pedido aceptado",
-      "greeting": "Hola {firstName},",
-      "body": "Buenas noticias: tu pedido <strong>#{orderId}</strong> en <strong>{shopName}</strong> ha sido aceptado y se está preparando.",
-      "note": "El vendedor te contactará para los siguientes pasos si es necesario."
-    },
-    "buyerReady": {
-      "subject": "Tu pedido está listo ✓ — {shopName}",
-      "title": "Pedido listo",
-      "preheader": "Pedido #{orderId} listo para recoger",
-      "greeting": "Hola {firstName},",
-      "body": "¡Tu pedido <strong>#{orderId}</strong> en <strong>{shopName}</strong> está <strong>listo</strong>! Ya puedes venir a recogerlo.",
-      "note": "El vendedor te indicará los detalles de la recogida si es necesario."
-    },
-    "buyerCancelled": {
-      "subject": "Pedido cancelado — {shopName}",
-      "title": "Pedido cancelado",
-      "greeting": "Hola {firstName},",
-      "body": "Tu pedido <strong>#{orderId}</strong> en <strong>{shopName}</strong> ha sido cancelado.",
-      "note": "Para cualquier duda, contacta directamente con el vendedor."
-    },
-    "defaultShopName": "tu comerciante"
+  "sellerNewOrder": {
+   "subject": "Nuevo pedido — {firstName} · {total}",
+   "title": "Nuevo pedido",
+   "preheader": "{firstName} · {total}",
+   "body": "Has recibido un nuevo pedido <strong>#{orderId}</strong>.",
+   "contactTitle": "Datos de contacto del cliente",
+   "contactName": "Nombre: {value}",
+   "contactPhone": "Teléfono: {value}",
+   "contactEmail": "Email: {value}",
+   "contactAddress": "Dirección: {value}",
+   "contactNote": "Nota: {value}",
+   "viewOrders": "Ver mis pedidos",
+   "footerReply": "Responde a este email para contactar directamente con tu cliente.",
+   "footerAuto": "Email transaccional enviado automáticamente."
   },
-  "account": {
-    "passwordChanged": {
-      "subject": "Tu contraseña de FLUX ha sido modificada",
-      "title": "Contraseña modificada",
-      "preheader": "Confirmación de seguridad — tu contraseña ha cambiado",
-      "greeting": "Hola {firstName},",
-      "body": "La contraseña de tu cuenta FLUX acaba de ser <strong>modificada</strong>. Si has sido tú quien ha hecho este cambio, no necesitas hacer nada más.",
-      "note": "¿No reconoces esta acción? Restablece tu contraseña de inmediato y revisa la seguridad de tu correo.",
-      "cta": "Proteger mi cuenta"
-    },
-    "friendInvite": {
-      "subject": "{fromName} te invita a probar FLUX",
-      "title": "Retoma el control de tu negocio",
-      "preheader": "{fromName} cree que FLUX puede hacerte ganar un tiempo precioso",
-      "intro": "<strong>{fromName}</strong> te invita a descubrir <strong>FLUX</strong>.",
-      "pitch": "FLUX reúne en un solo lugar tu escaparate online, tus pedidos, tus citas y tus contenidos. Se acabaron las decenas de herramientas dispersas: una única conexión, todo tu negocio a la vista.",
-      "gainsIntro": "Esto es lo que {fromName} ha ganado con FLUX:",
-      "gain1": "Horas ahorradas cada semana en la gestión",
-      "gain2": "Un escaparate profesional online en pocos minutos",
-      "gain3": "Sus pedidos y su facturación controlados de un vistazo",
-      "cta": "Crear mi escaparate en 2 minutos",
-      "trial": "7 días de prueba gratis, sin compromiso.",
-      "footer": "Recibes este email porque un usuario de FLUX te ha invitado. No es necesario hacer nada si no te interesa."
-    }
+  "buyerAccepted": {
+   "subject": "Pedido aceptado ✓ — {shopName}",
+   "title": "Pedido aceptado",
+   "greeting": "Hola {firstName},",
+   "body": "Buenas noticias: tu pedido <strong>#{orderId}</strong> en <strong>{shopName}</strong> ha sido aceptado y se está preparando.",
+   "note": "El vendedor te contactará para los siguientes pasos si es necesario."
   },
-  "verification": {
-    "subject": "Verifica tu dirección — FLUX",
-    "title": "Verifica tu dirección",
-    "preheader": "Desbloquea la publicación de tu escaparate",
-    "body": "Tu espacio FLUX está listo y ya puedes usarlo. Solo falta confirmar que esta dirección es realmente la tuya para desbloquear la publicación de tu escaparate y los pagos.",
-    "cta": "Verificar mi dirección",
-    "note": "Si no has sido tú quien ha iniciado este registro, simplemente ignora este email."
+  "buyerReady": {
+   "subject": "Tu pedido está listo ✓ — {shopName}",
+   "title": "Pedido listo",
+   "preheader": "Pedido #{orderId} listo para recoger",
+   "greeting": "Hola {firstName},",
+   "body": "¡Tu pedido <strong>#{orderId}</strong> en <strong>{shopName}</strong> está <strong>listo</strong>! Ya puedes venir a recogerlo.",
+   "note": "El vendedor te indicará los detalles de la recogida si es necesario."
   },
-  "hints": {
-    "spamSelf": "Si no lo ves, revisa tu carpeta de spam.",
-    "spamOther": "El email puede acabar en spam: avisa a la persona."
+  "buyerCancelled": {
+   "subject": "Pedido cancelado — {shopName}",
+   "title": "Pedido cancelado",
+   "greeting": "Hola {firstName},",
+   "body": "Tu pedido <strong>#{orderId}</strong> en <strong>{shopName}</strong> ha sido cancelado.",
+   "note": "Para cualquier duda, contacta directamente con el vendedor."
+  },
+  "defaultShopName": "tu comerciante"
+ },
+ "account": {
+  "passwordChanged": {
+   "subject": "Tu contraseña de FLUX ha sido modificada",
+   "title": "Contraseña modificada",
+   "preheader": "Confirmación de seguridad — tu contraseña ha cambiado",
+   "greeting": "Hola {firstName},",
+   "body": "La contraseña de tu cuenta FLUX acaba de ser <strong>modificada</strong>. Si has sido tú quien ha hecho este cambio, no necesitas hacer nada más.",
+   "note": "¿No reconoces esta acción? Restablece tu contraseña de inmediato y revisa la seguridad de tu correo.",
+   "cta": "Proteger mi cuenta"
+  },
+  "friendInvite": {
+   "subject": "{fromName} te invita a probar FLUX",
+   "title": "Retoma el control de tu negocio",
+   "preheader": "{fromName} cree que FLUX puede hacerte ganar un tiempo precioso",
+   "intro": "<strong>{fromName}</strong> te invita a descubrir <strong>FLUX</strong>.",
+   "pitch": "FLUX reúne en un solo lugar tu escaparate online, tus pedidos, tus citas y tus contenidos. Se acabaron las decenas de herramientas dispersas: una única conexión, todo tu negocio a la vista.",
+   "gainsIntro": "Esto es lo que {fromName} ha ganado con FLUX:",
+   "gain1": "Horas ahorradas cada semana en la gestión",
+   "gain2": "Un escaparate profesional online en pocos minutos",
+   "gain3": "Sus pedidos y su facturación controlados de un vistazo",
+   "cta": "Crear mi escaparate en 2 minutos",
+   "trial": "7 días de prueba gratis, sin compromiso.",
+   "footer": "Recibes este email porque un usuario de FLUX te ha invitado. No es necesario hacer nada si no te interesa."
   }
+ },
+ "verification": {
+  "subject": "Verifica tu dirección — FLUX",
+  "title": "Verifica tu dirección",
+  "preheader": "Desbloquea la publicación de tu escaparate",
+  "body": "Tu espacio FLUX está listo y ya puedes usarlo. Solo falta confirmar que esta dirección es realmente la tuya para desbloquear la publicación de tu escaparate y los pagos.",
+  "cta": "Verificar mi dirección",
+  "note": "Si no has sido tú quien ha iniciado este registro, simplemente ignora este email."
+ },
+ "hints": {
+  "spamSelf": "Si no lo ves, revisa tu carpeta de spam.",
+  "spamOther": "El email puede acabar en spam: avisa a la persona."
+ },
+ "booking": {
+  "buyerRequest": {
+   "subject": "Tu solicitud de cita en {shopName}",
+   "title": "Solicitud enviada",
+   "preheader": "{serviceName} · {when}",
+   "greeting": "Hola {firstName}:",
+   "body": "Tu solicitud de cita en <strong>{shopName}</strong> se ha enviado correctamente.",
+   "serviceLabel": "Servicio: {value}",
+   "whenLabel": "Franja solicitada: {value}",
+   "pendingNote": "El profesional todavía debe confirmar esta franja. Recibirás un email en cuanto lo haga."
+  },
+  "sellerNew": {
+   "subject": "Nueva reserva — {firstName} · {when}",
+   "title": "Nueva reserva",
+   "preheader": "{firstName} · {serviceName} · {when}",
+   "body": "<strong>{firstName}</strong> solicita una cita. Falta confirmarla desde tu agenda.",
+   "serviceLabel": "Servicio: {value}",
+   "whenLabel": "Franja: {value}",
+   "contactTitle": "Datos del cliente",
+   "contactName": "Nombre: {value}",
+   "contactPhone": "Teléfono: {value}",
+   "contactEmail": "Email: {value}",
+   "viewAgenda": "Abrir mi agenda"
+  },
+  "buyerConfirmed": {
+   "subject": "Cita confirmada ✓ — {shopName}",
+   "title": "Cita confirmada",
+   "preheader": "{serviceName} · {when}",
+   "greeting": "Hola {firstName}:",
+   "body": "Confirmado: tu cita en <strong>{shopName}</strong> está reservada.",
+   "serviceLabel": "Servicio: {value}",
+   "whenLabel": "Franja: {value}",
+   "note": "¿Te ha surgido algo? Avisa al profesional cuanto antes."
+  },
+  "buyerRefused": {
+   "subject": "Franja no disponible — {shopName}",
+   "title": "Franja no disponible",
+   "greeting": "Hola {firstName}:",
+   "body": "La franja que solicitaste en <strong>{shopName}</strong> finalmente no está disponible.",
+   "whenLabel": "Franja solicitada: {value}",
+   "note": "Puedes elegir otra franja directamente en la página del profesional."
+  },
+  "buyerCancelled": {
+   "subject": "Cita anulada — {shopName}",
+   "title": "Cita anulada",
+   "greeting": "Hola {firstName}:",
+   "body": "Tu cita en <strong>{shopName}</strong> ha sido anulada.",
+   "whenLabel": "Franja anulada: {value}",
+   "note": "Para volver a reservar, entra en la página del profesional."
+  }
+ }
 }

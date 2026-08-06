@@ -66,5 +66,15 @@
   "saveChoices": "選択内容を保存",
   "customize": "カスタマイズ",
   "declineOptional": "同意せずに続ける"
+ },
+ "unsubscribe": {
+  "metaTitle": "配信停止",
+  "okTitle": "完了しました ✅",
+  "okBody": "今後メールは届きません。いつでも再登録できます。",
+  "invalidTitle": "リンクが無効です",
+  "invalidBody": "この配信停止リンクは正しくないか、有効期限が切れています。解決しない場合はご連絡ください。",
+  "errorTitle": "エラーが発生しました",
+  "errorBody": "リクエストを処理できませんでした。少し時間をおいてお試しください。",
+  "backHome": "← ホームに戻る"
  }
 }

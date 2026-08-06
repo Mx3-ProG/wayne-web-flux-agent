@@ -129,10 +129,12 @@ export function PageEditor({
     setAssistantSaving(false);
     if (result.error) {
       setPage((current) => ({ ...current, assistant_enabled: !enabled }));
-      toast.error(result.error);
+      toast.error(translateActionError(editor.actionErrors, result.error));
       return;
     }
-    toast.success(enabled ? "FLUX aidera maintenant les visiteurs." : "L’aide FLUX est désactivée sur la vitrine.");
+    toast.success(
+      enabled ? t.seo.storefrontAssistantEnabled : t.seo.storefrontAssistantDisabled
+    );
   }
 
   const patch = useCallback((fields: Partial<Page>) => {
@@ -1092,17 +1094,16 @@ export function PageEditor({
                 <div className="flex items-start gap-3">
                   <Bot className="mt-0.5 size-5 text-primary" aria-hidden="true" />
                   <div>
-                    <Label>Assistant FLUX pour mes visiteurs</Label>
+                    <Label>{t.seo.storefrontAssistantLabel}</Label>
                     <p className="text-xs text-muted-foreground">
-                      Ajoute une aide discrète pour trouver tes produits, tes offres,
-                      la réservation et tes coordonnées. Aucun crédit n’est utilisé.
+                      {t.seo.storefrontAssistantHint}
                     </p>
                   </div>
                 </div>
                 <Switch
                   checked={page.assistant_enabled ?? false}
                   disabled={assistantSaving}
-                  aria-label="Afficher l’assistant FLUX sur ma vitrine"
+                  aria-label={t.seo.storefrontAssistantAria}
                   onCheckedChange={toggleStorefrontAssistant}
                 />
               </div>

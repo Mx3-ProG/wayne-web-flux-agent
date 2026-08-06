@@ -180,7 +180,12 @@
    "hideBrandingAllowed": "Entfernt die Signatur am unteren Rand deiner öffentlichen Seite.",
    "hideBrandingRestricted": "Diese Funktion ist dem Enterprise-Paket für 89 € pro Monat vorbehalten.",
    "discoverEnterprise": "Das Enterprise-Paket entdecken",
-   "hideBrandingAria": "Wayne Web Flux Signatur ausblenden"
+   "hideBrandingAria": "Wayne Web Flux Signatur ausblenden",
+   "storefrontAssistantLabel": "FLUX-Assistent für meine Besucher",
+   "storefrontAssistantHint": "Fügt eine dezente Hilfe hinzu, um deine Produkte, deine Angebote, die Buchung und deine Kontaktdaten zu finden. Es werden keine Credits verbraucht.",
+   "storefrontAssistantAria": "Den FLUX-Assistenten auf meiner Website anzeigen",
+   "storefrontAssistantEnabled": "FLUX hilft deinen Besuchern ab sofort.",
+   "storefrontAssistantDisabled": "Die FLUX-Hilfe ist auf der Website deaktiviert."
   },
   "legal": {
    "trigger": "Impressum & rechtliche Hinweise — schon für dich geschrieben",

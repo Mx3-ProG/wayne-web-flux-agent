@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 import { rateLimit } from "@/lib/rate-limit";
+import { getStripe } from "@/lib/stripe";
 import { sendFriendInvite } from "@/lib/emails/account-emails";
 import { withSpamHint } from "@/lib/email-hints";
 import { getAccountLocale, getRequestLocale } from "@/lib/i18n/locale.server";
@@ -173,6 +174,63 @@ export async function inviteFriend(
   };
 }
 
+// Résilie immédiatement l'abonnement du compte et détache son customer Stripe.
+// Renvoie false uniquement si Stripe est joignable mais refuse l'opération :
+// l'appelant annule alors la suppression. Un compte sans customer, ou une
+// instance sans STRIPE_SECRET_KEY (dev), renvoie true — il n'y a rien à
+// résilier.
+async function cancelStripeSubscription(
+  admin: ReturnType<typeof createAdminClient>,
+  userId: string
+): Promise<boolean> {
+  const stripe = getStripe();
+  if (!stripe) return true;
+
+  const { data: profile } = await admin
+    .from("profiles")
+    .select("stripe_customer_id, stripe_subscription_id")
+    .eq("user_id", userId)
+    .maybeSingle<{
+      stripe_customer_id: string | null;
+      stripe_subscription_id: string | null;
+    }>();
+  if (!profile?.stripe_customer_id) return true;
+
+  try {
+    // On repart de la liste Stripe plutôt que du seul id stocké : le profil
+    // peut être en retard d'un webhook, et un customer peut porter plusieurs
+    // abonnements (changement de formule en cours de cycle).
+    const subscriptions = await stripe.subscriptions.list({
+      customer: profile.stripe_customer_id,
+      status: "all",
+      limit: 100,
+    });
+    const cancellable = subscriptions.data.filter(
+      (subscription) =>
+        !["canceled", "incomplete_expired"].includes(subscription.status)
+    );
+    for (const subscription of cancellable) {
+      // `cancel` et non `cancel_at_period_end` : le compte disparaît
+      // maintenant, il ne doit pas rester une période payée sans titulaire.
+      await stripe.subscriptions.cancel(subscription.id);
+    }
+    // Le customer est conservé (obligations comptables : les factures émises
+    // doivent rester consultables côté Stripe), mais on coupe le lien avec un
+    // compte qui n'existera plus.
+    await stripe.customers.update(profile.stripe_customer_id, {
+      metadata: { user_id: "", deleted_account_at: new Date().toISOString() },
+    });
+    return true;
+  } catch (error) {
+    console.error("deleteAccount: Stripe cancellation failed", {
+      userId,
+      customerId: profile.stripe_customer_id,
+      error,
+    });
+    return false;
+  }
+}
+
 export async function deleteAccount(
   _prev: ActionState,
   formData: FormData
@@ -189,6 +247,15 @@ export async function deleteAccount(
   }
 
   const admin = createAdminClient();
+
+  // Résiliation Stripe AVANT l'effacement : une fois le profil supprimé, plus
+  // rien ne relie le customer au compte, l'abonnement continue de prélever et
+  // les webhooks `invoice.paid` échouent en boucle (subscription_without_owner).
+  // Bloquant : on préfère refuser la suppression plutôt que d'effacer un compte
+  // qui resterait facturé.
+  if (!(await cancelStripeSubscription(admin, user.id))) {
+    return { error: t.errors.deletion_failed };
+  }
 
   // Droit à l'effacement : la newsletter marketing est indexée par email (pas
   // par user_id) et n'est donc pas couverte par la cascade de deleteUser. On la

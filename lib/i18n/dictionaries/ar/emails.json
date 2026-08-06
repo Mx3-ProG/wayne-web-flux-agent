@@ -1,93 +1,144 @@
 {
-  "footer": {
-    "default": "بريد إلكتروني تلقائي، الرجاء عدم الرد عليه.",
-    "tagline": "— واجهة متجرك، طلباتك، رقم أعمالك."
+ "footer": {
+  "default": "بريد إلكتروني تلقائي، الرجاء عدم الرد عليه.",
+  "tagline": "— واجهة متجرك، طلباتك، رقم أعمالك."
+ },
+ "total": "الإجمالي",
+ "order": {
+  "buyerConfirmation": {
+   "subject": "تم تأكيد طلبك لدى {shopName}",
+   "title": "الطلب مؤكَّد",
+   "preheader": "الطلب #{orderId} · {total}",
+   "greeting": "مرحبًا {firstName}،",
+   "body": "لقد تم تسجيل طلبك <strong>#{orderId}</strong> لدى <strong>{shopName}</strong> بنجاح. سيتولى البائع معالجته وسيتواصل معك إذا لزم الأمر.",
+   "addressLabel": "العنوان المُدخل: {address}",
+   "paymentNote": "تتم عملية الدفع مباشرة لدى البائع."
   },
-  "total": "الإجمالي",
-  "order": {
-    "buyerConfirmation": {
-      "subject": "تم تأكيد طلبك لدى {shopName}",
-      "title": "الطلب مؤكَّد",
-      "preheader": "الطلب #{orderId} · {total}",
-      "greeting": "مرحبًا {firstName}،",
-      "body": "لقد تم تسجيل طلبك <strong>#{orderId}</strong> لدى <strong>{shopName}</strong> بنجاح. سيتولى البائع معالجته وسيتواصل معك إذا لزم الأمر.",
-      "addressLabel": "العنوان المُدخل: {address}",
-      "paymentNote": "تتم عملية الدفع مباشرة لدى البائع."
-    },
-    "sellerNewOrder": {
-      "subject": "طلب جديد — {firstName} · {total}",
-      "title": "طلب جديد",
-      "preheader": "{firstName} · {total}",
-      "body": "لقد استلمت طلبًا جديدًا <strong>#{orderId}</strong>.",
-      "contactTitle": "بيانات التواصل مع الزبون",
-      "contactName": "الاسم: {value}",
-      "contactPhone": "الهاتف: {value}",
-      "contactEmail": "البريد الإلكتروني: {value}",
-      "contactAddress": "العنوان: {value}",
-      "contactNote": "ملاحظة: {value}",
-      "viewOrders": "عرض طلباتي",
-      "footerReply": "رُدّ على هذا البريد للتواصل مباشرة مع زبونك.",
-      "footerAuto": "بريد إلكتروني تلقائي."
-    },
-    "buyerAccepted": {
-      "subject": "الطلب مقبول ✓ — {shopName}",
-      "title": "الطلب مقبول",
-      "greeting": "مرحبًا {firstName}،",
-      "body": "خبر سعيد: طلبك <strong>#{orderId}</strong> لدى <strong>{shopName}</strong> تم قبوله وهو الآن قيد التحضير.",
-      "note": "سيتواصل معك البائع إذا لزم الأمر لمتابعة الطلب."
-    },
-    "buyerReady": {
-      "subject": "طلبك جاهز ✓ — {shopName}",
-      "title": "الطلب جاهز",
-      "preheader": "الطلب #{orderId} جاهز للاستلام",
-      "greeting": "مرحبًا {firstName}،",
-      "body": "طلبك <strong>#{orderId}</strong> لدى <strong>{shopName}</strong> <strong>جاهز</strong>! يمكنك الآن المرور لاستلامه.",
-      "note": "سيوضح لك البائع تفاصيل الاستلام إذا لزم الأمر."
-    },
-    "buyerCancelled": {
-      "subject": "تم إلغاء الطلب — {shopName}",
-      "title": "الطلب مُلغى",
-      "greeting": "مرحبًا {firstName}،",
-      "body": "تم إلغاء طلبك <strong>#{orderId}</strong> لدى <strong>{shopName}</strong>.",
-      "note": "لأي استفسار، تواصل مباشرة مع البائع."
-    },
-    "defaultShopName": "متجرك"
+  "sellerNewOrder": {
+   "subject": "طلب جديد — {firstName} · {total}",
+   "title": "طلب جديد",
+   "preheader": "{firstName} · {total}",
+   "body": "لقد استلمت طلبًا جديدًا <strong>#{orderId}</strong>.",
+   "contactTitle": "بيانات التواصل مع الزبون",
+   "contactName": "الاسم: {value}",
+   "contactPhone": "الهاتف: {value}",
+   "contactEmail": "البريد الإلكتروني: {value}",
+   "contactAddress": "العنوان: {value}",
+   "contactNote": "ملاحظة: {value}",
+   "viewOrders": "عرض طلباتي",
+   "footerReply": "رُدّ على هذا البريد للتواصل مباشرة مع زبونك.",
+   "footerAuto": "بريد إلكتروني تلقائي."
   },
-  "account": {
-    "passwordChanged": {
-      "subject": "تم تغيير كلمة مرور حسابك في FLUX",
-      "title": "تم تغيير كلمة المرور",
-      "preheader": "تأكيد أمني — تم تغيير كلمة مرورك",
-      "greeting": "مرحبًا {firstName}،",
-      "body": "لقد تم <strong>تغيير</strong> كلمة مرور حسابك في FLUX منذ قليل. إذا كنت أنت من قام بهذا التغيير، فلا حاجة لأي إجراء إضافي.",
-      "note": "لا تتذكر هذا الإجراء؟ أعد تعيين كلمة مرورك فورًا وتحقق من أمان بريدك الإلكتروني.",
-      "cta": "تأمين حسابي"
-    },
-    "friendInvite": {
-      "subject": "{fromName} يدعوك لتجربة FLUX",
-      "title": "استعِد السيطرة على تجارتك",
-      "preheader": "{fromName} يعتقد أن FLUX قد يوفّر عليك وقتًا ثمينًا",
-      "intro": "<strong>{fromName}</strong> يدعوك لاكتشاف <strong>FLUX</strong>.",
-      "pitch": "يجمع FLUX في مكان واحد واجهة متجرك على الإنترنت، طلباتك، مواعيدك ومحتواك. لا مزيد من عشرات الأدوات المتفرقة: تسجيل دخول واحد، وتجارتك كلها أمام عينيك.",
-      "gainsIntro": "ما استفاده {fromName} منه:",
-      "gain1": "ساعات يوفّرها أسبوعيًا في الإدارة",
-      "gain2": "واجهة متجر محترفة على الإنترنت في دقائق معدودة",
-      "gain3": "تتبّع طلباته ورقم أعماله بنظرة واحدة",
-      "cta": "أنشئ واجهة متجري في 2 دقيقة",
-      "trial": "7 أيام تجربة مجانية، بدون أي التزام.",
-      "footer": "تستلم هذا البريد لأن مستخدمًا لدى FLUX قد دعاك. لا حاجة لأي إجراء إذا لم يهمّك الأمر."
-    }
+  "buyerAccepted": {
+   "subject": "الطلب مقبول ✓ — {shopName}",
+   "title": "الطلب مقبول",
+   "greeting": "مرحبًا {firstName}،",
+   "body": "خبر سعيد: طلبك <strong>#{orderId}</strong> لدى <strong>{shopName}</strong> تم قبوله وهو الآن قيد التحضير.",
+   "note": "سيتواصل معك البائع إذا لزم الأمر لمتابعة الطلب."
   },
-  "verification": {
-    "subject": "تحقّق من عنوانك — FLUX",
-    "title": "تحقّق من عنوانك",
-    "preheader": "افتح إمكانية نشر واجهة متجرك",
-    "body": "مساحتك في FLUX جاهزة ويمكنك استخدامها بالفعل. لم يبقَ سوى تأكيد أن هذا العنوان هو عنوانك الحقيقي لفتح إمكانية نشر واجهة متجرك واستلام المدفوعات.",
-    "cta": "تحقّق من عنواني",
-    "note": "إذا لم تكن أنت من قام بهذا التسجيل، تجاهل هذا البريد فقط."
+  "buyerReady": {
+   "subject": "طلبك جاهز ✓ — {shopName}",
+   "title": "الطلب جاهز",
+   "preheader": "الطلب #{orderId} جاهز للاستلام",
+   "greeting": "مرحبًا {firstName}،",
+   "body": "طلبك <strong>#{orderId}</strong> لدى <strong>{shopName}</strong> <strong>جاهز</strong>! يمكنك الآن المرور لاستلامه.",
+   "note": "سيوضح لك البائع تفاصيل الاستلام إذا لزم الأمر."
   },
-  "hints": {
-    "spamSelf": "إذا لم تجده، تحقق من مجلد الرسائل غير المرغوب فيها.",
-    "spamOther": "قد يصل البريد إلى الرسائل غير المرغوب فيها: أخبر الشخص بذلك."
+  "buyerCancelled": {
+   "subject": "تم إلغاء الطلب — {shopName}",
+   "title": "الطلب مُلغى",
+   "greeting": "مرحبًا {firstName}،",
+   "body": "تم إلغاء طلبك <strong>#{orderId}</strong> لدى <strong>{shopName}</strong>.",
+   "note": "لأي استفسار، تواصل مباشرة مع البائع."
+  },
+  "defaultShopName": "متجرك"
+ },
+ "account": {
+  "passwordChanged": {
+   "subject": "تم تغيير كلمة مرور حسابك في FLUX",
+   "title": "تم تغيير كلمة المرور",
+   "preheader": "تأكيد أمني — تم تغيير كلمة مرورك",
+   "greeting": "مرحبًا {firstName}،",
+   "body": "لقد تم <strong>تغيير</strong> كلمة مرور حسابك في FLUX منذ قليل. إذا كنت أنت من قام بهذا التغيير، فلا حاجة لأي إجراء إضافي.",
+   "note": "لا تتذكر هذا الإجراء؟ أعد تعيين كلمة مرورك فورًا وتحقق من أمان بريدك الإلكتروني.",
+   "cta": "تأمين حسابي"
+  },
+  "friendInvite": {
+   "subject": "{fromName} يدعوك لتجربة FLUX",
+   "title": "استعِد السيطرة على تجارتك",
+   "preheader": "{fromName} يعتقد أن FLUX قد يوفّر عليك وقتًا ثمينًا",
+   "intro": "<strong>{fromName}</strong> يدعوك لاكتشاف <strong>FLUX</strong>.",
+   "pitch": "يجمع FLUX في مكان واحد واجهة متجرك على الإنترنت، طلباتك، مواعيدك ومحتواك. لا مزيد من عشرات الأدوات المتفرقة: تسجيل دخول واحد، وتجارتك كلها أمام عينيك.",
+   "gainsIntro": "ما استفاده {fromName} منه:",
+   "gain1": "ساعات يوفّرها أسبوعيًا في الإدارة",
+   "gain2": "واجهة متجر محترفة على الإنترنت في دقائق معدودة",
+   "gain3": "تتبّع طلباته ورقم أعماله بنظرة واحدة",
+   "cta": "أنشئ واجهة متجري في 2 دقيقة",
+   "trial": "7 أيام تجربة مجانية، بدون أي التزام.",
+   "footer": "تستلم هذا البريد لأن مستخدمًا لدى FLUX قد دعاك. لا حاجة لأي إجراء إذا لم يهمّك الأمر."
   }
+ },
+ "verification": {
+  "subject": "تحقّق من عنوانك — FLUX",
+  "title": "تحقّق من عنوانك",
+  "preheader": "افتح إمكانية نشر واجهة متجرك",
+  "body": "مساحتك في FLUX جاهزة ويمكنك استخدامها بالفعل. لم يبقَ سوى تأكيد أن هذا العنوان هو عنوانك الحقيقي لفتح إمكانية نشر واجهة متجرك واستلام المدفوعات.",
+  "cta": "تحقّق من عنواني",
+  "note": "إذا لم تكن أنت من قام بهذا التسجيل، تجاهل هذا البريد فقط."
+ },
+ "hints": {
+  "spamSelf": "إذا لم تجده، تحقق من مجلد الرسائل غير المرغوب فيها.",
+  "spamOther": "قد يصل البريد إلى الرسائل غير المرغوب فيها: أخبر الشخص بذلك."
+ },
+ "booking": {
+  "buyerRequest": {
+   "subject": "طلب موعدك لدى {shopName}",
+   "title": "تم إرسال الطلب",
+   "preheader": "{serviceName} · {when}",
+   "greeting": "مرحبًا {firstName}،",
+   "body": "تم إرسال طلب موعدك لدى <strong>{shopName}</strong>.",
+   "serviceLabel": "الخدمة: {value}",
+   "whenLabel": "الموعد المطلوب: {value}",
+   "pendingNote": "ما زال على مقدّم الخدمة تأكيد هذا الموعد. ستصلك رسالة فور تأكيده."
+  },
+  "sellerNew": {
+   "subject": "حجز جديد — {firstName} · {when}",
+   "title": "حجز جديد",
+   "preheader": "{firstName} · {serviceName} · {when}",
+   "body": "طلب <strong>{firstName}</strong> موعدًا. يبقى تأكيده من مفكرتك.",
+   "serviceLabel": "الخدمة: {value}",
+   "whenLabel": "الموعد: {value}",
+   "contactTitle": "بيانات العميل",
+   "contactName": "الاسم: {value}",
+   "contactPhone": "الهاتف: {value}",
+   "contactEmail": "البريد: {value}",
+   "viewAgenda": "فتح مفكرتي"
+  },
+  "buyerConfirmed": {
+   "subject": "تم تأكيد الموعد ✓ — {shopName}",
+   "title": "تم تأكيد الموعد",
+   "preheader": "{serviceName} · {when}",
+   "greeting": "مرحبًا {firstName}،",
+   "body": "تم التأكيد: موعدك لدى <strong>{shopName}</strong> محجوز.",
+   "serviceLabel": "الخدمة: {value}",
+   "whenLabel": "الموعد: {value}",
+   "note": "طرأ ما يمنعك؟ أبلغ مقدّم الخدمة في أقرب وقت."
+  },
+  "buyerRefused": {
+   "subject": "الموعد غير متاح — {shopName}",
+   "title": "الموعد غير متاح",
+   "greeting": "مرحبًا {firstName}،",
+   "body": "الموعد الذي طلبته لدى <strong>{shopName}</strong> غير متاح في النهاية.",
+   "whenLabel": "الموعد المطلوب: {value}",
+   "note": "يمكنك اختيار موعد آخر مباشرة من صفحة مقدّم الخدمة."
+  },
+  "buyerCancelled": {
+   "subject": "تم إلغاء الموعد — {shopName}",
+   "title": "تم إلغاء الموعد",
+   "greeting": "مرحبًا {firstName}،",
+   "body": "تم إلغاء موعدك لدى <strong>{shopName}</strong>.",
+   "whenLabel": "الموعد الملغى: {value}",
+   "note": "لحجز موعد جديد، توجّه إلى صفحة مقدّم الخدمة."
+  }
+ }
 }

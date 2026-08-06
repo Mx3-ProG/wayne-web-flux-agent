@@ -180,7 +180,12 @@
    "hideBrandingAllowed": "أزِل التوقيع أسفل صفحتك العامة.",
    "hideBrandingRestricted": "ميزة مخصصة لباقة المؤسسات بسعر 89 يورو شهريًا.",
    "discoverEnterprise": "اكتشف باقة المؤسسات",
-   "hideBrandingAria": "إخفاء توقيع Wayne Web Flux"
+   "hideBrandingAria": "إخفاء توقيع Wayne Web Flux",
+   "storefrontAssistantLabel": "مساعد FLUX لزوّاري",
+   "storefrontAssistantHint": "يضيف مساعدة خفيفة للعثور على منتجاتك وعروضك والحجز وبيانات التواصل. لا يستهلك أي رصيد.",
+   "storefrontAssistantAria": "إظهار مساعد FLUX على واجهة متجري",
+   "storefrontAssistantEnabled": "سيساعد FLUX زوّارك من الآن.",
+   "storefrontAssistantDisabled": "تم إيقاف مساعدة FLUX على واجهة المتجر."
   },
   "legal": {
    "trigger": "الإشعارات القانونية — مكتوبة مسبقًا لك",

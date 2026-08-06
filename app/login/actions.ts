@@ -11,6 +11,10 @@ import { endUserSession, startUserSession } from "@/lib/user-session";
 // couple signUp/initializeTunnel stockait tout dans user_metadata et ne le
 // matérialisait qu'au premier signIn — un utilisateur arrivant par le lien
 // email (/auth/confirm → /espace) se retrouvait donc avec un espace vide.
+// `error` porte un CODE, jamais une phrase : /login est une route localisée
+// (LOCALIZED_PATHS dans proxy.ts) et le formulaire affichait jusqu'ici le
+// message tel quel — donc en français dans les 9 langues. La traduction se
+// fait côté client via auth.login.errors.
 export type AuthState = { error?: string; message?: string };
 
 const LOCAL_ADMIN_EMAIL = "mat75.deff@gmail.com";
@@ -51,25 +55,25 @@ export async function signIn(
 ): Promise<AuthState> {
   const email = String(formData.get("email") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  if (!email || !password) return { error: "Email et mot de passe requis." };
+  if (!email || !password) return { error: "missing_credentials" };
 
   if (
     email.toLowerCase() === LOCAL_ADMIN_EMAIL &&
     process.env.NODE_ENV !== "development"
   ) {
-    return { error: "Ce compte est disponible uniquement en local." };
+    return { error: "local_admin_only" };
   }
 
   try {
     await provisionLocalAdmin(email, password);
   } catch (error) {
     console.error("Impossible de provisionner le compte admin local.", error);
-    return { error: "Impossible de préparer le compte admin local." };
+    return { error: "local_admin_failed" };
   }
 
   const supabase = await createClient();
   const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) return { error: "Identifiants incorrects. Réessaie." };
+  if (error) return { error: "invalid_credentials" };
 
   if (data.user) await startUserSession(data.user.id);
 

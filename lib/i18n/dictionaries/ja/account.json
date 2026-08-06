@@ -1,143 +1,153 @@
 {
-  "meta": {
-    "title": "マイプロフィール",
-    "billingTitle": "請求情報"
-  },
-  "hero": {
-    "eyebrow": "あなた専用のスペース",
-    "title": "マイプロフィール",
-    "text": "あなたの情報、ビジネス、そしてFLUXへのアクセスに関するすべてがここに。"
-  },
-  "nav": {
-    "aria": "プロフィールのセクション",
-    "info": "基本情報",
-    "adventure": "冒険をはじめる",
-    "invite": "友達を招待",
-    "credits": "クレジット",
-    "plans": "プラン",
-    "license": "ライセンス",
-    "billing": "請求情報"
-  },
-  "info": {
-    "title": "個人情報とビジネス情報",
-    "text": "これらの情報は非公開で、あなたの体験をパーソナライズするために使われます。"
-  },
-  "profileForm": {
-    "name": "氏名",
-    "email": "ログイン用メールアドレス",
-    "phone": "個人電話番号",
-    "company": "会社名",
-    "job": "職業・役職",
-    "businessEmail": "ビジネス用メールアドレス",
-    "siret": "SIRET番号",
-    "address": "事業所住所",
-    "saving": "保存中…",
-    "save": "保存する"
-  },
-  "adventure": {
-    "canCreateTitle": "新しいサイトを作ろう",
-    "limitTitle": "あなたのプロジェクトを見る",
-    "canCreateText": "いくつかの質問に答えるだけ。FLUXが土台を用意して、あとは全部あなた次第。",
-    "limitText": "プランのプロジェクト上限に達しました。既存のサイトは引き続き管理できます。",
-    "startTunnel": "トンネルを開始する",
-    "viewProjects": "マイプロジェクトを見る"
-  },
-  "invite": {
-    "title": "友達を招待",
-    "text": "知り合いの店主さんにFLUXを紹介しよう。招待された相手には7日間の無料お試しがプレゼントされるよ。",
-    "emailLabel": "友達のメールアドレス",
-    "emailPlaceholder": "ami@email.fr",
-    "sending": "送信中…",
-    "send": "招待を送る"
-  },
-  "credits": {
-    "available": "利用可能なクレジット",
-    "nextRecharge": "次回のチャージ日：{date}",
-    "trial": "FLUXお試し期間：残り{days}日",
-    "trialPlural": "FLUXお試し期間：残り{days}日",
-    "subscribed": "FLUXプランに応じてチャージ",
-    "trialOver": "お試し期間終了 — FLUXのプランを選ぼう",
-    "viewUsage": "利用状況を見る"
-  },
-  "license": {
-    "title": "利用ライセンス",
-    "text": "あなたが追加した情報やコンテンツの所有権は、あなたにあります。FLUXはサービスを個人利用する権利を提供するものであり、プラットフォーム自体の所有権を移転するものではありません。"
-  },
-  "security": {
-    "title": "セキュリティ",
-    "text": "メールによる安全な認証で認証情報を管理できます。また、この端末でのセッションを終了することもできます。",
-    "logout": "ログアウト"
-  },
-  "passwordForm": {
-    "title": "パスワード",
-    "text": "現在のメールアドレスに安全なリンクを送信し、新しいパスワードを設定できます。",
-    "sending": "送信中…",
-    "cta": "パスワードを忘れた場合"
-  },
-  "emailForm": {
-    "title": "メールアドレス",
-    "text": "現在のアドレスは{email}です。変更するには、現在のアドレスと新しいアドレスの両方からの確認が必要です。",
-    "newEmailLabel": "新しいメールアドレス",
-    "newEmailPlaceholder": "nouvelle@adresse.fr",
-    "sending": "確認メールを送信中…",
-    "cta": "確認メールを送る"
-  },
-  "danger": {
-    "title": "危険ゾーン",
-    "text": "削除すると、あなたのアカウント、サイト、顧客情報、注文、予約、コンテンツがすべて完全に消去されます。この操作は取り消せません。",
-    "confirmLabel": "確認のため{word}と入力してください",
-    "confirmWord": "削除",
-    "deleting": "削除中…",
-    "delete": "アカウントを完全に削除する"
-  },
-  "billing": {
-    "kicker": "アカウント",
-    "title": "請求情報",
-    "subtitle": "サブスクリプション、支払期日、請求書をまとめて確認。",
-    "portalUnavailable": "請求ポータルは一時的にご利用いただけません。",
-    "currentPlan": "現在のプラン",
-    "noActivePlan": "有効なプランはありません",
-    "price": "料金",
-    "priceValue": "月額 {price} ユーロ",
-    "includedCredits": "含まれるクレジット",
-    "includedCreditsValue": "支払い済み請求書1件につき{credits}",
-    "accessEndsAt": "アクセス終了予定日",
-    "nextDueDate": "次回の支払期日",
-    "toConfirm": "確認待ち",
-    "manage": "サブスクリプションと請求書を管理",
-    "choosePlan": "プランを選ぶ",
-    "help": "Stripeの安全なポータルから、支払い方法の変更、請求書のダウンロード、プラン変更、解約が行えます。",
-    "back": "← プロフィールに戻る",
-    "status": {
-      "active": "有効",
-      "trialing": "お試し期間中",
-      "past_due": "支払い要確認",
-      "unpaid": "未払い",
-      "canceled": "解約済み",
-      "incomplete": "有効化未完了",
-      "incomplete_expired": "有効化期限切れ",
-      "paused": "一時停止中"
-    }
-  },
-  "errors": {
-    "session_expired": "セッションの有効期限が切れました。",
-    "name_required": "少なくとも氏名を入力してください。",
-    "save_failed": "プロフィールを保存できませんでした。",
-    "email_send_failed": "現在メールを送信できません。",
-    "invalid_email": "メールアドレスが無効です。",
-    "already_current_email": "すでに現在使用中のアドレスです。",
-    "email_change_failed": "メールアドレスの変更を開始できませんでした。",
-    "confirmation_mismatch": "確認のため「削除」と入力してください。",
-    "deletion_failed": "削除に失敗しました。しばらくしてから再度お試しください。",
-    "content_blocked": "ヘイトメッセージや露骨なコンテンツはFLUX上で禁止されており、違反には制裁が科されます。ご自身と他の利用者の環境を大切にしてください。利用規約への違反が3回に達すると、アカウントは削除されます。",
-    "unknown": "エラーが発生しました。少し時間をおいて再度お試しください。"
-  },
-  "messages": {
-    "profile_saved": "プロフィールを保存しました。",
-    "reset_email_sent": "メールはすでに送信済みです。",
-    "reset_email_sent_fresh": "現在のメールアドレス宛にメールを送信しました。リンクは一時的なもので、一度だけ使用できます。",
-    "email_change_pending": "すでに手続き中のリクエストがあります。両方の受信ボックスをご確認ください。",
-    "email_change_requested": "リクエストを送信しました。現在のアドレスと新しいアドレスの両方からの確認が完了するまで、アドレスは変更されません。",
-    "invite_sent": "{email} に招待を送信しました。"
+ "meta": {
+  "title": "マイプロフィール",
+  "billingTitle": "請求情報"
+ },
+ "hero": {
+  "eyebrow": "あなた専用のスペース",
+  "title": "マイプロフィール",
+  "text": "あなたの情報、ビジネス、そしてFLUXへのアクセスに関するすべてがここに。"
+ },
+ "nav": {
+  "aria": "プロフィールのセクション",
+  "info": "基本情報",
+  "adventure": "冒険をはじめる",
+  "invite": "友達を招待",
+  "credits": "クレジット",
+  "plans": "プラン",
+  "license": "ライセンス",
+  "billing": "請求情報"
+ },
+ "info": {
+  "title": "個人情報とビジネス情報",
+  "text": "これらの情報は非公開で、あなたの体験をパーソナライズするために使われます。"
+ },
+ "profileForm": {
+  "name": "氏名",
+  "email": "ログイン用メールアドレス",
+  "phone": "個人電話番号",
+  "company": "会社名",
+  "job": "職業・役職",
+  "businessEmail": "ビジネス用メールアドレス",
+  "siret": "SIRET番号",
+  "address": "事業所住所",
+  "saving": "保存中…",
+  "save": "保存する"
+ },
+ "adventure": {
+  "canCreateTitle": "新しいサイトを作ろう",
+  "limitTitle": "あなたのプロジェクトを見る",
+  "canCreateText": "いくつかの質問に答えるだけ。FLUXが土台を用意して、あとは全部あなた次第。",
+  "limitText": "プランのプロジェクト上限に達しました。既存のサイトは引き続き管理できます。",
+  "startTunnel": "トンネルを開始する",
+  "viewProjects": "マイプロジェクトを見る"
+ },
+ "invite": {
+  "title": "友達を招待",
+  "text": "知り合いの店主さんにFLUXを紹介しよう。招待された相手には7日間の無料お試しがプレゼントされるよ。",
+  "emailLabel": "友達のメールアドレス",
+  "emailPlaceholder": "ami@email.fr",
+  "sending": "送信中…",
+  "send": "招待を送る"
+ },
+ "credits": {
+  "available": "利用可能なクレジット",
+  "nextRecharge": "次回のチャージ日：{date}",
+  "trial": "FLUXお試し期間：残り{days}日",
+  "trialPlural": "FLUXお試し期間：残り{days}日",
+  "subscribed": "FLUXプランに応じてチャージ",
+  "trialOver": "お試し期間終了 — FLUXのプランを選ぼう",
+  "viewUsage": "利用状況を見る"
+ },
+ "license": {
+  "title": "利用ライセンス",
+  "text": "あなたが追加した情報やコンテンツの所有権は、あなたにあります。FLUXはサービスを個人利用する権利を提供するものであり、プラットフォーム自体の所有権を移転するものではありません。"
+ },
+ "security": {
+  "title": "セキュリティ",
+  "text": "メールによる安全な認証で認証情報を管理できます。また、この端末でのセッションを終了することもできます。",
+  "logout": "ログアウト"
+ },
+ "passwordForm": {
+  "title": "パスワード",
+  "text": "現在のメールアドレスに安全なリンクを送信し、新しいパスワードを設定できます。",
+  "sending": "送信中…",
+  "cta": "パスワードを忘れた場合"
+ },
+ "emailForm": {
+  "title": "メールアドレス",
+  "text": "現在のアドレスは{email}です。変更するには、現在のアドレスと新しいアドレスの両方からの確認が必要です。",
+  "newEmailLabel": "新しいメールアドレス",
+  "newEmailPlaceholder": "nouvelle@adresse.fr",
+  "sending": "確認メールを送信中…",
+  "cta": "確認メールを送る"
+ },
+ "danger": {
+  "title": "危険ゾーン",
+  "text": "削除すると、あなたのアカウント、サイト、顧客情報、注文、予約、コンテンツがすべて完全に消去されます。この操作は取り消せません。",
+  "confirmLabel": "確認のため{word}と入力してください",
+  "confirmWord": "削除",
+  "deleting": "削除中…",
+  "delete": "アカウントを完全に削除する"
+ },
+ "billing": {
+  "kicker": "アカウント",
+  "title": "請求情報",
+  "subtitle": "サブスクリプション、支払期日、請求書をまとめて確認。",
+  "portalUnavailable": "請求ポータルは一時的にご利用いただけません。",
+  "currentPlan": "現在のプラン",
+  "noActivePlan": "有効なプランはありません",
+  "price": "料金",
+  "priceValue": "月額 {price} ユーロ",
+  "includedCredits": "含まれるクレジット",
+  "includedCreditsValue": "支払い済み請求書1件につき{credits}",
+  "accessEndsAt": "アクセス終了予定日",
+  "nextDueDate": "次回の支払期日",
+  "toConfirm": "確認待ち",
+  "manage": "サブスクリプションと請求書を管理",
+  "choosePlan": "プランを選ぶ",
+  "help": "Stripeの安全なポータルから、支払い方法の変更、請求書のダウンロード、プラン変更、解約が行えます。",
+  "back": "← プロフィールに戻る",
+  "status": {
+   "active": "有効",
+   "trialing": "お試し期間中",
+   "past_due": "支払い要確認",
+   "unpaid": "未払い",
+   "canceled": "解約済み",
+   "incomplete": "有効化未完了",
+   "incomplete_expired": "有効化期限切れ",
+   "paused": "一時停止中"
   }
+ },
+ "errors": {
+  "session_expired": "セッションの有効期限が切れました。",
+  "name_required": "少なくとも氏名を入力してください。",
+  "save_failed": "プロフィールを保存できませんでした。",
+  "email_send_failed": "現在メールを送信できません。",
+  "invalid_email": "メールアドレスが無効です。",
+  "already_current_email": "すでに現在使用中のアドレスです。",
+  "email_change_failed": "メールアドレスの変更を開始できませんでした。",
+  "confirmation_mismatch": "確認のため「削除」と入力してください。",
+  "deletion_failed": "削除に失敗しました。しばらくしてから再度お試しください。",
+  "content_blocked": "ヘイトメッセージや露骨なコンテンツはFLUX上で禁止されており、違反には制裁が科されます。ご自身と他の利用者の環境を大切にしてください。利用規約への違反が3回に達すると、アカウントは削除されます。",
+  "unknown": "エラーが発生しました。少し時間をおいて再度お試しください。"
+ },
+ "messages": {
+  "profile_saved": "プロフィールを保存しました。",
+  "reset_email_sent": "メールはすでに送信済みです。",
+  "reset_email_sent_fresh": "現在のメールアドレス宛にメールを送信しました。リンクは一時的なもので、一度だけ使用できます。",
+  "email_change_pending": "すでに手続き中のリクエストがあります。両方の受信ボックスをご確認ください。",
+  "email_change_requested": "リクエストを送信しました。現在のアドレスと新しいアドレスの両方からの確認が完了するまで、アドレスは変更されません。",
+  "invite_sent": "{email} に招待を送信しました。"
+ },
+ "notifications": {
+  "title": "通知",
+  "text": "注文や予約が入るとすぐ、FLUX を閉じていてもこの端末に通知が届きます。",
+  "loading": "通知…",
+  "enable": "通知をオンにする",
+  "enabling": "オンにしています…",
+  "disable": "通知をオフにする",
+  "blocked": "ブラウザで通知がブロックされています。サイトの設定で許可してください。",
+  "deviceFallback": "端末"
+ }
 }

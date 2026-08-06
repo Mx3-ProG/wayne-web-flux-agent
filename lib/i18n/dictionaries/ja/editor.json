@@ -180,7 +180,12 @@
    "hideBrandingAllowed": "公開ページ下部の署名を消せるよ。",
    "hideBrandingRestricted": "この機能は月額89€のエンタープライズプラン限定だよ。",
    "discoverEnterprise": "エンタープライズプランを見る",
-   "hideBrandingAria": "Wayne Web Fluxの署名を非表示にする"
+   "hideBrandingAria": "Wayne Web Fluxの署名を非表示にする",
+   "storefrontAssistantLabel": "訪問者向けの FLUX アシスタント",
+   "storefrontAssistantHint": "商品・オファー・予約・連絡先を見つけるための控えめなヘルプを追加します。クレジットは消費しません。",
+   "storefrontAssistantAria": "ショップページに FLUX アシスタントを表示する",
+   "storefrontAssistantEnabled": "FLUX が訪問者をサポートするようになりました。",
+   "storefrontAssistantDisabled": "ショップページの FLUX ヘルプを無効にしました。"
   },
   "legal": {
    "trigger": "法的表記 — もう書いてあるよ",

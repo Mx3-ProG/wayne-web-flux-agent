@@ -1,93 +1,144 @@
 {
-  "footer": {
-    "default": "自動送信されたトランザクションメールです。返信はご遠慮ください。",
-    "tagline": "— あなたのショーケース、あなたの注文、あなたの売上。"
+ "footer": {
+  "default": "自動送信されたトランザクションメールです。返信はご遠慮ください。",
+  "tagline": "— あなたのショーケース、あなたの注文、あなたの売上。"
+ },
+ "total": "合計",
+ "order": {
+  "buyerConfirmation": {
+   "subject": "{shopName}でのご注文が確定しました",
+   "title": "注文確定",
+   "preheader": "注文 #{orderId} · {total}",
+   "greeting": "{firstName} 様",
+   "body": "<strong>{shopName}</strong>でのご注文<strong>#{orderId}</strong>を承りました。販売者が処理を行い、必要に応じてご連絡いたします。",
+   "addressLabel": "ご指定の住所：{address}",
+   "paymentNote": "お支払いは販売者と直接行っていただきます。"
   },
-  "total": "合計",
-  "order": {
-    "buyerConfirmation": {
-      "subject": "{shopName}でのご注文が確定しました",
-      "title": "注文確定",
-      "preheader": "注文 #{orderId} · {total}",
-      "greeting": "{firstName} 様",
-      "body": "<strong>{shopName}</strong>でのご注文<strong>#{orderId}</strong>を承りました。販売者が処理を行い、必要に応じてご連絡いたします。",
-      "addressLabel": "ご指定の住所：{address}",
-      "paymentNote": "お支払いは販売者と直接行っていただきます。"
-    },
-    "sellerNewOrder": {
-      "subject": "新規注文 — {firstName} · {total}",
-      "title": "新規注文",
-      "preheader": "{firstName} · {total}",
-      "body": "新しい注文<strong>#{orderId}</strong>を受け取りました。",
-      "contactTitle": "お客様の連絡先",
-      "contactName": "お名前：{value}",
-      "contactPhone": "電話番号：{value}",
-      "contactEmail": "メール：{value}",
-      "contactAddress": "住所：{value}",
-      "contactNote": "備考：{value}",
-      "viewOrders": "注文一覧を見る",
-      "footerReply": "このメールに返信すると、お客様に直接連絡できます。",
-      "footerAuto": "自動送信されたトランザクションメールです。"
-    },
-    "buyerAccepted": {
-      "subject": "注文承認済み ✓ — {shopName}",
-      "title": "注文が承認されました",
-      "greeting": "{firstName} 様",
-      "body": "朗報です：<strong>{shopName}</strong>でのご注文<strong>#{orderId}</strong>が承認され、準備を進めています。",
-      "note": "必要に応じて、販売者から今後の流れについてご連絡いたします。"
-    },
-    "buyerReady": {
-      "subject": "ご注文の準備が整いました ✓ — {shopName}",
-      "title": "注文準備完了",
-      "preheader": "注文 #{orderId} の受け取り準備ができました",
-      "greeting": "{firstName} 様",
-      "body": "<strong>{shopName}</strong>でのご注文<strong>#{orderId}</strong>の<strong>準備が整いました</strong>！お受け取りにお越しください。",
-      "note": "必要に応じて、受け取り方法について販売者からご案内いたします。"
-    },
-    "buyerCancelled": {
-      "subject": "注文キャンセル — {shopName}",
-      "title": "注文がキャンセルされました",
-      "greeting": "{firstName} 様",
-      "body": "<strong>{shopName}</strong>でのご注文<strong>#{orderId}</strong>はキャンセルされました。",
-      "note": "ご不明な点がございましたら、販売者に直接お問い合わせください。"
-    },
-    "defaultShopName": "販売店"
+  "sellerNewOrder": {
+   "subject": "新規注文 — {firstName} · {total}",
+   "title": "新規注文",
+   "preheader": "{firstName} · {total}",
+   "body": "新しい注文<strong>#{orderId}</strong>を受け取りました。",
+   "contactTitle": "お客様の連絡先",
+   "contactName": "お名前：{value}",
+   "contactPhone": "電話番号：{value}",
+   "contactEmail": "メール：{value}",
+   "contactAddress": "住所：{value}",
+   "contactNote": "備考：{value}",
+   "viewOrders": "注文一覧を見る",
+   "footerReply": "このメールに返信すると、お客様に直接連絡できます。",
+   "footerAuto": "自動送信されたトランザクションメールです。"
   },
-  "account": {
-    "passwordChanged": {
-      "subject": "FLUXのパスワードが変更されました",
-      "title": "パスワード変更",
-      "preheader": "セキュリティ確認 — パスワードが変更されました",
-      "greeting": "{firstName} 様",
-      "body": "お使いのFLUXアカウントのパスワードが<strong>変更されました</strong>。ご自身での変更であれば、特に対応の必要はありません。",
-      "note": "心当たりがない場合は、すぐにパスワードを再設定し、メールボックスのセキュリティもご確認ください。",
-      "cta": "アカウントを保護する"
-    },
-    "friendInvite": {
-      "subject": "{fromName}さんがFLUXをおすすめしています",
-      "title": "あなたのビジネスの主導権を取り戻そう",
-      "preheader": "{fromName}さんは、FLUXがあなたの貴重な時間を節約できると考えています",
-      "intro": "<strong>{fromName}</strong>さんが<strong>FLUX</strong>をご紹介しています。",
-      "pitch": "FLUXなら、オンラインショーケース、注文管理、予約、コンテンツを一箇所に集約できます。バラバラだった何十ものツールとはもうお別れ。ひとつのログインで、ビジネスの全てを見渡せます。",
-      "gainsIntro": "{fromName}さんが得たもの：",
-      "gain1": "毎週の管理業務で節約できた時間",
-      "gain2": "数分で作れるプロ仕様のオンラインショーケース",
-      "gain3": "注文と売上をひと目で確認できる仕組み",
-      "cta": "2分でショーケースを作成する",
-      "trial": "7日間無料お試し、契約縛りなし。",
-      "footer": "このメールは、FLUXのユーザーからの招待によりお送りしています。ご興味がなければ、特に対応は必要ありません。"
-    }
+  "buyerAccepted": {
+   "subject": "注文承認済み ✓ — {shopName}",
+   "title": "注文が承認されました",
+   "greeting": "{firstName} 様",
+   "body": "朗報です：<strong>{shopName}</strong>でのご注文<strong>#{orderId}</strong>が承認され、準備を進めています。",
+   "note": "必要に応じて、販売者から今後の流れについてご連絡いたします。"
   },
-  "verification": {
-    "subject": "メールアドレスを確認してください — FLUX",
-    "title": "メールアドレスを確認してください",
-    "preheader": "ショーケースの公開を解除しましょう",
-    "body": "FLUXのスペースはすでに準備が整い、ご利用いただけます。あとは、このメールアドレスがご本人のものであることを確認するだけで、ショーケースの公開と決済機能が解除されます。",
-    "cta": "メールアドレスを確認する",
-    "note": "このご登録に心当たりがない場合は、このメールを無視してください。"
+  "buyerReady": {
+   "subject": "ご注文の準備が整いました ✓ — {shopName}",
+   "title": "注文準備完了",
+   "preheader": "注文 #{orderId} の受け取り準備ができました",
+   "greeting": "{firstName} 様",
+   "body": "<strong>{shopName}</strong>でのご注文<strong>#{orderId}</strong>の<strong>準備が整いました</strong>！お受け取りにお越しください。",
+   "note": "必要に応じて、受け取り方法について販売者からご案内いたします。"
   },
-  "hints": {
-    "spamSelf": "見当たらない場合は、迷惑メールフォルダもご確認ください。",
-    "spamOther": "メールが迷惑メールフォルダに届く場合があるので、相手にお知らせしてあげてください。"
+  "buyerCancelled": {
+   "subject": "注文キャンセル — {shopName}",
+   "title": "注文がキャンセルされました",
+   "greeting": "{firstName} 様",
+   "body": "<strong>{shopName}</strong>でのご注文<strong>#{orderId}</strong>はキャンセルされました。",
+   "note": "ご不明な点がございましたら、販売者に直接お問い合わせください。"
+  },
+  "defaultShopName": "販売店"
+ },
+ "account": {
+  "passwordChanged": {
+   "subject": "FLUXのパスワードが変更されました",
+   "title": "パスワード変更",
+   "preheader": "セキュリティ確認 — パスワードが変更されました",
+   "greeting": "{firstName} 様",
+   "body": "お使いのFLUXアカウントのパスワードが<strong>変更されました</strong>。ご自身での変更であれば、特に対応の必要はありません。",
+   "note": "心当たりがない場合は、すぐにパスワードを再設定し、メールボックスのセキュリティもご確認ください。",
+   "cta": "アカウントを保護する"
+  },
+  "friendInvite": {
+   "subject": "{fromName}さんがFLUXをおすすめしています",
+   "title": "あなたのビジネスの主導権を取り戻そう",
+   "preheader": "{fromName}さんは、FLUXがあなたの貴重な時間を節約できると考えています",
+   "intro": "<strong>{fromName}</strong>さんが<strong>FLUX</strong>をご紹介しています。",
+   "pitch": "FLUXなら、オンラインショーケース、注文管理、予約、コンテンツを一箇所に集約できます。バラバラだった何十ものツールとはもうお別れ。ひとつのログインで、ビジネスの全てを見渡せます。",
+   "gainsIntro": "{fromName}さんが得たもの：",
+   "gain1": "毎週の管理業務で節約できた時間",
+   "gain2": "数分で作れるプロ仕様のオンラインショーケース",
+   "gain3": "注文と売上をひと目で確認できる仕組み",
+   "cta": "2分でショーケースを作成する",
+   "trial": "7日間無料お試し、契約縛りなし。",
+   "footer": "このメールは、FLUXのユーザーからの招待によりお送りしています。ご興味がなければ、特に対応は必要ありません。"
   }
+ },
+ "verification": {
+  "subject": "メールアドレスを確認してください — FLUX",
+  "title": "メールアドレスを確認してください",
+  "preheader": "ショーケースの公開を解除しましょう",
+  "body": "FLUXのスペースはすでに準備が整い、ご利用いただけます。あとは、このメールアドレスがご本人のものであることを確認するだけで、ショーケースの公開と決済機能が解除されます。",
+  "cta": "メールアドレスを確認する",
+  "note": "このご登録に心当たりがない場合は、このメールを無視してください。"
+ },
+ "hints": {
+  "spamSelf": "見当たらない場合は、迷惑メールフォルダもご確認ください。",
+  "spamOther": "メールが迷惑メールフォルダに届く場合があるので、相手にお知らせしてあげてください。"
+ },
+ "booking": {
+  "buyerRequest": {
+   "subject": "{shopName} への予約リクエスト",
+   "title": "リクエストを送信しました",
+   "preheader": "{serviceName} · {when}",
+   "greeting": "{firstName} 様",
+   "body": "<strong>{shopName}</strong> への予約リクエストを送信しました。",
+   "serviceLabel": "メニュー：{value}",
+   "whenLabel": "希望の時間：{value}",
+   "pendingNote": "店舗による確定待ちです。確定しだいメールでお知らせします。"
+  },
+  "sellerNew": {
+   "subject": "新しい予約 — {firstName} · {when}",
+   "title": "新しい予約",
+   "preheader": "{firstName} · {serviceName} · {when}",
+   "body": "<strong>{firstName}</strong> 様から予約リクエストが届きました。カレンダーから確定してください。",
+   "serviceLabel": "メニュー：{value}",
+   "whenLabel": "時間：{value}",
+   "contactTitle": "お客様の連絡先",
+   "contactName": "お名前：{value}",
+   "contactPhone": "電話：{value}",
+   "contactEmail": "メール：{value}",
+   "viewAgenda": "カレンダーを開く"
+  },
+  "buyerConfirmed": {
+   "subject": "予約が確定しました ✓ — {shopName}",
+   "title": "予約確定",
+   "preheader": "{serviceName} · {when}",
+   "greeting": "{firstName} 様",
+   "body": "<strong>{shopName}</strong> のご予約が確定しました。",
+   "serviceLabel": "メニュー：{value}",
+   "whenLabel": "時間：{value}",
+   "note": "ご都合が変わった場合は、なるべく早く店舗へご連絡ください。"
+  },
+  "buyerRefused": {
+   "subject": "ご希望の時間は満席です — {shopName}",
+   "title": "時間が確保できません",
+   "greeting": "{firstName} 様",
+   "body": "<strong>{shopName}</strong> でご希望の時間は確保できませんでした。",
+   "whenLabel": "ご希望の時間：{value}",
+   "note": "店舗のページから別の時間を選び直せます。"
+  },
+  "buyerCancelled": {
+   "subject": "予約がキャンセルされました — {shopName}",
+   "title": "予約キャンセル",
+   "greeting": "{firstName} 様",
+   "body": "<strong>{shopName}</strong> のご予約はキャンセルされました。",
+   "whenLabel": "キャンセルされた時間：{value}",
+   "note": "改めてご予約の際は、店舗のページをご覧ください。"
+  }
+ }
 }

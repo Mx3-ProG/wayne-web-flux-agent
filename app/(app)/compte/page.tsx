@@ -14,6 +14,7 @@ import { healMissingProfile } from "@/lib/profile-heal";
 import { DeleteAccountForm, ProfileForm } from "@/components/account/profile-settings";
 import { PasswordForm } from "@/components/account/password-form";
 import { AssistantPreferencesCard } from "@/components/assistant/assistant-preferences-card";
+import { EnablePushButton } from "@/components/notifications/enable-push-button";
 import {
   EmailChangeForm,
   InviteFriendForm,
@@ -211,6 +212,21 @@ export default async function ComptePage() {
             currentGoalId: null,
           }}
         />
+      </section>
+
+      {/* Notifications push : c'est le SEUL point d'entrée pour créer un
+          abonnement (POST /api/push/subscribe). Sans cette section, la table
+          push_subscriptions reste vide et le cron push-deliveries tourne à
+          vide. Le composant ne rend rien si le navigateur ne supporte pas le
+          Web Push ou si VAPID n'est pas configuré. */}
+      <section className={styles.section}>
+        <div className={styles.securityGrid}>
+          <div>
+            <h2>{t.notifications.title}</h2>
+            <p>{t.notifications.text}</p>
+          </div>
+          <EnablePushButton t={t.notifications} />
+        </div>
       </section>
 
       <section className={styles.section}>

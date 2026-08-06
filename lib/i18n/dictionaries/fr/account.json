@@ -1,143 +1,153 @@
 {
-  "meta": {
-    "title": "Mon profil",
-    "billingTitle": "Facturation"
-  },
-  "hero": {
-    "eyebrow": "Ton espace personnel",
-    "title": "Mon profil",
-    "text": "Tout ce qui concerne ton identité, ton activité et ton accès à FLUX."
-  },
-  "nav": {
-    "aria": "Sections du profil",
-    "info": "Informations",
-    "adventure": "Commencer l'aventure",
-    "invite": "Inviter un ami",
-    "credits": "Crédits",
-    "plans": "Formules",
-    "license": "Licence",
-    "billing": "Facturation"
-  },
-  "info": {
-    "title": "Informations personnelles et professionnelles",
-    "text": "Ces informations restent privées et servent à personnaliser ton expérience."
-  },
-  "profileForm": {
-    "name": "Nom et prénom",
-    "email": "E-mail de connexion",
-    "phone": "Téléphone personnel",
-    "company": "Entreprise",
-    "job": "Métier / fonction",
-    "businessEmail": "E-mail professionnel",
-    "siret": "SIRET",
-    "address": "Adresse professionnelle",
-    "saving": "Enregistrement…",
-    "save": "Enregistrer"
-  },
-  "adventure": {
-    "canCreateTitle": "Crée une nouvelle vitrine",
-    "limitTitle": "Retrouve tes projets",
-    "canCreateText": "Quelques questions suffisent : FLUX prépare la base et tu gardes la main sur tout.",
-    "limitText": "Ton forfait a atteint sa limite de projets. Tu peux gérer tes vitrines existantes.",
-    "startTunnel": "Lancer le tunnel",
-    "viewProjects": "Voir mes projets"
-  },
-  "invite": {
-    "title": "Inviter un ami",
-    "text": "Fais découvrir FLUX à un commerçant que tu connais : il reçoit une invitation et 7 jours d'essai offerts.",
-    "emailLabel": "Email de ton ami",
-    "emailPlaceholder": "ami@email.fr",
-    "sending": "Envoi…",
-    "send": "Envoyer l'invitation"
-  },
-  "credits": {
-    "available": "Crédits disponibles",
-    "nextRecharge": "Prochaine recharge le {date}",
-    "trial": "Essai FLUX : {days} jour restant",
-    "trialPlural": "Essai FLUX : {days} jours restants",
-    "subscribed": "Recharge via ta formule FLUX",
-    "trialOver": "Essai terminé — choisis ta formule FLUX",
-    "viewUsage": "Voir mon utilisation"
-  },
-  "license": {
-    "title": "Licence d'utilisation",
-    "text": "Tu restes propriétaire des informations et contenus que tu ajoutes. FLUX te fournit un droit personnel d'utilisation du service, sans transfert de propriété sur la plateforme."
-  },
-  "security": {
-    "title": "Sécurité",
-    "text": "Gère tes identifiants grâce à des validations sécurisées par email, ou ferme ta session sur cet appareil.",
-    "logout": "Se déconnecter"
-  },
-  "passwordForm": {
-    "title": "Mot de passe",
-    "text": "Reçois un lien sécurisé à ton adresse email actuelle pour choisir un nouveau mot de passe.",
-    "sending": "Envoi…",
-    "cta": "J'ai oublié mon mot de passe"
-  },
-  "emailForm": {
-    "title": "Adresse email",
-    "text": "Ton adresse actuelle est {email}. Le changement exige une confirmation depuis l'ancienne et la nouvelle adresse.",
-    "newEmailLabel": "Nouvelle adresse email",
-    "newEmailPlaceholder": "nouvelle@adresse.fr",
-    "sending": "Envoi des confirmations…",
-    "cta": "Envoyer les confirmations"
-  },
-  "danger": {
-    "title": "Zone de danger",
-    "text": "La suppression efface définitivement ton compte, tes vitrines, clients, commandes, rendez-vous et contenus. Cette action est irréversible.",
-    "confirmLabel": "Écris {word} pour confirmer",
-    "confirmWord": "SUPPRIMER",
-    "deleting": "Suppression…",
-    "delete": "Supprimer définitivement mon compte"
-  },
-  "billing": {
-    "kicker": "Compte",
-    "title": "Facturation",
-    "subtitle": "Ton abonnement, tes échéances et tes factures au même endroit.",
-    "portalUnavailable": "Le portail de facturation est momentanément indisponible.",
-    "currentPlan": "Formule actuelle",
-    "noActivePlan": "Aucune formule active",
-    "price": "Tarif",
-    "priceValue": "{price} € / mois",
-    "includedCredits": "Crédits inclus",
-    "includedCreditsValue": "{credits} par facture payée",
-    "accessEndsAt": "Fin d'accès prévue",
-    "nextDueDate": "Prochaine échéance",
-    "toConfirm": "À confirmer",
-    "manage": "Gérer l'abonnement et les factures",
-    "choosePlan": "Choisir une formule",
-    "help": "Le portail sécurisé Stripe permet de modifier le moyen de paiement, télécharger les factures, changer de formule ou résilier.",
-    "back": "← Retour au profil",
-    "status": {
-      "active": "Actif",
-      "trialing": "Période d'essai",
-      "past_due": "Paiement à régulariser",
-      "unpaid": "Impayé",
-      "canceled": "Résilié",
-      "incomplete": "Activation incomplète",
-      "incomplete_expired": "Activation expirée",
-      "paused": "Suspendu"
-    }
-  },
-  "errors": {
-    "session_expired": "Ta session a expiré.",
-    "name_required": "Indique au moins ton nom.",
-    "save_failed": "Impossible d'enregistrer le profil.",
-    "email_send_failed": "Impossible d'envoyer l'email pour le moment.",
-    "invalid_email": "Adresse email invalide.",
-    "already_current_email": "C'est déjà ton adresse actuelle.",
-    "email_change_failed": "Impossible de lancer le changement d'email.",
-    "confirmation_mismatch": "Écris SUPPRIMER pour confirmer.",
-    "deletion_failed": "La suppression a échoué. Réessaie plus tard.",
-    "content_blocked": "Les messages de haine ou les contenus explicites sont interdits et sanctionnés sur FLUX ; merci de respecter ton environnement et celui des autres. Au bout de 3 infractions à nos conditions d'utilisation, le compte est supprimé.",
-    "unknown": "Une erreur est survenue. Réessaie dans un instant."
-  },
-  "messages": {
-    "profile_saved": "Profil enregistré.",
-    "reset_email_sent": "Un email a déjà été envoyé.",
-    "reset_email_sent_fresh": "Email envoyé à ton adresse actuelle. Le lien est temporaire et à usage unique.",
-    "email_change_pending": "Une demande est déjà en cours. Vérifie tes deux boîtes de réception.",
-    "email_change_requested": "Demande envoyée. Ton adresse ne changera qu'après confirmation depuis ton adresse actuelle et la nouvelle.",
-    "invite_sent": "Invitation envoyée à {email}."
+ "meta": {
+  "title": "Mon profil",
+  "billingTitle": "Facturation"
+ },
+ "hero": {
+  "eyebrow": "Ton espace personnel",
+  "title": "Mon profil",
+  "text": "Tout ce qui concerne ton identité, ton activité et ton accès à FLUX."
+ },
+ "nav": {
+  "aria": "Sections du profil",
+  "info": "Informations",
+  "adventure": "Commencer l'aventure",
+  "invite": "Inviter un ami",
+  "credits": "Crédits",
+  "plans": "Formules",
+  "license": "Licence",
+  "billing": "Facturation"
+ },
+ "info": {
+  "title": "Informations personnelles et professionnelles",
+  "text": "Ces informations restent privées et servent à personnaliser ton expérience."
+ },
+ "profileForm": {
+  "name": "Nom et prénom",
+  "email": "E-mail de connexion",
+  "phone": "Téléphone personnel",
+  "company": "Entreprise",
+  "job": "Métier / fonction",
+  "businessEmail": "E-mail professionnel",
+  "siret": "SIRET",
+  "address": "Adresse professionnelle",
+  "saving": "Enregistrement…",
+  "save": "Enregistrer"
+ },
+ "adventure": {
+  "canCreateTitle": "Crée une nouvelle vitrine",
+  "limitTitle": "Retrouve tes projets",
+  "canCreateText": "Quelques questions suffisent : FLUX prépare la base et tu gardes la main sur tout.",
+  "limitText": "Ton forfait a atteint sa limite de projets. Tu peux gérer tes vitrines existantes.",
+  "startTunnel": "Lancer le tunnel",
+  "viewProjects": "Voir mes projets"
+ },
+ "invite": {
+  "title": "Inviter un ami",
+  "text": "Fais découvrir FLUX à un commerçant que tu connais : il reçoit une invitation et 7 jours d'essai offerts.",
+  "emailLabel": "Email de ton ami",
+  "emailPlaceholder": "ami@email.fr",
+  "sending": "Envoi…",
+  "send": "Envoyer l'invitation"
+ },
+ "credits": {
+  "available": "Crédits disponibles",
+  "nextRecharge": "Prochaine recharge le {date}",
+  "trial": "Essai FLUX : {days} jour restant",
+  "trialPlural": "Essai FLUX : {days} jours restants",
+  "subscribed": "Recharge via ta formule FLUX",
+  "trialOver": "Essai terminé — choisis ta formule FLUX",
+  "viewUsage": "Voir mon utilisation"
+ },
+ "license": {
+  "title": "Licence d'utilisation",
+  "text": "Tu restes propriétaire des informations et contenus que tu ajoutes. FLUX te fournit un droit personnel d'utilisation du service, sans transfert de propriété sur la plateforme."
+ },
+ "security": {
+  "title": "Sécurité",
+  "text": "Gère tes identifiants grâce à des validations sécurisées par email, ou ferme ta session sur cet appareil.",
+  "logout": "Se déconnecter"
+ },
+ "passwordForm": {
+  "title": "Mot de passe",
+  "text": "Reçois un lien sécurisé à ton adresse email actuelle pour choisir un nouveau mot de passe.",
+  "sending": "Envoi…",
+  "cta": "J'ai oublié mon mot de passe"
+ },
+ "emailForm": {
+  "title": "Adresse email",
+  "text": "Ton adresse actuelle est {email}. Le changement exige une confirmation depuis l'ancienne et la nouvelle adresse.",
+  "newEmailLabel": "Nouvelle adresse email",
+  "newEmailPlaceholder": "nouvelle@adresse.fr",
+  "sending": "Envoi des confirmations…",
+  "cta": "Envoyer les confirmations"
+ },
+ "danger": {
+  "title": "Zone de danger",
+  "text": "La suppression efface définitivement ton compte, tes vitrines, clients, commandes, rendez-vous et contenus. Cette action est irréversible.",
+  "confirmLabel": "Écris {word} pour confirmer",
+  "confirmWord": "SUPPRIMER",
+  "deleting": "Suppression…",
+  "delete": "Supprimer définitivement mon compte"
+ },
+ "billing": {
+  "kicker": "Compte",
+  "title": "Facturation",
+  "subtitle": "Ton abonnement, tes échéances et tes factures au même endroit.",
+  "portalUnavailable": "Le portail de facturation est momentanément indisponible.",
+  "currentPlan": "Formule actuelle",
+  "noActivePlan": "Aucune formule active",
+  "price": "Tarif",
+  "priceValue": "{price} € / mois",
+  "includedCredits": "Crédits inclus",
+  "includedCreditsValue": "{credits} par facture payée",
+  "accessEndsAt": "Fin d'accès prévue",
+  "nextDueDate": "Prochaine échéance",
+  "toConfirm": "À confirmer",
+  "manage": "Gérer l'abonnement et les factures",
+  "choosePlan": "Choisir une formule",
+  "help": "Le portail sécurisé Stripe permet de modifier le moyen de paiement, télécharger les factures, changer de formule ou résilier.",
+  "back": "← Retour au profil",
+  "status": {
+   "active": "Actif",
+   "trialing": "Période d'essai",
+   "past_due": "Paiement à régulariser",
+   "unpaid": "Impayé",
+   "canceled": "Résilié",
+   "incomplete": "Activation incomplète",
+   "incomplete_expired": "Activation expirée",
+   "paused": "Suspendu"
   }
+ },
+ "errors": {
+  "session_expired": "Ta session a expiré.",
+  "name_required": "Indique au moins ton nom.",
+  "save_failed": "Impossible d'enregistrer le profil.",
+  "email_send_failed": "Impossible d'envoyer l'email pour le moment.",
+  "invalid_email": "Adresse email invalide.",
+  "already_current_email": "C'est déjà ton adresse actuelle.",
+  "email_change_failed": "Impossible de lancer le changement d'email.",
+  "confirmation_mismatch": "Écris SUPPRIMER pour confirmer.",
+  "deletion_failed": "La suppression a échoué. Réessaie plus tard.",
+  "content_blocked": "Les messages de haine ou les contenus explicites sont interdits et sanctionnés sur FLUX ; merci de respecter ton environnement et celui des autres. Au bout de 3 infractions à nos conditions d'utilisation, le compte est supprimé.",
+  "unknown": "Une erreur est survenue. Réessaie dans un instant."
+ },
+ "messages": {
+  "profile_saved": "Profil enregistré.",
+  "reset_email_sent": "Un email a déjà été envoyé.",
+  "reset_email_sent_fresh": "Email envoyé à ton adresse actuelle. Le lien est temporaire et à usage unique.",
+  "email_change_pending": "Une demande est déjà en cours. Vérifie tes deux boîtes de réception.",
+  "email_change_requested": "Demande envoyée. Ton adresse ne changera qu'après confirmation depuis ton adresse actuelle et la nouvelle.",
+  "invite_sent": "Invitation envoyée à {email}."
+ },
+ "notifications": {
+  "title": "Notifications",
+  "text": "Reçois une alerte sur cet appareil dès qu'une commande ou une réservation arrive, même quand FLUX est fermé.",
+  "loading": "Notifications…",
+  "enable": "Activer les notifications",
+  "enabling": "Activation…",
+  "disable": "Désactiver les notifications",
+  "blocked": "Notifications bloquées dans le navigateur. Autorise-les dans les réglages du site.",
+  "deviceFallback": "Appareil"
+ }
 }

@@ -147,6 +147,138 @@ export async function buyerOrderAccepted(
   };
 }
 
+// --- Emails de réservation (agenda) ---
+//
+// Même contrat que les emails de commande : la locale porte le chrome, jamais
+// les données métier. La réservation arrive en `pending` (validation manuelle
+// par le professionnel), d'où un email de demande distinct de la confirmation.
+
+export type BookingEmailData = {
+  firstName: string;
+  shopName: string;
+  serviceName: string;
+  /** Créneau déjà formaté dans la locale du destinataire (voir booking-emails). */
+  when: string;
+};
+
+export async function buyerBookingRequest(
+  d: BookingEmailData,
+  locale: Locale = "fr"
+): Promise<{ subject: string; html: string }> {
+  const t = await getDictionary(locale, "emails");
+  const o = t.booking.buyerRequest;
+  const body = `
+    <p>${escapeHtml(tpl(o.greeting, { firstName: d.firstName }))}</p>
+    <p>${tpl(o.body, { shopName: escapeHtml(d.shopName) })}</p>
+    <p>${escapeHtml(tpl(o.serviceLabel, { value: d.serviceName }))}<br>
+       ${escapeHtml(tpl(o.whenLabel, { value: d.when }))}</p>
+    <p style="color:${MUTED};font-size:13px;">${escapeHtml(o.pendingNote)}</p>`;
+  return {
+    subject: tpl(o.subject, { shopName: d.shopName }),
+    html: baseLayout({
+      title: o.title,
+      preheader: tpl(o.preheader, { serviceName: d.serviceName, when: d.when }),
+      bodyHtml: body,
+      locale,
+      footerTagline: t.footer.tagline,
+    }),
+  };
+}
+
+export async function sellerNewBooking(
+  d: BookingEmailData & { buyerPhone: string; buyerEmail?: string | null },
+  locale: Locale = "fr"
+): Promise<{ subject: string; html: string }> {
+  const t = await getDictionary(locale, "emails");
+  const o = t.booking.sellerNew;
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "";
+  const contact = [
+    tpl(o.contactName, { value: escapeHtml(d.firstName) }),
+    tpl(o.contactPhone, { value: escapeHtml(d.buyerPhone) }),
+    d.buyerEmail ? tpl(o.contactEmail, { value: escapeHtml(d.buyerEmail) }) : null,
+  ]
+    .filter(Boolean)
+    .join("<br>");
+  const body = `
+    <p>${tpl(o.body, { firstName: escapeHtml(d.firstName) })}</p>
+    <p>${escapeHtml(tpl(o.serviceLabel, { value: d.serviceName }))}<br>
+       ${escapeHtml(tpl(o.whenLabel, { value: d.when }))}</p>
+    <p style="margin:16px 0 4px;font-weight:600;">${escapeHtml(o.contactTitle)}</p>
+    <p style="color:${MUTED};">${contact}</p>
+    ${emailButton(o.viewAgenda, `${siteUrl}/agenda`)}`;
+  return {
+    subject: tpl(o.subject, { firstName: d.firstName, when: d.when }),
+    html: baseLayout({
+      title: o.title,
+      preheader: tpl(o.preheader, {
+        firstName: d.firstName,
+        serviceName: d.serviceName,
+        when: d.when,
+      }),
+      bodyHtml: body,
+      locale,
+      footerTagline: t.footer.tagline,
+    }),
+  };
+}
+
+export async function buyerBookingConfirmed(
+  d: BookingEmailData,
+  locale: Locale = "fr"
+): Promise<{ subject: string; html: string }> {
+  const t = await getDictionary(locale, "emails");
+  const o = t.booking.buyerConfirmed;
+  const body = `
+    <p>${escapeHtml(tpl(o.greeting, { firstName: d.firstName }))}</p>
+    <p>${tpl(o.body, { shopName: escapeHtml(d.shopName) })}</p>
+    <p>${escapeHtml(tpl(o.serviceLabel, { value: d.serviceName }))}<br>
+       ${escapeHtml(tpl(o.whenLabel, { value: d.when }))}</p>
+    <p style="color:${MUTED};font-size:13px;">${escapeHtml(o.note)}</p>`;
+  return {
+    subject: tpl(o.subject, { shopName: d.shopName }),
+    html: baseLayout({
+      title: o.title,
+      preheader: tpl(o.preheader, { serviceName: d.serviceName, when: d.when }),
+      bodyHtml: body,
+      locale,
+      footerTagline: t.footer.tagline,
+    }),
+  };
+}
+
+// Refus (créneau finalement indisponible) et annulation partagent la même
+// forme : message court + créneau concerné + porte de sortie.
+async function buyerBookingClosed(
+  d: BookingEmailData,
+  locale: Locale,
+  kind: "buyerRefused" | "buyerCancelled"
+): Promise<{ subject: string; html: string }> {
+  const t = await getDictionary(locale, "emails");
+  const o = t.booking[kind];
+  const body = `
+    <p>${escapeHtml(tpl(o.greeting, { firstName: d.firstName }))}</p>
+    <p>${tpl(o.body, { shopName: escapeHtml(d.shopName) })}</p>
+    <p>${escapeHtml(tpl(o.whenLabel, { value: d.when }))}</p>
+    <p style="color:${MUTED};font-size:13px;">${escapeHtml(o.note)}</p>`;
+  return {
+    subject: tpl(o.subject, { shopName: d.shopName }),
+    html: baseLayout({
+      title: o.title,
+      bodyHtml: body,
+      locale,
+      footerTagline: t.footer.tagline,
+    }),
+  };
+}
+
+export function buyerBookingRefused(d: BookingEmailData, locale: Locale = "fr") {
+  return buyerBookingClosed(d, locale, "buyerRefused");
+}
+
+export function buyerBookingCancelled(d: BookingEmailData, locale: Locale = "fr") {
+  return buyerBookingClosed(d, locale, "buyerCancelled");
+}
+
 // --- Emails de compte / sécurité (envoyés par le code via Resend) ---
 
 // Notification post-changement de mot de passe. Rôle anti-fraude : si l'utilisateur

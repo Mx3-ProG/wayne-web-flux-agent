@@ -66,5 +66,15 @@
   "saveChoices": "Salva le mie scelte",
   "customize": "Personalizza",
   "declineOptional": "Continua senza accettare"
+ },
+ "unsubscribe": {
+  "metaTitle": "Disiscrizione",
+  "okTitle": "Fatto ✅",
+  "okBody": "Non riceverai più le nostre email. Puoi iscriverti di nuovo quando vuoi.",
+  "invalidTitle": "Link non valido",
+  "invalidBody": "Questo link di disiscrizione non è corretto o è scaduto. Contattaci se il problema persiste.",
+  "errorTitle": "Si è verificato un errore",
+  "errorBody": "Non siamo riusciti a elaborare la tua richiesta. Riprova tra un istante.",
+  "backHome": "← Torna alla home"
  }
 }

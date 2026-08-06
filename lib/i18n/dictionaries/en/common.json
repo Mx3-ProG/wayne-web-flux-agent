@@ -66,5 +66,15 @@
   "saveChoices": "Save my choices",
   "customize": "Customize",
   "declineOptional": "Continue without accepting"
+ },
+ "unsubscribe": {
+  "metaTitle": "Unsubscribe",
+  "okTitle": "Done ✅",
+  "okBody": "You will not receive our emails any more. You can subscribe again at any time.",
+  "invalidTitle": "Invalid link",
+  "invalidBody": "This unsubscribe link is incorrect or has expired. Contact us if the problem persists.",
+  "errorTitle": "Something went wrong",
+  "errorBody": "We could not process your request. Please try again in a moment.",
+  "backHome": "← Back to home"
  }
 }

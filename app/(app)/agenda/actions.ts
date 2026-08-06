@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePageId } from "@/lib/active-project";
+import { sendBookingStatusEmail } from "@/lib/emails/booking-emails";
 import type { TimeRange } from "@/lib/types";
 
 async function ownedPageId(): Promise<string | null> {
@@ -90,13 +91,31 @@ export async function saveCustomerNote(
   return {};
 }
 
+// Une décision prise dans l'agenda doit atteindre le client : il a réservé
+// depuis une vitrine publique, sans compte FLUX, et n'a aucun autre moyen de
+// savoir que sa demande a été acceptée, refusée ou annulée.
+//
+// `.select("id")` est indispensable : sans lui, un update qui ne matche aucune
+// ligne (rdv déjà traité, filtre `status` non satisfait) renvoie error: null et
+// on enverrait un email pour une transition qui n'a pas eu lieu.
+async function notifyBookingDecision(
+  bookingId: string,
+  status: "confirmed" | "refused" | "cancelled"
+): Promise<void> {
+  await sendBookingStatusEmail(bookingId, status).catch((e) =>
+    console.error("booking: status email failed", { bookingId, status, e })
+  );
+}
+
 export async function cancelBooking(bookingId: string): Promise<{ error?: string }> {
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("bookings")
     .update({ status: "cancelled" })
-    .eq("id", bookingId); // RLS protège
+    .eq("id", bookingId) // RLS protège
+    .select("id");
   if (error) return { error: "cancel_failed" };
+  if (data?.length) await notifyBookingDecision(bookingId, "cancelled");
   revalidatePath("/agenda");
   return {};
 }
@@ -105,12 +124,14 @@ export async function cancelBooking(bookingId: string): Promise<{ error?: string
 // On ne bascule que depuis 'pending' pour ne pas « ressusciter » un rdv annulé.
 export async function acceptBooking(bookingId: string): Promise<{ error?: string }> {
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("bookings")
     .update({ status: "confirmed" })
     .eq("id", bookingId)
-    .eq("status", "pending"); // RLS protège
+    .eq("status", "pending") // RLS protège
+    .select("id");
   if (error) return { error: "accept_failed" };
+  if (data?.length) await notifyBookingDecision(bookingId, "confirmed");
   revalidatePath("/agenda");
   return {};
 }
@@ -118,12 +139,14 @@ export async function acceptBooking(bookingId: string): Promise<{ error?: string
 // Refuser une demande en attente (pending → refused). Le créneau est libéré.
 export async function refuseBooking(bookingId: string): Promise<{ error?: string }> {
   const supabase = await createClient();
-  const { error } = await supabase
+  const { data, error } = await supabase
     .from("bookings")
     .update({ status: "refused" })
     .eq("id", bookingId)
-    .eq("status", "pending"); // RLS protège
+    .eq("status", "pending") // RLS protège
+    .select("id");
   if (error) return { error: "refuse_failed" };
+  if (data?.length) await notifyBookingDecision(bookingId, "refused");
   revalidatePath("/agenda");
   return {};
 }
