@@ -11,10 +11,22 @@ import type { NextConfig } from "next";
 // React utilise eval() en mode développement (reconstruction de call-stacks,
 // overlay d'erreurs). Jamais en production. On l'autorise donc uniquement en dev.
 const stripeScript = "https://js.stripe.com https://*.js.stripe.com";
+// Balise Google Ads (gtag.js), chargée seulement après consentement marketing
+// — voir components/google-tag.tsx.
+// gtag.js injecte à son tour le script de conversion (googleads.g.doubleclick.net
+// / googleadservices.com) : sans ces deux origines, la conversion est bloquée.
+const googleTagScript =
+  "https://www.googletagmanager.com https://googleads.g.doubleclick.net https://www.googleadservices.com";
 const scriptSrc =
   process.env.NODE_ENV === "development"
-    ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${stripeScript}`
-    : `script-src 'self' 'unsafe-inline' ${stripeScript}`;
+    ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${stripeScript} ${googleTagScript}`
+    : `script-src 'self' 'unsafe-inline' ${stripeScript} ${googleTagScript}`;
+
+// Remontée des conversions Google Ads : gtag.js poste vers googletagmanager /
+// google-analytics, puis vers les domaines de conversion (google.com,
+// googleadservices.com, doubleclick.net).
+const googleTagConnect =
+  "https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://www.google.com https://*.doubleclick.net https://www.googleadservices.com";
 
 // Stripe. `js.stripe.com` sert Stripe.js et les iframes d'Elements ; les
 // sous-domaines `*.js.stripe.com` servent les ressources récentes.
@@ -34,14 +46,15 @@ const csp = [
   "font-src 'self' https://fonts.gstatic.com data:",
   "img-src 'self' data: blob: https:",
   "media-src 'self' blob: https:",
-  `connect-src 'self' https://*.supabase.co wss://*.supabase.co ${stripeConnect}`,
+  `connect-src 'self' https://*.supabase.co wss://*.supabase.co ${stripeConnect} ${googleTagConnect}`,
   // `'self'` est indispensable : la page d'accueil encadre ses propres démos
   // (<iframe src="/demo/…">). Sans lui le navigateur bloque le cadrage et
   // laisse un rectangle blanc à la place de l'aperçu.
   // Les sections « Carte » utilisent l'embed public de Google Maps depuis
   // www.google.com (sans clé API). `connect-src maps.googleapis.com` ne couvre
   // pas cet iframe : son origine doit être autorisée explicitement ici.
-  `frame-src 'self' ${stripeFrame} https://www.google.com https://player.vimeo.com https://www.youtube-nocookie.com https://www.youtube.com`,
+  // `td.doubleclick.net` : iframe de synchronisation des conversions Google Ads.
+  `frame-src 'self' ${stripeFrame} https://td.doubleclick.net https://www.googletagmanager.com https://www.google.com https://player.vimeo.com https://www.youtube-nocookie.com https://www.youtube.com`,
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self'",

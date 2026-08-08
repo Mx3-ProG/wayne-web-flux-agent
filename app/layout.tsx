@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { CookieConsent } from "@/components/cookie-consent";
+import { GoogleTag } from "@/components/google-tag";
 import { FluxLoader } from "@/components/flux-loader";
 import { ServiceWorkerRegistration } from "@/components/service-worker-registration";
 import { getRequestLocale } from "@/lib/i18n/locale.server";
@@ -71,6 +72,8 @@ export default async function RootLayout({
         {children}
         <MarketingAssistant />
         <CookieConsent />
+        {/* Ne s'active que sur les pages marketing, après consentement. */}
+        <GoogleTag measurementId={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID ?? ""} />
         <Toaster />
         </AssistantI18nProvider>
       </body>
