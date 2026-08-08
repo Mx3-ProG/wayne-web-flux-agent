@@ -66,14 +66,15 @@ export default async function RootLayout({
       className="h-full antialiased"
     >
       <body className="min-h-full flex flex-col">
+        {/* En tête de <body> : le snippet d'init doit s'exécuter avant que
+            gtag.js (remonté dans le <head> par React) ne soit prêt. */}
+        <GoogleTag />
         <AssistantI18nProvider locale={locale}>
         <FluxLoader />
         <ServiceWorkerRegistration />
         {children}
         <MarketingAssistant />
         <CookieConsent />
-        {/* Ne s'active que sur les pages marketing, après consentement. */}
-        <GoogleTag measurementId={process.env.NEXT_PUBLIC_GOOGLE_ADS_ID ?? ""} />
         <Toaster />
         </AssistantI18nProvider>
       </body>

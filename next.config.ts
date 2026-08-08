@@ -16,17 +16,17 @@ const stripeScript = "https://js.stripe.com https://*.js.stripe.com";
 // gtag.js injecte à son tour le script de conversion (googleads.g.doubleclick.net
 // / googleadservices.com) : sans ces deux origines, la conversion est bloquée.
 const googleTagScript =
-  "https://www.googletagmanager.com https://googleads.g.doubleclick.net https://www.googleadservices.com";
+  "https://www.googletagmanager.com https://*.doubleclick.net https://*.googleadservices.com https://*.googlesyndication.com";
 const scriptSrc =
   process.env.NODE_ENV === "development"
     ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${stripeScript} ${googleTagScript}`
     : `script-src 'self' 'unsafe-inline' ${stripeScript} ${googleTagScript}`;
 
-// Remontée des conversions Google Ads : gtag.js poste vers googletagmanager /
-// google-analytics, puis vers les domaines de conversion (google.com,
-// googleadservices.com, doubleclick.net).
+// Remontée des mesures Google Ads. `pagead2.googlesyndication.com/ccm/collect`
+// porte le page_view et les conversions : sans lui, la balise est bien
+// détectée mais Google ne reçoit aucune donnée (« aucune activité récente »).
 const googleTagConnect =
-  "https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://www.google.com https://*.doubleclick.net https://www.googleadservices.com";
+  "https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com https://*.google.com https://*.doubleclick.net https://*.googleadservices.com https://*.googlesyndication.com";
 
 // Stripe. `js.stripe.com` sert Stripe.js et les iframes d'Elements ; les
 // sous-domaines `*.js.stripe.com` servent les ressources récentes.
@@ -53,8 +53,9 @@ const csp = [
   // Les sections « Carte » utilisent l'embed public de Google Maps depuis
   // www.google.com (sans clé API). `connect-src maps.googleapis.com` ne couvre
   // pas cet iframe : son origine doit être autorisée explicitement ici.
-  // `td.doubleclick.net` : iframe de synchronisation des conversions Google Ads.
-  `frame-src 'self' ${stripeFrame} https://td.doubleclick.net https://www.googletagmanager.com https://www.google.com https://player.vimeo.com https://www.youtube-nocookie.com https://www.youtube.com`,
+  // `*.doubleclick.net` / `*.googlesyndication.com` : iframes de synchronisation
+  // des conversions Google Ads.
+  `frame-src 'self' ${stripeFrame} https://*.doubleclick.net https://*.googlesyndication.com https://www.googletagmanager.com https://www.google.com https://player.vimeo.com https://www.youtube-nocookie.com https://www.youtube.com`,
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self'",
