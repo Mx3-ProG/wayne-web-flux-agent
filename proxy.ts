@@ -108,6 +108,10 @@ export async function proxy(request: NextRequest) {
 
   const requestHeaders = new Headers(request.headers);
   requestHeaders.set("x-locale", locale);
+  // Chemin réel (préfixe de langue retiré). Sert de discriminant au root
+  // layout pour la balise Google Ads : les vitrines clientes (/p/…) sont hors
+  // du matcher ci-dessous, elles n'ont donc pas ce header — et pas de balise.
+  requestHeaders.set("x-pathname", path);
 
   // --- Session Supabase ---------------------------------------------------
   let response = NextResponse.next({ request: { headers: requestHeaders } });

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { CookieConsent } from "@/components/cookie-consent";
 import { GoogleTag } from "@/components/google-tag";
+import { shouldLoadGoogleTag } from "@/lib/analytics/should-load-google-tag";
 import { FluxLoader } from "@/components/flux-loader";
 import { ServiceWorkerRegistration } from "@/components/service-worker-registration";
 import { getRequestLocale } from "@/lib/i18n/locale.server";
@@ -57,6 +58,8 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const locale = await getRequestLocale();
+  // Pas de balise publicitaire sur les vitrines clientes.
+  const withGoogleTag = await shouldLoadGoogleTag();
 
   return (
     <html
@@ -68,7 +71,7 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         {/* En tête de <body> : le snippet d'init doit s'exécuter avant que
             gtag.js (remonté dans le <head> par React) ne soit prêt. */}
-        <GoogleTag />
+        {withGoogleTag && <GoogleTag />}
         <AssistantI18nProvider locale={locale}>
         <FluxLoader />
         <ServiceWorkerRegistration />
