@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
 import { CookieConsent } from "@/components/cookie-consent";
 import { GoogleTag } from "@/components/google-tag";
+import { GoogleTagConsent } from "@/components/google-tag-consent";
 import { shouldLoadGoogleTag } from "@/lib/analytics/should-load-google-tag";
 import { FluxLoader } from "@/components/flux-loader";
 import { ServiceWorkerRegistration } from "@/components/service-worker-registration";
@@ -68,10 +69,9 @@ export default async function RootLayout({
       data-scroll-behavior="smooth"
       className="h-full antialiased"
     >
+      <head>{withGoogleTag && <GoogleTag />}</head>
       <body className="min-h-full flex flex-col">
-        {/* En tête de <body> : le snippet d'init doit s'exécuter avant que
-            gtag.js (remonté dans le <head> par React) ne soit prêt. */}
-        {withGoogleTag && <GoogleTag />}
+        {withGoogleTag && <GoogleTagConsent />}
         <AssistantI18nProvider locale={locale}>
         <FluxLoader />
         <ServiceWorkerRegistration />
