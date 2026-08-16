@@ -1,10 +1,8 @@
 import { NextResponse } from "next/server";
-import { slotsForDate } from "@/lib/slots";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { enforceKarlMada } from "@/lib/karlmada";
-import { sendBookingCreatedEmails } from "@/lib/emails/booking-emails";
-import { loadBookingContext } from "../route-helpers";
+import { loadBookingContext } from "@/lib/booking/context";
+import { createAppointment } from "@/lib/booking/create-appointment";
 
 const PHONE_RE = /^[+0-9 ().-]{6,20}$/;
 
@@ -56,74 +54,10 @@ export async function POST(
   const ctx = await loadBookingContext(slug, serviceId);
   if (!ctx) return NextResponse.json({ error: "not_found" }, { status: 404 });
 
-  // Re-vérifie que le créneau est toujours libre côté serveur.
-  const slots = slotsForDate(date, {
-    schedules: ctx.schedules,
-    blocked: ctx.blocked,
-    bookings: ctx.bookings,
-    durationMin: ctx.service.duration_min,
-  });
-  if (!slots.includes(time)) {
-    return NextResponse.json({ error: "slot_taken" }, { status: 409 });
-  }
-
-  // Validation obligatoire : la demande arrive en attente, la commerçante
-  // l'accepte ou la refuse depuis son agenda.
-  const { error: insertError } = await ctx.supabase.from("bookings").insert({
-    page_id: ctx.page.id,
-    service_id: ctx.service.id,
-    service_name: ctx.service.name,
-    duration_min: ctx.service.duration_min,
-    price_cents: ctx.service.price_cents,
-    date,
-    start_time: time,
-    first_name: firstName,
-    phone,
-    email,
-    status: "pending",
-  });
-  if (insertError) {
-    return NextResponse.json({ error: "insert_failed" }, { status: 500 });
-  }
-
-  // CRM : le client est créé/mis à jour automatiquement à chaque réservation.
-  await ctx.supabase
-    .from("customers")
-    .upsert(
-      { page_id: ctx.page.id, phone, first_name: firstName, email },
-      { onConflict: "page_id,phone" }
-    );
-
-  // Notification propriétaire (feed générique commandes + réservations), dans
-  // la langue de son compte. Le libellé est partagé avec l'email qu'il reçoit
-  // au même moment, pour ne pas maintenir deux formulations.
-  const ownerDict = await getDictionary(ctx.ownerLocale, "emails");
-  const notificationTitle = ownerDict.booking.sellerNew.title;
-  await ctx.supabase.from("notifications").insert({
-    user_id: ctx.page.user_id,
-    page_id: ctx.page.id,
-    type: "booking",
-    ref_id: null,
-    title: notificationTitle,
-    body: `${firstName} · ${ctx.service.name} · ${date} ${time}`,
-  });
-
-  // Emails AWAITés avant la réponse, comme pour les commandes : les callbacks
-  // after() ne sont pas honorés ici sur Vercel. Le client repart avec un accusé
-  // de réception écrit (la demande part en `pending`), le professionnel avec
-  // l'alerte. Un échec d'envoi ne casse pas la réservation déjà enregistrée.
-  try {
-    await sendBookingCreatedEmails({
-      pageId: ctx.page.id,
-      firstName,
-      phone,
-      buyerEmail: email,
-      serviceName: ctx.service.name,
-      date,
-      startTime: time,
-    });
-  } catch (e) {
-    console.error("booking: email dispatch failed", e);
+  const result = await createAppointment(ctx, { date, time, firstName, phone, email });
+  if (!result.ok) {
+    const status = result.error === "slot_taken" ? 409 : 500;
+    return NextResponse.json({ error: result.error }, { status });
   }
 
   return new NextResponse(null, { status: 204 });

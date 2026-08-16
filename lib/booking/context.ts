@@ -2,17 +2,13 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { defaultLocale, hasLocale, type Locale } from "@/lib/i18n/config";
 import type { Schedule, Service } from "@/lib/types";
 
-// Charge les données nécessaires au calcul de créneaux pour une vitrine publiée.
-export async function loadBookingContext(slug: string, serviceId: string) {
+// Charge les données nécessaires au calcul de créneaux, une fois la page
+// (vitrine publiée par slug, ou tenant déjà résolu par page_id) connue.
+async function loadContextForPageRow(
+  page: { id: string; slug: string; business_name: string; published: boolean; user_id: string },
+  serviceId: string
+) {
   const supabase = createAdminClient();
-
-  const { data: page } = await supabase
-    .from("pages")
-    .select("id, slug, business_name, published, user_id")
-    .eq("slug", slug)
-    .eq("published", true)
-    .single();
-  if (!page) return null;
 
   const { data: service } = await supabase
     .from("services")
@@ -59,4 +55,34 @@ export async function loadBookingContext(slug: string, serviceId: string) {
     blocked: blocked ?? [],
     bookings: bookings ?? [],
   };
+}
+
+export type BookingContext = NonNullable<
+  Awaited<ReturnType<typeof loadContextForPageRow>>
+>;
+
+// Vitrine publique (booking widget) : résolution par slug, page doit être publiée.
+export async function loadBookingContext(slug: string, serviceId: string) {
+  const supabase = createAdminClient();
+  const { data: page } = await supabase
+    .from("pages")
+    .select("id, slug, business_name, published, user_id")
+    .eq("slug", slug)
+    .eq("published", true)
+    .single();
+  if (!page) return null;
+  return loadContextForPageRow(page, serviceId);
+}
+
+// Tenant déjà résolu (ex: FLUX Voice, qui identifie la page via le numéro
+// appelé) : pas de contrainte de publication, page_id fait foi.
+export async function loadBookingContextForPage(pageId: string, serviceId: string) {
+  const supabase = createAdminClient();
+  const { data: page } = await supabase
+    .from("pages")
+    .select("id, slug, business_name, published, user_id")
+    .eq("id", pageId)
+    .single();
+  if (!page) return null;
+  return loadContextForPageRow(page, serviceId);
 }

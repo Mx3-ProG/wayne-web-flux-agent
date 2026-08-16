@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { availableDays } from "@/lib/slots";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
-import { loadBookingContext } from "../route-helpers";
+import { loadBookingContext } from "@/lib/booking/context";
 
 export async function GET(
   request: Request,

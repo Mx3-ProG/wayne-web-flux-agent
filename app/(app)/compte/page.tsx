@@ -136,6 +136,8 @@ export default async function ComptePage() {
         <a href="#formules">{t.nav.plans}</a>
         <a href="#licence">{t.nav.license}</a>
         <Link href="/compte/facturation">{t.nav.billing}</Link>
+        <Link href="/compte/import">Importer des données</Link>
+        <Link href="/compte/integrations">Intégrations</Link>
       </nav>
 
       <section id="informations" className={styles.section}>

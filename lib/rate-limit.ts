@@ -1,8 +1,10 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 
 // Rate-limiting persistant, partagé entre toutes les instances serverless via
-// une fonction SQL atomique (voir migration 00046_rate_limits.sql). Le Map en
-// mémoire précédent ne freinait rien sur Vercel (un bucket par lambda).
+// une fonction SQL atomique (voir migration 00046_rate_limits.sql, corrigée
+// par 00051 — les paramètres RPC sont préfixés `p_` pour ne jamais entrer en
+// collision avec les noms de colonnes). Le Map en mémoire précédent ne
+// freinait rien sur Vercel (un bucket par lambda).
 //
 // Politique en cas d'erreur infra : « fail-open » — on laisse passer plutôt que
 // de provoquer un outage si la base ne répond pas. Le rate-limit reste une
@@ -15,9 +17,9 @@ export async function rateLimit(
   try {
     const admin = createAdminClient();
     const { data, error } = await admin.rpc("hit_rate_limit", {
-      bucket: key,
-      max_hits: max,
-      window_ms: windowMs,
+      p_bucket: key,
+      p_max_hits: max,
+      p_window_ms: windowMs,
     });
     if (error) {
       console.error("rateLimit: rpc failed (fail-open)", { key, error });

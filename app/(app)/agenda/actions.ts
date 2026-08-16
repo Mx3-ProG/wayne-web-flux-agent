@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import { getActivePageId } from "@/lib/active-project";
 import { sendBookingStatusEmail } from "@/lib/emails/booking-emails";
+import { syncBookingToConnectors } from "@/lib/integrations/sync-hooks";
 import type { TimeRange } from "@/lib/types";
 
 async function ownedPageId(): Promise<string | null> {
@@ -115,7 +116,10 @@ export async function cancelBooking(bookingId: string): Promise<{ error?: string
     .eq("id", bookingId) // RLS protège
     .select("id");
   if (error) return { error: "cancel_failed" };
-  if (data?.length) await notifyBookingDecision(bookingId, "cancelled");
+  if (data?.length) {
+    await notifyBookingDecision(bookingId, "cancelled");
+    await syncBookingToConnectors(bookingId, "cancelled");
+  }
   revalidatePath("/agenda");
   return {};
 }
@@ -131,7 +135,10 @@ export async function acceptBooking(bookingId: string): Promise<{ error?: string
     .eq("status", "pending") // RLS protège
     .select("id");
   if (error) return { error: "accept_failed" };
-  if (data?.length) await notifyBookingDecision(bookingId, "confirmed");
+  if (data?.length) {
+    await notifyBookingDecision(bookingId, "confirmed");
+    await syncBookingToConnectors(bookingId, "confirmed");
+  }
   revalidatePath("/agenda");
   return {};
 }

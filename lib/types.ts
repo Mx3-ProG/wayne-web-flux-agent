@@ -329,6 +329,10 @@ export type Booking = {
   email: string | null;
   status: "pending" | "confirmed" | "refused" | "cancelled";
   created_at: string;
+  // Ajoutés par la couche d'intégration (migration 00048) : lien CRM et
+  // provenance ('flux' | 'csv' | ...), cf. INTEGRATIONS_PLAN.md § C.4.
+  customer_id: string | null;
+  source: string;
 };
 
 export type ProductCategory = {
@@ -456,6 +460,11 @@ export type Customer = {
   address: string | null;
   note: string;
   created_at: string;
+  // Ajoutés par la couche d'intégration (migration 00048).
+  last_name: string | null;
+  birthday: string | null;
+  tags: string[];
+  source: string;
 };
 
 // Abonné newsletter capturé sur la vitrine publique (table page_subscribers).

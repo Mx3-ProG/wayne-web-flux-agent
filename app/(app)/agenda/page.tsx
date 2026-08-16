@@ -12,6 +12,8 @@ import type {
 } from "@/lib/types";
 import { AgendaView } from "@/components/agenda/agenda-view";
 import { AgendaTunnel } from "@/components/agenda/agenda-tunnel";
+import { InactiveCustomersCard } from "@/components/agenda/inactive-customers-card";
+import { findInactiveCustomers } from "@/lib/integrations/automations/inactive-customers";
 import { Button } from "@/components/ui/button";
 import { getAccountLocale } from "@/lib/i18n/locale.server";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -97,18 +99,28 @@ export default async function AgendaPage({
     supabase.from("profiles").select("name").eq("user_id", user.id).single(),
   ]);
 
+  const inactiveCustomers = findInactiveCustomers(
+    (customers ?? []) as Customer[],
+    (bookings ?? []) as Booking[]
+  );
+
   return (
-    <AgendaView
-      page={page}
-      ownerName={profile?.name ?? ""}
-      icalUrl={`${process.env.NEXT_PUBLIC_SITE_URL}/api/ical/${page.ical_token}`}
-      bookings={(bookings ?? []) as Booking[]}
-      customers={(customers ?? []) as Customer[]}
-      orders={(orders ?? []) as Order[]}
-      schedules={(schedules ?? []) as Schedule[]}
-      blocked={(blocked ?? []) as BlockedPeriod[]}
-      locale={locale}
-      t={t}
-    />
+    <>
+      <AgendaView
+        page={page}
+        ownerName={profile?.name ?? ""}
+        icalUrl={`${process.env.NEXT_PUBLIC_SITE_URL}/api/ical/${page.ical_token}`}
+        bookings={(bookings ?? []) as Booking[]}
+        customers={(customers ?? []) as Customer[]}
+        orders={(orders ?? []) as Order[]}
+        schedules={(schedules ?? []) as Schedule[]}
+        blocked={(blocked ?? []) as BlockedPeriod[]}
+        locale={locale}
+        t={t}
+      />
+      <div className="mx-auto max-w-2xl px-4 pb-8">
+        <InactiveCustomersCard customers={inactiveCustomers} />
+      </div>
+    </>
   );
 }
